@@ -1,0 +1,94 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": false,
+        "ignore": [],
+        "attributePosition": "auto",
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 80,
+        "lineEnding": "lf"
+    },
+    "organizeImports": {
+        "enabled": true
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "correctness": {
+                "noUnusedImports": "error",
+                "noUndeclaredVariables": "error",
+                "useHookAtTopLevel": "error",
+                "noSelfAssign": "error"
+            },
+            "complexity": {
+                "noExcessiveCognitiveComplexity": "error",
+                "noUselessStringConcat": "error",
+                "useDateNow": "error",
+                "noVoid": "error",
+                "useSimplifiedLogicExpression": "error"
+            },
+            "performance": {
+                "noBarrelFile": "error",
+                "noReExportAll": "error"
+            },
+            "nursery": {
+                "noDuplicateElseIf": "error",
+                "noExportedImports": "error",
+                "noImgElement": "error",
+                "noIrregularWhitespace": "error",
+                "useCollapsedIf": "error",
+
+                "noNestedTernary": "error",
+                "noRestrictedImports": {
+                    "level": "error",
+                    "options": {
+                        "paths": {
+                            "next/link": "Please import from `@/i18n/routing` instead."
+                        }
+                    }
+                }
+            },
+            "style": {
+                "noNegationElse": "error",
+                "useCollapsedElseIf": "error",
+                "useBlockStatements": "error"
+            },
+            "suspicious": {
+                "noConsole": "error",
+                "noEmptyBlockStatements": "error",
+                "useAwait": "error",
+                "noSelfCompare": "error",
+                "noDuplicateJsxProps": "error"
+            },
+            "a11y": {
+                "useAltText": "error"
+            }
+        }
+    },
+    "javascript": {
+        "globals": ["React"],
+        "formatter": {
+            "quoteStyle": "single",
+            "arrowParentheses": "always",
+            "bracketSameLine": false,
+            "bracketSpacing": true,
+            "jsxQuoteStyle": "double",
+            "quoteProperties": "asNeeded",
+            "semicolons": "always",
+            "trailingCommas": "all"
+        }
+    },
+    "json": {
+        "formatter": {
+            "trailingCommas": "none"
+        }
+    }
+}
