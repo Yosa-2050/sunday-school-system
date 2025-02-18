@@ -1,29 +1,30 @@
 {
-    "name": "sourcepin",
-    "private": true,
-    "scripts": {
-        "turbo": "turbo",
-        "build": "turbo run build",
-        "dev": "turbo dev",
-        "lint": "turbo lint",
-        "clean": "rimraf -g  apps/**/.next",
-        "lint-staged": "lint-staged",
-        "biome": "biome",
-        "lefthook": "lefthook",
-        "format": "biome check .",
-        "format:fix": "biome check . --write"
-    },
-    "devDependencies": {
-        "@biomejs/biome": "1.9.4",
-        "@commitlint/config-conventional": "^19.6.0",
-        "husky": "^9.1.7",
-        "lefthook": "^1.10.10",
-        "rimraf": "^6.0.1",
-        "turbo": "^2.3.3",
-        "typescript": "5.5.4"
-    },
-    "packageManager": "pnpm@9.0.0",
-    "engines": {
-        "node": ">=22"
-    }
+  "name": "sourcepin",
+  "private": true,
+  "scripts": {
+    "turbo": "turbo",
+    "build": "turbo run build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "clean": "rimraf -g  apps/**/.next",
+    "lint-staged": "lint-staged",
+    "biome": "biome",
+    "lefthook": "lefthook",
+    "format": "biome check .",
+    "format:fix": "biome check . --write",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@commitlint/config-conventional": "^19.6.0",
+    "husky": "^9.1.7",
+    "lefthook": "^1.10.10",
+    "rimraf": "^6.0.1",
+    "turbo": "^2.3.3",
+    "typescript": "5.5.4"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=22"
+  }
 }
