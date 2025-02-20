@@ -1,0 +1,41 @@
+{
+    "header": {
+        "title": "Job Portal",
+        "welcomeMessage": "Welcome to the Job Portal"
+    },
+    "navigation": {
+        "home": "Home",
+        "jobs": "Jobs",
+        "companies": "Companies",
+        "contact": "Contact",
+        "about": "About"
+    },
+    "jobListing": {
+        "searchPlaceholder": "Search for jobs, keywords...",
+        "filterLabel": "Filter Jobs",
+        "location": "Location",
+        "jobType": "Job Type",
+        "salaryRange": "Salary Range",
+        "apply": "Apply Now",
+        "details": "Job Details",
+        "experience": "Experience Level"
+    },
+    "user": {
+        "login": "Login",
+        "logout": "Logout",
+        "register": "Register",
+        "profile": "Profile",
+        "dashboard": "Dashboard"
+    },
+    "messages": {
+        "noJobs": "No jobs available at the moment.",
+        "loading": "Loading...",
+        "applySuccess": "Your application was submitted successfully.",
+        "applyError": "There was an error while submitting your application."
+    },
+    "footer": {
+        "rights": "© 2023 All rights reserved.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms and Conditions"
+    }
+}

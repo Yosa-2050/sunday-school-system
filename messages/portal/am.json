@@ -1,0 +1,41 @@
+{
+    "header": {
+        "title": "ስራ �ለጋ መድረክ",
+        "welcomeMessage": "ወደ ስራ �ለጋ መድረክ እንኳን በደህና መጡ"
+    },
+    "navigation": {
+        "home": "መነሻ",
+        "jobs": "ስራዎች",
+        "companies": "ኩባንያዎች",
+        "contact": "አግኝን",
+        "about": "ስለ እኛ"
+    },
+    "jobListing": {
+        "searchPlaceholder": "ስራዎችን፣ ቁል� ቃላትን ፈልግ...",
+        "filterLabel": "ስራዎችን አጣራ",
+        "location": "አካባቢ",
+        "jobType": "የስራ አይነት",
+        "salaryRange": "የደሞዝ ክልል",
+        "apply": "አሁን ያመልክቱ",
+        "details": "የስራ ዝርዝሮች",
+        "experience": "የልምድ ደረጃ"
+    },
+    "user": {
+        "login": "ግባ",
+        "logout": "ውጣ",
+        "register": "ይመዝገቡ",
+        "profile": "መገለጫ",
+        "dashboard": "ዳሽቦርድ"
+    },
+    "messages": {
+        "noJobs": "በአሁኑ ጊዜ ምንም ስራዎች የሉም።",
+        "loading": "በመጫን ላይ...",
+        "applySuccess": "ያስገቡት ማመልከቻ በተሳካ ሁኔታ ቀርቧል።",
+        "applyError": "ማመልከቻዎን በማስገባት �ውጥ ተከስቷል።"
+    },
+    "footer": {
+        "rights": "© 2023 ሁሉም መብቶች የተጠበቁ ናቸው።",
+        "privacy": "የግላዊነት ፖሊሲ",
+        "terms": "ውሎች እና ሁኔታዎች"
+    }
+}

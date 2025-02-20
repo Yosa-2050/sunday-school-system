@@ -8,8 +8,23 @@
         "start": "next start"
     },
     "dependencies": {
+        "@mantine/carousel": "^7.17.0",
+        "@mantine/colors-generator": "^7.17.0",
+        "@mantine/core": "^7.17.0",
+        "@mantine/dates": "^7.17.0",
+        "@mantine/dropzone": "^7.17.0",
+        "@mantine/hooks": "^7.17.0",
+        "@mantine/modals": "^7.17.0",
+        "@mantine/notifications": "^7.17.0",
+        "@next/bundle-analyzer": "^15.1.7",
         "@shega/ui": "workspace:*",
+        "@tabler/icons-react": "^3.30.0",
+        "chroma-js": "^3.1.2",
+        "dayjs": "^1.11.13",
+        "embla-carousel-autoplay": "^8.5.2",
         "next": "^14.1.1",
+        "next-intl": "^3.26.4",
+        "next-nprogress-bar": "^2.4.7",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"
     },
@@ -22,11 +37,13 @@
         "@shega/typescript-config": "workspace:*",
         "@testing-library/jest-dom": "^6.4.5",
         "@testing-library/react": "^15.0.7",
+        "@types/chroma-js": "^3.1.1",
         "@types/node": "^20.11.24",
         "@types/react": "^18.2.61",
         "@types/react-dom": "^18.2.19",
         "jest": "^29.7.0",
         "jest-environment-jsdom": "^29.7.0",
+        "postcss-preset-mantine": "^1.17.0",
         "typescript": "5.5.4"
     }
 }
