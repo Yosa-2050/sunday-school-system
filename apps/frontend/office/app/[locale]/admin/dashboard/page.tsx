@@ -1,13 +1,20 @@
 'use client';
 
 import { useDisclosure } from '@mantine/hooks';
-import { AppShell, Burger, Group, ScrollArea, NavLink, Text, Title, rem } from '@mantine/core';
+import { AppShell, Burger, Group, ScrollArea, NavLink, Text, Title} from '@mantine/core';
 import { useTranslations } from 'next-intl';
 import { IconDashboard, IconSettings, IconUsers, IconBriefcase } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchUsers } from 'api/get-users';
 
 export default function NavbarSection() {
   const [opened, { toggle }] = useDisclosure();
   const t = useTranslations();
+
+  const {isLoading,data,isError} = useQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers
+  })
 
   return (
     <AppShell

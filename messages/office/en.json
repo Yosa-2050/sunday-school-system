@@ -1,0 +1,17 @@
+{
+    "header": {
+        "title": "Admin Dashboard"
+    },
+    "navbar": {
+        "header": "Job Portal Admin",
+        "dashboard": "Dashboard",
+        "jobListings": "Job Listings",
+        "applicants": "Applicants",
+        "settings": "Settings",
+        "footer": "© 2023 Job Portal"
+    },
+    "main": {
+        "welcome": "Welcome to the Admin Dashboard",
+        "description": "Manage job listings, applicants, and more."
+    }
+}

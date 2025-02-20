@@ -5,6 +5,7 @@ import { generateColors, lightenHexColor } from 'utility/colors';
 import MantineThemeProvider from 'providers/MantineProviders';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import QueryProviders from 'providers/Query.provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -36,10 +37,11 @@ colorArray.forEach((color, index) => {
         <html lang="en">
             <body className={inter.className}>
             <NextIntlClientProvider messages={messages}>
-
+<QueryProviders>
                 <MantineThemeProvider color={defaultTheme} radius={'8px'}>
                     {children}
                 </MantineThemeProvider>
+                </QueryProviders>
                 </NextIntlClientProvider>
                 </body>
         </html>
