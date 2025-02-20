@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import type { Link } from '@job-transfer/api/links/entities/link.entity';
+import type { Link } from '@shega/api/links/entities/link.entity';
 
-import type { CreateLinkDto } from '@job-transfer/api/links/dto/create-link.dto';
-import type { UpdateLinkDto } from '@job-transfer/api/links/dto/update-link.dto';
+import type { CreateLinkDto } from '@shega/api/links/dto/create-link.dto';
+import type { UpdateLinkDto } from '@shega/api/links/dto/update-link.dto';
 
 @Injectable()
 export class LinksService {

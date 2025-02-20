@@ -1,8 +1,12 @@
 {
-    "extends": "@job-transfer/typescript-config/react-library.json",
+    "extends": "@shega/typescript-config/react-library.json",
     "compilerOptions": {
-        "outDir": "dist"
+        "plugins": [{ "name": "next" }],
+        "allowJs": true,
+        "module": "es2015",
+        "outDir": "dist",
+        "baseUrl": "."
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist"]
+    "include": ["src", "index.ts"],
+    "exclude": ["node_modules", "dist", "build"]
 }

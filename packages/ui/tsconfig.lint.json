@@ -1,5 +1,5 @@
 {
-    "extends": "@job-transfer/typescript-config/react-library.json",
+    "extends": "@shega/typescript-config/react-library.json",
     "compilerOptions": {
         "outDir": "dist"
     },

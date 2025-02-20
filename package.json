@@ -1,5 +1,5 @@
 {
-    "name": "sourcepin",
+    "name": "shega",
     "private": true,
     "scripts": {
         "turbo": "turbo",
@@ -31,6 +31,7 @@
         "node": ">=22"
     },
     "dependencies": {
-        "jest": "^29.7.0"
+        "jest": "^29.7.0",
+        "@shega/typescript-config": "workspace:*"
     }
 }

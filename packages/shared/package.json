@@ -1,0 +1,21 @@
+{
+    "name": "@shega/shared",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": ["./src/index.ts"]
+    },
+    "scripts": {},
+    "devDependencies": {
+        "@shega/typescript-config": "workspace:*",
+        "@types/node": "^22.13.4",
+        "eslint-plugin-drizzle": "^0.2.3",
+        "tsup": "^8.3.5",
+        "tsx": "^4.19.2",
+        "typescript": "5.5.4"
+    },
+    "dependencies": {
+        "zod": "^3.24.1"
+    }
+}

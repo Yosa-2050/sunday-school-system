@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
 
-import type { Link } from '@job-transfer/api/links/entities/link.entity';
+import type { Link } from '@shega/api/links/entities/link.entity';
 
-import { Button } from '@job-transfer/ui/button';
-import { Card } from '@job-transfer/ui/card';
-import { Code } from '@job-transfer/ui/code';
+import { Button } from '@shega/ui/button';
+import { Card } from '@shega/ui/card';
+import { Code } from '@shega/ui/code';
 
 import styles from './page.module.css';
 

@@ -5,6 +5,18 @@
         "clientKind": "git",
         "useIgnoreFile": true
     },
+    "files": {
+        "ignoreUnknown": false,
+        "ignore": [
+            "**/.next",
+            "**/.turbo",
+            "**/dist/**",
+            ".pnpm-store/**",
+            "**/node_modules/**",
+            "./packages/ui/index.ts",
+            "./packages/shared/src/index.ts"
+        ]
+    },
     "formatter": {
         "enabled": true,
         "formatWithErrors": false,
@@ -22,6 +34,7 @@
         "enabled": true,
         "rules": {
             "recommended": true,
+
             "correctness": {
                 "noUnusedImports": "error",
                 "noUndeclaredVariables": "error",
@@ -75,6 +88,9 @@
     },
     "javascript": {
         "globals": ["React"],
+        "parser": {
+            "unsafeParameterDecoratorsEnabled": true
+        },
         "formatter": {
             "quoteStyle": "single",
             "arrowParentheses": "always",

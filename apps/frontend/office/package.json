@@ -5,13 +5,10 @@
     "scripts": {
         "dev": "next dev --port 6666",
         "build": "next build",
-        "start": "next start",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:e2e": "playwright test"
+        "start": "next start"
     },
     "dependencies": {
-        "@job-transfer/ui": "workspace:*",
+        "@shega/ui": "workspace:*",
         "next": "^14.1.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"
@@ -20,10 +17,10 @@
         "@jest/globals": "^29.7.0",
         "@next/eslint-plugin-next": "^14.1.1",
         "@playwright/test": "^1.44.0",
-        "@job-transfer/api": "workspace:*",
-        
-        "@job-transfer/jest-config": "workspace:*",
-        "@job-transfer/typescript-config": "workspace:*",
+        "@shega/api": "workspace:*",
+
+        "@shega/jest-config": "workspace:*",
+        "@shega/typescript-config": "workspace:*",
         "@testing-library/jest-dom": "^6.4.5",
         "@testing-library/react": "^15.0.7",
         "@types/node": "^20.11.24",

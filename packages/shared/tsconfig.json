@@ -1,0 +1,10 @@
+{
+    "extends": "@sourcepin/typescript-config/nextjs.json",
+    "plugins": [{ "name": "next" }],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {}
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
+}

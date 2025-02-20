@@ -1,18 +1,19 @@
 {
-    "name": "@job-transfer/ui",
+    "name": "@shega/ui",
     "version": "0.0.0",
     "private": true,
+    "type": "module",
+    "main": "./index.ts",
+    "types": "./index.ts",
     "exports": {
-        "./button": "./src/button.tsx",
-        "./card": "./src/card.tsx",
-        "./code": "./src/code.tsx"
+        ".": "./src/index.ts"
     },
     "scripts": {
         "generate:component": "turbo gen react-component"
     },
     "devDependencies": {
-        
-        "@job-transfer/typescript-config": "workspace:*",
+        "@shega/typescript-config": "workspace:*",
+        "@shega/shared": "workspace:*",
         "@turbo/gen": "^1.12.4",
         "@types/node": "^20.11.24",
         "@types/eslint": "^8.56.5",
