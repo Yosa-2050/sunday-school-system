@@ -11,8 +11,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
     const messages =
         locale === 'en'
-            ? (await import('../../../../messages/portal/en.json')).default
-            : (await import(`../../../../messages/portal/${locale}.json`))
+            ? (await import('../../../../messages/office/en.json')).default
+            : (await import(`../../../../messages/office/${locale}.json`))
                   .default;
 
     return {

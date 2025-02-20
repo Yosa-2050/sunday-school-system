@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import type { PropsWithChildren } from 'react';
 import { generateColors, lightenHexColor } from 'utility/colors';
 import MantineThemeProvider from 'providers/MantineProviders';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,7 +18,9 @@ const defaultTheme = '#2340ff';
 
 
 
-export default function RootLayout({ children }: Readonly<PropsWithChildren>) {
+export default async function RootLayout({ children }: Readonly<PropsWithChildren>) {
+
+    const messages = await getMessages();
 
     const colorArray = generateColors(defaultTheme);
 const styles: Record<string, string> = {
@@ -31,9 +35,12 @@ colorArray.forEach((color, index) => {
     return (
         <html lang="en">
             <body className={inter.className}>
+            <NextIntlClientProvider messages={messages}>
+
                 <MantineThemeProvider color={defaultTheme} radius={'8px'}>
                     {children}
                 </MantineThemeProvider>
+                </NextIntlClientProvider>
                 </body>
         </html>
     );
