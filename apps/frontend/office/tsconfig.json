@@ -1,11 +1,25 @@
 {
     "extends": "@shega/typescript-config/nextjs.json",
     "compilerOptions": {
-        "plugins": [{ "name": "next" }],
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
         "allowJs": true,
-        "module": "es2015",
+        "module": "esnext",
         "outDir": "dist",
-        "baseUrl": "."
+        "baseUrl": ".",
+        "jsx": "preserve",
+        "paths": {
+            "@/actions/*": ["actions/*"],
+            "@/components/*": ["components/*"],
+            "@/hooks/*": ["./hooks/*"],
+            "@/i18n/*": ["i18n/*"],
+            "@/lib/*": ["./lib/*"],
+            "@/models/*": ["models/*"]
+        },
+        "noEmit": true
     },
     "include": [
         "next-env.d.ts",
@@ -14,5 +28,5 @@
         "**/*.tsx",
         ".next/types/**/*.ts"
     ],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "dist"]
 }
