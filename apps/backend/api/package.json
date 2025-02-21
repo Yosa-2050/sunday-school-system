@@ -8,21 +8,33 @@
         "start": "nest start",
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
-        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\""
+        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+        "typeorm:cli": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/typeorm/typeorm-config-helper.ts",
+        "migration:run": "pnpm run typeorm:cli migration:run",
+        "migration:generate": "pnpm run build && pnpm run typeorm:cli migration:generate src/migrations/%npm_config_name%",
+        "migration:create": "pnpm run typeorm:cli migration:create",
+        "migration:revert": "pnpm run typeorm:cli migration:revert"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.750.0",
+        "@aws-sdk/s3-request-presigner": "^3.750.0",
         "@nestjs/common": "^10.0.0",
+        "@nestjs/config": "^4.0.0",
         "@nestjs/core": "^10.0.0",
         "@nestjs/platform-express": "^10.0.0",
+        "@nestjs/typeorm": "^11.0.0",
         "@shega/api": "workspace:*",
         "api": "link:",
+        "crypto": "^1.0.1",
+        "path": "^0.12.7",
+        "pg": "^8.13.3",
         "reflect-metadata": "^0.2.0",
-        "rxjs": "^7.8.1"
+        "rxjs": "^7.8.1",
+        "typeorm": "^0.3.20"
     },
     "devDependencies": {
         "@jest/globals": "^29.7.0",
-        "@nestjs/cli": "^10.0.0",
-        "@nestjs/schematics": "^10.0.0",
+        "@nestjs/schematics": "^10.1.1",
         "@nestjs/testing": "^10.0.0",
         "@shega/jest-config": "workspace:*",
         "@shega/typescript-config": "workspace:*",

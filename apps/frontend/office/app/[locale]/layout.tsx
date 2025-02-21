@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import type { PropsWithChildren } from 'react';
-import { generateColors, lightenHexColor } from 'utility/colors';
-import MantineThemeProvider from 'providers/MantineProviders';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { Inter } from 'next/font/google';
+import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
+import type { PropsWithChildren } from 'react';
+import { generateColors, lightenHexColor } from 'utility/colors';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,33 +17,35 @@ export const metadata: Metadata = {
 //bluish theme
 const defaultTheme = '#2340ff';
 
-
-
-export default async function RootLayout({ children }: Readonly<PropsWithChildren>) {
-
+export default async function RootLayout({
+    children,
+}: Readonly<PropsWithChildren>) {
     const messages = await getMessages();
 
     const colorArray = generateColors(defaultTheme);
-const styles: Record<string, string> = {
-    '--primary-color-default': defaultTheme,
-    '--primary-radius': '8px',
-    backgroundColor: lightenHexColor(defaultTheme, 98) || '#f5fbfe',
-};
+    const styles: Record<string, string> = {
+        '--primary-color-default': defaultTheme,
+        '--primary-radius': '8px',
+        backgroundColor: lightenHexColor(defaultTheme, 98) || '#f5fbfe',
+    };
 
-colorArray.forEach((color, index) => {
-    styles[`--primary-color-${index}`] = color;
-});
+    colorArray.forEach((color, index) => {
+        styles[`--primary-color-${index}`] = color;
+    });
     return (
         <html lang="en">
             <body className={inter.className}>
-            <NextIntlClientProvider messages={messages}>
-<QueryProviders>
-                <MantineThemeProvider color={defaultTheme} radius={'8px'}>
-                    {children}
-                </MantineThemeProvider>
-                </QueryProviders>
+                <NextIntlClientProvider messages={messages}>
+                    <QueryProviders>
+                        <MantineThemeProvider
+                            color={defaultTheme}
+                            radius={'8px'}
+                        >
+                            {children}
+                        </MantineThemeProvider>
+                    </QueryProviders>
                 </NextIntlClientProvider>
-                </body>
+            </body>
         </html>
     );
 }

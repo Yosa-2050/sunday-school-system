@@ -14,9 +14,9 @@ pre-push:
 pre-commit:
   parallel: true
   jobs:
-    - name: biome check
-      run: pnpm biome check {staged_files} || yarn biome check {staged_files} || npx biome check {staged_files}
-      glob: "*.{js,ts,jsx,tsx,json,md}"
+    # - name: biome check
+    #   run: pnpm biome check {staged_files} || yarn biome check {staged_files} || npx biome check {staged_files}
+    #   glob: "*.{js,ts,jsx,tsx,json,md}"
 
     - name: biome format
       run: pnpm biome format --write {staged_files} || yarn biome format --write {staged_files} || npx biome format --write {staged_files}

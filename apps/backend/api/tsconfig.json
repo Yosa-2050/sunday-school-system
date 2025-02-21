@@ -2,6 +2,7 @@
     "extends": "@shega/typescript-config/nestjs.json",
     "compilerOptions": {
         "baseUrl": "./",
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "typeRoots": ["node_modules/@types"]
     }
 }
