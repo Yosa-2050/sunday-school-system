@@ -1,0 +1,45 @@
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  GIT_DEPTH: "0"
+
+default:
+  image: node:22
+
+before_script:
+  - corepack enable
+  - corepack prepare pnpm@9.0.0 --activate
+  - pnpm config set store-dir .pnpm-store
+
+stages:
+  - build
+  - staging
+
+build:
+  stage: build
+  only:
+    - merge_requests
+  script:
+    - pnpm install
+    - pnpm run format
+    - pnpm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+
+staging:
+  stage: staging
+  only:
+    - develop
+  dependencies:
+    - build
+  services:
+    - postgres:16 # PostgreSQL container
+  script:
+    - pnpm install
+    - pnpm run format
+    - export PG_URL="postgresql://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DB"
+    - pnpm run migrate # Use your migration command (e.g., Prisma, Knex, TypeORM)
+    - |
+      curl -X GET "$COOLIFY_URL/api/v1/deploy?tag=@shega/office%2C@shega/api%2C@shega/portal&force=false" \
+           -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN"
