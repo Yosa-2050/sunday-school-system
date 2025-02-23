@@ -8,11 +8,12 @@ const SATURATION_MAP = [0.32, 0.16, 0.08, 0.04, 0, 0, 0.04, 0.08, 0.16, 0.32];
 function getClosestLightness(colorObject: chroma.Color) {
     const lightnessGoal = colorObject.get('hsl.l');
     return LIGHTNESS_MAP.reduce(
-        (prev, curr) =>
+        (prev: number, curr: number): number =>
             Math.abs(curr - lightnessGoal) < Math.abs(prev - lightnessGoal)
                 ? curr
                 : prev,
-        LIGHTNESS_MAP[0],
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        LIGHTNESS_MAP[0]!,
     );
 }
 
