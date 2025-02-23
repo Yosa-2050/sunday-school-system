@@ -9,7 +9,7 @@ import { UsersModule } from './users/users.module';
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
-        UsersModule
+        UsersModule,
     ],
     controllers: [AppController],
     providers: [AppService],
