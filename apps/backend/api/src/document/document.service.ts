@@ -8,7 +8,7 @@ import { Document } from './entities/document.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     IDocumentInterface,
-     IDocumentService,
+    IDocumentService,
 } from './interface/document-service.interface';
 
 @Injectable()
