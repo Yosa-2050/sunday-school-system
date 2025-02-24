@@ -8,13 +8,13 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
-import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
+import type { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
 import { Public } from 'src/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from './address.service';
-import { CreateAddressDto } from './dto/request/create-address.dto';
-import { CreateLocationRequestDto } from './dto/request/create-locaiton.request.dto';
-import { LocationType } from './enums/location-type.enums';
+import type { CreateAddressDto } from './dto/request/create-address.dto';
+import type { CreateLocationRequestDto } from './dto/request/create-locaiton.request.dto';
+import type { LocationType } from './enums/location-type.enums';
 
 @Public()
 @ApiBearerAuth()

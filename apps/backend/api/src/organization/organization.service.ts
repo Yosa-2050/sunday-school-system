@@ -9,10 +9,10 @@ import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
 import { AddressService } from 'src/location/address.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
-import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
-import { CreateOrganizationDto } from './dto/request/create-organization.dto';
-import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+import type { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
+import type { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
+import type { CreateOrganizationDto } from './dto/request/create-organization.dto';
+import type { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 import { EmployeesService } from './employees.service';
 import { Branch } from './entities/branch.entity';
 import { EmployeeOrganization } from './entities/employee-organization.entity';

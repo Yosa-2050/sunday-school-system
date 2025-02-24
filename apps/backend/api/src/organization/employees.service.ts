@@ -12,8 +12,8 @@ import { validateEmployeeRole } from 'src/users/enums/user-role.enum';
 import { ProfileService } from 'src/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import { CreateEmployeeDto } from './dto/request/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
+import type { CreateEmployeeDto } from './dto/request/create-employee.dto';
+import type { UpdateEmployeeDto } from './dto/request/update-employee.dto';
 import { Employee } from './entities/employee.entity';
 
 @Injectable()

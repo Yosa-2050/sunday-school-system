@@ -7,8 +7,9 @@ import {
     Patch,
     Post,
 } from '@nestjs/common';
-import { CreateJobPortalDto } from './dto/create-job_portal.dto';
-import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
+import type { CreateJobPortalDto } from './dto/create-job_portal.dto';
+import type { UpdateJobPortalDto } from './dto/update-job_portal.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
 
 @Controller('job-portal')

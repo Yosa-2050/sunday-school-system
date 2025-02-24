@@ -1,7 +1,7 @@
 import { BaseModel } from 'src/Utilities/entities/base-model.entity';
 import { Column, Entity } from 'typeorm';
 import { DeliveryStatus } from '../enums/delivery-status.enum';
-import { NotificationChannel } from '../enums/notification-channel.enum';
+import type { NotificationChannel } from '../enums/notification-channel.enum';
 import { NotificationStatus } from '../enums/notification-status.enum';
 
 @Entity()

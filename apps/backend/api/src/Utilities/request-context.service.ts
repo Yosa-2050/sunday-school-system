@@ -2,7 +2,7 @@
 
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { Request } from 'express';
+import type { Request } from 'express';
 // import { CurrentUser } from './current-user.utility';
 
 @Injectable({ scope: Scope.REQUEST })

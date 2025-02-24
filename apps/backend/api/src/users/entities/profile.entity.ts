@@ -1,9 +1,9 @@
 import { BaseModel } from 'src/Utilities/entities/base-model.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, OneToOne } from 'typeorm';
-import { Gender } from '../enums/profile-gender.enum';
-import { MarriageStatus } from '../enums/profile-marriagestatus.enum';
-import { Title } from '../enums/profile-title.enum';
+import type { Gender } from '../enums/profile-gender.enum';
+import type { MarriageStatus } from '../enums/profile-marriagestatus.enum';
+import type { Title } from '../enums/profile-title.enum';
 
 @Entity()
 export class Profile extends BaseModel {

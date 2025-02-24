@@ -8,10 +8,10 @@ import {
     Post,
 } from '@nestjs/common';
 import { Public } from 'src/auth/jwt-public';
-import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
-import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
-import { CreateOrganizationDto } from './dto/request/create-organization.dto';
-import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+import type { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
+import type { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
+import type { CreateOrganizationDto } from './dto/request/create-organization.dto';
+import type { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
 

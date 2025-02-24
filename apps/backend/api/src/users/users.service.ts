@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PasswordService } from 'src/Utilities/password.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { updatePasswordRequest } from './dto/update-password.request.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import type { CreateUserDto } from './dto/create-user.dto';
+import type { updatePasswordRequest } from './dto/update-password.request.dto';
+import type { UpdateUserDto } from './dto/update-user.dto';
 import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { LoginBy } from './enums/login-by.enum';

@@ -1,6 +1,6 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { CalanderEnum } from './enums/calander.enum';
-import { CustomDateModel } from './models/custom-date.model';
+import type { CustomDateModel } from './models/custom-date.model';
 
 @Injectable()
 export class DateService {

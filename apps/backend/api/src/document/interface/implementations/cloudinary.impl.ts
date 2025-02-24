@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
-import { IDocumentService } from '../document-service.interface';
+import type { IDocumentService } from '../document-service.interface';
 
 @Injectable()
 export class CloudinaryImpl implements IDocumentService {

@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import type { Express } from 'express';
 export class CreateDocumentDto {
     file: Express.Multer.File;
 }

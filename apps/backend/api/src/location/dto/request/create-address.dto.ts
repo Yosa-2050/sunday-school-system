@@ -9,7 +9,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
-import { ContactType } from 'src/location/enums/contact-type.enums';
+import type { ContactType } from 'src/location/enums/contact-type.enums';
 import { ContactDetailsType } from 'src/location/enums/contanct-details.type.enum';
 
 export class IndividualAddressDto {

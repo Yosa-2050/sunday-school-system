@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import { CreateNotificationDto } from './dto/create-notification.dto';
+import type { CreateNotificationDto } from './dto/create-notification.dto';
 import { Notification } from './entities/notification.entity';
 import { NotificationChannel } from './enums/notification-channel.enum';
 import { NotificationStatus } from './enums/notification-status.enum';

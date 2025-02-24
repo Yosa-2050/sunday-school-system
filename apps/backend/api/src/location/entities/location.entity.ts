@@ -1,7 +1,7 @@
 import { BaseModel } from 'src/Utilities/entities/base-model.entity';
-import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
+import type { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
 import { Column, Entity } from 'typeorm';
-import { AddressType } from '../enums/address-type.enums';
+import type { AddressType } from '../enums/address-type.enums';
 
 @Entity()
 export class Location extends BaseModel {

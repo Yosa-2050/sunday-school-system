@@ -1,7 +1,7 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import MantineThemeProvider from 'providers/MantineProviders';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { generateColors, lightenHexColor } from 'utility/colors';
 
 const inter = Inter({ subsets: ['latin'] });

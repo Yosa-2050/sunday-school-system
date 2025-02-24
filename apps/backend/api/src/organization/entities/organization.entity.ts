@@ -1,6 +1,6 @@
 import { BaseModel } from 'src/Utilities/entities/base-model.entity';
-import { ContactDetails } from 'src/location/entities/contact-details.entity';
-import { Location } from 'src/location/entities/location.entity';
+import type { ContactDetails } from 'src/location/entities/contact-details.entity';
+import type { Location } from 'src/location/entities/location.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Branch } from './branch.entity';
 import { EmployeeOrganization } from './employee-organization.entity';

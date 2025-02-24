@@ -3,6 +3,7 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from '../jwt-public';

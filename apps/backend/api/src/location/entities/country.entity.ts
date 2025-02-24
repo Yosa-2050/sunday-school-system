@@ -1,7 +1,7 @@
 import { BaseModel } from 'src/Utilities/entities/base-model.entity';
 import { Column, Entity } from 'typeorm';
-import { Continents } from '../enums/continents.enum';
-import { LocationInfo } from './LocationInfo.entity';
+import type { Continents } from '../enums/continents.enum';
+import type { LocationInfo } from './LocationInfo.entity';
 
 @Entity()
 export class Country extends BaseModel {

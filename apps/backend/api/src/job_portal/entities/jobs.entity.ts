@@ -1,6 +1,6 @@
 import { BaseModel } from 'src/Utilities/entities/base-model.entity';
 import { Column, Entity } from 'typeorm';
-import { EmploymentType } from '../enums/employment-type.enum';
+import type { EmploymentType } from '../enums/employment-type.enum';
 
 @Entity()
 export class Jobs extends BaseModel {

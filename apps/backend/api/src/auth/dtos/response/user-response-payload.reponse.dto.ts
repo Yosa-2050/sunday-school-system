@@ -1,4 +1,4 @@
-import { User } from 'src/users/entities/user.entity';
+import type { User } from 'src/users/entities/user.entity';
 
 export class UserResponsePayload {
     constructor(user: User, getInfo: object) {

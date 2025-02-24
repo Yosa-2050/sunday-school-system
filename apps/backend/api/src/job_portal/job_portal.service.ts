@@ -1,6 +1,6 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
-import { CreateJobPortalDto } from './dto/create-job_portal.dto';
-import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
+import type { CreateJobPortalDto } from './dto/create-job_portal.dto';
+import type { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 
 @Injectable()
 export class JobPortalService {

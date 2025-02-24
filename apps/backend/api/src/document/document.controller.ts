@@ -12,10 +12,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { Express } from 'express';
+import type { Express } from 'express';
 import { Public } from 'src/auth/jwt-public';
-import type { DocumentService } from './document.service';
-import { UpdateDocumentDto } from './dto/update-document.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from './document.service';
+import type { UpdateDocumentDto } from './dto/update-document.dto';
 
 @Public()
 @ApiTags('document')

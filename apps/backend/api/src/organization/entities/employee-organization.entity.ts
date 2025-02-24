@@ -1,6 +1,6 @@
 import { BaseModel } from 'src/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { EmployeeType } from '../enums/employee-type.enum';
+import type { EmployeeType } from '../enums/employee-type.enum';
 import { Branch } from './branch.entity';
 import { Employee } from './employee.entity';
 import { Organization } from './organization.entity';

@@ -10,9 +10,10 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { UserContext } from 'src/auth/decorators/user.context.decorator';
 import { Public } from 'src/auth/jwt-public';
-import { UserDto } from 'src/users/dto/user.dto';
-import { CreateEmployeeDto } from './dto/request/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
+import type { UserDto } from 'src/users/dto/user.dto';
+import type { CreateEmployeeDto } from './dto/request/create-employee.dto';
+import type { UpdateEmployeeDto } from './dto/request/update-employee.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { EmployeesService } from './employees.service';
 
 // @ApiBearerAuth()

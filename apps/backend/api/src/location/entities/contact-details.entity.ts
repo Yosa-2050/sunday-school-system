@@ -1,8 +1,8 @@
 import { BaseModel } from 'src/Utilities/entities/base-model.entity';
-import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
+import type { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
 import { Column, Entity } from 'typeorm';
-import { ContactType } from '../enums/contact-type.enums';
-import { ContactDetailsType } from '../enums/contanct-details.type.enum';
+import type { ContactType } from '../enums/contact-type.enums';
+import type { ContactDetailsType } from '../enums/contanct-details.type.enum';
 
 @Entity()
 export class ContactDetails extends BaseModel {

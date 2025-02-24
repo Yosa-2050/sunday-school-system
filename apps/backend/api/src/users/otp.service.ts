@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DateService } from 'src/Utilities/date.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { Otp } from './entities/otp.entity';
 
