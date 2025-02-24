@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PasswordService } from 'src/Utilities/password.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { updatePasswordRequest } from './dto/update-password.request.dto';

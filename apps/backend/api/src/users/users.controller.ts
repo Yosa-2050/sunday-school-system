@@ -10,11 +10,13 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NotificationChannel } from 'src/notification/enums/notification-channel.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from 'src/notification/notification.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { updatePasswordRequest } from './dto/update-password.request.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginBy } from './enums/login-by.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from './users.service';
 
 @ApiTags('users')

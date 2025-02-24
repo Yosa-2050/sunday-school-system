@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { Notification } from './entities/notification.entity';

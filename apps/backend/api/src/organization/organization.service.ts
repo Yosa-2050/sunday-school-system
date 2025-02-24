@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
 import { AddressService } from 'src/location/address.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';

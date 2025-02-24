@@ -14,7 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Express } from 'express';
 import { Public } from 'src/auth/jwt-public';
-import { DocumentService } from './document.service';
+import type { DocumentService } from './document.service';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 
 @Public()

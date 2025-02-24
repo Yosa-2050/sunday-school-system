@@ -41,7 +41,8 @@
                 "noUnusedImports": "error",
                 "noUndeclaredVariables": "error",
                 "useHookAtTopLevel": "error",
-                "noSelfAssign": "error"
+                "noSelfAssign": "error",
+                "useImportExtensions": "off"
             },
             "complexity": {
                 "noExcessiveCognitiveComplexity": "error",
@@ -60,10 +61,10 @@
                 "noImgElement": "error",
                 "noIrregularWhitespace": "error",
                 "useCollapsedIf": "error",
-
+                "noDocumentImportInPage": "off",
                 "noNestedTernary": "error",
                 "noRestrictedImports": {
-                    "level": "error",
+                    "level": "off",
                     "options": {
                         "paths": {
                             "next/link": "Please import from `@/i18n/routing` instead."
@@ -74,7 +75,8 @@
             "style": {
                 "noNegationElse": "error",
                 "useCollapsedElseIf": "error",
-                "useBlockStatements": "error"
+                "useBlockStatements": "error",
+                "useImportType": "error"
             },
             "suspicious": {
                 "noConsole": "error",

@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
+// biome-ignore lint/style/useImportType: <explanation>
 import { AuthService } from './auth.service';
 
 @Injectable()

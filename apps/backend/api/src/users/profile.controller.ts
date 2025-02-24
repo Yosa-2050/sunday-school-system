@@ -24,6 +24,7 @@ import {
 import { Express } from 'express';
 import { NewProfileDto } from './dto/new-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
 
 @ApiBearerAuth()

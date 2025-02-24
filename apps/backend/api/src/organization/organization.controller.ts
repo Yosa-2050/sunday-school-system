@@ -12,6 +12,7 @@ import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
 
 @Public()
