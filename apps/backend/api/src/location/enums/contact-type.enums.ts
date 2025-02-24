@@ -1,5 +1,5 @@
-export enum ContactType{
-    Email = "Email",
-    Phone = "Phone",
-    Other = "Other"
+export enum ContactType {
+    Email = 'Email',
+    Phone = 'Phone',
+    Other = 'Other',
 }

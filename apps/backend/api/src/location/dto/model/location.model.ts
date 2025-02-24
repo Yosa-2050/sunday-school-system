@@ -1,10 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsString } from "class-validator";
-import { AddressType } from "src/location/enums/address-type.enums";
-import { ReferenceType } from "src/Utilities/enums/reference-type.enum";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsString } from 'class-validator';
+import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
+import { AddressType } from 'src/location/enums/address-type.enums';
 
-export class LocationModel{
-
+export class LocationModel {
     referenceType: ReferenceType;
 
     @ApiProperty()
@@ -18,7 +17,7 @@ export class LocationModel{
     @ApiProperty()
     @IsString()
     region: string;
-    
+
     @ApiProperty()
     @IsString()
     subcity: string;

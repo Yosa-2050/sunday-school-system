@@ -1,39 +1,38 @@
-import { BaseModel } from "src/Utilities/entities/base-model.entity";
-import { Column, Entity } from "typeorm";
-import { NotificationStatus } from "../enums/notification-status.enum";
-import { NotificationChannel } from "../enums/notification-channel.enum";
-import { DeliveryStatus } from "../enums/delivery-status.enum";
+import { BaseModel } from 'src/Utilities/entities/base-model.entity';
+import { Column, Entity } from 'typeorm';
+import { DeliveryStatus } from '../enums/delivery-status.enum';
+import { NotificationChannel } from '../enums/notification-channel.enum';
+import { NotificationStatus } from '../enums/notification-status.enum';
 
 @Entity()
-export class Notification extends BaseModel{
-
+export class Notification extends BaseModel {
     @Column()
     reference: string;
-    
-    @Column()
+
+    @Column({ default: NotificationStatus.Sent })
     status: NotificationStatus;
-    
+
     @Column()
     channel: NotificationChannel;
-    
-    @Column()
+
+    @Column({ default: 0 })
     numberOfAttempts: number;
-    
-    @Column()
+
+    @Column({ nullable: true })
     error: string;
-    
+
     @Column()
     to: string;
 
     @Column()
     content: string;
 
-    @Column()
+    @Column({ nullable: true })
     subject: string;
-    
-    @Column()
+
+    @Column({ default: DeliveryStatus.Pending })
     deliveryStatus: DeliveryStatus;
-    
-    @Column()
+
+    @Column({ nullable: true })
     deliveryResponse: string;
 }

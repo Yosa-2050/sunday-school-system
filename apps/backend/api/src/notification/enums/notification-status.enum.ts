@@ -1,4 +1,4 @@
-export enum NotificationStatus{
-    Sent = "Sent",
-    Error = "Error"
+export enum NotificationStatus {
+    Sent = 'Sent',
+    Error = 'Error',
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import type { User } from '@shega/shared';
+import { User } from '@shega/shared';
 import { createContext, useContext, useState } from 'react';
 
 type AuthContextType = {

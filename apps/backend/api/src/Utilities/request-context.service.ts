@@ -1,38 +1,43 @@
 // src/request-context/request-context.service.ts
 
-import { Injectable, Scope, Inject } from "@nestjs/common";
-import { REQUEST } from "@nestjs/core";
-import { CurrentUser } from "./current-user.utility";
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+// import { CurrentUser } from './current-user.utility';
 
 @Injectable({ scope: Scope.REQUEST })
-export class RequestContextService {
-  getEmployeeId(): string {
-    return CurrentUser.getEmployeeId(this.request.user);
-  }
-  getBranchId() {
-    return CurrentUser.getBranchId(this.request.user);
-  }
-  getOrganizationId(): string {
-    return CurrentUser.getOrganizationId(this.request.user);
-  }
-  private readonly contextMap: Map<string, any> = new Map();
+export class RequestContextService<T> {
+    getEmployeeId(): string {
+        return '';
+        // return CurrentUser.getEmployeeId(this.request.user);
+    }
+    // getBranchId() {
+    //     return CurrentUser.getBranchId(this.request.user);
+    // }
+    getOrganizationId(): string {
+        return '';
 
-  constructor(@Inject(REQUEST) private readonly request: Request) {}
+        // return CurrentUser.getOrganizationId(this.request.user);
+    }
+    private readonly contextMap: Map<string, T> = new Map();
 
-  set<T>(key: string, value: T): void {
-    this.contextMap.set(key, value);
-  }
+    constructor(@Inject(REQUEST) private readonly request: Request) {}
 
-  get<T>(key: string): T | undefined {
-    return this.contextMap.get(key) as T;
-  }
+    set(key: string, value: T): void {
+        this.contextMap.set(key, value);
+    }
 
-  getRequest(): Request {
-    return this.request;
-  }
+    get(key: string): T | undefined {
+        return this.contextMap.get(key) as T;
+    }
 
-  getReportedById(){
-    return CurrentUser.getReportedById(this.request.user);
-  }
+    getRequest(): Request {
+        return this.request;
+    }
+
+    getReportedById() {
+        return '';
+
+        // return CurrentUser.getReportedById(this.request.user);
+    }
 }

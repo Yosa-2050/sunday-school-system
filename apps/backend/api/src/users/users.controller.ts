@@ -1,47 +1,68 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  ParseUUIDPipe,
-  BadRequestException,
-} from "@nestjs/common";
-import { UsersService } from "./users.service";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
-import { updatePasswordRequest } from "./dto/update-password.request.dto";
-import { LoginBy } from "./enums/login-by.enum";
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Param,
+    ParseUUIDPipe,
+    Patch,
+    Post,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { NotificationChannel } from 'src/notification/enums/notification-channel.enum';
+import { NotificationService } from 'src/notification/notification.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { updatePasswordRequest } from './dto/update-password.request.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginBy } from './enums/login-by.enum';
+import { UsersService } from './users.service';
 
-@ApiTags("users")
-@Controller("users")
+@ApiTags('users')
+@Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private notificationService: NotificationService,
+    ) {}
 
-  @ApiOperation({ deprecated: true })
-  @Post()
-  create(@Body() dto: CreateUserDto) {
-    return this.usersService.createFromProfile(dto.email, dto.role, "", false, LoginBy.EMAIL);
-  }
+    @Post()
+    async create(@Body() dto: CreateUserDto) {
+        const user = await this.usersService.createFromProfile(
+            dto.email,
+            dto.role,
+            '',
+            true,
+            LoginBy.EMAIL,
+        );
+        if (user?.id) {
+            await this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: `please login to your account using your email ${user.email} and password 12345678. Then reset your password.`,
+                to: user.email,
+                subject: 'Shega jobs',
+                reference: user.id,
+            });
+            return user;
+        }
 
-  @Post("updatePassword")
-  updatePassword(@Body() updatePwdDto: updatePasswordRequest) {
-    return this.usersService.UpdatePassword(updatePwdDto);
-  }
+        throw new BadRequestException('Unable to create user');
+    }
 
-  @Patch(":id")
-  update(
-    @Param("id", new ParseUUIDPipe()) id: string,
-    @Body() updateUserDto: UpdateUserDto
-  ) {
-    return this.usersService.update(id, updateUserDto);
-  }
+    @Post('updatePassword')
+    updatePassword(@Body() updatePwdDto: updatePasswordRequest) {
+        return this.usersService.UpdatePassword(updatePwdDto);
+    }
 
-  @Delete(":id")
-  remove(@Param("id", new ParseUUIDPipe()) id: string) {
-    return this.usersService.remove(id);
-  }
+    @Patch(':id')
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() updateUserDto: UpdateUserDto,
+    ) {
+        return this.usersService.update(id, updateUserDto);
+    }
+
+    @Delete(':id')
+    remove(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.usersService.remove(id);
+    }
 }

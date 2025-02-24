@@ -1,3 +1,3 @@
-export enum DeliveryStatus{
-    
+export enum DeliveryStatus {
+    Pending = 'PENDING',
 }

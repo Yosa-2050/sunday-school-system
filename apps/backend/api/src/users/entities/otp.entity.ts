@@ -1,5 +1,5 @@
-import { BaseModel } from "src/Utilities/entities/base-model.entity";
-import { Column, Entity } from "typeorm";
+import { BaseModel } from 'src/Utilities/entities/base-model.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity()
 export class Otp extends BaseModel {

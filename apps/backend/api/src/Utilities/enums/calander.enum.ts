@@ -1,5 +1,4 @@
 export enum CalanderEnum {
-    Ethiopian = "ETHIOPIAN",
-    Gregorian = "GREGORIAN",
-  }
-  
+    Ethiopian = 'ETHIOPIAN',
+    Gregorian = 'GREGORIAN',
+}

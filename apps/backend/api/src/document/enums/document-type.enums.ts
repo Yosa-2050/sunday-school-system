@@ -1,6 +1,6 @@
 export enum DocumentType {
-  IMAGE,
-  PDF,
-  EXCEL,
-  WORD,
+    IMAGE = 0,
+    PDF = 1,
+    EXCEL = 2,
+    WORD = 3,
 }

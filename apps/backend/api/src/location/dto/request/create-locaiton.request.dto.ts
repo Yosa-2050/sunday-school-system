@@ -1,11 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { LocationModel } from "../model/location.model";
-import { IsBoolean, IsDefined, IsEnum, IsString, ValidateNested } from "class-validator";
-import { Type } from "class-transformer";
-import { ReferenceType } from "src/Utilities/enums/reference-type.enum";
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+    IsBoolean,
+    IsDefined,
+    IsEnum,
+    IsString,
+    ValidateNested,
+} from 'class-validator';
+import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
+import { LocationModel } from '../model/location.model';
 
-export class CreateLocationRequestDto{
-
+export class CreateLocationRequestDto {
     @ApiProperty()
     @IsString()
     reference: string;

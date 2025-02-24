@@ -1,5 +1,5 @@
 export enum Continents {
-  AFRICA = "AFRICA",
-  EUROPE = "EUROPE",
-  ASIA = "ASIA",
+    AFRICA = 'AFRICA',
+    EUROPE = 'EUROPE',
+    ASIA = 'ASIA',
 }

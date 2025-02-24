@@ -14,7 +14,9 @@
             ".pnpm-store/**",
             "**/node_modules/**",
             "./packages/ui/index.ts",
-            "./packages/shared/src/index.ts"
+            "./packages/shared/src/index.ts",
+            "**/*.*.spec.ts",
+            "./apps/backend/api/src/main.ts"
         ]
     },
     "formatter": {

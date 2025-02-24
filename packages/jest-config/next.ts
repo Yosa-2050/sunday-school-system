@@ -1,4 +1,4 @@
-import type { Config } from 'jest';
+import { Config } from 'jest';
 import nextJest from 'next/jest';
 import { config as baseConfig } from './base';
 

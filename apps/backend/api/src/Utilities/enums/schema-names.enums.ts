@@ -1,4 +1,4 @@
 export enum SchemaNames {
-  ADDRESS = "ADDRESS",
-  USER = "USER",
+    ADDRESS = 'ADDRESS',
+    USER = 'USER',
 }

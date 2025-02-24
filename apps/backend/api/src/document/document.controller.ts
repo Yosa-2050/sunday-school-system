@@ -1,70 +1,74 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
-  UploadedFile,
-  ParseUUIDPipe,
-} from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { Public } from "src/auth/jwt-public";
-import { DocumentService } from "./document.service";
-import { UpdateDocumentDto } from "./dto/update-document.dto";
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    ParseUUIDPipe,
+    Patch,
+    Post,
+    UploadedFile,
+    UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Express } from 'express';
+import { Public } from 'src/auth/jwt-public';
+import { DocumentService } from './document.service';
+import { UpdateDocumentDto } from './dto/update-document.dto';
 
 @Public()
-@ApiTags("document")
-@Controller("document")
+@ApiTags('document')
+@Controller('document')
 export class DocumentController {
-  constructor(private readonly documentService: DocumentService) {}
+    constructor(private readonly documentService: DocumentService) {}
 
-  @Get()
-  findAll() {
-    return this.documentService.findAll();
-  }
+    @Get()
+    findAll() {
+        return this.documentService.findAll();
+    }
 
-  @Get("reference/:id")
-  findByReference(@Param("id") id: string) {
-    return this.documentService.findDocumentsByReferenceId(id);
-  }
+    @Get('reference/:id')
+    findByReference(@Param('id') id: string) {
+        return this.documentService.findDocumentsByReferenceId(id);
+    }
 
-  @Get(":id")
-  findOne(@Param("id", new ParseUUIDPipe()) id: string) {
-    return this.documentService.findOne(id);
-  }
+    @Get(':id')
+    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.documentService.findOne(id);
+    }
 
-  @Patch(":id")
-  update(
-    @Param("id", new ParseUUIDPipe()) id: string,
-    @Body() updateDocumentDto: UpdateDocumentDto
-  ) {
-    return this.documentService.update(id, updateDocumentDto);
-  }
+    @Patch(':id')
+    update(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() updateDocumentDto: UpdateDocumentDto,
+    ) {
+        return this.documentService.update(id, updateDocumentDto);
+    }
 
-  @Delete(":id")
-  remove(@Param("id", new ParseUUIDPipe()) id: string) {
-    return this.documentService.remove(+id);
-  }
+    @Delete(':id')
+    remove(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.documentService.remove(+id);
+    }
 
-  @Post("upload/:referenceId")
-  @ApiConsumes("multipart/form-data")
-  @ApiBody({
-    schema: {
-      type: "object",
-      properties: {
-        file: {
-          type: "string",
-          format: "binary",
+    @Post('upload/:referenceId')
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
         },
-      },
-    },
-  })
-  @UseInterceptors(FileInterceptor("file"))
-  uploadFile(@UploadedFile() file: Express.Multer.File, @Param('referenceId') id: string) {
-    return this.documentService.create(file, id);
-  }
+    })
+    @UseInterceptors(FileInterceptor('file'))
+    uploadFile(
+        @UploadedFile() file: Express.Multer.File,
+        @Param('referenceId') id: string,
+    ) {
+        return this.documentService.create(file, id);
+    }
 }

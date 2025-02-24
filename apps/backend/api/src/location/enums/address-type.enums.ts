@@ -1,4 +1,4 @@
-export enum AddressType{
-    Home = "Home",
-    Mailing = "Mailing"
+export enum AddressType {
+    Home = 'Home',
+    Mailing = 'Mailing',
 }

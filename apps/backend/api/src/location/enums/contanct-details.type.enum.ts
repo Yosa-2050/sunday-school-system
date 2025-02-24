@@ -1,5 +1,5 @@
 export enum ContactDetailsType {
-  Mobile = "Mobile",
-  Home = "Home",
-  Default = "Default"
+    Mobile = 'Mobile',
+    Home = 'Home',
+    Default = 'Default',
 }

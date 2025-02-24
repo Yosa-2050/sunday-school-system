@@ -1,22 +1,25 @@
-import { BaseModel } from "src/Utilities/entities/base-model.entity";
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { Organization } from "./organization.entity";
-import { EmployeeOrganization } from "./employee-organization.entity";
+import { BaseModel } from 'src/Utilities/entities/base-model.entity';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { EmployeeOrganization } from './employee-organization.entity';
+import { Organization } from './organization.entity';
 
 @Entity()
 export class Branch extends BaseModel {
-  @Column()
-  name: string;
+    @Column()
+    name: string;
 
-  @Column()
-  isMainBranch: boolean;
+    @Column()
+    isMainBranch: boolean;
 
-  @ManyToOne(() => Organization, { lazy: true })
-  organization: Organization;
+    @ManyToOne(() => Organization, { lazy: true })
+    organization: Organization;
 
-  @OneToMany(() => EmployeeOrganization, (employee) => employee.branch, {
-    lazy: true,
-  })
-  employee: EmployeeOrganization[];
-
+    @OneToMany(
+        () => EmployeeOrganization,
+        (employee) => employee.branch,
+        {
+            lazy: true,
+        },
+    )
+    employee: EmployeeOrganization[];
 }

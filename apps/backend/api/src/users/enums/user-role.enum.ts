@@ -1,8 +1,8 @@
 export enum UserRoleType {
-  SECURITY_PERSON = "SECURITY_PERSON",
-  ADMINISTRATOR = "ADMINISTRATOR"
+    JobSeeker = 'JOB_SEEKER',
+    ADMINISTRATOR = 'ADMINISTRATOR',
 }
 export function validateEmployeeRole(value: string): boolean {
-  const validEmployee: string[] = [UserRoleType.SECURITY_PERSON];
-  return validEmployee.includes(value);
+    const validEmployee: string[] = [UserRoleType.JobSeeker];
+    return validEmployee.includes(value);
 }

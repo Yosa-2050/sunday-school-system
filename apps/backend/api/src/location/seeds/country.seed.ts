@@ -1,11 +1,11 @@
-import { Continents } from "../enums/continents.enum";
+import { Continents } from '../enums/continents.enum';
 
 export const countrySeed = [
-  {
-    name: "Ethiopia",
-    code: "ETH",
-    continent: Continents.AFRICA,
-    flag: "",
-    phoneCode: "+251",
-  },
+    {
+        name: 'Ethiopia',
+        code: 'ETH',
+        continent: Continents.AFRICA,
+        flag: '',
+        phoneCode: '+251',
+    },
 ];

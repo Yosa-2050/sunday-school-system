@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Inter } from 'next/font/google';
 import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
-import type { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { generateColors, lightenHexColor } from 'utility/colors';
 
 const inter = Inter({ subsets: ['latin'] });

@@ -1,10 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, IsArray, ValidateNested } from "class-validator";
-import { LocationModel } from "../model/location.model";
-import { IndividualAddressDto } from "./create-address.dto";
-import { Type } from "class-transformer";
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsArray, IsDefined, ValidateNested } from 'class-validator';
+import { LocationModel } from '../model/location.model';
+import { IndividualAddressDto } from './create-address.dto';
 
-export class ContactDetailsRequest{
+export class ContactDetailsRequest {
     @IsDefined()
     @IsArray()
     @ApiProperty({ type: [IndividualAddressDto] })

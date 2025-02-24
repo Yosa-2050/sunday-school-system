@@ -1,4 +1,4 @@
-export enum NotificationChannel{
-    Sms = "Sms",
-    Email = "Email"
+export enum NotificationChannel {
+    Sms = 'Sms',
+    Email = 'Email',
 }

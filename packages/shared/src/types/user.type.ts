@@ -1,5 +1,5 @@
-import type { PermissionType } from '../permission/permission';
-import type { Locale } from '../utilities/locale';
+import { PermissionType } from '../permission/permission';
+import { Locale } from '../utilities/locale';
 
 export type User = {
     accountId: string;

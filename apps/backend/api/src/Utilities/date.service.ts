@@ -1,22 +1,30 @@
-import { Injectable, NotImplementedException } from "@nestjs/common";
-import { CustomDateModel } from "./models/custom-date.model";
-import { CalanderEnum } from "./enums/calander.enum";
+import { Injectable, NotImplementedException } from '@nestjs/common';
+import { CalanderEnum } from './enums/calander.enum';
+import { CustomDateModel } from './models/custom-date.model';
 
 @Injectable()
 export class DateService {
-    getDate(model: CustomDateModel): String {
-        if(model.type == CalanderEnum.Gregorian)
-        {
-            var date = new Date(Date.UTC(model.year, model.month, model.day, model.hour, model.minute, model.second)).toUTCString();
+    getDate(model: CustomDateModel): string {
+        if (model.type === CalanderEnum.Gregorian) {
+            const date = new Date(
+                Date.UTC(
+                    model.year,
+                    model.month,
+                    model.day,
+                    model.hour,
+                    model.minute,
+                    model.second,
+                ),
+            ).toUTCString();
             return date;
         }
         throw new NotImplementedException(model.type);
     }
-    getCurrentDate(){
+    getCurrentDate() {
         return new Date();
     }
 
-    getDateAfterByMinutes(minutes: number){
+    getDateAfterByMinutes(minutes: number) {
         return new Date(this.getCurrentDate().getTime() + minutes * 60000);
     }
 }

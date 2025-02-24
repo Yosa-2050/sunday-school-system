@@ -1,17 +1,17 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { Otp } from "./entities/otp.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { DateService } from "src/Utilities/date.service";
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DateService } from 'src/Utilities/date.service';
+import { Repository } from 'typeorm';
+import { Otp } from './entities/otp.entity';
 
 @Injectable()
 export class OtpService {
     constructor(
         @InjectRepository(Otp) private repo: Repository<Otp>,
-        @Inject(DateService) private dateService: DateService
-      ) {}
+        @Inject(DateService) private dateService: DateService,
+    ) {}
 
-      CreateOtp(reference: string ){
+    CreateOtp(reference: string) {
         const otp = this.repo.create();
         otp.expired = false;
         otp.reference = reference;
@@ -19,26 +19,28 @@ export class OtpService {
         otp.code = this.generateOtp();
         this.repo.save(otp);
         return otp.code;
-      }
+    }
 
-      async validateOtp(reference: string, code: string){
-        var otp = await this.repo.findOneBy({reference, code, expired: false});
-        if(otp){
-            if(this.dateService.getCurrentDate() < otp.expiresAt){
-                otp.expired = true;
-                this.repo.update(otp.id, otp);
-                return true;
-            }
+    async validateOtp(reference: string, code: string) {
+        const otp = await this.repo.findOneBy({
+            reference,
+            code,
+            expired: false,
+        });
+        if (otp && this.dateService.getCurrentDate() < otp.expiresAt) {
+            otp.expired = true;
+            this.repo.update(otp.id, otp);
+            return true;
         }
         return false;
-      }
+    }
 
-      generateOtp(length: number = 6): string {
+    generateOtp(length = 6): string {
         const digits = '0123456789';
         let otp = '';
         for (let i = 0; i < length; i++) {
-          otp += digits[Math.floor(Math.random() * digits.length)];
+            otp += digits[Math.floor(Math.random() * digits.length)];
         }
         return otp;
-      }
+    }
 }

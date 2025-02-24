@@ -1,4 +1,4 @@
-import type { Config } from 'jest';
+import { Config } from 'jest';
 import { config as baseConfig } from './base';
 
 export const config = {

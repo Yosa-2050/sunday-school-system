@@ -1,4 +1,4 @@
 export enum MarriageStatus {
-  Married = "MARRIED",
-  Single = "SINGLE",
+    Married = 'MARRIED',
+    Single = 'SINGLE',
 }

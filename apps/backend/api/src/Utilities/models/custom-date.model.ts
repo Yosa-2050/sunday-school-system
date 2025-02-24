@@ -1,8 +1,8 @@
-import { IsEnum, IsNumber, IsString } from "class-validator";
-import { CalanderEnum } from "../enums/calander.enum";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNumber } from 'class-validator';
+import { CalanderEnum } from '../enums/calander.enum';
 
-export class CustomDateModel{
+export class CustomDateModel {
     @ApiProperty()
     @IsNumber()
     day: number;
@@ -17,7 +17,7 @@ export class CustomDateModel{
 
     @ApiProperty()
     @IsNumber()
-    hour:number;
+    hour: number;
 
     @ApiProperty()
     @IsNumber()
@@ -25,7 +25,7 @@ export class CustomDateModel{
 
     @ApiProperty()
     @IsNumber()
-    second:number;
+    second: number;
 
     @ApiProperty()
     @IsEnum(CalanderEnum)

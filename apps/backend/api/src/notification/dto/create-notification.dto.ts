@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsString } from "class-validator";
-import { NotificationChannel } from "../enums/notification-channel.enum";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsString } from 'class-validator';
+import { NotificationChannel } from '../enums/notification-channel.enum';
 
 export class CreateNotificationDto {
     @ApiProperty()

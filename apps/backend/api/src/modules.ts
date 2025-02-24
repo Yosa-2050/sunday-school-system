@@ -1,9 +1,9 @@
-import { AuthModule } from "./auth/auth.module";
-import { DocumentModule } from "./document/document.module";
-import { AddressModule } from "./location/address.module";
-import { NotificationModule } from "./notification/notification.module";
-import { OrganizationModule } from "./organization/organization.module";
-import { UsersModule } from "./users/users.module";
+import { AuthModule } from './auth/auth.module';
+import { DocumentModule } from './document/document.module';
+import { AddressModule } from './location/address.module';
+import { NotificationModule } from './notification/notification.module';
+import { OrganizationModule } from './organization/organization.module';
+import { UsersModule } from './users/users.module';
 
 export const AppModules = [
     UsersModule,
@@ -11,5 +11,5 @@ export const AppModules = [
     OrganizationModule,
     NotificationModule,
     DocumentModule,
-    AddressModule
+    AddressModule,
 ];
