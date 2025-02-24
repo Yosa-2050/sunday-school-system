@@ -1,0 +1,123 @@
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { User } from "src/users/entities/user.entity";
+import { UsersService } from "src/users/users.service";
+import { UserResponsePayload } from "./dtos/response/user-response-payload.reponse.dto";
+import { LoginBy } from "src/users/enums/login-by.enum";
+import { ValidateResteRequestDto } from "./dtos/request/validate-reset.request.dto";
+import { OtpService } from "src/users/otp.service";
+import { NotificationService } from "src/notification/notification.service";
+import { NotificationChannel } from "src/notification/enums/notification-channel.enum";
+import { UserRoleType } from "src/users/enums/user-role.enum";
+import { OrganizationService } from "src/organization/organization.service";
+
+@Injectable()
+export class AuthService {
+  
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+    private otpService: OtpService,
+    private notificationService: NotificationService,
+    private organizationService: OrganizationService
+  ) {}
+
+  async validateUser(
+    username: string,
+    pass: string,
+    type: LoginBy = LoginBy.EMAIL
+  ) {
+    const user = await this.usersService.validateUser(username, pass, type);
+
+    //check password
+    if (user) {
+      const { password, ...result } = user;
+
+      return result;
+    }
+    return null;
+  }
+
+  async login(user: User) {
+    var details: any;
+    var roles = await this.usersService.getUserRoles(user.id);
+
+    //checking only default roles as the assumption is the user only have one defaul user
+     switch (roles?.find((x) => x.isDefault)?.role) {
+      case UserRoleType.ADMINISTRATOR:
+        break;
+      case UserRoleType.SECURITY_PERSON:
+        details = await this.organizationService.getOrganizationDetail(user.profile.id);
+        
+        break;
+    //   case UserRoleType.PARENT:
+    //     break;
+    //   case UserRoleType.ADMINISTRATOR:
+    //     break;
+    //   case UserRoleType.SCHOOL_ADMINISTRATOR:
+    //     break;
+    //   case UserRoleType.SCHOOL_EMPLOYEE:
+    //   case UserRoleType.SCHOOL_FINANCE_OFFICER:
+    //   case UserRoleType.BRANCH_ADMINISTRATOR:
+    //     break;
+    //   default:
+    //     throw new BadRequestException("Role is not found");
+     }
+    const payload: UserResponsePayload = {
+      email: user.email,
+      sub: user.id,
+      role: roles?.find((x) => x.isDefault)?.role?.toLowerCase(),
+      pwdChangeRequired: user.pwd_change_required,
+      id: user.id,
+      getMyBranchInfo: details,
+    };
+
+    return {
+      data: {
+        role: payload.role,
+        email: payload.email,
+        access_token: payload.pwdChangeRequired ? "" : this.jwtService.sign(payload),
+        pwdChangeRequired: payload.pwdChangeRequired,
+        id: payload.id,
+        details: details,
+      },
+    };
+  }
+
+  async resetPassword (username: string) {
+      const user = await this.usersService.findOneUser(username, LoginBy.EMAIL);
+      if(user)
+      {
+        var otp = await this.otpService.CreateOtp(user.id);
+        await this.notificationService.send({
+          channel: NotificationChannel.Email,
+          content: `Your one time password is ${otp}`,
+          to: user.email,
+          subject: "OTP",
+          reference: user.id
+        });
+      }
+      throw new NotFoundException("User not found");
+  }
+  async validateResetPassword(req: ValidateResteRequestDto) {
+    const user = await this.usersService.findOneUser(req.username, LoginBy.EMAIL);
+    if(user)
+    {
+      var otp = await this.otpService.validateOtp(user.id, req.otp);
+      if(otp)
+      {
+        await this.usersService.UpdatePassword({
+          email: req.username,
+          id: user.id,
+          password: req.password
+        });
+        return {
+          success: "true"
+        }
+      }
+      return new BadRequestException("Invalid Otp");
+    }
+    return new UnauthorizedException();
+  }
+}
+
