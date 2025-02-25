@@ -17,8 +17,11 @@
         "strictBindCallApply": false,
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
         "paths": {
-            "@shega/*": ["./src/*"]
+            "@shega/*": ["src/*"]
         }
     }
 }

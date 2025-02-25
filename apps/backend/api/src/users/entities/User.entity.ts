@@ -5,7 +5,7 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { UserRoles } from './role.entity';
 
 @Entity()
-export class User extends BaseModel {
+class User extends BaseModel {
     @Column()
     email: string;
 
@@ -41,3 +41,5 @@ export class User extends BaseModel {
     )
     roles: UserRoles[];
 }
+
+export { User };
