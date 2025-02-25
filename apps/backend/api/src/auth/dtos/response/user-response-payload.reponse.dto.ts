@@ -1,5 +1,5 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import  { User } from '@shega/users/entities/user.entity';
+import { User } from '@shega/users/entities/user.entity';
 
 export class UserResponsePayload {
     constructor(user: User, getInfo: object) {
