@@ -1,4 +1,4 @@
-import { BaseModel } from 'src/Utilities/entities/base-model.entity';
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import type { EmployeeType } from '../enums/employee-type.enum';
 import { Branch } from './branch.entity';

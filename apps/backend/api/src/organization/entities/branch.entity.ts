@@ -1,4 +1,4 @@
-import { BaseModel } from 'src/Utilities/entities/base-model.entity';
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { EmployeeOrganization } from './employee-organization.entity';
 import { Organization } from './organization.entity';

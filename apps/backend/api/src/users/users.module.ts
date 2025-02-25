@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DateService } from 'src/Utilities/date.service';
-import { PasswordService } from 'src/Utilities/password.service';
-import { DocumentModule } from 'src/document/document.module';
-import { NotificationModule } from 'src/notification/notification.module';
+import { DateService } from '@shega/Utilities/date.service';
+import { PasswordService } from '@shega/Utilities/password.service';
+import { DocumentModule } from '@shega/document/document.module';
+import { NotificationModule } from '@shega/notification/notification.module';
 import { Otp } from './entities/otp.entity';
 import { Profile } from './entities/profile.entity';
 import { UserRoles } from './entities/role.entity';

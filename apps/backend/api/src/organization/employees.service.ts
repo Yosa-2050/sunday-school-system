@@ -4,12 +4,12 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
+import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddressService } from 'src/location/address.service';
-import { validateEmployeeRole } from 'src/users/enums/user-role.enum';
+import { AddressService } from '@shega/location/address.service';
+import { validateEmployeeRole } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ProfileService } from 'src/users/profile.service';
+import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import type { CreateEmployeeDto } from './dto/request/create-employee.dto';

@@ -6,19 +6,19 @@ import {
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JwtService } from '@nestjs/jwt';
-import { NotificationChannel } from 'src/notification/enums/notification-channel.enum';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { NotificationService } from 'src/notification/notification.service';
+import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationService } from 'src/organization/organization.service';
+import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { User } from 'src/users/entities/user.entity';
-import { LoginBy } from 'src/users/enums/login-by.enum';
-import { UserRoleType } from 'src/users/enums/user-role.enum';
+import { User } from '@shega/users/entities/user.entity';
+import { LoginBy } from '@shega/users/enums/login-by.enum';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OtpService } from 'src/users/otp.service';
+import { OtpService } from '@shega/users/otp.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>

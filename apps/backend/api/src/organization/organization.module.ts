@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AddressModule } from 'src/location/address.module';
-import { UsersModule } from 'src/users/users.module';
+import { AddressModule } from '@shega/location/address.module';
+import { UsersModule } from '@shega/users/users.module';
 import { EmployeesController } from './employees.controller';
 import { EmployeesService } from './employees.service';
 import { Branch } from './entities/branch.entity';

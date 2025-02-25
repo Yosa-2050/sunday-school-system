@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/auth/jwt-public';
+import { Public } from '@shega/auth/jwt-public';
 import { AllEnums } from './enums/allEnums';
 
 @Public()

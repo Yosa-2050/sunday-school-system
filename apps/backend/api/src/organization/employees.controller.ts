@@ -8,9 +8,9 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UserContext } from 'src/auth/decorators/user.context.decorator';
-import { Public } from 'src/auth/jwt-public';
-import type { UserDto } from 'src/users/dto/user.dto';
+import { UserContext } from '@shega/auth/decorators/user.context.decorator';
+import { Public } from '@shega/auth/jwt-public';
+import type { UserDto } from '@shega/users/dto/user.dto';
 import type { CreateEmployeeDto } from './dto/request/create-employee.dto';
 import type { UpdateEmployeeDto } from './dto/request/update-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>

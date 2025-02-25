@@ -1,5 +1,5 @@
-import { BaseModel } from 'src/Utilities/entities/base-model.entity';
-import { User } from 'src/users/entities/user.entity';
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { User } from '@shega/users/entities/user.entity';
 import { Column, Entity, OneToOne } from 'typeorm';
 import type { Gender } from '../enums/profile-gender.enum';
 import type { MarriageStatus } from '../enums/profile-marriagestatus.enum';

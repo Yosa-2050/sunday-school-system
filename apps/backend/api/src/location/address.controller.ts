@@ -8,8 +8,8 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
-import type { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
-import { Public } from 'src/auth/jwt-public';
+import type { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from './address.service';
 import type { CreateAddressDto } from './dto/request/create-address.dto';

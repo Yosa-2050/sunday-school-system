@@ -7,7 +7,7 @@ import {
     Patch,
     Post,
 } from '@nestjs/common';
-import { Public } from 'src/auth/jwt-public';
+import { Public } from '@shega/auth/jwt-public';
 import type { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 import type { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
 import type { CreateOrganizationDto } from './dto/request/create-organization.dto';

@@ -1,6 +1,6 @@
-import { BaseModel } from 'src/Utilities/entities/base-model.entity';
-import type { ContactDetails } from 'src/location/entities/contact-details.entity';
-import type { Location } from 'src/location/entities/location.entity';
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import type { ContactDetails } from '@shega/location/entities/contact-details.entity';
+import type { Location } from '@shega/location/entities/location.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Branch } from './branch.entity';
 import { EmployeeOrganization } from './employee-organization.entity';

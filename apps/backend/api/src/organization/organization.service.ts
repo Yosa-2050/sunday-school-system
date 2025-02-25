@@ -5,8 +5,8 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
-import { AddressService } from 'src/location/address.service';
+import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+import { AddressService } from '@shega/location/address.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import type { AddOrganizationBranchDto } from './dto/request/add-branch.dto';

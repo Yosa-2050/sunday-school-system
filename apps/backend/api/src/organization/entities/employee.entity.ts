@@ -1,5 +1,5 @@
-import { BaseModel } from 'src/Utilities/entities/base-model.entity';
-import { Profile } from 'src/users/entities/profile.entity';
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { Profile } from '@shega/users/entities/profile.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()

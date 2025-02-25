@@ -10,9 +10,9 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ContactDetailsRequest } from 'src/location/dto/request/contact-detail.request.dto';
-import { NewProfileDto } from 'src/users/dto/new-profile.dto';
-import { UserRoleType } from 'src/users/enums/user-role.enum';
+import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
+import { NewProfileDto } from '@shega/users/dto/new-profile.dto';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 
 export class CreateEmployeeDto {
     @ApiProperty()

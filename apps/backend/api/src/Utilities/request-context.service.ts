@@ -1,4 +1,4 @@
-// src/request-context/request-context.service.ts
+// @shega/request-context/request-context.service.ts
 
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';

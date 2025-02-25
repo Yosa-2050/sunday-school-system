@@ -1,4 +1,4 @@
-import { BaseModel } from 'src/Utilities/entities/base-model.entity';
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import type { LocationType } from '../enums/location-type.enums';
 import { Country } from './country.entity';

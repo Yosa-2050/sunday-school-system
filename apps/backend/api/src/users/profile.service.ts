@@ -6,10 +6,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import type { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
-import { DocumentService } from 'src/document/document.service';
-import type { UserRoleType } from 'src/users/enums/user-role.enum';
+import { DocumentService } from '@shega/document/document.service';
+import type { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ILike, Repository } from 'typeorm';
 import type { NewProfileDto } from './dto/new-profile.dto';

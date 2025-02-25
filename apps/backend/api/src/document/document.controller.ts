@@ -13,7 +13,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import type { Express } from 'express';
-import { Public } from 'src/auth/jwt-public';
+import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from './document.service';
 import type { UpdateDocumentDto } from './dto/update-document.dto';

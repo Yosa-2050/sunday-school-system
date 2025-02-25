@@ -1,5 +1,5 @@
-import { BaseModel } from 'src/Utilities/entities/base-model.entity';
-import type { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import type { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { Column, Entity } from 'typeorm';
 import type { AddressType } from '../enums/address-type.enums';
 

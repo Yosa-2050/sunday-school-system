@@ -7,7 +7,7 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ContactDetailsRequest } from 'src/location/dto/request/contact-detail.request.dto';
+import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 
 export class CreateOrganizationDto {
     @ApiProperty()

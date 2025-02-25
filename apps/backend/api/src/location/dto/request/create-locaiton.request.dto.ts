@@ -7,7 +7,7 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ReferenceType } from 'src/Utilities/enums/reference-type.enum';
+import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { LocationModel } from '../model/location.model';
 
 export class CreateLocationRequestDto {
