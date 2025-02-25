@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsString, IsUUID } from 'class-validator';
 import { EmployeeType } from '@shega/organization/enums/employee-type.enum';
+import { IsEnum, IsString, IsUUID } from 'class-validator';
 
 export class AssignEmployeeRequestDto {
     @ApiProperty()

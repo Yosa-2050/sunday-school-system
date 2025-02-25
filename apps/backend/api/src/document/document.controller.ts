@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import type { Express } from 'express';
 import { Public } from '@shega/auth/jwt-public';
+import type { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from './document.service';
 import type { UpdateDocumentDto } from './dto/update-document.dto';

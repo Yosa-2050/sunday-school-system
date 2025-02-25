@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 import { Type } from 'class-transformer';
 import {
     IsDefined,
@@ -7,7 +8,6 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 
 export class AddOrganizationBranchDto {
     @ApiProperty()

@@ -4,12 +4,12 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import type { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import type { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
+import type { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ILike, Repository } from 'typeorm';
 import type { NewProfileDto } from './dto/new-profile.dto';

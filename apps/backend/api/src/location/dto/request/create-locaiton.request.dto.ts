@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { Type } from 'class-transformer';
 import {
     IsBoolean,
@@ -7,7 +8,6 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { LocationModel } from '../model/location.model';
 
 export class CreateLocationRequestDto {

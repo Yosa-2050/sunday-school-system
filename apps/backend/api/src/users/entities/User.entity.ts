@@ -1,6 +1,6 @@
-import { Exclude } from 'class-transformer';
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Profile } from '@shega/users/entities/profile.entity';
+import { Exclude } from 'class-transformer';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { UserRoles } from './role.entity';
 

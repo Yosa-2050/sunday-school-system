@@ -1,4 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+import type { ContactType } from '@shega/location/enums/contact-type.enums';
+import { ContactDetailsType } from '@shega/location/enums/contanct-details.type.enum';
 import { Type } from 'class-transformer';
 import {
     IsArray,
@@ -8,9 +11,6 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
-import type { ContactType } from '@shega/location/enums/contact-type.enums';
-import { ContactDetailsType } from '@shega/location/enums/contanct-details.type.enum';
 
 export class IndividualAddressDto {
     @ApiProperty()
