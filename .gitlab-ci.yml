@@ -38,8 +38,4 @@ staging:
   script:
     - pnpm install
     - pnpm run format
-    - export PG_URL="postgresql://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DB"
-    - pnpm run migrate # Use your migration command (e.g., Prisma, Knex, TypeORM)
-    - |
-      curl -X GET "$COOLIFY_URL/api/v1/deploy?tag=@shega/office%2C@shega/api%2C@shega/portal&force=false" \
-           -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN"
+    # - export PG_URL="postgresql://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DB"
