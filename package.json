@@ -11,6 +11,7 @@
         "biome": "biome",
         "lefthook": "lefthook",
         "format": "biome check .",
+        "format:error": "biome check --diagnostic-level=error .",
         "format:fix": "biome check . --write",
         "prepare": "husky",
         "test": "jest",
