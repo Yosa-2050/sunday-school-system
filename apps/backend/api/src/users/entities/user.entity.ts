@@ -4,7 +4,7 @@ import { Exclude } from 'class-transformer';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { UserRoles } from './role.entity';
 
-//log
+//log d
 @Entity()
 class User extends BaseModel {
     @Column()
