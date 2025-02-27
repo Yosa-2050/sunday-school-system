@@ -1,7 +1,8 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity } from 'typeorm';
 import { DeliveryStatus } from '../enums/delivery-status.enum';
-import type { NotificationChannel } from '../enums/notification-channel.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationChannel } from '../enums/notification-channel.enum';
 import { NotificationStatus } from '../enums/notification-status.enum';
 
 @Entity()

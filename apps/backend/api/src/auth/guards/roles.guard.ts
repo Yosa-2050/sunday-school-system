@@ -5,7 +5,8 @@ import {
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Reflector } from '@nestjs/core';
-import type { UserRoleType } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

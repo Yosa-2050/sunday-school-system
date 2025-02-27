@@ -12,9 +12,12 @@ import { ApiTags } from '@nestjs/swagger';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
-import type { CreateUserDto } from './dto/create-user.dto';
-import type { updatePasswordRequest } from './dto/update-password.request.dto';
-import type { UpdateUserDto } from './dto/update-user.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateUserDto } from './dto/create-user.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { updatePasswordRequest } from './dto/update-password.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginBy } from './enums/login-by.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from './users.service';

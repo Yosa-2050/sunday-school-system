@@ -1,33 +1,36 @@
-import {
-    BadRequestException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
-import { validateEmployeeRole } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/correctness/noUnusedImports: <explanation>
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import type { CreateEmployeeDto } from './dto/request/create-employee.dto';
-import type { UpdateEmployeeDto } from './dto/request/update-employee.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateEmployeeDto } from './dto/request/create-employee.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
+import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
+// biome-ignore lint/correctness/noUnusedImports: <explanation>
+import { EmployeeType } from './enums/employee-type.enum';
 
 @Injectable()
 export class EmployeesService {
     constructor(
         @InjectRepository(Employee) private employeeRepo: Repository<Employee>,
+        @InjectRepository(EmployeeOrganization)
+        private employeeOrgRepo: Repository<EmployeeOrganization>,
         private profileService: ProfileService,
         private addressService: AddressService,
     ) {}
-
     async CreateEmployee(dto: CreateEmployeeDto) {
-        if (!validateEmployeeRole(dto.role)) {
-            throw new BadRequestException('This Role Can Not Be Created');
-        }
+        //if (!validateEmployeeRole(dto.role)) {
+        //  throw new BadRequestException('This Role Can Not Be Created');
+        // }
 
         const profile = await this.profileService.createNewUserProfile(
             dto.email,

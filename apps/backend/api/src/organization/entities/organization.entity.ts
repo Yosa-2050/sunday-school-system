@@ -1,6 +1,8 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
-import type { ContactDetails } from '@shega/location/entities/contact-details.entity';
-import type { Location } from '@shega/location/entities/location.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ContactDetails } from '@shega/location/entities/contact-details.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Location } from '@shega/location/entities/location.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Branch } from './branch.entity';
 import { EmployeeOrganization } from './employee-organization.entity';
@@ -10,13 +12,13 @@ export class Organization extends BaseModel {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     description: string;
 
-    @Column()
+    @Column({ nullable: true })
     tinNumber: string;
 
-    @Column()
+    @Column({ nullable: true })
     displayName: string;
 
     @OneToMany(
@@ -29,7 +31,7 @@ export class Organization extends BaseModel {
     )
     branches: Branch[];
 
-    @Column({ default: true })
+    @Column({ default: false })
     hasBranches: boolean;
 
     @OneToMany(

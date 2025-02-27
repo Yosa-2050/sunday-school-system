@@ -1,9 +1,12 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { User } from '@shega/users/entities/user.entity';
 import { Column, Entity, OneToOne } from 'typeorm';
-import type { Gender } from '../enums/profile-gender.enum';
-import type { MarriageStatus } from '../enums/profile-marriagestatus.enum';
-import type { Title } from '../enums/profile-title.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Gender } from '../enums/profile-gender.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { MarriageStatus } from '../enums/profile-marriagestatus.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Title } from '../enums/profile-title.enum';
 
 @Entity()
 export class Profile extends BaseModel {
@@ -44,7 +47,7 @@ export class Profile extends BaseModel {
     @Column({ nullable: true })
     title: Title;
 
-    @Column()
+    @Column({ nullable: true })
     phoneNumber: string;
 
     @Column({ nullable: true })

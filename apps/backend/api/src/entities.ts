@@ -1,4 +1,5 @@
 import { Document } from './document/entities/document.entity';
+import { Jobs } from './job_portal/entities/jobs.entity';
 import { LocationInfo } from './location/entities/LocationInfo.entity';
 import { ContactDetails } from './location/entities/contact-details.entity';
 import { Country } from './location/entities/country.entity';
@@ -28,4 +29,5 @@ export const AppEntities = [
     Country,
     LocationInfo,
     Notification,
+    Jobs,
 ];

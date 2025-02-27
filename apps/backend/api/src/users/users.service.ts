@@ -3,9 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PasswordService } from '@shega/Utilities/password.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import type { CreateUserDto } from './dto/create-user.dto';
-import type { updatePasswordRequest } from './dto/update-password.request.dto';
-import type { UpdateUserDto } from './dto/update-user.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateUserDto } from './dto/create-user.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { updatePasswordRequest } from './dto/update-password.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { LoginBy } from './enums/login-by.enum';
@@ -32,7 +35,7 @@ export class UsersService {
         }
         const user = this.userRepo.create(createUserDto);
         const roles = this.userRoleRepo.create();
-        roles.role = UserRoleType.ADMINISTRATOR;
+        roles.role = UserRoleType.Administrator;
         user.roles = [roles];
         roles.isDefault = true;
         user.password = await this.passwordService.hashPassword(user.password);

@@ -1,36 +1,15 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Post,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { UserContext } from '@shega/auth/decorators/user.context.decorator';
-import { Public } from '@shega/auth/jwt-public';
-import type { UserDto } from '@shega/users/dto/user.dto';
-import type { CreateEmployeeDto } from './dto/request/create-employee.dto';
-import type { UpdateEmployeeDto } from './dto/request/update-employee.dto';
+import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmployeesService } from './employees.service';
 
-// @ApiBearerAuth()
-@Public()
+@ApiBearerAuth()
 @ApiTags('employees')
 @Controller('employees')
 export class EmployeesController {
     constructor(private readonly employeesService: EmployeesService) {}
-
-    //@Roles(UserRoleType.ADMINISTRATOR)
-    @Post('createEmployee')
-    createEmployee(
-        @Body() createEmployeeDto: CreateEmployeeDto,
-        @UserContext() user: UserDto,
-    ) {
-        //return this.employeesService.CreateEmployee(createEmployeeDto);
-    }
 
     @Get('me')
     getMyInformation() {

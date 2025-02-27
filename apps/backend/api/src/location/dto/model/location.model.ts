@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import type { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
-import type { AddressType } from '@shega/location/enums/address-type.enums';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddressType } from '@shega/location/enums/address-type.enums';
 import { IsBoolean, IsString } from 'class-validator';
 
 export class LocationModel {

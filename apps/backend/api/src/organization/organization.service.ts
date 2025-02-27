@@ -7,16 +7,28 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { AddressService } from '@shega/location/address.service';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationService } from '@shega/notification/notification.service';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
+import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import type { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
-import type { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
-import type { CreateOrganizationDto } from './dto/request/create-organization.dto';
-import type { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateOrganizationEmployeeDto } from './dto/request/create-employee.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateOrganizationDto } from './dto/request/create-organization.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 import { EmployeesService } from './employees.service';
 import { Branch } from './entities/branch.entity';
 import { EmployeeOrganization } from './entities/employee-organization.entity';
+import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
+import { EmployeeType } from './enums/employee-type.enum';
 
 @Injectable()
 export class OrganizationService {
@@ -25,9 +37,14 @@ export class OrganizationService {
         private organizationRepo: Repository<Organization>,
         @InjectRepository(EmployeeOrganization)
         private employeeOrgRepo: Repository<EmployeeOrganization>,
+        @InjectRepository(Employee)
+        private employeeRepo: Repository<Employee>,
         @InjectRepository(Branch) private branchRepo: Repository<Branch>,
         @Inject(EmployeesService) private employeeService: EmployeesService,
         @Inject(AddressService) private addressService: AddressService,
+        @Inject(ProfileService) private profileService: ProfileService,
+        @Inject(NotificationService)
+        private notificationService: NotificationService,
     ) {}
 
     async create(request: CreateOrganizationDto) {
@@ -73,6 +90,16 @@ export class OrganizationService {
             isActive: true,
             deletedAt: null,
         });
+    }
+
+    async getOrganizationById(organizationId: string) {
+        const organization = await this.organizationRepo.findOneBy({
+            id: organizationId,
+        });
+        if (!organization) {
+            throw new NotFoundException('Organization not found');
+        }
+        return organization;
     }
 
     async findOne(id: string) {
@@ -172,5 +199,48 @@ export class OrganizationService {
             organizationId: organization?.id,
             branchId: branch?.id,
         };
+    }
+
+    async CreateEmployeeDDE(dto: CreateOrganizationEmployeeDto) {
+        const organization = await this.organizationRepo.findOneBy({
+            name: dto.organizationName,
+        });
+        if (organization) {
+            throw new NotFoundException(
+                `Organization with name '${dto.organizationName}' exists`,
+            );
+        }
+        //const organization = await this.organizationRepo.create({name: dto.organizationName});
+        const profile = await this.profileService.createNewUserProfileWithName(
+            dto.email,
+            UserRoleType.WorkProvider,
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            false,
+        );
+
+        const model = this.employeeRepo.create();
+        model.profile = profile;
+        const employee = model;
+        const empOrg = await this.employeeOrgRepo.create();
+        empOrg.employee = employee;
+        empOrg.type = EmployeeType.Administrator;
+        empOrg.organization = await this.organizationRepo.create({
+            name: dto.organizationName,
+        });
+
+        const saved = await this.employeeOrgRepo.save(empOrg);
+        if (saved?.id) {
+            await this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: `please login to your account using your email ${dto.email} and password 12345678. Then reset your password.`,
+                to: dto.email,
+                subject: 'Shega jobs',
+                reference: saved.id,
+            });
+            return saved;
+        }
+        return saved;
     }
 }

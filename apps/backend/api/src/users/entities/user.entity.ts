@@ -1,10 +1,9 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { Profile } from '@shega/users/entities/profile.entity';
 import { Exclude } from 'class-transformer';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
-import { Profile } from './profile.entity';
 import { UserRoles } from './role.entity';
 
-//log d
 @Entity()
 class User extends BaseModel {
     @Column()

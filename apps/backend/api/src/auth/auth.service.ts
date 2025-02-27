@@ -56,7 +56,7 @@ export class AuthService {
 
         //checking only default roles as the assumption is the user only have one defaul user
         switch (roles?.find((x) => x.isDefault)?.role) {
-            case UserRoleType.ADMINISTRATOR:
+            case UserRoleType.Administrator:
                 break;
             case UserRoleType.JobSeeker:
                 //details = await this.organizationService.getOrganizationDetail(user.profile.id);
