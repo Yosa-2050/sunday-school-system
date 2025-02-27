@@ -6,7 +6,7 @@ export default async function HomePage() {
     const t = await getTranslations();
     const users = await fetchUsers();
     return (
-        <main>
+        <main className="bg-red-400">
             {JSON.stringify(users)}
             <Text>{t('header.title')}</Text>
         </main>

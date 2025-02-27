@@ -8,6 +8,7 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
     productionBrowserSourceMaps: false,
     reactStrictMode: true,
+
     experimental: {
         optimizePackageImports: [
             '@mantine/core',

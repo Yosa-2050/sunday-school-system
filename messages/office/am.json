@@ -1,4 +1,24 @@
 {
+    "jobPortal": {
+        "dashboard": "Dashboard",
+        "job-seekers": "Job Seekers",
+        "profile": "Profile",
+        "resume-builder": "Resume Builder",
+        "applied-jobs": "Applied Jobs",
+        "saved-jobs": "Saved Jobs",
+        "notifications": "Notifications",
+        "employers": "Employers",
+        "company-profile": "Company Profile",
+        "job-postings": "Job Postings",
+        "applicants": "Applicants",
+        "shortlisted-candidates": "Shortlisted Candidates",
+        "reports": "Reports",
+        "job-explorer": "Job Explorer",
+        "messages": "Messages",
+        "analytics": "Analytics",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
     "header": {
         "title": "የአስተዳደር �ዳሽቦርድ"
     },

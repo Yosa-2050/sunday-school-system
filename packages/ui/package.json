@@ -3,10 +3,8 @@
     "version": "0.0.0",
     "private": true,
     "type": "module",
-    "main": "./index.ts",
-    "types": "./index.ts",
     "exports": {
-        ".": "./src/index.ts"
+        ".": ["./src/index.ts"]
     },
     "scripts": {
         "generate:component": "turbo gen react-component"

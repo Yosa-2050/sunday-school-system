@@ -1,23 +1,16 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./base.json",
     "compilerOptions": {
         "plugins": [{ "name": "next" }],
-        "declaration": true,
-        "declarationMap": true,
-        "esModuleInterop": true,
-        "incremental": false,
-        "isolatedModules": true,
-        "lib": ["es2022", "DOM", "DOM.Iterable", "ESNext"],
-        "moduleDetection": "force",
-        "noUncheckedIndexedAccess": true,
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "target": "ES2022",
         "module": "ESNext",
         "moduleResolution": "Bundler",
         "allowJs": true,
-        "jsx": "react-jsx",
-        "noEmit": true
+        "jsx": "preserve",
+        "noEmit": true,
+        "baseUrl": ".",
+        "paths": {
+            "@shega/ui/*": ["packages/ui/src/*"]
+        }
     }
 }

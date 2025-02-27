@@ -1,0 +1,42 @@
+.groupLabel {
+    @apply uppercase;
+    color: rgb(var(--primary-color-text) / 0.7);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.menuItem {
+    @apply flex cursor-pointer items-center  rounded-md px-2 py-1 transition duration-300 ease-in-out;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    min-height: 32px;
+}
+.menuItem:hover,
+.menuItem.active {
+    @apply bg-primary-1  relative text-gray-900;
+}
+
+.active .activeIndicator {
+    content: "";
+    top: 6px;
+    bottom: 6px;
+    position: absolute;
+
+    left: 4px;
+    z-index: 1;
+    width: 3px;
+    border-radius: 3px;
+}
+.menuItemContainer {
+    content: "";
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    z-index: 1;
+
+    background: var(--primary-color-2);
+}
