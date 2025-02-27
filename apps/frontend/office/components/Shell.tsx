@@ -7,11 +7,11 @@ import { Notifications } from '@mantine/notifications';
 import { Link } from '@/i18n/routing';
 import { IconBell } from '@tabler/icons-react';
 import Image from 'next/image';
-import UserProfile from './UserProfile';
-import { SideMenu } from './side-menu/SideMenu';
-import { Menus } from './Menus';
 import Logo from '../public/logo.svg';
 import LocaleSwitcherSelect from './LocaleSwitcher';
+import { Menus } from './Menus';
+import UserProfile from './UserProfile';
+import { SideMenu } from './side-menu/SideMenu';
 
 interface ShellProps {
     children: React.ReactNode;

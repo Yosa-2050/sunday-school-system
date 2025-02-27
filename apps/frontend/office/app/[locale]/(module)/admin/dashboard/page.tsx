@@ -1,9 +1,6 @@
 'use client';
 
-import {
-    Text,
-    Title
-} from '@mantine/core';
+import { Text, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUsers } from 'api/get-users';
@@ -18,13 +15,12 @@ export default function NavbarSection() {
         queryFn: fetchUsers,
     });
 
-    return (<>
-        
-                <Title order={1} mb="md">
-                    {t('main.welcome')}
-                </Title>
-                <Text>{t('main.description')}</Text>
-    </>
-            
+    return (
+        <>
+            <Title order={1} mb="md">
+                {t('main.welcome')}
+            </Title>
+            <Text>{t('main.description')}</Text>
+        </>
     );
 }
