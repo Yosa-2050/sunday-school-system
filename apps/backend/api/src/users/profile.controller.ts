@@ -21,9 +21,12 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
-import type { Express } from 'express';
-import type { NewProfileDto } from './dto/new-profile.dto';
-import type { UpdateProfileDto } from './dto/update-profile.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Express } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NewProfileDto } from './dto/new-profile.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateProfileDto } from './dto/update-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
 

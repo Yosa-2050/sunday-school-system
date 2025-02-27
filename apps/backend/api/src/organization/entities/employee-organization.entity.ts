@@ -1,16 +1,25 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import type { EmployeeType } from '../enums/employee-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { EmployeeType } from '../enums/employee-type.enum';
 import { Branch } from './branch.entity';
 import { Employee } from './employee.entity';
 import { Organization } from './organization.entity';
 
 @Entity()
 export class EmployeeOrganization extends BaseModel {
-    @ManyToOne(() => Organization, { lazy: true, nullable: false })
+    @ManyToOne(() => Organization, {
+        lazy: true,
+        nullable: false,
+        cascade: ['insert'],
+    })
     organization: Organization;
 
-    @ManyToOne(() => Employee, { eager: true, nullable: false })
+    @ManyToOne(() => Employee, {
+        eager: true,
+        nullable: false,
+        cascade: ['insert'],
+    })
     employee: Employee;
 
     @Column({ nullable: false })

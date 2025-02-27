@@ -1,6 +1,7 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { CalanderEnum } from './enums/calander.enum';
-import type { CustomDateModel } from './models/custom-date.model';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CustomDateModel } from './models/custom-date.model';
 
 @Injectable()
 export class DateService {

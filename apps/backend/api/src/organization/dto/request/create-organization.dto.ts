@@ -5,6 +5,7 @@ import {
     IsDefined,
     IsNotEmptyObject,
     IsObject,
+    IsOptional,
     IsString,
     ValidateNested,
 } from 'class-validator';
@@ -16,19 +17,23 @@ export class CreateOrganizationDto {
 
     @ApiProperty()
     @IsString()
-    description: string;
+    @IsOptional()
+    description?: string;
 
     @ApiProperty()
     @IsString()
-    tinNumber: string;
+    @IsOptional()
+    tinNumber?: string;
 
     @ApiProperty()
     @IsString()
-    displayName: string;
+    @IsOptional()
+    displayName?: string;
 
     @ApiProperty()
     @IsString()
-    mainBranchName: string;
+    @IsOptional()
+    mainBranchName?: string;
 
     @ApiProperty()
     @IsDefined()
@@ -36,5 +41,6 @@ export class CreateOrganizationDto {
     @IsObject()
     @ValidateNested()
     @Type(() => ContactDetailsRequest)
-    contactDetails: ContactDetailsRequest;
+    @IsOptional()
+    contactDetails?: ContactDetailsRequest;
 }

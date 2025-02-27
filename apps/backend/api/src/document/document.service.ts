@@ -1,9 +1,11 @@
 import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import type { Express } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import type { UpdateDocumentDto } from './dto/update-document.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Document } from './entities/document.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import {

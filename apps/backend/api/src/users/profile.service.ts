@@ -6,13 +6,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
-import type { UserRoleType } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
-import type { Express } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ILike, Repository } from 'typeorm';
-import type { NewProfileDto } from './dto/new-profile.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NewProfileDto } from './dto/new-profile.dto';
 import { Profile } from './entities/profile.entity';
 
 @Injectable()
@@ -38,6 +41,31 @@ export class ProfileService {
         );
         if (user) {
             const profile = this.repo.create(dto);
+            profile.user = user;
+            if (saveProfile) {
+                return this.repo.save(profile);
+            }
+            return profile;
+        }
+
+        throw new BadRequestException('No user');
+    }
+
+    async createNewUserProfileWithName(
+        email: string,
+        role: UserRoleType,
+        firstName: string,
+        middleName: string,
+        lastName: string,
+        saveProfile = true,
+    ) {
+        const user = await this.userService.createFromProfile(email, role, '');
+        if (user) {
+            const profile = this.repo.create({
+                firstName,
+                middleName,
+                lastName,
+            });
             profile.user = user;
             if (saveProfile) {
                 return this.repo.save(profile);

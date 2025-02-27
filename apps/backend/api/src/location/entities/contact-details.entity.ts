@@ -1,8 +1,11 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
-import type { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { Column, Entity } from 'typeorm';
-import type { ContactType } from '../enums/contact-type.enums';
-import type { ContactDetailsType } from '../enums/contanct-details.type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ContactType } from '../enums/contact-type.enums';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ContactDetailsType } from '../enums/contanct-details.type.enum';
 
 @Entity()
 export class ContactDetails extends BaseModel {

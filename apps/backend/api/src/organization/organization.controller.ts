@@ -8,10 +8,16 @@ import {
     Post,
 } from '@nestjs/common';
 import { Public } from '@shega/auth/jwt-public';
-import type { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
-import type { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
-import type { CreateOrganizationDto } from './dto/request/create-organization.dto';
-import type { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateOrganizationEmployeeDto } from './dto/request/create-employee.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateOrganizationDto } from './dto/request/create-organization.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
 
@@ -19,6 +25,11 @@ import { OrganizationService } from './organization.service';
 @Controller('organization')
 export class OrganizationController {
     constructor(private readonly organizationService: OrganizationService) {}
+
+    @Post('createEmployee')
+    createEmployee(@Body() dto: CreateOrganizationEmployeeDto) {
+        return this.organizationService.CreateEmployeeDDE(dto);
+    }
 
     @Post()
     create(@Body() createOrganizationDto: CreateOrganizationDto) {

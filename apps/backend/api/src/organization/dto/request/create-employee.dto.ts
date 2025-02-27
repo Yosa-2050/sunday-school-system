@@ -45,3 +45,27 @@ export class CreateEmployeeDto {
     @Type(() => ContactDetailsRequest)
     contactDetails: ContactDetailsRequest;
 }
+
+export class CreateOrganizationEmployeeDto {
+    @ApiProperty()
+    @IsString()
+    organizationName: string;
+
+    @ApiProperty()
+    @IsString()
+    firstName: string;
+
+    @ApiProperty()
+    @IsString()
+    middleName: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    lastName: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsEmail()
+    email: string;
+}

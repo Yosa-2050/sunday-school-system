@@ -2,7 +2,8 @@
 
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import type { Request } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Request } from 'express';
 // import { CurrentUser } from './current-user.utility';
 
 @Injectable({ scope: Scope.REQUEST })
