@@ -16,7 +16,8 @@
         "job-explorer": "Job Explorer",
         "messages": "Messages",
         "analytics": "Analytics",
-        "settings": "Settings"
+        "settings": "Settings",
+        "logout": "Logout"
     },
     "header": {
         "title": "Admin Dashboard"

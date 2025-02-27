@@ -1,13 +1,13 @@
+import type { User } from '@shega/shared';
+import { AuthProvider } from '@shega/ui';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Inter } from 'next/font/google';
 import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
-import { Suspense, type ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import { generateColors, lightenHexColor } from 'utility/colors';
-import {AuthProvider} from '@shega/ui'
-import type { User } from '@shega/shared';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 type Props = {
     children: ReactNode;
     params: Promise<{ locale: string }>;
-  };
+};
 
 //greenish theme
 const defaultTheme = '#22C55E';
@@ -28,8 +28,7 @@ export default async function RootLayout(props: Props) {
     const { locale } = params;
     const { children } = props;
 
-
-      const messages = await getMessages();
+    const messages = await getMessages();
     const colorArray = generateColors(defaultTheme);
     const styles: Record<string, string> = {
         '--primary-color-default': defaultTheme,
@@ -40,30 +39,33 @@ export default async function RootLayout(props: Props) {
     colorArray.forEach((color, index) => {
         styles[`--primary-color-${index}`] = color;
     });
-    const user:User = {
+    const user: User = {
         accountId: '',
         userId: '',
-        firstName: {en: 'test'},
-        lastName: {en: 'test'},
+        firstName: { en: 'test' },
+        lastName: { en: 'test' },
         isPhoneVerified: false,
         isEmailVerified: false,
         preferredLanguage: '',
-        permissions: []
-    }
+        permissions: [],
+    };
 
     return (
-    <html lang={locale}>
-        <body suppressHydrationWarning={true}>
-            <QueryProviders>
-                <NextIntlClientProvider messages={messages}>
-                  <MantineThemeProvider color={defaultTheme} radius={'8px'}>
-                    <AuthProvider user={user}>
-                      <Suspense>{children}</Suspense>
-                    </AuthProvider>
-                  </MantineThemeProvider>
-                </NextIntlClientProvider>
-            </QueryProviders>
-        </body>
-      </html>
+        <html lang={locale}>
+            <body suppressHydrationWarning={true}>
+                <QueryProviders>
+                    <NextIntlClientProvider messages={messages}>
+                        <MantineThemeProvider
+                            color={defaultTheme}
+                            radius={'8px'}
+                        >
+                            <AuthProvider user={user}>
+                                <Suspense>{children}</Suspense>
+                            </AuthProvider>
+                        </MantineThemeProvider>
+                    </NextIntlClientProvider>
+                </QueryProviders>
+            </body>
+        </html>
     );
 }

@@ -1,9 +1,18 @@
-import { Container, Paper, Title, Text, TextInput, Button, Group, Anchor } from '@mantine/core';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+    Anchor,
+    Button,
+    Container,
+    Group,
+    Paper,
+    Text,
+    TextInput,
+    Title,
+} from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 const forgetPasswordSchema = z.object({
     email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -25,7 +34,11 @@ export default function ForgetPassword() {
         },
     });
 
-    const mutation = useMutation<ForgetPasswordFormValues, Error, ForgetPasswordFormValues>({
+    const mutation = useMutation<
+        ForgetPasswordFormValues,
+        Error,
+        ForgetPasswordFormValues
+    >({
         mutationFn: async (data: ForgetPasswordFormValues) => {
             await new Promise((resolve) => setTimeout(resolve, 1000));
             return data;
@@ -59,7 +72,12 @@ export default function ForgetPassword() {
                         </Anchor>
                     </Group>
 
-                    <Button fullWidth mt="xl" type="submit" loading={mutation.isPending}>
+                    <Button
+                        fullWidth
+                        mt="xl"
+                        type="submit"
+                        loading={mutation.isPending}
+                    >
                         {t('forgotPassword.sendResetLink')}
                     </Button>
                 </form>

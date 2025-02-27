@@ -1,10 +1,22 @@
-'use client'
+'use client';
 
-import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { TextInput, PasswordInput, Button,  Title, Alert, Stack, Box, Anchor, Group, Card, Checkbox } from '@mantine/core';
-import { IconAlertCircle } from '@tabler/icons-react';
 import { useRouter } from '@/i18n/routing';
+import {
+    Alert,
+    Anchor,
+    Box,
+    Button,
+    Card,
+    Checkbox,
+    Group,
+    PasswordInput,
+    Stack,
+    TextInput,
+    Title,
+} from '@mantine/core';
+import { IconAlertCircle } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -41,50 +53,64 @@ const Login = () => {
 
     return (
         <Box className="flex items-center justify-center min-h-screen w-full bg-gray-100 p-4">
-                    <Card shadow="sm" padding="lg" radius="md" className="w-full max-w-md bg-white">
-                        <Stack>
-                <Title ta="center" >
-                    {t('title')}
-                </Title>
+            <Card
+                shadow="sm"
+                padding="lg"
+                radius="md"
+                className="w-full max-w-md bg-white"
+            >
+                <Stack>
+                    <Title ta="center">{t('title')}</Title>
 
-                {error && (
-                    <Alert icon={<IconAlertCircle size={16} />} color="red" mb="md">
-                        {error}
-                    </Alert>
-                )}
+                    {error && (
+                        <Alert
+                            icon={<IconAlertCircle size={16} />}
+                            color="red"
+                            mb="md"
+                        >
+                            {error}
+                        </Alert>
+                    )}
 
-                <form onSubmit={handleSubmit}>
-                    <Stack gap="md">
-                        <TextInput
-                            label={t('emailLabel')}
-                            placeholder={t('emailPlaceholder')}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <PasswordInput
-                            label={t('passwordLabel')}
-                            placeholder={t('passwordPlaceholder')}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                        <Group justify="space-between" mt={'xl'}>
-                            <Checkbox title='Remember me' label={t('rememberMe')}/>
-                            <Anchor size="sm" onClick={() => router.push('/auth/forgot-password')} className="cursor-pointer">
-                                {t('forgotPassword')}
-                            </Anchor>
-                        </Group>
-                        <Button type="submit" fullWidth className='mt-auto'>
-                            {t('loginButton')}
-                        </Button>
-                    </Stack>
-
-               
-                </form>
-                          </Stack>
-                      </Card>
-                  </Box>
+                    <form onSubmit={handleSubmit}>
+                        <Stack gap="md">
+                            <TextInput
+                                label={t('emailLabel')}
+                                placeholder={t('emailPlaceholder')}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                            <PasswordInput
+                                label={t('passwordLabel')}
+                                placeholder={t('passwordPlaceholder')}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <Group justify="space-between" mt={'xl'}>
+                                <Checkbox
+                                    title="Remember me"
+                                    label={t('rememberMe')}
+                                />
+                                <Anchor
+                                    size="sm"
+                                    onClick={() =>
+                                        router.push('/auth/forgot-password')
+                                    }
+                                    className="cursor-pointer"
+                                >
+                                    {t('forgotPassword')}
+                                </Anchor>
+                            </Group>
+                            <Button type="submit" fullWidth className="mt-auto">
+                                {t('loginButton')}
+                            </Button>
+                        </Stack>
+                    </form>
+                </Stack>
+            </Card>
+        </Box>
     );
 };
 
