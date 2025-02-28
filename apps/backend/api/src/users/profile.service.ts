@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
+import { PasswordService } from '@shega/Utilities/password.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
@@ -18,8 +20,6 @@ import { ILike, Repository } from 'typeorm';
 import { NewProfileDto } from './dto/new-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { LoginBy } from './enums/login-by.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { PasswordService } from '@shega/Utilities/password.service';
 
 @Injectable()
 export class ProfileService {

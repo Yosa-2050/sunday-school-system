@@ -20,11 +20,11 @@ import { OtpService } from '@shega/users/otp.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { PasswordResetDto } from './dtos/request/username.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UserResponsePayload } from './dtos/response/user-response-payload.reponse.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { PasswordResetDto } from './dtos/request/username.dto';
 
 @Injectable()
 export class AuthService {

@@ -21,6 +21,8 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PasswordService } from '@shega/Utilities/password.service';
 import { Public } from '@shega/auth/jwt-public';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -35,8 +37,6 @@ import { NewProfileDto } from './dto/new-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { PasswordService } from '@shega/Utilities/password.service';
 
 @ApiBearerAuth()
 @ApiTags('Profile')
