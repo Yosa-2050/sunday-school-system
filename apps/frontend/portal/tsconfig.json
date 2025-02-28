@@ -8,7 +8,6 @@
         ],
         "allowJs": true,
         "module": "esnext",
-        "outDir": "dist",
         "baseUrl": ".",
         "jsx": "preserve",
         "paths": {
@@ -17,7 +16,11 @@
             "@/hooks/*": ["./hooks/*"],
             "@/i18n/*": ["i18n/*"],
             "@/lib/*": ["./lib/*"],
-            "@/models/*": ["models/*"]
+            "@/models/*": ["models/*"],
+            "@shega/ui": ["../../../packages/ui/src/index.ts"],
+            "@shega/ui/*": ["../../../packages/ui/src/*"],
+            "@shega/shared": ["../../../packages/shared/src/index.ts"],
+            "@shega/shared/*": ["../../../packages/shared/src/*"]
         },
         "noEmit": true
     },
@@ -26,7 +29,8 @@
         "next.config.js",
         "**/*.ts",
         "**/*.tsx",
-        ".next/types/**/*.ts"
+        ".next/types/**/*.ts",
+        "tailwind.config.ts"
     ],
     "exclude": ["node_modules", "dist"]
 }

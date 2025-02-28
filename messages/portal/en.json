@@ -1,4 +1,37 @@
 {
+    "auth": {
+        "OTP": {
+            "title": "Enter OTP",
+            "otpLabel": "One Time Password",
+            "otpPlaceholder": "Enter your OTP",
+            "verifyButton": "Verify"
+        },
+        "pageWrapper": {
+            "shegaobs": "Shega Jobs"
+        },
+        "login": {
+            "title": "Login",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Enter your email",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "Enter your password",
+            "forgotPassword": "Forgot Password?",
+            "loginButton": "Login",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign up",
+            "loginFailed": "Login failed. Please try again.",
+            "rememberMe": "Remember me"
+        },
+        "forgotPassword": {
+            "title": "Forgot your password?",
+            "subtitle": "Enter your email address and we'll send you a link to reset your password.",
+            "emailLabel": "Email",
+            "emailPlaceholder": "you@example.com",
+            "backToLogin": "Back to login",
+            "sendResetLink": "Send Reset Link"
+        }
+    },
+
     "header": {
         "title": "Job Portal",
         "welcomeMessage": "Welcome to the Job Portal"

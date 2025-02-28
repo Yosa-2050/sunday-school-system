@@ -1,12 +1,10 @@
 {
-    "extends": "@shega/typescript-config/react-library.json",
+    "extends": "@shega/typescript-config/nextjs.json",
+    "plugins": [{ "name": "next" }],
     "compilerOptions": {
-        "plugins": [{ "name": "next" }],
-        "allowJs": true,
-        "module": "es2015",
-        "outDir": "dist",
-        "baseUrl": "."
+        "baseUrl": ".",
+        "paths": {}
     },
-    "include": ["src", "index.ts"],
-    "exclude": ["node_modules", "dist", "build"]
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
 }
