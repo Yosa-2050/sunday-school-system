@@ -21,8 +21,14 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '@shega/auth/jwt-public';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateUserDto } from './dto/create-user.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NewProfileDto } from './dto/new-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -34,7 +40,36 @@ import { ProfileService } from './profile.service';
 @ApiTags('Profile')
 @Controller('profile')
 export class ProfileController {
-    constructor(private profileService: ProfileService) {}
+    constructor(
+        private profileService: ProfileService,
+        private notificationService: NotificationService,
+    ) {}
+
+    @Public()
+    @Post('/new')
+    async create(@Body() dto: CreateUserDto) {
+        const user = await this.profileService.createNewUserProfileWithName(
+            dto.email,
+            dto.role,
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            true,
+        );
+
+        if (user?.id) {
+            await this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: `please login to your account using your email ${dto.email} and password 12345678. Then reset your password.`,
+                to: dto.email,
+                subject: 'Shega jobs',
+                reference: user.id,
+            });
+            return user;
+        }
+
+        throw new BadRequestException('Unable to create user');
+    }
 
     @ApiOperation({ deprecated: true })
     @Post('/new/:userId')
