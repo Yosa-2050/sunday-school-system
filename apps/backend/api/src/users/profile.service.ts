@@ -18,6 +18,8 @@ import { ILike, Repository } from 'typeorm';
 import { NewProfileDto } from './dto/new-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { LoginBy } from './enums/login-by.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PasswordService } from '@shega/Utilities/password.service';
 
 @Injectable()
 export class ProfileService {
@@ -25,6 +27,7 @@ export class ProfileService {
         @InjectRepository(Profile) private repo: Repository<Profile>,
         private userService: UsersService,
         private documentService: DocumentService,
+        private passwordService : PasswordService
     ) {}
 
     async createNewUserProfile(
@@ -39,6 +42,9 @@ export class ProfileService {
             email,
             role,
             password,
+            false,
+            LoginBy.EMAIL,
+            true
         );
         if (user) {
             const profile = this.repo.create(dto);
@@ -52,20 +58,25 @@ export class ProfileService {
         throw new BadRequestException('No user');
     }
 
-    async createNewUserProfileWithName(
+    async createNewUserProfileQDE(
         email: string,
         role: UserRoleType,
         firstName: string,
         middleName: string,
         lastName: string,
         saveProfile = true,
+        password = "",
+        pwdChangeRequired = false
     ) {
+        
+
         const user = await this.userService.createFromProfile(
             email,
             role,
-            '',
+            password,
             false,
             LoginBy.EMAIL,
+            pwdChangeRequired
         );
         if (user) {
             const profile = this.repo.create({

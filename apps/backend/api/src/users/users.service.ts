@@ -47,8 +47,6 @@ export class UsersService {
         if (!user) {
             throw new BadRequestException('Email doesnt exists');
         }
-
-        user.email = updatePwdDto.email;
         user.password = await this.passwordService.hashPassword(
             updatePwdDto.password,
         );
@@ -63,19 +61,19 @@ export class UsersService {
         password: string,
         saveProfile = true,
         logInType: LoginBy = LoginBy.EMAIL,
+        pwdChangeRequired = false
     ) {
         const check = await this.findOneUser(email, logInType);
         if (check) {
             throw new BadRequestException(`Email ${email} already exists`);
         }
-
-        //TODO: Create role change logic
+        
         const user = this.userRepo.create({
             email,
             password: await this.passwordService.hashPassword(
                 password ?? '123456789',
             ),
-            pwd_change_required: !password,
+            pwd_change_required: !password || pwdChangeRequired,
         });
         const roles = this.userRoleRepo.create();
         roles.role = role;
@@ -111,9 +109,9 @@ export class UsersService {
             case LoginBy.EMAIL:
                 user = await this.userRepo.findOneBy({ email: login });
                 break;
-            // case LoginBy.PHONE:
-            //   user = await this.userRepo.findOneBy({ phoneNumber: login });
-            // break;
+            case LoginBy.ID:
+              user = await this.userRepo.findOneBy({ id: login });
+            break;
             case LoginBy.USERNAME:
                 user = await this.userRepo.findOneBy({ userName: login });
                 break;

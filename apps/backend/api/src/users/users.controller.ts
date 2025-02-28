@@ -38,6 +38,7 @@ export class UsersController {
             '',
             true,
             LoginBy.EMAIL,
+            true
         );
         if (user?.id) {
             await this.notificationService.send({
