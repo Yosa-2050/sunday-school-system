@@ -1,37 +1,71 @@
 {
-    "jobPortal": {
-        "dashboard": "Dashboard",
-        "job-seekers": "Job Seekers",
-        "profile": "Profile",
-        "resume-builder": "Resume Builder",
-        "applied-jobs": "Applied Jobs",
-        "saved-jobs": "Saved Jobs",
-        "notifications": "Notifications",
-        "employers": "Employers",
-        "company-profile": "Company Profile",
-        "job-postings": "Job Postings",
-        "applicants": "Applicants",
-        "shortlisted-candidates": "Shortlisted Candidates",
-        "reports": "Reports",
-        "job-explorer": "Job Explorer",
-        "messages": "Messages",
-        "analytics": "Analytics",
-        "settings": "Settings",
-        "logout": "Logout"
+  "jobPortal": {
+    "dashboard": "Dashboard",
+    "job-seekers": "Job Seekers",
+    "profile": "Profile",
+    "resume-builder": "Resume Builder",
+    "applied-jobs": "Applied Jobs",
+    "saved-jobs": "Saved Jobs",
+    "notifications": "Notifications",
+    "employers": "Employers",
+    "company-profile": "Company Profile",
+    "job-postings": "Job Postings",
+    "applicants": "Applicants",
+    "shortlisted-candidates": "Shortlisted Candidates",
+    "reports": "Reports",
+    "job-explorer": "Job Explorer",
+    "messages": "Messages",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "header": {
+    "title": "Admin Dashboard"
+  },
+  "navbar": {
+    "header": "Job Portal Admin",
+    "dashboard": "Dashboard",
+    "jobListings": "Job Listings",
+    "applicants": "Applicants",
+    "settings": "Settings",
+    "footer": "© 2023 Job Portal"
+  },
+  "main": {
+    "welcome": "Welcome to the Admin Dashboard",
+    "description": "Manage job listings, applicants, and more."
+  },
+  "auth": {
+    "OTP": {
+      "title": "Enter OTP",
+      "otpLabel": "One Time Password",
+      "otpPlaceholder": "Enter your OTP",
+      "verifyButton": "Verify"
     },
-    "header": {
-        "title": "Admin Dashboard"
+    "pageWrapper": {
+      "shegaobs": "Shega Jobs"
     },
-    "navbar": {
-        "header": "Job Portal Admin",
-        "dashboard": "Dashboard",
-        "jobListings": "Job Listings",
-        "applicants": "Applicants",
-        "settings": "Settings",
-        "footer": "© 2023 Job Portal"
+    "login": {
+      "title": "Login",
+      "subtitle": "Please enter your details.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot Password?",
+      "loginButton": "Login",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "loginFailed": "Login failed. Please try again.",
+      "rememberMe": "Remember me",
+      "rightsReserved": "© All rights reserved by Shega Jobs"
     },
-    "main": {
-        "welcome": "Welcome to the Admin Dashboard",
-        "description": "Manage job listings, applicants, and more."
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email address and we'll send you a link to reset your password.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "backToLogin": "Back to login",
+      "sendResetLink": "Send Reset Link"
     }
+  }
 }

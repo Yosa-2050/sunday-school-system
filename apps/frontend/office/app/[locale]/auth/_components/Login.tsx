@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from "@/i18n/routing";
 import {
     Alert,
     Anchor,
@@ -13,6 +13,7 @@ import {
     Stack,
     TextInput,
     Title,
+    Text
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconAlertCircle } from '@tabler/icons-react';
@@ -45,26 +46,17 @@ const Login = () => {
        await loginMutation.mutateAsync({ username, password });
     };
 
-    return (
-        <Box className="flex items-center justify-center min-h-screen w-full bg-gray-100 p-4">
-            <Card
-                shadow="sm"
-                padding="lg"
-                radius="md"
-                className="w-full max-w-md bg-white"
-            >
-                <Stack>
-                    <Title ta="center">{t('title')}</Title>
-
-                    {error && (
-                        <Alert
-                            icon={<IconAlertCircle size={16} />}
-                            color="red"
-                            mb="md"
-                        >
-                            {error}
-                        </Alert>
-                    )}
+  return (
+    <Box className="flex h-screen items-center justify-center bg-white">
+      <div className="absolute top-4 left-4">
+        <img src="./logos.PNG" className="h-10" alt="Shega Jobs Logo" />
+      </div>
+      <div className="relative w-full max-w-xl  bg-white p-8">
+        <Stack>
+          <Title className="text-xl text-start">{t("title")}</Title>
+          <Text ta="start" className="mb-3 text-gray-500 text-sm">
+            {t("subtitle")}
+          </Text>
 
                     <form onSubmit={handleSubmit}>
                         <Stack gap="md">
@@ -103,7 +95,7 @@ const Login = () => {
                         </Stack>
                     </form>
                 </Stack>
-            </Card>
+            </div>
         </Box>
     );
 };
