@@ -21,20 +21,20 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '@shega/auth/jwt-public';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateUserDto } from './dto/create-user.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NewProfileDto } from './dto/new-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateProfileDto } from './dto/update-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CreateUserDto } from './dto/create-user.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { NotificationService } from '@shega/notification/notification.service';
-import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
-import { Public } from '@shega/auth/jwt-public';
 
 @ApiBearerAuth()
 @ApiTags('Profile')
