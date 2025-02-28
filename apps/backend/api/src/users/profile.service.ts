@@ -27,7 +27,7 @@ export class ProfileService {
         @InjectRepository(Profile) private repo: Repository<Profile>,
         private userService: UsersService,
         private documentService: DocumentService,
-        private passwordService : PasswordService
+        private passwordService: PasswordService,
     ) {}
 
     async createNewUserProfile(
@@ -44,7 +44,7 @@ export class ProfileService {
             password,
             false,
             LoginBy.EMAIL,
-            true
+            true,
         );
         if (user) {
             const profile = this.repo.create(dto);
@@ -65,18 +65,16 @@ export class ProfileService {
         middleName: string,
         lastName: string,
         saveProfile = true,
-        password = "",
-        pwdChangeRequired = false
+        password = '',
+        pwdChangeRequired = false,
     ) {
-        
-
         const user = await this.userService.createFromProfile(
             email,
             role,
             password,
             false,
             LoginBy.EMAIL,
-            pwdChangeRequired
+            pwdChangeRequired,
         );
         if (user) {
             const profile = this.repo.create({

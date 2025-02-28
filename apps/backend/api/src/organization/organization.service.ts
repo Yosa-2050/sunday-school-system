@@ -46,7 +46,8 @@ export class OrganizationService {
         @Inject(ProfileService) private profileService: ProfileService,
         @Inject(NotificationService)
         private notificationService: NotificationService,
-        @Inject(PasswordService) private readonly passwordService: PasswordService
+        @Inject(PasswordService)
+        private readonly passwordService: PasswordService,
     ) {}
 
     async create(request: CreateOrganizationDto) {
@@ -221,7 +222,7 @@ export class OrganizationService {
             dto.lastName,
             false,
             pwdGenerated,
-            true
+            true,
         );
 
         const model = this.employeeRepo.create();

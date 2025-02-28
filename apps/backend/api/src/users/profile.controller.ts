@@ -45,7 +45,7 @@ export class ProfileController {
     constructor(
         private profileService: ProfileService,
         private notificationService: NotificationService,
-        private passwordService: PasswordService
+        private passwordService: PasswordService,
     ) {}
 
     @Public()
@@ -61,7 +61,7 @@ export class ProfileController {
             dto.lastName,
             true,
             pwdGenerated,
-            true
+            true,
         );
 
         if (user?.id) {

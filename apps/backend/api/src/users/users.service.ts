@@ -61,13 +61,13 @@ export class UsersService {
         password: string,
         saveProfile = true,
         logInType: LoginBy = LoginBy.EMAIL,
-        pwdChangeRequired = false
+        pwdChangeRequired = false,
     ) {
         const check = await this.findOneUser(email, logInType);
         if (check) {
             throw new BadRequestException(`Email ${email} already exists`);
         }
-        
+
         const user = this.userRepo.create({
             email,
             password: await this.passwordService.hashPassword(
@@ -110,8 +110,8 @@ export class UsersService {
                 user = await this.userRepo.findOneBy({ email: login });
                 break;
             case LoginBy.ID:
-              user = await this.userRepo.findOneBy({ id: login });
-            break;
+                user = await this.userRepo.findOneBy({ id: login });
+                break;
             case LoginBy.USERNAME:
                 user = await this.userRepo.findOneBy({ userName: login });
                 break;

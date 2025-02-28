@@ -29,6 +29,12 @@ import { UsersService } from './users.service';
         OtpService,
         DateService,
     ],
-    exports: [UsersService, ProfileService, OtpService, DateService, PasswordService],
+    exports: [
+        UsersService,
+        ProfileService,
+        OtpService,
+        DateService,
+        PasswordService,
+    ],
 })
 export class UsersModule {}

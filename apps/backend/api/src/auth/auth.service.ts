@@ -28,7 +28,6 @@ import { PasswordResetDto } from './dtos/request/username.dto';
 
 @Injectable()
 export class AuthService {
-   
     constructor(
         private usersService: UsersService,
         private jwtService: JwtService,
@@ -143,13 +142,17 @@ export class AuthService {
     }
 
     async ChangePassword(req: PasswordResetDto) {
-        const user = await this.usersService.validateUser(req.userId, req.oldPassword, LoginBy.ID);
-        if(user){
+        const user = await this.usersService.validateUser(
+            req.userId,
+            req.oldPassword,
+            LoginBy.ID,
+        );
+        if (user) {
             await this.usersService.UpdatePassword({
                 id: user.id,
                 password: req.newPassword,
             });
-            
+
             return {
                 success: 'true',
             };
