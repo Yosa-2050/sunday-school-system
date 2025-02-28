@@ -1,3 +1,4 @@
+import { AuthProvider } from '@shega/ui';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -6,6 +7,7 @@ import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
 import type { PropsWithChildren } from 'react';
 import { generateColors, lightenHexColor } from 'utility/colors';
+import { getUserAction } from './_api/get-user-action';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,6 +22,9 @@ const defaultTheme = '#2340ff';
 export default async function RootLayout({
     children,
 }: Readonly<PropsWithChildren>) {
+
+    const user = await getUserAction();
+
     const messages = await getMessages();
 
     const colorArray = generateColors(defaultTheme);
@@ -41,7 +46,9 @@ export default async function RootLayout({
                             color={defaultTheme}
                             radius={'8px'}
                         >
-                            {children}
+                            <AuthProvider user={user}>
+                                {children}
+                            </AuthProvider>
                         </MantineThemeProvider>
                     </QueryProviders>
                 </NextIntlClientProvider>

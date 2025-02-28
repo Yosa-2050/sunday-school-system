@@ -14,41 +14,35 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { IconAlertCircle } from '@tabler/icons-react';
+import { useMutation } from '@tanstack/react-query';
+import { login } from 'app/[locale]/_api/auth/login';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const router = useRouter();
     const t = useTranslations('auth.login');
-
+    const loginMutation = useMutation({
+        mutationFn: login,
+        onError: (err) => {
+            notifications.show({
+                title: 'Error',
+                message: err.message,
+                color: 'red',
+            }); 
+        },
+        onSuccess: () => {
+            router.push('/dashboard');
+        },
+    });
+    
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
-
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || t('loginFailed'));
-            }
-
-            router.push('/dashboard');
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError('An unexpected error occurred.');
-            }
-        }
+       await loginMutation.mutateAsync({ username, password });
     };
 
     return (
@@ -75,10 +69,10 @@ const Login = () => {
                     <form onSubmit={handleSubmit}>
                         <Stack gap="md">
                             <TextInput
-                                label={t('emailLabel')}
-                                placeholder={t('emailPlaceholder')}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                label={t('usernameLabel')}
+                                placeholder={t('usernamePlaceholder')}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
                             <PasswordInput

@@ -1,14 +1,17 @@
-import { Text } from '@mantine/core';
-import { fetchUsers } from 'api/get-users';
-import { getTranslations } from 'next-intl/server';
+'use client';
 
-export default async function HomePage() {
-    const t = await getTranslations();
-    const users = await fetchUsers();
-    return (
-        <main className="bg-red-400">
-            {JSON.stringify(users)}
-            <Text>{t('header.title')}</Text>
-        </main>
-    );
+import { redirect } from '@/i18n/routing';
+import {useAuth} from '@shega/ui'
+import { useLocale } from 'next-intl';
+
+export default  function HomePage() {
+    const {user} = useAuth();
+    const locale = useLocale();
+
+    if(user)  {
+        redirect({ href: '/admin/dashboard', locale});
+    }
+    else {
+        redirect({ href: '/auth/login', locale});
+    }
 }
