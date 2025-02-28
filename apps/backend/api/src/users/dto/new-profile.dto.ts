@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Gender } from '../enums/profile-gender.enum';
 import { MarriageStatus } from '../enums/profile-marriagestatus.enum';
 import { Title } from '../enums/profile-title.enum';
@@ -22,27 +22,30 @@ export class NewProfileDto {
     lastName: string;
 
     @ApiProperty()
+    @IsOptional()
     mothersFullName?: string;
 
     @ApiProperty()
-    baptistName: string;
+    @IsOptional()
+    birthDate?: string;
 
     @ApiProperty()
-    birthDate: string;
-
-    @ApiProperty()
+    @IsOptional()
     @IsEnum(Gender)
     gender?: Gender;
 
     @ApiProperty()
+    @IsOptional()
     @IsEnum(MarriageStatus)
     marriageStatus?: MarriageStatus;
 
     @ApiProperty()
+    @IsOptional()
     @IsEnum(Title)
     title?: Title;
 
     @ApiProperty()
+    @IsOptional()
     @IsString()
-    phoneNumber: string;
+    phoneNumber?: string;
 }

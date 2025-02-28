@@ -17,6 +17,7 @@ import { ILike, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NewProfileDto } from './dto/new-profile.dto';
 import { Profile } from './entities/profile.entity';
+import { LoginBy } from './enums/login-by.enum';
 
 @Injectable()
 export class ProfileService {
@@ -59,7 +60,7 @@ export class ProfileService {
         lastName: string,
         saveProfile = true,
     ) {
-        const user = await this.userService.createFromProfile(email, role, '');
+        const user = await this.userService.createFromProfile(email, role, '', false, LoginBy.EMAIL);
         if (user) {
             const profile = this.repo.create({
                 firstName,
