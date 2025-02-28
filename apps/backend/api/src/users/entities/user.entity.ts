@@ -6,7 +6,7 @@ import { UserRoles } from './role.entity';
 
 @Entity()
 class User extends BaseModel {
-    @Column({unique: true})
+    @Column({ unique: true })
     email: string;
 
     @Column({ nullable: true })

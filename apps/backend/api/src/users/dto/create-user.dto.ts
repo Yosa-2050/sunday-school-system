@@ -4,20 +4,20 @@ import { UserRoleType } from '../enums/user-role.enum';
 
 export class CreateUserDto {
     @ApiProperty()
-        @IsString()
-        @IsNotEmpty()
-        firstName: string;
-    
-        @ApiProperty()
-        @IsString()
-        @IsNotEmpty()
-        middleName: string;
-    
-        @ApiProperty()
-        @IsString()
-        @IsNotEmpty()
-        lastName: string;
-        
+    @IsString()
+    @IsNotEmpty()
+    firstName: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    middleName: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    lastName: string;
+
     @ApiProperty()
     @IsString()
     @IsEmail()

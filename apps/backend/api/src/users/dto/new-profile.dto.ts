@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+    IsDefined,
+    IsEnum,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+} from 'class-validator';
 import { Gender } from '../enums/profile-gender.enum';
 import { MarriageStatus } from '../enums/profile-marriagestatus.enum';
 import { Title } from '../enums/profile-title.enum';

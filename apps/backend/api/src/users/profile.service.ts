@@ -60,7 +60,13 @@ export class ProfileService {
         lastName: string,
         saveProfile = true,
     ) {
-        const user = await this.userService.createFromProfile(email, role, '', false, LoginBy.EMAIL);
+        const user = await this.userService.createFromProfile(
+            email,
+            role,
+            '',
+            false,
+            LoginBy.EMAIL,
+        );
         if (user) {
             const profile = this.repo.create({
                 firstName,
