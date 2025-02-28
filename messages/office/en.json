@@ -66,6 +66,13 @@
       "emailPlaceholder": "you@example.com",
       "backToLogin": "Back to login",
       "sendResetLink": "Send Reset Link"
+    },
+    "changePassword": {
+      "title": "Change Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "proccedBtn": "Procced",
+      "rightsReserved": "© All rights reserved by Shega Jobs"
     }
   }
 }
