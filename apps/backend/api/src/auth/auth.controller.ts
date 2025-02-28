@@ -4,7 +4,10 @@ import { ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginRequestDto } from './dtos/request/login.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UsernameRequestDto } from './dtos/request/username.dto';
+import {
+    PasswordResetDto,
+    UsernameRequestDto,
+} from './dtos/request/username.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -30,5 +33,10 @@ export class AuthController {
     @Post('resetPassword')
     resetPassword(@Body() req: UsernameRequestDto) {
         return this.authService.resetPassword(req.username);
+    }
+
+    @Post('changePassword')
+    changePassword(@Body() req: PasswordResetDto) {
+        return this.authService.ChangePassword(req);
     }
 }

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+import { PasswordService } from '@shega/Utilities/password.service';
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationService } from '@shega/notification/notification.service';
@@ -45,6 +46,8 @@ export class OrganizationService {
         @Inject(ProfileService) private profileService: ProfileService,
         @Inject(NotificationService)
         private notificationService: NotificationService,
+        @Inject(PasswordService)
+        private readonly passwordService: PasswordService,
     ) {}
 
     async create(request: CreateOrganizationDto) {
@@ -201,7 +204,7 @@ export class OrganizationService {
         };
     }
 
-    async CreateEmployeeDDE(dto: CreateOrganizationEmployeeDto) {
+    async CreateEmployeeQDE(dto: CreateOrganizationEmployeeDto) {
         const organization = await this.organizationRepo.findOneBy({
             name: dto.organizationName,
         });
@@ -210,14 +213,16 @@ export class OrganizationService {
                 `Organization with name '${dto.organizationName}' exists`,
             );
         }
-        //const organization = await this.organizationRepo.create({name: dto.organizationName});
-        const profile = await this.profileService.createNewUserProfileWithName(
+        const pwdGenerated = this.passwordService.generatePassword();
+        const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
             UserRoleType.WorkProvider,
             dto.firstName,
             dto.middleName,
             dto.lastName,
             false,
+            pwdGenerated,
+            true,
         );
 
         const model = this.employeeRepo.create();

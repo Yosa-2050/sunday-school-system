@@ -20,6 +20,8 @@ import { OtpService } from '@shega/users/otp.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { PasswordResetDto } from './dtos/request/username.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UserResponsePayload } from './dtos/response/user-response-payload.reponse.dto';
@@ -127,7 +129,6 @@ export class AuthService {
             const otp = await this.otpService.validateOtp(user.id, req.otp);
             if (otp) {
                 await this.usersService.UpdatePassword({
-                    email: req.username,
                     id: user.id,
                     password: req.password,
                 });
@@ -138,5 +139,24 @@ export class AuthService {
             return new BadRequestException('Invalid Otp');
         }
         return new UnauthorizedException();
+    }
+
+    async ChangePassword(req: PasswordResetDto) {
+        const user = await this.usersService.validateUser(
+            req.userId,
+            req.oldPassword,
+            LoginBy.ID,
+        );
+        if (user) {
+            await this.usersService.UpdatePassword({
+                id: user.id,
+                password: req.newPassword,
+            });
+
+            return {
+                success: 'true',
+            };
+        }
+        throw new UnauthorizedException();
     }
 }

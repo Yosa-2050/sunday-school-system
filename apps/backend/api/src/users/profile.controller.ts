@@ -21,6 +21,8 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PasswordService } from '@shega/Utilities/password.service';
 import { Public } from '@shega/auth/jwt-public';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -43,24 +45,29 @@ export class ProfileController {
     constructor(
         private profileService: ProfileService,
         private notificationService: NotificationService,
+        private passwordService: PasswordService,
     ) {}
 
     @Public()
     @Post('/new')
     async create(@Body() dto: CreateUserDto) {
-        const user = await this.profileService.createNewUserProfileWithName(
+        const pwdGenerated = this.passwordService.generatePassword();
+
+        const user = await this.profileService.createNewUserProfileQDE(
             dto.email,
             dto.role,
             dto.firstName,
             dto.middleName,
             dto.lastName,
             true,
+            pwdGenerated,
+            true,
         );
 
         if (user?.id) {
             await this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: `please login to your account using your email ${dto.email} and password 12345678. Then reset your password.`,
+                content: `please login to your account using your email ${dto.email} and password '${pwdGenerated}'. Then reset your password.`,
                 to: dto.email,
                 subject: 'Shega jobs',
                 reference: user.id,

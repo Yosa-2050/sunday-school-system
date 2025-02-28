@@ -1,7 +1,6 @@
 'use client';
 import { ScrollArea } from '@mantine/core';
 import { useToggle } from '@mantine/hooks';
-// biome-ignore lint/nursery/noRestrictedImports: <explanation>
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';

@@ -28,7 +28,7 @@ export class OrganizationController {
 
     @Post('createEmployee')
     createEmployee(@Body() dto: CreateOrganizationEmployeeDto) {
-        return this.organizationService.CreateEmployeeDDE(dto);
+        return this.organizationService.CreateEmployeeQDE(dto);
     }
 
     @Post()
