@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "next dev --port 7777",
         "build": "next build ",
-        "start": "next start -p 7777"
+        "start": "next start"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",
