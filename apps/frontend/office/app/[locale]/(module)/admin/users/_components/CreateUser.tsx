@@ -1,5 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Drawer, Flex, Group, Select, Stack, Text, TextInput } from '@mantine/core';
+import {
+    Button,
+    Drawer,
+    Flex,
+    Group,
+    Select,
+    Stack,
+    Text,
+    TextInput,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
@@ -13,18 +22,24 @@ import { useTranslations } from 'next-intl';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-const userSchema = z.object({
-    role: z.string(),
-    firstName: z.string().min(1, 'Name is required'),
-    middleName: z.string().min(1, 'Father Name is required'),
-    lastName: z.string().min(1, 'Grand Father Name is required'),
-    email: z.string().email('Invalid email address'),
-    companyName: z.string().optional(),
-}).refine((data) => data.role !== 'WORK_PROVIDER' || (data.companyName && data.companyName.length > 0), {
-    path: ['companyName'],
-    message: 'Company name is required for job providers',
-});
-
+const userSchema = z
+    .object({
+        role: z.string(),
+        firstName: z.string().min(1, 'Name is required'),
+        middleName: z.string().min(1, 'Father Name is required'),
+        lastName: z.string().min(1, 'Grand Father Name is required'),
+        email: z.string().email('Invalid email address'),
+        companyName: z.string().optional(),
+    })
+    .refine(
+        (data) =>
+            data.role !== 'WORK_PROVIDER' ||
+            (data.companyName && data.companyName.length > 0),
+        {
+            path: ['companyName'],
+            message: 'Company name is required for job providers',
+        },
+    );
 
 export function CreateUser() {
     const [opened, { open, close }] = useDisclosure(false);
@@ -36,7 +51,7 @@ export function CreateUser() {
         register,
         handleSubmit,
         formState: { errors },
-        watch
+        watch,
     } = useForm<CreateUsers>({
         resolver: zodResolver(userSchema),
     });
@@ -72,7 +87,11 @@ export function CreateUser() {
             <Drawer
                 opened={opened}
                 onClose={close}
-                title={<Text className='text-primary font-bold text-xl mb-4'>Create User</Text>}
+                title={
+                    <Text className="text-primary font-bold text-xl mb-4">
+                        Create User
+                    </Text>
+                }
                 size="md"
                 position="right"
                 closeButtonProps={{
@@ -150,7 +169,7 @@ export function CreateUser() {
                             }}
                         />
 
-                    {role === 'WORK_PROVIDER' && (
+                        {role === 'WORK_PROVIDER' && (
                             <TextInput
                                 label="Company Name"
                                 placeholder="Enter company name"

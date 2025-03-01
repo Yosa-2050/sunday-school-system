@@ -1,4 +1,3 @@
-
 import { AuthProvider } from '@shega/ui';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
@@ -39,7 +38,7 @@ export default async function RootLayout(props: Props) {
     colorArray.forEach((color, index) => {
         styles[`--primary-color-${index}`] = color;
     });
-    const user = undefined
+    const user = undefined;
 
     return (
         <html lang={locale}>

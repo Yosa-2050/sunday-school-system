@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from '@/i18n/routing';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Anchor,
     Box,
@@ -8,24 +9,27 @@ import {
     Checkbox,
     Flex,
     Group,
+    PasswordInput,
     Stack,
     Text,
     TextInput,
     Title,
-    PasswordInput,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { COOKIE_ACCESS_TOKEN, COOKIE_REFRESH_TOKEN, logger } from '@shega/shared';
+import {
+    COOKIE_ACCESS_TOKEN,
+    COOKIE_REFRESH_TOKEN,
+    logger,
+} from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'app/[locale]/_api/auth/login';
 import { getUserAction } from 'app/[locale]/_api/get-user-action';
-import { setCookie, getCookie, deleteCookie } from 'cookies-next';
+import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 const schema = z.object({
     email: z
@@ -33,8 +37,8 @@ const schema = z.object({
         .min(1, 'Email is required')
         .email('Invalid email format')
         .regex(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 
-            'Invalid email format'
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            'Invalid email format',
         ),
     password: z
         .string()
@@ -42,8 +46,11 @@ const schema = z.object({
         .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
         .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
         .regex(/[0-9]/, 'Password must contain at least one number')
-        .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
-    rememberMe: z.boolean().optional()
+        .regex(
+            /[!@#$%^&*(),.?":{}|<>]/,
+            'Password must contain at least one special character',
+        ),
+    rememberMe: z.boolean().optional(),
 });
 
 const Login = () => {
@@ -61,7 +68,9 @@ const Login = () => {
     useEffect(() => {
         const token = getCookie(COOKIE_ACCESS_TOKEN);
         if (token) {
-            getUserAction().then(setUser).catch(() => deleteCookie(COOKIE_ACCESS_TOKEN));
+            getUserAction()
+                .then(setUser)
+                .catch(() => deleteCookie(COOKIE_ACCESS_TOKEN));
         }
     }, [setUser]);
 
@@ -85,8 +94,14 @@ const Login = () => {
                         message: t('loginSuccess'),
                         color: 'green',
                     });
-                    setCookie(COOKIE_ACCESS_TOKEN, data.access_token, { maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined });
-                    setCookie(COOKIE_REFRESH_TOKEN, data.access_token, { httpOnly: true, secure: true, maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined });
+                    setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
+                        maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
+                    });
+                    setCookie(COOKIE_REFRESH_TOKEN, data.access_token, {
+                        httpOnly: true,
+                        secure: true,
+                        maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
+                    });
                     const user = await getUserAction();
                     setUser(user);
                     router.push('/admin/dashboard');
@@ -97,8 +112,11 @@ const Login = () => {
         },
     });
 
-    const onSubmit = (values:{ email: string; password: string;}) => {
-        loginMutation.mutateAsync({username: values.email, password: values.password});
+    const onSubmit = (values: { email: string; password: string }) => {
+        loginMutation.mutateAsync({
+            username: values.email,
+            password: values.password,
+        });
     };
 
     return (
@@ -130,11 +148,15 @@ const Login = () => {
                                 label={t('rememberMe')}
                                 className="text-teal-600"
                                 checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
+                                onChange={(e) =>
+                                    setRememberMe(e.target.checked)
+                                }
                             />
                             <Anchor
                                 size="sm"
-                                onClick={() => router.push('/auth/forgot-password')}
+                                onClick={() =>
+                                    router.push('/auth/forgot-password')
+                                }
                                 className="text-sm text-teal-600 hover:underline"
                             >
                                 {t('forgotPassword')}
