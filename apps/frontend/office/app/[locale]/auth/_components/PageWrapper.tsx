@@ -7,7 +7,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { useAuth } from '@shega/ui';
 import { useLocale, useTranslations } from 'next-intl';
 import type React from 'react';
-import { useEffect, type JSX } from 'react';
+import { type JSX, useEffect } from 'react';
 import Logo from '../../../../public/logo.svg';
 
 export default function PageWrapper({

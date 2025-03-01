@@ -1,17 +1,17 @@
-import { IconXboxX } from '@tabler/icons-react';
-import { useDisclosure } from '@mantine/hooks';
-import { Drawer, Button, Stack, TextInput, Group, Select } from '@mantine/core';
-import { useTranslations } from 'next-intl';
-import * as z from 'zod';
-import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, Drawer, Group, Select, Stack, TextInput } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import { logger } from '@shega/shared';
+import { IconXboxX } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import {
     type CreateUsers,
     createUsers,
 } from 'app/[locale]/_api/users/create-users';
-import { notifications } from '@mantine/notifications';
-import { logger } from '@shega/shared';
+import { useTranslations } from 'next-intl';
+import { Controller, useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 // Define validation schema using Zod
 const userSchema = z.object({

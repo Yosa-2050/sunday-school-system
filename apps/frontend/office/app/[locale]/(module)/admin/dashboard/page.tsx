@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import { Flex, Grid, Stack, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
-import dateStyleClasses from './_components/styles/date.module.css';
-import ReportSnapshot from './_components/charts/ReportSnapshot';
-import UserChart from './_components/charts/UserChart';
-import StatsSection from './_components/charts/StatsSection';
-import ReturningUserChart from './_components/charts/ReturningUserChart';
+import { useState } from 'react';
 import DeviceBreakdownChart from './_components/charts/DeviceBreaddownChart';
+import ReportSnapshot from './_components/charts/ReportSnapshot';
+import ReturningUserChart from './_components/charts/ReturningUserChart';
+import StatsSection from './_components/charts/StatsSection';
+import UserChart from './_components/charts/UserChart';
+import dateStyleClasses from './_components/styles/date.module.css';
 
 export default function Dashboard() {
     const [value, setValue] = useState<[Date | null, Date | null]>([

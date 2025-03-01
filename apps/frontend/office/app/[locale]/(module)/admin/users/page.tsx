@@ -1,29 +1,29 @@
 'use client';
 
-import { useState } from 'react';
 import {
+    ActionIcon,
+    Checkbox,
+    Divider,
     Flex,
-    Paper,
-    Table,
-    Text,
-    TextInput,
-    Select,
     Group,
     Menu,
-    ActionIcon,
-    Tooltip,
-    Divider,
+    Paper,
+    Select,
+    Table,
     TableScrollContainer,
-    Checkbox,
+    Text,
+    TextInput,
+    Tooltip,
 } from '@mantine/core';
-import type { Users } from 'app/[locale]/_api/users/fetch-user';
-import { CreateUser } from './_components/CreateUser';
 import {
-    IconSearch,
-    IconDownload,
     IconDotsVertical,
+    IconDownload,
+    IconSearch,
 } from '@tabler/icons-react';
+import type { Users } from 'app/[locale]/_api/users/fetch-user';
 import { DateTime } from 'luxon';
+import { useState } from 'react';
+import { CreateUser } from './_components/CreateUser';
 import { sampleUsers } from './_components/users';
 
 // Utility function to handle export (can be adjusted for CSV, JSON, etc.)
