@@ -7,7 +7,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { useAuth } from '@shega/ui';
 import { useLocale, useTranslations } from 'next-intl';
 import type React from 'react';
-import type { JSX } from 'react';
+import { useEffect, type JSX } from 'react';
 import Logo from '../../../../public/logo.svg';
 
 export default function PageWrapper({
@@ -18,48 +18,48 @@ export default function PageWrapper({
     const { user } = useAuth();
     const locale = useLocale();
     const isMobile = useMediaQuery('(max-width: 768px)');
-
-    if (user) {
-        redirect({ href: '/admin/dashboard', locale });
-    }
-
     const t = useTranslations('auth.pageWrapper');
+
+    // Using useEffect to handle the redirect after component mounts
+    useEffect(() => {
+        if (user) {
+            redirect({ href: '/admin/dashboard', locale });
+        }
+    }, [user, locale]); // Run the redirect effect only when `user` or `locale` changes
 
     return (
         <Flex className="min-h-screen bg-primary-1 w-full">
-            {/* Hide left section on mobile */}
-            {!isMobile && (
-                <Box className="relative h-screen bg-primary-1 md:w-1/2">
-                    <Carousel
-                        withIndicators
-                        height="100%"
-                        className="absolute inset-0 w-full h-full"
-                        loop
-                    >
-                        <Carousel.Slide>
-                            <Image
-                                src="/job-search-im-unemployed-free-photo.webp"
-                                alt="Background 1"
-                                className="w-full h-full object-cover"
-                            />
-                        </Carousel.Slide>
-                        <Carousel.Slide>
-                            <Image
-                                src="/istockphoto-537503733-612x612.jpg"
-                                alt="Background 2"
-                                className="w-full h-full object-cover"
-                            />
-                        </Carousel.Slide>
-                        <Carousel.Slide>
-                            <Image
-                                src="/0270_637846635946108934.png"
-                                alt="Background 3"
-                                className="w-full h-full object-cover"
-                            />
-                        </Carousel.Slide>
-                    </Carousel>
-                </Box>
-            )}
+            {/* Left section with carousel (only visible on desktop) */}
+            <Box className={`relative h-screen bg-primary-1 md:w-1/2 ${isMobile ? 'hidden' : ''}`}>
+                <Carousel
+                    withIndicators
+                    height="100%"
+                    className="absolute inset-0 w-full h-full"
+                    loop
+                >
+                    <Carousel.Slide>
+                        <Image
+                            src="/job-search-im-unemployed-free-photo.webp"
+                            alt="Background 1"
+                            className="w-full h-full object-cover"
+                        />
+                    </Carousel.Slide>
+                    <Carousel.Slide>
+                        <Image
+                            src="/istockphoto-537503733-612x612.jpg"
+                            alt="Background 2"
+                            className="w-full h-full object-cover"
+                        />
+                    </Carousel.Slide>
+                    <Carousel.Slide>
+                        <Image
+                            src="/0270_637846635946108934.png"
+                            alt="Background 3"
+                            className="w-full h-full object-cover"
+                        />
+                    </Carousel.Slide>
+                </Carousel>
+            </Box>
 
             {/* Right section with content */}
             <Flex

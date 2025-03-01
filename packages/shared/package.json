@@ -4,7 +4,9 @@
     "private": true,
     "type": "module",
     "exports": {
-        ".": ["./src/index.ts"]
+        ".": [
+            "./src/index.ts"
+        ]
     },
     "scripts": {},
     "devDependencies": {
@@ -16,6 +18,7 @@
         "typescript": "5.5.4"
     },
     "dependencies": {
+        "cookies-next": "^5.1.0",
         "zod": "^3.24.1"
     }
 }

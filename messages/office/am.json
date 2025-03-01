@@ -43,7 +43,7 @@
     "jobPortal": {
         "dashboard": "Dashboard",
         "job-seekers": "Job Seekers",
-        "profile": "Profile",
+        "users": "Users",
         "resume-builder": "Resume Builder",
         "applied-jobs": "Applied Jobs",
         "saved-jobs": "Saved Jobs",
@@ -60,6 +60,19 @@
         "settings": "Settings",
         "logout": "Logout"
     },
+    "users": {
+          "emailLabel": "Email",
+          "emailPlaceholder": "Enter email address",
+          "firstNameLabel": "First Name",
+          "firstNamePlaceholder": "Enter first name",
+          "middleNameLabel": "Middle Name",
+          "middleNamePlaceholder": "Enter middle name",
+          "lastNameLabel": "Last Name",
+          "lastNamePlaceholder": "Enter last name",
+          "createUserButton": "Create User",
+          "forgotPassword": "Forgot Password?",
+          "rememberMe": "Remember me"
+        },
     "header": {
         "title": "የአስተዳደር �ዳሽቦርድ"
     },

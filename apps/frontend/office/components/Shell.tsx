@@ -63,7 +63,7 @@ export default function WrapperShell({
                             <UserProfile />
                         </Flex>
                     </Box>
-                    <Box className="container mx-auto my-4 mt-20 flex-1 overflow-y-auto">
+                    <Box className="m-4 flex-1 overflow-y-auto">
                         {children}
                     </Box>
                 </Box>

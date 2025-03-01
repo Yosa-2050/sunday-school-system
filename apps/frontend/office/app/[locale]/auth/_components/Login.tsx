@@ -46,13 +46,13 @@ const Login = () => {
                 if (data.pwdChangeRequired) {
                     router.push(`/auth/change-password/${data.id}`);
                 } else {
+                    logger.log(data)
                     notifications.show({
                         title: 'Success',
                         message: t('loginSuccess'),
                         color: 'green',
                     });
                     setCookie(COOKIE_ACCESS_TOKEN, data.access_token);
-
                     // Ensure getUserAction() is awaited properly
                     const user = await getUserAction();
                     setUser(user);
@@ -70,8 +70,8 @@ const Login = () => {
     };
 
     return (
-        <Box className="flex items-center justify-center bg-white shadow rounded w-2/5">
-            <div className="relative w-full md:w-3xl   p-8">
+        <Box className="flex items-center justify-center bg-white shadow rounded w-1/2">
+            <div className="relative w-full p-8">
                 <Flex direction={'column'} align="center">
                     <Title className="text-xl text-start">{t('title')}</Title>
                     <Text ta="start" className="mb-3 text-gray-500 text-sm">

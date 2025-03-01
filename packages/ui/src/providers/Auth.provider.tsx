@@ -5,7 +5,7 @@ import { createContext, useContext, useState } from 'react';
 
 type AuthContextType = {
     user?: User;
-    setUser: (user: User) => void;
+    setUser: (user?: User) => void;
 };
 
 type AuthProviderProps = {
