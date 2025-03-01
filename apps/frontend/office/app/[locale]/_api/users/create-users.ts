@@ -6,6 +6,7 @@ export type CreateUsers = {
     firstName: string;
     middleName: string;
     lastName: string;
+    companyName?: string;
 };
 
 export const createUsers = async (data: CreateUsers) => {

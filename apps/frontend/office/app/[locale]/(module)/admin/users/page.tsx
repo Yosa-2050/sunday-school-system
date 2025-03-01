@@ -25,6 +25,7 @@ import { DateTime } from 'luxon';
 import { useState } from 'react';
 import { CreateUser } from './_components/CreateUser';
 import { sampleUsers } from './_components/users';
+import {useQueryState} from 'nuqs'
 
 // Utility function to handle export (can be adjusted for CSV, JSON, etc.)
 const exportToCSV = (users: Users[]) => {
@@ -55,18 +56,18 @@ const exportToCSV = (users: Users[]) => {
 
 export const UsersPage = () => {
     const [selection, setSelection] = useState(['1']);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [roleFilter, setRoleFilter] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc');
+    const [searchQuery, setSearchQuery] = useQueryState('search',{defaultValue:''});
+    const [roleFilter, setRoleFilter] = useQueryState('filter',{defaultValue:''});
+    const [sortOrder, setSortOrder] = useQueryState('sort',{defaultValue:'asc'});
 
     // Apply search and filter logic
     const filteredUsers = sampleUsers.filter((user) => {
         return (
-            (user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (user.firstName.toLowerCase().includes((searchQuery || "").toLowerCase()) ||
                 user.lastName
                     .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
+                    .includes((searchQuery || "").toLowerCase()) ||
+                user.email.toLowerCase().includes((searchQuery || "").toLowerCase())) &&
             (roleFilter ? user.userType === roleFilter : true)
         );
     });
@@ -146,7 +147,7 @@ export const UsersPage = () => {
                 <TextInput
                     leftSection={<IconSearch />}
                     placeholder="Search users"
-                    value={searchQuery}
+                    value={searchQuery ?? ""}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{ width: 300 }}
                 />

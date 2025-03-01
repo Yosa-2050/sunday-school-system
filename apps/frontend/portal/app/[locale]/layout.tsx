@@ -1,4 +1,4 @@
-import type { User } from '@shega/shared';
+
 import { AuthProvider } from '@shega/ui';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
@@ -39,16 +39,7 @@ export default async function RootLayout(props: Props) {
     colorArray.forEach((color, index) => {
         styles[`--primary-color-${index}`] = color;
     });
-    const user: User = {
-        accountId: '',
-        userId: '',
-        firstName: { en: 'test' },
-        lastName: { en: 'test' },
-        isPhoneVerified: false,
-        isEmailVerified: false,
-        preferredLanguage: '',
-        permissions: [],
-    };
+    const user = undefined
 
     return (
         <html lang={locale}>

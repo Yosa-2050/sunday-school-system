@@ -8,32 +8,66 @@ import {
     Checkbox,
     Flex,
     Group,
-    PasswordInput,
     Stack,
     Text,
     TextInput,
     Title,
+    PasswordInput,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { COOKIE_ACCESS_TOKEN, logger } from '@shega/shared';
+import { COOKIE_ACCESS_TOKEN, COOKIE_REFRESH_TOKEN, logger } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'app/[locale]/_api/auth/login';
 import { getUserAction } from 'app/[locale]/_api/get-user-action';
-import { setCookie } from 'cookies-next';
+import { setCookie, getCookie, deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useEffect, useState } from 'react';
+
+const schema = z.object({
+    email: z
+        .string()
+        .min(1, 'Email is required')
+        .email('Invalid email format')
+        .regex(
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 
+            'Invalid email format'
+        ),
+    password: z
+        .string()
+        .min(8, 'Password must be at least 8 characters long')
+        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+        .regex(/[0-9]/, 'Password must contain at least one number')
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
+    rememberMe: z.boolean().optional()
+});
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
     const { setUser } = useAuth();
     const router = useRouter();
     const t = useTranslations('auth.login');
+    const [rememberMe, setRememberMe] = useState(false);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({ resolver: zodResolver(schema) });
+
+    useEffect(() => {
+        const token = getCookie(COOKIE_ACCESS_TOKEN);
+        if (token) {
+            getUserAction().then(setUser).catch(() => deleteCookie(COOKIE_ACCESS_TOKEN));
+        }
+    }, [setUser]);
 
     const loginMutation = useMutation({
         mutationFn: login,
-        onError: (err) => {
+        onError: () => {
             notifications.show({
                 title: 'Error',
                 message: t('loginFailed'),
@@ -41,7 +75,6 @@ const Login = () => {
             });
         },
         onSuccess: async ({ data }) => {
-            // Make this function async
             try {
                 if (data.pwdChangeRequired) {
                     router.push(`/auth/change-password/${data.id}`);
@@ -52,8 +85,8 @@ const Login = () => {
                         message: t('loginSuccess'),
                         color: 'green',
                     });
-                    setCookie(COOKIE_ACCESS_TOKEN, data.access_token);
-                    // Ensure getUserAction() is awaited properly
+                    setCookie(COOKIE_ACCESS_TOKEN, data.access_token, { maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined });
+                    setCookie(COOKIE_REFRESH_TOKEN, data.access_token, { httpOnly: true, secure: true, maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined });
                     const user = await getUserAction();
                     setUser(user);
                     router.push('/admin/dashboard');
@@ -64,9 +97,8 @@ const Login = () => {
         },
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        await loginMutation.mutateAsync({ username, password });
+    const onSubmit = (values:{ email: string; password: string;}) => {
+        loginMutation.mutateAsync({username: values.email, password: values.password});
     };
 
     return (
@@ -78,58 +110,31 @@ const Login = () => {
                         {t('subtitle')}
                     </Text>
                 </Flex>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack gap="md">
                         <TextInput
                             label={t('emailLabel')}
                             placeholder={t('emailPlaceholder')}
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            styles={{
-                                input: {
-                                    borderColor: 'rgba(204, 204, 204, 1)',
-                                    '&:focus, &:focus-within': {
-                                        borderColor: 'rgba(19, 158, 123, 1)',
-                                        outline: 'none',
-                                        boxShadow:
-                                            '0 0 0 1px rgba(19, 158, 123, 1)',
-                                    },
-                                },
-                            }}
+                            {...register('email')}
+                            error={errors.email?.message}
                         />
-
                         <PasswordInput
                             label={t('passwordLabel')}
                             placeholder={t('passwordPlaceholder')}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            styles={{
-                                input: {
-                                    borderColor: 'rgba(204, 204, 204, 1)',
-                                    '&:focus, &:focus-within': {
-                                        borderColor: 'rgba(19, 158, 123, 1)',
-                                        outline: 'none',
-                                        boxShadow:
-                                            '0 0 0 1px rgba(19, 158, 123, 1)',
-                                    },
-                                },
-                            }}
+                            {...register('password')}
+                            error={errors.password?.message}
                         />
                         <Group justify="space-between" mt={'sm'}>
                             <Checkbox
                                 title="Remember me"
                                 label={t('rememberMe')}
                                 className="text-teal-600"
-                                color="rgba(19, 158, 123, 1)"
-                                variant="outline"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
                             />
                             <Anchor
                                 size="sm"
-                                onClick={() =>
-                                    router.push('/auth/forgot-password')
-                                }
+                                onClick={() => router.push('/auth/forgot-password')}
                                 className="text-sm text-teal-600 hover:underline"
                             >
                                 {t('forgotPassword')}
@@ -138,7 +143,7 @@ const Login = () => {
                         <Button
                             type="submit"
                             fullWidth
-                            className="w-full rounded-md  px-4 py-2 text-white"
+                            className="w-full rounded-md px-4 py-2 text-white"
                             loading={loginMutation.isPending}
                         >
                             {t('loginButton')}

@@ -49,7 +49,7 @@ const baseTheme = ({
     return {
         defaultRadius: radius ?? '8px',
         primaryColor: 'primary',
-        primaryShade: 6,
+        primaryShade: 9,
         fontFamily: 'var(--font-inter)',
         headings: {
             fontFamily: 'var(--font-inter)',
