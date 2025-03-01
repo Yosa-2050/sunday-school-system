@@ -1,6 +1,6 @@
-import { getCookie } from "cookies-next";
-import { COOKIE_ACCESS_TOKEN } from "../constants/cookie.const";
-import logger from "./logger";
+import { getCookie } from 'cookies-next';
+import { COOKIE_ACCESS_TOKEN } from '../constants/cookie.const';
+import logger from './logger';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -28,7 +28,9 @@ const headersToObject = (headers: HeadersInit): Record<string, string> => {
 export const fetcher = async (endpoint: string, options?: RequestInit) => {
     const token = getCookie(COOKIE_ACCESS_TOKEN);
 
-    const existingHeaders = options?.headers ? headersToObject(options.headers) : {};
+    const existingHeaders = options?.headers
+        ? headersToObject(options.headers)
+        : {};
 
     const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -42,7 +44,8 @@ export const fetcher = async (endpoint: string, options?: RequestInit) => {
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             ...options,
-            headers, });
+            headers,
+        });
 
         if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
@@ -50,7 +53,7 @@ export const fetcher = async (endpoint: string, options?: RequestInit) => {
 
         return response.json();
     } catch (error) {
-        logger.error("Error during fetch:", error);
+        logger.error('Error during fetch:', error);
         throw error;
     }
 };

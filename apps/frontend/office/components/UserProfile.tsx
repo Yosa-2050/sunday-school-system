@@ -9,7 +9,7 @@ import { useTranslations } from 'next-intl';
 
 export default function UserProfile() {
     const t = useTranslations('jobPortal');
-    const { user , setUser} = useAuth();
+    const { user, setUser } = useAuth();
     const [opened, { toggle }] = useDisclosure(false);
     const router = useRouter();
 
@@ -47,7 +47,7 @@ export default function UserProfile() {
                     color="red"
                     onClick={async () => {
                         await deleteCookie(COOKIE_ACCESS_TOKEN);
-                        setUser(undefined)
+                        setUser(undefined);
                         router.push('/auth/login');
                     }}
                 >

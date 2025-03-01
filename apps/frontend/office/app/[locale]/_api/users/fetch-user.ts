@@ -1,4 +1,4 @@
-import { fetcher } from "@shega/shared";
+import { fetcher } from '@shega/shared';
 
 export type Users = {
     id: string;
@@ -8,14 +8,13 @@ export type Users = {
     status: string;
     email: string;
     createdBy: string;
-    createdAt:string;
-}
-
+    createdAt: string;
+};
 
 export const fetchUsers = async () => {
     const response: Users[] = await fetcher('/profiles', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
     });
 
     return response;

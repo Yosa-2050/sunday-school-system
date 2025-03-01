@@ -30,7 +30,9 @@ export default function PageWrapper({
     return (
         <Flex className="min-h-screen bg-primary-1 w-full">
             {/* Left section with carousel (only visible on desktop) */}
-            <Box className={`relative h-screen bg-primary-1 md:w-1/2 ${isMobile ? 'hidden' : ''}`}>
+            <Box
+                className={`relative h-screen bg-primary-1 md:w-1/2 ${isMobile ? 'hidden' : ''}`}
+            >
                 <Carousel
                     withIndicators
                     height="100%"

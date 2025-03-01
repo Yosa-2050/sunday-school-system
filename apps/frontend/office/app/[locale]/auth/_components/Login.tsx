@@ -46,7 +46,7 @@ const Login = () => {
                 if (data.pwdChangeRequired) {
                     router.push(`/auth/change-password/${data.id}`);
                 } else {
-                    logger.log(data)
+                    logger.log(data);
                     notifications.show({
                         title: 'Success',
                         message: t('loginSuccess'),

@@ -1,19 +1,17 @@
 {
-   
-        "users": {
-          "emailLabel": "Email",
-          "emailPlaceholder": "Enter email address",
-          "firstNameLabel": "First Name",
-          "firstNamePlaceholder": "Enter first name",
-          "middleNameLabel": "Middle Name",
-          "middleNamePlaceholder": "Enter middle name",
-          "lastNameLabel": "Last Name",
-          "lastNamePlaceholder": "Enter last name",
-          "createUserButton": "Create User",
-          "forgotPassword": "Forgot Password?",
-          "rememberMe": "Remember me"
-        }
-,      
+    "users": {
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter email address",
+        "firstNameLabel": "First Name",
+        "firstNamePlaceholder": "Enter first name",
+        "middleNameLabel": "Middle Name",
+        "middleNamePlaceholder": "Enter middle name",
+        "lastNameLabel": "Last Name",
+        "lastNamePlaceholder": "Enter last name",
+        "createUserButton": "Create User",
+        "forgotPassword": "Forgot Password?",
+        "rememberMe": "Remember me"
+    },
     "jobPortal": {
         "dashboard": "Dashboard",
         "job-seekers": "Job Seekers",
