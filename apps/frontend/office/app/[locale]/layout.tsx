@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 //bluish theme
-const defaultTheme = '#2340ff';
+const defaultTheme = '#014d4e';
 
 export default async function RootLayout({
     children,
@@ -31,7 +31,7 @@ export default async function RootLayout({
     const styles: Record<string, string> = {
         '--primary-color-default': defaultTheme,
         '--primary-radius': '8px',
-        backgroundColor: lightenHexColor(defaultTheme, 98) || '#f5fbfe',
+        backgroundColor: lightenHexColor(defaultTheme, 98) || '#014d4e',
     };
 
     colorArray.forEach((color, index) => {

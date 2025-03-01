@@ -1,20 +1,33 @@
+import { fetcher } from "@shega/shared";
+
 type LoginRequest = {
     username: string;
     password: string;
 };
 
+
+export type Data = {
+    role: string
+    email: string
+    access_token: string
+    pwdChangeRequired: boolean
+    id: string
+  }
+
+export type Response  = {
+    data: Data
+  }
+  
+
 export const login = async (data: LoginRequest) => {
-    const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
+   const response: Response = await fetcher(
+          "/auth/login",
+           {
+             method: "POST",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify(data),
+           }
+         );
 
-    if (!response.ok) {
-        throw new Error('Failed to login');
-    }
-
-    return response.json();
+         return response;
 };

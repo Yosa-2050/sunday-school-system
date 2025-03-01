@@ -8,6 +8,8 @@ export default  function HomePage() {
     const {user} = useAuth();
     const locale = useLocale();
 
+    console.log(user);
+
     if(user)  {
         redirect({ href: '/admin/dashboard', locale});
     }

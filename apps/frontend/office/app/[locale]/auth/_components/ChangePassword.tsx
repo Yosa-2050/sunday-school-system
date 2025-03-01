@@ -1,15 +1,12 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
   Group,
   PasswordInput,
-  Stack,
-  Text,
-  Title,
+  Stack, Title
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation } from "@tanstack/react-query";
@@ -17,10 +14,11 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "@/i18n/routing";
+import { changePassword } from "app/[locale]/_api/auth/sign-up";
 
 const changePasswordSchema = z
   .object({
-    currentPassword: z
+    oldPassword: z
       .string()
       .min(6, "Current password must be at least 6 characters"),
     newPassword: z
@@ -41,10 +39,7 @@ const changePasswordSchema = z
 
 type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
 
-const ChangePassword = () => {
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("id");
-  const oldPassword = searchParams.get("password");
+const ChangePassword = ({ userId }: { userId: string }) => {
 
   const t = useTranslations("auth.changePassword");
 
@@ -57,7 +52,7 @@ const ChangePassword = () => {
   } = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      currentPassword: oldPassword || "",
+      oldPassword:  "",
     },
   });
 
@@ -69,31 +64,7 @@ const ChangePassword = () => {
     Error,
     ChangePasswordFormValues
   >({
-    mutationFn: async (data: ChangePasswordFormValues) => {
-      if (!userId || !oldPassword) {
-        throw new Error("Missing user ID or old password");
-      }
-
-      const response = await fetch(
-        "https://api.shega.heranitech.com/auth/changePassword",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId,
-            oldPassword: data.currentPassword,
-            newPassword: data.newPassword,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to change password");
-      }
-
-      return response.json();
-    },
+    mutationFn: async (data) => changePassword({ userId, oldPassword: data.oldPassword, newPassword: data.newPassword }),
     onError: (error) => {
       notifications.show({
         title: "Failed to change password",
@@ -108,9 +79,7 @@ const ChangePassword = () => {
         color: "green",
       });
       reset();
-      setTimeout(() => {
-        router.push("/login");
-      }, 1500); // Delay to allow user to see the notification
+      router.push("/auth/login");
     },
   });
 
@@ -121,25 +90,20 @@ const ChangePassword = () => {
   const isButtonDisabled = !(newPasswordValue && confirmPasswordValue);
 
   return (
-    <Box className="flex h-screen items-center justify-center bg-white">
-      <div className="absolute top-4 left-4">
-        <img src="./logos.PNG" className="h-10" alt="Shega Jobs Logo" />
-      </div>
-      <div className="relative w-full max-w-xl bg-white p-8">
+    <Box className="flex w-1/2 items-center justify-center bg-white">
+      <div className="relative w-full p-8">
         <Stack>
           <Title order={2} ta="center" mb={"lg"}>
             {t("title")}
           </Title>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack>
-              {/* <PasswordInput
+              <PasswordInput
                 label="Old Password"
-                hidden
                 placeholder="Enter your old password"
-                {...register("currentPassword")}
-                error={errors.currentPassword?.message}
-                defaultValue={oldPassword || ""}
-              /> */}
+                {...register("oldPassword")}
+                error={errors.oldPassword?.message}
+              />
               <PasswordInput
                 label={t("newPassword")}
                 placeholder="Enter a new password"
@@ -185,9 +149,6 @@ const ChangePassword = () => {
             </Stack>
           </form>
         </Stack>
-        <Text ta="center" className="mt-8 text-gray-500 text-sm">
-          {new Date().getFullYear()} Shega Jobs. {t("rightsReserved")}
-        </Text>
       </div>
     </Box>
   );

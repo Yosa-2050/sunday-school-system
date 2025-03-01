@@ -17,7 +17,7 @@ interface ShellProps {
     children: React.ReactNode;
 }
 
-export default function IAMlayout({ children }: ShellProps): React.ReactNode {
+export default function WrapperShell({ children }: ShellProps): React.ReactNode {
     return (
         <ModalsProvider>
             <Notifications />
