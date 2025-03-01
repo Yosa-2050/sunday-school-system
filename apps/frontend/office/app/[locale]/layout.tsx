@@ -22,7 +22,6 @@ const defaultTheme = '#014d4e';
 export default async function RootLayout({
     children,
 }: Readonly<PropsWithChildren>) {
-
     const user = await getUserAction();
 
     const messages = await getMessages();
@@ -46,9 +45,7 @@ export default async function RootLayout({
                             color={defaultTheme}
                             radius={'8px'}
                         >
-                            <AuthProvider user={user}>
-                                {children}
-                            </AuthProvider>
+                            <AuthProvider user={user}>{children}</AuthProvider>
                         </MantineThemeProvider>
                     </QueryProviders>
                 </NextIntlClientProvider>

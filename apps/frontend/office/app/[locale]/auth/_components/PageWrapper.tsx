@@ -3,12 +3,12 @@
 import { Link, redirect } from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
+import { useAuth } from '@shega/ui';
 import { useLocale, useTranslations } from 'next-intl';
 import type React from 'react';
 import type { JSX } from 'react';
 import Logo from '../../../../public/logo.svg';
-import { useAuth } from '@shega/ui';
-import { useMediaQuery } from '@mantine/hooks';
 
 export default function PageWrapper({
     children,
@@ -87,7 +87,7 @@ export default function PageWrapper({
                     color="gray"
                     className="absolute bottom-4 text-center"
                 >
-                    {new Date().getFullYear()} Shega Jobs. {t("rightsReserved")}
+                    {new Date().getFullYear()} Shega Jobs. {t('rightsReserved')}
                 </Text>
             </Flex>
         </Flex>

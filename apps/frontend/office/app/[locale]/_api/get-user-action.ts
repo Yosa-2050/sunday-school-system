@@ -1,7 +1,7 @@
 'use server';
 
-import { COOKIE_ACCESS_TOKEN, fetcher } from "@shega/shared";
-import { cookies } from "next/headers";
+import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
+import { cookies } from 'next/headers';
 
 export const getUserAction = async () => {
     const cookieValue = await cookies();

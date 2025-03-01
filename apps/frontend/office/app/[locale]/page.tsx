@@ -1,19 +1,17 @@
 'use client';
 
 import { redirect } from '@/i18n/routing';
-import {useAuth} from '@shega/ui'
+import { useAuth } from '@shega/ui';
 import { useLocale } from 'next-intl';
 
-export default  function HomePage() {
-    const {user} = useAuth();
+export default function HomePage() {
+    const { user } = useAuth();
     const locale = useLocale();
 
-    console.log(user);
 
-    if(user)  {
-        redirect({ href: '/admin/dashboard', locale});
-    }
-    else {
-        redirect({ href: '/auth/login', locale});
+    if (user) {
+        redirect({ href: '/admin/dashboard', locale });
+    } else {
+        redirect({ href: '/auth/login', locale });
     }
 }

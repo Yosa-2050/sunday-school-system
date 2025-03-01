@@ -1,15 +1,15 @@
+import { useRouter } from '@/i18n/routing';
 import { Avatar, Box, Divider, Menu } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import { IconLogout2, IconSettings2, IconUserDown } from '@tabler/icons-react';
+import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
-import {deleteCookie} from 'cookies-next'
-import { useRouter } from '@/i18n/routing';
-import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 
 export default function UserProfile() {
     const t = useTranslations('jobPortal');
-    const {user} = useAuth();
+    const { user } = useAuth();
     const [opened, { toggle }] = useDisclosure(false);
     const router = useRouter();
 
