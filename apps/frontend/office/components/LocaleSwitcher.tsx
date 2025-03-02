@@ -1,37 +1,41 @@
 'use client';
 
 import { usePathname, useRouter } from '@/i18n/routing';
-import { Select } from '@mantine/core';
-import { useTransition } from 'react';
+import { Menu, Button } from '@mantine/core';
+import { useTransition, useState } from 'react';
 
 type Locale = 'en' | 'am';
 
-export default function LocaleSwitcherSelect() {
+const localeLabels: Record<Locale, string> = {
+    en: 'En',
+    am: 'አማ',
+};
+
+export default function LocaleSwitcherMenu() {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const pathname = usePathname();
+    const [selectedLocale, setSelectedLocale] = useState<Locale>('en');
 
-    function onSelectChange(value: string | null) {
-        if (!value) {
-            return;
-        }
-        const nextLocale = value as Locale;
-
+    function onSelectChange(value: Locale) {
+        setSelectedLocale(value);
         startTransition(() => {
-            router.replace({ pathname }, { locale: nextLocale });
+            router.replace({ pathname }, { locale: value });
         });
     }
 
     return (
-        <Select
-            data={[
-                { value: 'en', label: 'En' },
-                { value: 'am', label: 'አማ' },
-            ]}
-            onChange={onSelectChange}
-            placeholder="Select language"
-            style={{ width: 100 }}
-            disabled={isPending}
-        />
+        <Menu disabled={isPending}>
+            <Menu.Target>
+                <Button variant="light" className='rounded-full'>{localeLabels[selectedLocale]}</Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+                {(['en', 'am'] as Locale[]).map((locale) => (
+                    <Menu.Item key={locale} onClick={() => onSelectChange(locale)}>
+                        {localeLabels[locale]}
+                    </Menu.Item>
+                ))}
+            </Menu.Dropdown>
+        </Menu>
     );
 }

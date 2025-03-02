@@ -1,11 +1,11 @@
 'use client';
 
 import { Link } from '@/i18n/routing';
-import { AppShell, Box, Burger, Button, Flex, ScrollArea } from '@mantine/core';
+import { AppShell, Box, Burger, Flex, ScrollArea, CloseButton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { IconBell } from '@tabler/icons-react';
+import { IconBell, IconLayoutSidebarRightExpand, IconLayoutSidebarLeftExpand } from '@tabler/icons-react';
 import Image from 'next/image';
 
 import Logo from '../public/logo.svg';
@@ -22,58 +22,87 @@ export default function WrapperShell({
     children,
 }: ShellProps): React.ReactNode {
     const [opened, { toggle }] = useDisclosure(false);
+    const [sidebarOpen, { toggle: toggleSidebar }] = useDisclosure(true);
 
     return (
         <ModalsProvider>
             <Notifications />
             <AppShell
-                header={{ height: 56 }}
+                layout='alt'
+                header={{ height: 60 }}
                 navbar={{
-                    width: 280,
-                    breakpoint: 'md', // Sidebar hides on small screens
-                    collapsed: { mobile: !opened },
+                    width: 340,
+                    breakpoint: 'md',
+                    collapsed: { mobile: !opened, desktop: !sidebarOpen },
                 }}
                 padding="md"
             >
                 {/* Header */}
-                <AppShell.Header className="bg-white border-b border-gray-200">
+                <AppShell.Header className="bg-white border-b border-gray-200" h={60}>
                     <Flex
                         align="center"
-                        justify="space-between"
+                        justify={'space-between'}
                         h="100%"
                         px="md"
                     >
-                        <Flex align="center">
-                            <Link
-                                href="/admin/dashboard"
-                                className="ml-3 flex items-center gap-2"
-                            >
-                                <Image
-                                    src={Logo.src}
-                                    alt="logo"
-                                    width={80}
-                                    height={120}
-                                />
-                            </Link>
+                        <Flex
+                            onClick={toggleSidebar}
+                            style={{ cursor: 'pointer' }}
+                            visibleFrom='md'
+                        >
+                            {sidebarOpen ?  <IconLayoutSidebarRightExpand size={30} /> : <IconLayoutSidebarLeftExpand size={30} />}
                         </Flex>
+                        <Flex hiddenFrom='md'>
+
+                        <Link
+                            href="/admin/dashboard"
+                            className="ml-3 flex items-center gap-2"
+                            >
+                            <Image
+                                src={Logo.src}
+                                alt="logo"
+                                width={150}
+                                height={120}
+                                />
+                                </Link>
+                                </Flex>
                         <Flex align="center" gap="md">
                             <LocaleSwitcherSelect />
-                            <Button variant="subtle" size="xs" c={'gray'}>
+                            <Flex style={{ cursor: 'pointer' }}>
                                 <IconBell size={20} />
-                            </Button>
+                            </Flex>
                             <UserProfile />
-                            <Burger
-                                opened={opened}
-                                onClick={toggle}
-                                hiddenFrom="md"
-                                size="sm"
-                            />
+                           <Burger 
+                            onClick={toggle}
+                            style={{ cursor: 'pointer' }}
+                            size={20}
+                            hiddenFrom='md'
+                           />
                         </Flex>
                     </Flex>
                 </AppShell.Header>
 
                 {/* Sidebar */}
-                <AppShell.Navbar className="bg-white border-r border-gray-200">
+                <AppShell.Navbar className="bg-white border-r border-gray-200" p={"md"} hidden={!sidebarOpen}>
+                    <Flex align="center" justify={'space-between'} className='pb-2 border-b'>
+                        <Link
+                            href="/admin/dashboard"
+                            className="ml-3 flex items-center gap-2"
+                        >
+                            <Image
+                                src={Logo.src}
+                                alt="logo"
+                                width={150}
+                                height={120}
+                            />
+                        </Link>
+                        <CloseButton 
+                            onClick={toggle}
+                            style={{ cursor: 'pointer' }}
+                            size={30}
+                            hiddenFrom='md'
+                        />
+                    </Flex>
                     <ScrollArea className="flex-1">
                         <SideMenu menu={Menus()} />
                     </ScrollArea>
@@ -87,7 +116,7 @@ export default function WrapperShell({
 
                 {/* Main Content */}
                 <AppShell.Main>
-                    <Box className=" flex-1 overflow-y-auto">{children}</Box>
+                    <Box className="w-full flex-1">{children}</Box>
                 </AppShell.Main>
             </AppShell>
         </ModalsProvider>
