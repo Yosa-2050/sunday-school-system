@@ -19,6 +19,7 @@ build:
   only:
     - merge_requests
   script:
+    - echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}"  # Debugging
     - pnpm install
     - pnpm run format
     - pnpm run build

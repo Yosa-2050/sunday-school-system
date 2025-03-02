@@ -16,7 +16,7 @@ export function AuthWrapper({ path }: { path?: string[] }): JSX.Element {
             return <Login />;
         }
         if (path[0]?.startsWith('change-password')) {
-            return <ChangePassword />;
+            return <ChangePassword userId={path[1] ?? ''} />;
         }
         if (path[0]?.startsWith('forgot-password')) {
             return <ForgetPassword />;

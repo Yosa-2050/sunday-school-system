@@ -1,11 +1,13 @@
 'use client';
 
-import { Link } from '@/i18n/routing';
+import { Link, redirect } from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
-import { useTranslations } from 'next-intl';
+import { useMediaQuery } from '@mantine/hooks';
+import { useAuth } from '@shega/ui';
+import { useLocale, useTranslations } from 'next-intl';
 import type React from 'react';
-import type { JSX } from 'react';
+import { type JSX, useEffect } from 'react';
 import Logo from '../../../../public/logo.svg';
 
 export default function PageWrapper({
@@ -13,12 +15,24 @@ export default function PageWrapper({
 }: {
     children: React.ReactNode;
 }): JSX.Element {
+    const { user } = useAuth();
+    const locale = useLocale();
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const t = useTranslations('auth.pageWrapper');
+
+    // Using useEffect to handle the redirect after component mounts
+    useEffect(() => {
+        if (user) {
+            redirect({ href: '/admin/dashboard', locale });
+        }
+    }, [user, locale]); // Run the redirect effect only when `user` or `locale` changes
 
     return (
         <Flex className="min-h-screen bg-primary-1 w-full">
-            {/* Left section with carousel */}
-            <Box className="relative h-screen bg-primary-1 md:w-1/2">
+            {/* Left section with carousel (only visible on desktop) */}
+            <Box
+                className={`relative h-screen bg-primary-1 md:w-1/2 ${isMobile ? 'hidden' : ''}`}
+            >
                 <Carousel
                     withIndicators
                     height="100%"
@@ -63,7 +77,7 @@ export default function PageWrapper({
                         alt="Logo"
                         width={40}
                         height={30}
-                        className="block w-[30%]  absolute top-10 left-2"
+                        className="block w-[30%] absolute top-10 left-2"
                     />
                 </Link>
 
@@ -75,8 +89,7 @@ export default function PageWrapper({
                     color="gray"
                     className="absolute bottom-4 text-center"
                 >
-                    © {new Date().getFullYear()} All rights reserved by Shega
-                    Jobs
+                    {new Date().getFullYear()} Shega Jobs. {t('rightsReserved')}
                 </Text>
             </Flex>
         </Flex>

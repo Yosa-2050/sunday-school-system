@@ -16,6 +16,7 @@
         "typescript": "5.5.4"
     },
     "dependencies": {
+        "cookies-next": "^5.1.0",
         "zod": "^3.24.1"
     }
 }

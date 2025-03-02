@@ -17,7 +17,9 @@ interface ShellProps {
     children: React.ReactNode;
 }
 
-export default function IAMlayout({ children }: ShellProps): React.ReactNode {
+export default function WrapperShell({
+    children,
+}: ShellProps): React.ReactNode {
     return (
         <ModalsProvider>
             <Notifications />
@@ -61,9 +63,7 @@ export default function IAMlayout({ children }: ShellProps): React.ReactNode {
                             <UserProfile />
                         </Flex>
                     </Box>
-                    <Box className="container mx-auto my-4 mt-20 flex-1 overflow-y-auto">
-                        {children}
-                    </Box>
+                    <Box className="m-4 flex-1 overflow-y-auto">{children}</Box>
                 </Box>
             </Box>
         </ModalsProvider>

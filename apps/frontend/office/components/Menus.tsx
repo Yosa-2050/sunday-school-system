@@ -24,7 +24,7 @@ export const Menus = () => {
         {
             label: t('dashboard'),
             icon: <IconHome stroke={1.4} size={18} />,
-            link: '/dashboard',
+            link: '/admin/dashboard',
         },
         {
             label: t('job-seekers'),
@@ -32,9 +32,9 @@ export const Menus = () => {
             isGroup: true,
             children: [
                 {
-                    label: t('profile'),
+                    label: t('users'),
                     icon: <IconFileText stroke={1.4} size={18} />,
-                    link: '/job-seekers/profile',
+                    link: '/admin/users',
                 },
                 {
                     label: t('resume-builder'),

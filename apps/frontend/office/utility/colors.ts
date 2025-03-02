@@ -1,9 +1,9 @@
 import chroma from 'chroma-js';
 
 const LIGHTNESS_MAP = [
-    0.96, 0.907, 0.805, 0.697, 0.605, 0.547, 0.518, 0.445, 0.395, 0.34,
+    1, 0.907, 0.805, 0.697, 0.605, 0.547, 0.518, 0.445, 0.395, 0.34,
 ];
-const SATURATION_MAP = [0.32, 0.16, 0.08, 0.04, 0, 0, 0.04, 0.08, 0.16, 0.32];
+const SATURATION_MAP = [0.4, 0.16, 0.08, 0.04, 0, 0, 0.04, 0.08, 0.16, 0.32];
 
 function getClosestLightness(colorObject: chroma.Color) {
     const lightnessGoal = colorObject.get('hsl.l');
