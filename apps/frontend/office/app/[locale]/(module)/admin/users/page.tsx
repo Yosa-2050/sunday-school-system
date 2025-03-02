@@ -1,7 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import {
-    ActionIcon,
     Checkbox,
     Divider,
     Flex,
@@ -13,120 +13,59 @@ import {
     TableScrollContainer,
     Text,
     TextInput,
-    Tooltip,
+    Tooltip
 } from '@mantine/core';
-import {
-    IconDotsVertical,
-    IconDownload,
-    IconSearch,
-} from '@tabler/icons-react';
-import type { Users } from 'app/[locale]/_api/users/fetch-user';
+import { IconDotsVertical, IconDownload, IconSearch } from '@tabler/icons-react';
 import { DateTime } from 'luxon';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { CreateUser } from './_components/CreateUser';
 import { sampleUsers } from './_components/users';
+import { Link } from '@/i18n/routing';
 
-// Utility function to handle export (can be adjusted for CSV, JSON, etc.)
-const exportToCSV = (users: Users[]) => {
-    const header = [
-        'Full Name',
-        'Email',
-        'Role',
-        'Status',
-        'Created By',
-        'Created At',
-    ];
-    const rows = users.map((user) => [
-        `${user.firstName} ${user.lastName}`,
-        user.email,
-        user.userType,
-        user.status,
-        user.createdBy,
-        DateTime.fromISO(user.createdAt).toFormat('yyyy-MM-dd HH:mm:ss'),
-    ]);
-    const csvContent = [header, ...rows].map((row) => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'users_data.csv';
-    a.click();
-};
 
-export const UsersPage = () => {
-    const [selection, setSelection] = useState(['1']);
-    const [searchQuery, setSearchQuery] = useQueryState('search', {
-        defaultValue: '',
-    });
-    const [roleFilter, setRoleFilter] = useQueryState('filter', {
-        defaultValue: '',
-    });
-    const [sortOrder, setSortOrder] = useQueryState('sort', {
-        defaultValue: 'asc',
-    });
+const UsersPage = () => {
+    const t = useTranslations('usersPage');
 
-    // Apply search and filter logic
-    const filteredUsers = sampleUsers.filter((user) => {
-        return (
-            (user.firstName
-                .toLowerCase()
-                .includes((searchQuery || '').toLowerCase()) ||
-                user.lastName
-                    .toLowerCase()
-                    .includes((searchQuery || '').toLowerCase()) ||
-                user.email
-                    .toLowerCase()
-                    .includes((searchQuery || '').toLowerCase())) &&
-            (roleFilter ? user.userType === roleFilter : true)
-        );
-    });
+    const [selection, setSelection] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useQueryState('search', { defaultValue: '' });
+    const [roleFilter, setRoleFilter] = useQueryState('filter', { defaultValue: '' });
+    const [sortOrder, setSortOrder] = useQueryState('sort', { defaultValue: 'asc' });
 
-    // Sorting
-    const sortedUsers = [...filteredUsers].sort((a, b) => {
-        if (sortOrder === 'asc') {
-            return a.firstName.localeCompare(b.firstName);
-        }
-        return b.firstName.localeCompare(a.firstName);
-    });
+    const filteredUsers = sampleUsers.filter((user) =>
+        (user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        (roleFilter ? user.userType === roleFilter : true)
+    );
+
+    const sortedUsers = [...filteredUsers].sort((a, b) =>
+        sortOrder === 'asc' ? a.firstName.localeCompare(b.firstName) : b.firstName.localeCompare(a.firstName)
+    );
 
     const toggleRow = (id: string) =>
         setSelection((current) =>
-            current.includes(id)
-                ? current.filter((item) => item !== id)
-                : [...current, id],
-        );
-    const toggleAll = () =>
-        setSelection((current) =>
-            current.length === sortedUsers.length
-                ? []
-                : sortedUsers.map((item) => item.id),
+            current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
         );
 
+    const toggleAll = () =>
+        setSelection((current) => (current.length === sortedUsers.length ? [] : sortedUsers.map((item) => item.id)));
+
     const rows = sortedUsers.map((user) => (
-        <Table.Tr
-            key={user.id}
-            style={{
-                transition: 'background-color 0.3s ease',
-                cursor: 'pointer',
-            }}
-        >
+        <Table.Tr key={user.id}>
             <Table.Td>
-                <Checkbox
-                    checked={selection.includes(user.id)}
-                    onChange={() => toggleRow(user.id)}
-                />
+                <Checkbox checked={selection.includes(user.id)} onChange={() => toggleRow(user.id)} />
             </Table.Td>
             <Table.Td>{`${user.firstName} ${user.lastName}`}</Table.Td>
-            <Table.Td>{user.email}</Table.Td>
-            <Table.Td>{user.userType}</Table.Td>
-            <Table.Td>{user.status}</Table.Td>
-            <Table.Td>{user.createdBy}</Table.Td>
             <Table.Td>
-                {DateTime.fromISO(user.createdAt).toFormat(
-                    'yyyy-MM-dd HH:mm:ss',
-                )}
+                <Link href={`mailto:${user.email}`} className='hover:underline '>
+                    {user.email}
+                </Link>
             </Table.Td>
+            <Table.Td>{user.userType}</Table.Td>
+            <Table.Td className={`capitalize ${user.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>{user.status}</Table.Td>
+            <Table.Td>{user.createdBy}</Table.Td>
+            <Table.Td>{DateTime.fromISO(user.createdAt).toFormat('yyyy-MM-dd HH:mm:ss')}</Table.Td>
             <Table.Td>
                 <Group gap={4} align="center">
                     <Menu width={200}>
@@ -134,8 +73,8 @@ export const UsersPage = () => {
                             <IconDotsVertical size={18} />
                         </Menu.Target>
                         <Menu.Dropdown>
-                            <Menu.Item>Edit</Menu.Item>
-                            <Menu.Item>Delete</Menu.Item>
+                            <Menu.Item>{t('table.edit')}</Menu.Item>
+                            <Menu.Item>{t('table.delete')}</Menu.Item>
                         </Menu.Dropdown>
                     </Menu>
                 </Group>
@@ -145,8 +84,8 @@ export const UsersPage = () => {
 
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-            <Flex align={'center'} justify={'space-between'} className="p-4">
-                <Text className="font-bold text-xl">List of Users</Text>
+            <Flex align="center" justify="space-between" className="p-4">
+                <Text className="font-bold text-xl">{t('title')}</Text>
                 <CreateUser />
             </Flex>
 
@@ -155,83 +94,60 @@ export const UsersPage = () => {
             {/* Search, Filter, Sort, Export Controls */}
             <Group justify="space-between" className="mb-4">
                 <TextInput
-                    leftSection={<IconSearch />}
-                    placeholder="Search users"
-                    value={searchQuery ?? ''}
+                    leftSection={<IconSearch size={18} />}
+                    placeholder={t('searchPlaceholder')}
+                    value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{ width: 300 }}
                 />
                 <Group>
                     <Select
-                        placeholder="Select role"
+                        placeholder={t('selectRole')}
                         value={roleFilter}
                         onChange={(data) => setRoleFilter(data ?? '')}
                         data={[
-                            { value: '', label: 'All Roles' },
-                            { value: 'admin', label: 'Admin' },
-                            { value: 'editor', label: 'Editor' },
-                            { value: 'viewer', label: 'Viewer' },
+                            { value: '', label: t('allRoles') },
+                            { value: 'ADMINISTRATOR', label: t('roles.administrator') },
+                            { value: 'JOB_SEEKER', label: t('roles.jobSeeker') },
+                            { value: 'WORK_PROVIDER', label: t('roles.workProvider') }
                         ]}
                         style={{ width: 200 }}
                     />
                     <Select
-                        placeholder="Sort by"
+                        placeholder={t('sortBy')}
                         value={sortOrder}
                         onChange={(data) => setSortOrder(data ?? '')}
                         data={[
-                            { value: 'asc', label: 'Sort Ascending' },
-                            { value: 'desc', label: 'Sort Descending' },
+                            { value: 'asc', label: t('sortOptions.asc') },
+                            { value: 'desc', label: t('sortOptions.desc') }
                         ]}
                         style={{ width: 200 }}
                     />
-                    <Tooltip label="Export to CSV" withArrow>
-                        <ActionIcon
-                            onClick={() => exportToCSV(sampleUsers)}
-                            variant="outline"
-                            color="green"
-                            radius="xl"
-                            size="sm"
-                        >
+                    <Tooltip label={t('exportCSV')} withArrow>
                             <IconDownload size={18} />
-                        </ActionIcon>
                     </Tooltip>
                 </Group>
             </Group>
 
             {/* Table */}
             <TableScrollContainer minWidth={800} type="native">
-                <Table
-                    withRowBorders
-                    withColumnBorders
-                    striped
-                    verticalSpacing={'md'}
-                >
-                    <Table.Thead
-                        style={{
-                            backgroundColor: '#f4f4f4',
-                            fontWeight: 'bold',
-                        }}
-                    >
+                <Table withRowBorders withColumnBorders striped verticalSpacing="md">
+                    <Table.Thead>
                         <Table.Tr>
                             <Table.Th>
                                 <Checkbox
                                     onChange={toggleAll}
-                                    checked={
-                                        selection.length === sortedUsers.length
-                                    }
-                                    indeterminate={
-                                        selection.length > 0 &&
-                                        selection.length !== sortedUsers.length
-                                    }
+                                    checked={selection.length === sortedUsers.length}
+                                    indeterminate={selection.length > 0 && selection.length !== sortedUsers.length}
                                 />
                             </Table.Th>
-                            <Table.Th>Full Name</Table.Th>
-                            <Table.Th>Email</Table.Th>
-                            <Table.Th>Role</Table.Th>
-                            <Table.Th>Status</Table.Th>
-                            <Table.Th>Created By</Table.Th>
-                            <Table.Th>Created At</Table.Th>
-                            <Table.Th>Actions</Table.Th>
+                            <Table.Th>{t('table.fullName')}</Table.Th>
+                            <Table.Th>{t('table.email')}</Table.Th>
+                            <Table.Th>{t('table.role')}</Table.Th>
+                            <Table.Th>{t('table.status')}</Table.Th>
+                            <Table.Th>{t('table.createdBy')}</Table.Th>
+                            <Table.Th>{t('table.createdAt')}</Table.Th>
+                            <Table.Th>{t('table.actions')}</Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>{rows}</Table.Tbody>

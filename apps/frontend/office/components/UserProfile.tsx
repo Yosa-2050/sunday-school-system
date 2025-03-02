@@ -34,7 +34,7 @@ export default function UserProfile() {
 
             <Menu.Dropdown>
                 <Menu.Item leftSection={<IconUserDown className="w-4 h-4" />}>
-                    {t('profile')}
+                    {t('users')}
                 </Menu.Item>
                 <Menu.Item leftSection={<IconSettings2 className="w-4 h-4" />}>
                     {t('settings')}

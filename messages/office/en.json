@@ -88,5 +88,67 @@
             "proccedBtn": "Procced",
             "rightsReserved": "© All rights reserved by Shega Jobs"
         }
+    },
+    "usersPage": {
+        "title": "List of Users",
+        "searchPlaceholder": "Search users",
+        "selectRole": "Select role",
+        "sortBy": "Sort by",
+        "exportCSV": "Export to CSV",
+        "allRoles": "All Roles",
+        "roles": {
+            "jobSeeker": "Applicants",
+            "workProvider": "Job Providers",
+            "administrator": "Administrator"
+        },
+        "sortOptions": {
+            "asc": "Sort Ascending",
+            "desc": "Sort Descending"
+        },
+        "table": {
+            "fullName": "Full Name",
+            "email": "Email",
+            "role": "Role",
+            "status": "Status",
+            "createdBy": "Created By",
+            "createdAt": "Created At",
+            "actions": "Actions",
+            "edit": "Edit",
+            "delete": "Delete"
+        }
+    },
+    "crateUsers": {
+        "createUserTitle": "Create User",
+        "roleLabel": "Role",
+        "rolePlaceholder": "Select your role",
+        "roles": {
+            "jobSeeker": "Applicants",
+            "workProvider": "Job Providers",
+            "administrator": "Administrator"
+        },
+        "firstNameLabel": "First Name",
+        "firstNamePlaceholder": "Enter first name",
+        "middleNameLabel": "Father's Name",
+        "middleNamePlaceholder": "Enter father’s name",
+        "lastNameLabel": "Grandfather's Name",
+        "lastNamePlaceholder": "Enter grandfather’s name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter email address",
+        "companyNameLabel": "Company Name",
+        "companyNamePlaceholder": "Enter company name",
+        "createUserButton": "Create User",
+        "notifications": {
+            "successTitle": "Success",
+            "successMessage": "User created successfully",
+            "errorTitle": "Error",
+            "errorMessage": "Error creating user"
+        },
+        "validation": {
+            "firstNameRequired": "First name is required",
+            "middleNameRequired": "Father name is required",
+            "lastNameRequired": "Grandfather name is required",
+            "invalidEmail": "Invalid email address",
+            "companyNameRequired": "Company name is required for job providers"
+        }
     }
 }

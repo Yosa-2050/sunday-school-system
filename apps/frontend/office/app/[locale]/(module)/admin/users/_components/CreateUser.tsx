@@ -22,30 +22,30 @@ import { useTranslations } from 'next-intl';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-const userSchema = z
-    .object({
-        role: z.string(),
-        firstName: z.string().min(1, 'Name is required'),
-        middleName: z.string().min(1, 'Father Name is required'),
-        lastName: z.string().min(1, 'Grand Father Name is required'),
-        email: z.string().email('Invalid email address'),
-        companyName: z.string().optional(),
-    })
-    .refine(
-        (data) =>
-            data.role !== 'WORK_PROVIDER' ||
-            (data.companyName && data.companyName.length > 0),
-        {
-            path: ['companyName'],
-            message: 'Company name is required for job providers',
-        },
-    );
-
 export function CreateUser() {
     const [opened, { open, close }] = useDisclosure(false);
-    const t = useTranslations('users');
+    const t = useTranslations('crateUsers');
 
-    // Initialize react-hook-form with the validation schema
+    const userSchema = z
+        .object({
+            role: z.string(),
+            firstName: z.string().min(1, t('validation.firstNameRequired')),
+            middleName: z.string().min(1, t('validation.middleNameRequired')),
+            lastName: z.string().min(1, t('validation.lastNameRequired')),
+            email: z.string().email(t('validation.invalidEmail')),
+            companyName: z.string().optional(),
+        })
+        .refine(
+            (data) =>
+                data.role !== 'WORK_PROVIDER' ||
+                (data.companyName && data.companyName.length > 0),
+            {
+                path: ['companyName'],
+                message: t('validation.companyNameRequired'),
+            },
+        );
+
+    // Initialize react-hook-form with validation schema
     const {
         control,
         register,
@@ -62,16 +62,16 @@ export function CreateUser() {
         mutationKey: ['users'],
         onSuccess: () => {
             notifications.show({
-                title: 'Success',
-                message: 'User Created Successfully',
+                title: t('notifications.successTitle'),
+                message: t('notifications.successMessage'),
             });
             close();
         },
         onError: (error) => {
             logger.log(error);
             notifications.show({
-                title: 'Error creating',
-                message: `Error Creating a User ${error.message}`,
+                title: t('notifications.errorTitle'),
+                message: `${t('notifications.errorMessage')} ${error.message}`,
             });
         },
     });
@@ -89,7 +89,7 @@ export function CreateUser() {
                 onClose={close}
                 title={
                     <Text className="text-primary font-bold text-xl mb-4">
-                        Create User
+                        {t('createUserTitle')}
                     </Text>
                 }
                 size="md"
@@ -106,20 +106,20 @@ export function CreateUser() {
                             render={({ field }) => (
                                 <Select
                                     {...field}
-                                    label="Role"
-                                    placeholder="Select your role"
+                                    label={t('roleLabel')}
+                                    placeholder={t('rolePlaceholder')}
                                     data={[
                                         {
                                             value: 'JOB_SEEKER',
-                                            label: 'Applicants',
+                                            label: t('roles.jobSeeker'),
                                         },
                                         {
                                             value: 'WORK_PROVIDER',
-                                            label: 'Job Providers',
+                                            label: t('roles.workProvider'),
                                         },
                                         {
                                             value: 'ADMINISTRATOR',
-                                            label: 'Administrator',
+                                            label: t('roles.administrator'),
                                         },
                                     ]}
                                     error={errors.role?.message}
@@ -153,7 +153,7 @@ export function CreateUser() {
                         <TextInput
                             label={t('emailLabel')}
                             placeholder={t('emailPlaceholder')}
-                            {...register('email')} // Register the email field
+                            {...register('email')}
                             error={errors.email?.message}
                             withAsterisk
                             styles={{
@@ -171,8 +171,8 @@ export function CreateUser() {
 
                         {role === 'WORK_PROVIDER' && (
                             <TextInput
-                                label="Company Name"
-                                placeholder="Enter company name"
+                                label={t('companyNameLabel')}
+                                placeholder={t('companyNamePlaceholder')}
                                 {...register('companyName')}
                                 error={errors.companyName?.message}
                                 withAsterisk
@@ -194,7 +194,7 @@ export function CreateUser() {
             </Drawer>
 
             <Button variant="default" onClick={open}>
-                Create User
+                {t('createUserButton')}
             </Button>
         </>
     );
