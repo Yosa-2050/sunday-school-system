@@ -24,15 +24,14 @@ stages:
   - staging
   - deploy
 
-# Build jobs
+# Build job
 build:
   stage: build
-  only:
-    - merge_requests
   script:
     - pnpm turbo run build
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "merge_request"
+      changes:
         - apps/frontend/portal/**
         - apps/frontend/office/**
         - apps/backend/api/**
@@ -56,15 +55,14 @@ staging:
     - pnpm install
     - pnpm run format
 
-# Single deployment job (since the webhook is the same)
+# Deploy job
 deploy:
   stage: deploy
   script:
     - curl -X POST https://cool.heranitech.com/webhooks/source/gitlab/events/manual
   rules:
-    - changes:
+    - if: $CI_COMMIT_REF_NAME == "main"
+      changes:
         - apps/frontend/portal/**
         - apps/frontend/office/**
         - apps/backend/api/**
-  only:
-    - main
