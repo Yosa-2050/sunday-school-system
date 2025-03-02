@@ -25,6 +25,7 @@ export default function UserProfile() {
                 <Box
                     variant="subtle"
                     className="flex items-center space-x-2 text-primary cursor-pointer"
+                    visibleFrom="md"
                 >
                     <Avatar radius="xl" color="blue">
                         {user?.firstName[0]} {user?.lastName[0]}
