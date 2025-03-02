@@ -3,11 +3,11 @@
 import { Link, redirect } from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 import { useAuth } from '@shega/ui';
+import Autoplay from 'embla-carousel-autoplay';
 import { useLocale, useTranslations } from 'next-intl';
 import type React from 'react';
-import { type JSX, useEffect } from 'react';
+import { type JSX, useEffect, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';
 
 export default function PageWrapper({
@@ -17,58 +17,62 @@ export default function PageWrapper({
 }): JSX.Element {
     const { user } = useAuth();
     const locale = useLocale();
-    const isMobile = useMediaQuery('(max-width: 768px)');
     const t = useTranslations('auth.pageWrapper');
+    const autoplay = useRef(Autoplay({ delay: 2000 }));
 
-    // Using useEffect to handle the redirect after component mounts
     useEffect(() => {
         if (user) {
             redirect({ href: '/admin/dashboard', locale });
         }
-    }, [user, locale]); // Run the redirect effect only when `user` or `locale` changes
+    }, [user, locale]);
 
     return (
-        <Flex className="min-h-screen bg-primary-1 w-full">
-            {/* Left section with carousel (only visible on desktop) */}
+        <Flex className="relative min-h-screen w-full">
+            {/* Background Carousel - Moves to Background on Mobile */}
             <Box
-                className={`relative h-screen bg-primary-1 md:w-1/2 ${isMobile ? 'hidden' : ''}`}
+                className={`absolute inset-0 w-full h-[100vh] z-0 md:w-1/2 md:relative
+                `}
             >
                 <Carousel
-                    withIndicators
-                    height="100%"
-                    className="absolute inset-0 w-full h-full"
-                    loop
+                    withControls={false}
+                    plugins={[autoplay.current]}
+                    onMouseEnter={autoplay.current.stop}
+                    onMouseLeave={autoplay.current.reset}
+                    className="absolute inset-0 w-full h-[100vh]"
                 >
                     <Carousel.Slide>
                         <Image
                             src="/job-search-im-unemployed-free-photo.webp"
                             alt="Background 1"
-                            className="w-full h-full object-cover"
+                            className="w-full h-[100vh] object-cover"
                         />
                     </Carousel.Slide>
                     <Carousel.Slide>
                         <Image
                             src="/istockphoto-537503733-612x612.jpg"
                             alt="Background 2"
-                            className="w-full h-full object-cover"
+                            className="w-full h-[100vh] object-cover"
                         />
                     </Carousel.Slide>
                     <Carousel.Slide>
                         <Image
                             src="/0270_637846635946108934.png"
                             alt="Background 3"
-                            className="w-full h-full object-cover"
+                            className="w-full h-[100vh] object-cover"
                         />
                     </Carousel.Slide>
                 </Carousel>
+
+                {/* Dark overlay to improve contrast on mobile */}
+                <Box className="absolute inset-0 bg-black/20" />
             </Box>
 
-            {/* Right section with content */}
+            {/* Content Section (Ensures it's above background) */}
             <Flex
                 direction="column"
                 align="center"
                 justify="center"
-                className="w-full md:w-1/2 relative bg-gray-100 overflow-hidden"
+                className={`relative z-10 w-full md:w-1/2 bg-white/80 backdrop-blur-none p-6 'md:bg-gray-100`}
                 h={'100vh'}
             >
                 <Link href="/">
@@ -83,7 +87,7 @@ export default function PageWrapper({
 
                 {children}
 
-                {/* Copyright text at the bottom */}
+                {/* Footer */}
                 <Text
                     size="sm"
                     color="gray"
