@@ -61,7 +61,7 @@ deploy:
   script:
     - curl -X POST https://cool.heranitech.com/webhooks/source/gitlab/events/manual
   rules:
-    - if: $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_COMMIT_REF_NAME == "develop"
       changes:
         - apps/frontend/portal/**
         - apps/frontend/office/**
