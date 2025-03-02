@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import {
     Checkbox,
     Divider,
@@ -13,59 +13,93 @@ import {
     TableScrollContainer,
     Text,
     TextInput,
-    Tooltip
+    Tooltip,
 } from '@mantine/core';
-import { IconDotsVertical, IconDownload, IconSearch } from '@tabler/icons-react';
+import {
+    IconDotsVertical,
+    IconDownload,
+    IconSearch,
+} from '@tabler/icons-react';
 import { DateTime } from 'luxon';
+import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { CreateUser } from './_components/CreateUser';
 import { sampleUsers } from './_components/users';
-import { Link } from '@/i18n/routing';
-
 
 const UsersPage = () => {
     const t = useTranslations('usersPage');
 
     const [selection, setSelection] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useQueryState('search', { defaultValue: '' });
-    const [roleFilter, setRoleFilter] = useQueryState('filter', { defaultValue: '' });
-    const [sortOrder, setSortOrder] = useQueryState('sort', { defaultValue: 'asc' });
+    const [searchQuery, setSearchQuery] = useQueryState('search', {
+        defaultValue: '',
+    });
+    const [roleFilter, setRoleFilter] = useQueryState('filter', {
+        defaultValue: '',
+    });
+    const [sortOrder, setSortOrder] = useQueryState('sort', {
+        defaultValue: 'asc',
+    });
 
-    const filteredUsers = sampleUsers.filter((user) =>
-        (user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (roleFilter ? user.userType === roleFilter : true)
+    const filteredUsers = sampleUsers.filter(
+        (user) =>
+            (user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                user.lastName
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
+            (roleFilter ? user.userType === roleFilter : true),
     );
 
     const sortedUsers = [...filteredUsers].sort((a, b) =>
-        sortOrder === 'asc' ? a.firstName.localeCompare(b.firstName) : b.firstName.localeCompare(a.firstName)
+        sortOrder === 'asc'
+            ? a.firstName.localeCompare(b.firstName)
+            : b.firstName.localeCompare(a.firstName),
     );
 
     const toggleRow = (id: string) =>
         setSelection((current) =>
-            current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
+            current.includes(id)
+                ? current.filter((item) => item !== id)
+                : [...current, id],
         );
 
     const toggleAll = () =>
-        setSelection((current) => (current.length === sortedUsers.length ? [] : sortedUsers.map((item) => item.id)));
+        setSelection((current) =>
+            current.length === sortedUsers.length
+                ? []
+                : sortedUsers.map((item) => item.id),
+        );
 
     const rows = sortedUsers.map((user) => (
         <Table.Tr key={user.id}>
             <Table.Td>
-                <Checkbox checked={selection.includes(user.id)} onChange={() => toggleRow(user.id)} />
+                <Checkbox
+                    checked={selection.includes(user.id)}
+                    onChange={() => toggleRow(user.id)}
+                />
             </Table.Td>
             <Table.Td>{`${user.firstName} ${user.lastName}`}</Table.Td>
             <Table.Td>
-                <Link href={`mailto:${user.email}`} className='hover:underline '>
+                <Link
+                    href={`mailto:${user.email}`}
+                    className="hover:underline "
+                >
                     {user.email}
                 </Link>
             </Table.Td>
             <Table.Td>{user.userType}</Table.Td>
-            <Table.Td className={`capitalize ${user.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>{user.status}</Table.Td>
+            <Table.Td
+                className={`capitalize ${user.status === 'active' ? 'text-green-600' : 'text-red-600'}`}
+            >
+                {user.status}
+            </Table.Td>
             <Table.Td>{user.createdBy}</Table.Td>
-            <Table.Td>{DateTime.fromISO(user.createdAt).toFormat('yyyy-MM-dd HH:mm:ss')}</Table.Td>
+            <Table.Td>
+                {DateTime.fromISO(user.createdAt).toFormat(
+                    'yyyy-MM-dd HH:mm:ss',
+                )}
+            </Table.Td>
             <Table.Td>
                 <Group gap={4} align="center">
                     <Menu width={200}>
@@ -107,9 +141,18 @@ const UsersPage = () => {
                         onChange={(data) => setRoleFilter(data ?? '')}
                         data={[
                             { value: '', label: t('allRoles') },
-                            { value: 'ADMINISTRATOR', label: t('roles.administrator') },
-                            { value: 'JOB_SEEKER', label: t('roles.jobSeeker') },
-                            { value: 'WORK_PROVIDER', label: t('roles.workProvider') }
+                            {
+                                value: 'ADMINISTRATOR',
+                                label: t('roles.administrator'),
+                            },
+                            {
+                                value: 'JOB_SEEKER',
+                                label: t('roles.jobSeeker'),
+                            },
+                            {
+                                value: 'WORK_PROVIDER',
+                                label: t('roles.workProvider'),
+                            },
                         ]}
                         style={{ width: 200 }}
                     />
@@ -119,26 +162,36 @@ const UsersPage = () => {
                         onChange={(data) => setSortOrder(data ?? '')}
                         data={[
                             { value: 'asc', label: t('sortOptions.asc') },
-                            { value: 'desc', label: t('sortOptions.desc') }
+                            { value: 'desc', label: t('sortOptions.desc') },
                         ]}
                         style={{ width: 200 }}
                     />
                     <Tooltip label={t('exportCSV')} withArrow>
-                            <IconDownload size={18} />
+                        <IconDownload size={18} />
                     </Tooltip>
                 </Group>
             </Group>
 
             {/* Table */}
             <TableScrollContainer minWidth={800} type="native">
-                <Table withRowBorders withColumnBorders striped verticalSpacing="md">
+                <Table
+                    withRowBorders
+                    withColumnBorders
+                    striped
+                    verticalSpacing="md"
+                >
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th>
                                 <Checkbox
                                     onChange={toggleAll}
-                                    checked={selection.length === sortedUsers.length}
-                                    indeterminate={selection.length > 0 && selection.length !== sortedUsers.length}
+                                    checked={
+                                        selection.length === sortedUsers.length
+                                    }
+                                    indeterminate={
+                                        selection.length > 0 &&
+                                        selection.length !== sortedUsers.length
+                                    }
                                 />
                             </Table.Th>
                             <Table.Th>{t('table.fullName')}</Table.Th>
