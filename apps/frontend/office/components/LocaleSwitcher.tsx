@@ -1,8 +1,8 @@
 'use client';
 
 import { usePathname, useRouter } from '@/i18n/routing';
-import { Menu, Button } from '@mantine/core';
-import { useTransition, useState } from 'react';
+import { Button, Menu } from '@mantine/core';
+import { useState, useTransition } from 'react';
 
 type Locale = 'en' | 'am';
 
@@ -27,11 +27,16 @@ export default function LocaleSwitcherMenu() {
     return (
         <Menu disabled={isPending}>
             <Menu.Target>
-                <Button variant="light" className='rounded-full'>{localeLabels[selectedLocale]}</Button>
+                <Button variant="light" className="rounded-full">
+                    {localeLabels[selectedLocale]}
+                </Button>
             </Menu.Target>
             <Menu.Dropdown>
                 {(['en', 'am'] as Locale[]).map((locale) => (
-                    <Menu.Item key={locale} onClick={() => onSelectChange(locale)}>
+                    <Menu.Item
+                        key={locale}
+                        onClick={() => onSelectChange(locale)}
+                    >
                         {localeLabels[locale]}
                     </Menu.Item>
                 ))}
