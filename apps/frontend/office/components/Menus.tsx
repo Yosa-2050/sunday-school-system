@@ -37,6 +37,11 @@ export const Menus = () => {
                     link: '/admin/users',
                 },
                 {
+                    label: t('jobs'),
+                    icon: <IconFileDescription stroke={1.4} size={18} />,
+                    link: '/admin/jobs',
+                },
+                {
                     label: t('resume-builder'),
                     icon: <IconFileDescription stroke={1.4} size={18} />,
                     link: '/job-seekers/resume-builder',
