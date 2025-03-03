@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { Type } from 'class-transformer';
 import {
     IsDefined,
