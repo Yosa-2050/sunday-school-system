@@ -13,6 +13,8 @@ import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { LoginBy } from './enums/login-by.enum';
 import { UserRoleType } from './enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 
 @Injectable()
 export class UsersService {
@@ -133,5 +135,24 @@ export class UsersService {
 
     getUserRoles(userId: string) {
         return this.userRoleRepo.findBy({ user: { id: userId } });
+    }
+
+    async getUsersByUserType(type: UserRoleType, pagination: PaginationDto) {
+        const { page, limit } = pagination;
+            const skip = (page - 1) * limit;
+    
+            const [jobs, total] = await this.userRepo.findAndCount({
+                where: { roles: { role: type} },
+                take: limit,
+                skip
+            });
+    
+            return {
+                data: jobs,
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            };
     }
 }

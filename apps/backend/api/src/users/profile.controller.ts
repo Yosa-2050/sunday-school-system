@@ -86,12 +86,6 @@ export class ProfileController {
             'This API is deprecated please contact you administrator',
         );
     }
-
-    @Get()
-    findAll() {
-        return this.profileService.find();
-    }
-
     @Get('/getByEmail')
     getByEmail(@Query('email') email: string) {
         return this.profileService.findByEmail(email);

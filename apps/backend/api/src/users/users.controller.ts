@@ -21,6 +21,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginBy } from './enums/login-by.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from './users.service';
+import { Public } from '@shega/auth/jwt-public';
+// biome-ignore lint/style/useImportType: <explanation>
+import { GetPaginatedProfileByTypeRequstDto } from './dto/request/get-paginated-profile-by-type.request.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -30,6 +33,13 @@ export class UsersController {
         private notificationService: NotificationService,
     ) {}
 
+     @Public()
+        @Post("all")
+        findAll(@Body() dto: GetPaginatedProfileByTypeRequstDto) {
+            return this.usersService.getUsersByUserType(dto.status, dto.pagination);
+        }
+
+        
     @Post()
     async create(@Body() dto: CreateUserDto) {
         const user = await this.usersService.createFromProfile(
