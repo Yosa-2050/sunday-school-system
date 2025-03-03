@@ -144,26 +144,33 @@ export class UsersService {
         const skip = (page - 1) * limit;
         const search = pagination.search;
 
-        const query = this.userRepo.createQueryBuilder('user')
-    .leftJoinAndSelect('user.profile', 'profile') // Join Profile entity
-    .leftJoinAndSelect('user.roles', 'role') // Join Roles entity
-    .where(type ? 'role.role = :type' : '1=1', { type }) // Filter by role if provided
-    .andWhere(
-        search
-            ? `(user.email ILIKE '%' || :search || '%' OR 
+        const query = this.userRepo
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.profile', 'profile') // Join Profile entity
+            .leftJoinAndSelect('user.roles', 'role') // Join Roles entity
+            .where(type ? 'role.role = :type' : '1=1', { type }) // Filter by role if provided
+            .andWhere(
+                search
+                    ? `(user.email ILIKE '%' || :search || '%' OR 
                 profile.firstName ILIKE '%' || :search || '%' OR 
                 profile.middleName ILIKE '%' || :search || '%' OR 
                 profile.lastName ILIKE '%' || :search || '%')`
-            : '1=1',
-        { search }
-    )
-    .orderBy('user.createdAt', 'DESC') // Sort by newest users
-    .skip(skip)
-    .take(limit);
+                    : '1=1',
+                { search },
+            )
+            .orderBy('user.createdAt', 'DESC') // Sort by newest users
+            .skip(skip)
+            .take(limit);
 
         const [users, total] = await query.getManyAndCount();
 
-        return new PaginatedResponseDto<GetPaginatedUsersResponseDto[]>
-        (users.map(x => {return new GetPaginatedUsersResponseDto(x)}), total, page, limit );
+        return new PaginatedResponseDto<GetPaginatedUsersResponseDto[]>(
+            users.map((x) => {
+                return new GetPaginatedUsersResponseDto(x);
+            }),
+            total,
+            page,
+            limit,
+        );
     }
 }
