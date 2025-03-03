@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
     IsDefined,
     IsEnum,
@@ -12,10 +12,11 @@ import {
 } from 'class-validator';
 
 export class GetPaginatedProfileByTypeRequstDto {
-    @ApiProperty()
+    @ApiProperty({ required: false }) // Not required in Swagger
     @IsEnum(UserRoleType)
     @IsOptional()
-    status: UserRoleType;
+    @Transform(({ value }) => (value === '' ? null : value)) // Convert "" to null
+    status?: UserRoleType | null;
 
     @ApiProperty()
     @IsDefined()
