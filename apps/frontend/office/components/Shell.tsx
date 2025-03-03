@@ -140,7 +140,7 @@ export default function WrapperShell({
                 </AppShell.Navbar>
 
                 {/* Main Content */}
-                <AppShell.Main>
+                <AppShell.Main className="bg-primary-5">
                     <Box className="w-full flex-1">{children}</Box>
                 </AppShell.Main>
             </AppShell>

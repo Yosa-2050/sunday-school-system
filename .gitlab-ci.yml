@@ -1,7 +1,6 @@
 variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   GIT_DEPTH: "0"
-  TURBO_CACHE_DIR: .turbo
 
 default:
   image: node:22
@@ -10,39 +9,23 @@ before_script:
   - corepack enable
   - corepack prepare pnpm@9.0.0 --activate
   - pnpm config set store-dir .pnpm-store
-  - pnpm install
-
-cache:
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - .turbo
-    - .pnpm-store
-    - node_modules
 
 stages:
   - build
   - staging
-  - deploy
 
-# Build job
 build:
   stage: build
   script:
-    - pnpm turbo run build
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request"
-      changes:
-        - apps/frontend/portal/**
-        - apps/frontend/office/**
-        - apps/backend/api/**
+    - echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}"  # Debugging
+    - pnpm install
+    - pnpm run format
+    - pnpm run build
   artifacts:
     paths:
-      - apps/frontend/portal/dist/
-      - apps/frontend/office/dist/
-      - apps/backend/api/dist/
+      - dist/
     expire_in: 1 hour
 
-# Staging job
 staging:
   stage: staging
   only:
@@ -50,19 +33,8 @@ staging:
   dependencies:
     - build
   services:
-    - postgres:16
+    - postgres:16 # PostgreSQL container
   script:
     - pnpm install
     - pnpm run format
-
-# Deploy job
-deploy:
-  stage: deploy
-  script:
-    - curl -X POST https://cool.heranitech.com/webhooks/source/gitlab/events/manual
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "develop"
-      changes:
-        - apps/frontend/portal/**
-        - apps/frontend/office/**
-        - apps/backend/api/**
+    # - export PG_URL="postgresql://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DB"
