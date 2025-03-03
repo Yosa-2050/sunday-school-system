@@ -73,7 +73,7 @@ export default function PageWrapper({
                 align="center"
                 justify="center"
                 className={
-                    'relative z-10 w-full md:w-1/2  backdrop-blur-none p-6 bg-primary-5'
+                    'relative z-10 w-full md:w-1/2  backdrop-blur-none p-6 bg-primary-0'
                 }
                 h={'100vh'}
             >
