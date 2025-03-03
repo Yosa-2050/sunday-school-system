@@ -33,13 +33,12 @@ export class UsersController {
         private notificationService: NotificationService,
     ) {}
 
-     @Public()
-        @Post("all")
-        findAll(@Body() dto: GetPaginatedProfileByTypeRequstDto) {
-            return this.usersService.getUsersByUserType(dto.status, dto.pagination);
-        }
+    @Public()
+    @Post('all')
+    findAll(@Body() dto: GetPaginatedProfileByTypeRequstDto) {
+        return this.usersService.getUsersByUserType(dto.status, dto.pagination);
+    }
 
-        
     @Post()
     async create(@Body() dto: CreateUserDto) {
         const user = await this.usersService.createFromProfile(

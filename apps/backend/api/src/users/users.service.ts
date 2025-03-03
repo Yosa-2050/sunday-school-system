@@ -139,20 +139,20 @@ export class UsersService {
 
     async getUsersByUserType(type: UserRoleType, pagination: PaginationDto) {
         const { page, limit } = pagination;
-            const skip = (page - 1) * limit;
-    
-            const [jobs, total] = await this.userRepo.findAndCount({
-                where: { roles: { role: type} },
-                take: limit,
-                skip
-            });
-    
-            return {
-                data: jobs,
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            };
+        const skip = (page - 1) * limit;
+
+        const [jobs, total] = await this.userRepo.findAndCount({
+            where: { roles: { role: type } },
+            take: limit,
+            skip,
+        });
+
+        return {
+            data: jobs,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
     }
 }

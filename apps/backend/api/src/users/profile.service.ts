@@ -23,7 +23,6 @@ import { LoginBy } from './enums/login-by.enum';
 
 @Injectable()
 export class ProfileService {
-    
     constructor(
         @InjectRepository(Profile) private repo: Repository<Profile>,
         private userService: UsersService,
