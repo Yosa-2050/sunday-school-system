@@ -2,11 +2,13 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetPaginatedUsersResponseDto } from './dto/response/get-all-user.paginated.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { updatePasswordRequest } from './dto/update-password.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -15,8 +17,6 @@ import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { LoginBy } from './enums/login-by.enum';
 import { UserRoleType } from './enums/user-role.enum';
-import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
-import { GetPaginatedUsersResponseDto } from './dto/response/get-all-user.paginated.response.dto';
 
 @Injectable()
 export class UsersService {
