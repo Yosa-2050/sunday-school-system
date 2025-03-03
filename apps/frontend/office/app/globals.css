@@ -8,13 +8,6 @@
 :root {
     --background: #ffffff;
     --foreground: #171717;
-    --primary-color-0: #00599b;
-    --primary-color-1: #f5fbfe;
-    --primary-color-8: #4ea85f;
-    --primary-color-text: #191919;
-    /* --primary-color-background: #1e4353; */
-    --primary-color-default: #00599b;
-    --primary-color-border: #cbd5e1;
 }
 
 body {

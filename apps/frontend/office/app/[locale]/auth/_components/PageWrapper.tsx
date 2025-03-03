@@ -72,7 +72,7 @@ export default function PageWrapper({
                 direction="column"
                 align="center"
                 justify="center"
-                className={`relative z-10 w-full md:w-1/2 bg-white/80 backdrop-blur-none p-6 'md:bg-gray-100`}
+                className={'relative z-10 w-full md:w-1/2  backdrop-blur-none p-6 bg-primary-5'}
                 h={'100vh'}
             >
                 <Link href="/">
