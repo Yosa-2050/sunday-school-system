@@ -108,7 +108,7 @@ export default function WrapperShell({
                     <Flex
                         align="center"
                         justify={'space-between'}
-                        className="pb-2 border-b"
+                        className="pb-2 border-b border-gray-300"
                     >
                         <Link
                             href="/admin/dashboard"
@@ -131,11 +131,13 @@ export default function WrapperShell({
                     <ScrollArea className="flex-1">
                         <SideMenu menu={Menus()} />
                     </ScrollArea>
-                    <Box className="h-14 border-t text-sm px-4 flex items-center justify-center">
+                    <Box className="h-14 border-t border-gray-300 text-sm px-4 flex flex-col items-center justify-center">
                         <span className="text-gray-500">
-                            © {new Date().getFullYear()} All rights reserved by
-                            Shega Jobs
+                            © {new Date().getFullYear()} All rights reserved by{" "}
                         </span>
+                            <span className='text-gray-500'>
+                                {" "} Shega Jobs
+                                </span>
                     </Box>
                 </AppShell.Navbar>
 

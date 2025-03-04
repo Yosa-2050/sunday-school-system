@@ -3,6 +3,7 @@ import { fetcher } from '@shega/shared';
 type LoginRequest = {
     username: string;
     password: string;
+    origin: 'office'
 };
 
 export type Data = {

@@ -1,5 +1,5 @@
 .groupLabel {
-    @apply uppercase;
+    text-transform: uppercase;
     color: rgb(var(--primary-color-text) / 0.7);
     font-size: 12px;
     font-weight: 500;
@@ -7,7 +7,6 @@
 }
 
 .menuItem {
-    @apply flex cursor-pointer items-center  rounded-md px-2 py-1 transition duration-300 ease-in-out;
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
@@ -15,7 +14,9 @@
 }
 .menuItem:hover,
 .menuItem.active {
-    @apply bg-primary-1  relative text-gray-900;
+    position: relative;
+    background-color: var(--primary-color-1);
+    color: var(--primary-text-color);
 }
 
 .active .activeIndicator {

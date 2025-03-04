@@ -104,7 +104,8 @@ const Login = () => {
                     });
                     const user = await getUserAction();
                     setUser(user);
-                    router.push('/admin/dashboard');
+                    if(user.role === 'ADMINISTRATOR'){ router.push('/admin/dashboard');}
+                    if(user.role === 'WORK_PROVIDER'){ router.push('/work-provider/dashboard');}
                 }
             } catch (error) {
                 logger.error('Error processing login success:', error);
@@ -116,6 +117,7 @@ const Login = () => {
         loginMutation.mutateAsync({
             username: values.email,
             password: values.password,
+            origin: "office"
         });
     };
 
