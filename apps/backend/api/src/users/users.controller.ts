@@ -9,11 +9,14 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from '@shega/auth/jwt-public';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { GetPaginatedProfileByTypeRequstDto } from './dto/request/get-paginated-profile-by-type.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { updatePasswordRequest } from './dto/update-password.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -29,6 +32,12 @@ export class UsersController {
         private readonly usersService: UsersService,
         private notificationService: NotificationService,
     ) {}
+
+    @Public()
+    @Post('all')
+    findAll(@Body() dto: GetPaginatedProfileByTypeRequstDto) {
+        return this.usersService.getUsersByUserType(dto.status, dto.pagination);
+    }
 
     @Post()
     async create(@Body() dto: CreateUserDto) {

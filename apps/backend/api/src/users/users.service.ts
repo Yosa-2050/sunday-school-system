@@ -1,10 +1,14 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetPaginatedUsersResponseDto } from './dto/response/get-all-user.paginated.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { updatePasswordRequest } from './dto/update-password.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -133,5 +137,40 @@ export class UsersService {
 
     getUserRoles(userId: string) {
         return this.userRoleRepo.findBy({ user: { id: userId } });
+    }
+
+    async getUsersByUserType(type: UserRoleType, pagination: PaginationDto) {
+        const { page, limit } = pagination;
+        const skip = (page - 1) * limit;
+        const search = pagination.search;
+
+        const query = this.userRepo
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.profile', 'profile') // Join Profile entity
+            .leftJoinAndSelect('user.roles', 'role') // Join Roles entity
+            .where(type ? 'role.role = :type' : '1=1', { type }) // Filter by role if provided
+            .andWhere(
+                search
+                    ? `(user.email ILIKE '%' || :search || '%' OR 
+                profile.firstName ILIKE '%' || :search || '%' OR 
+                profile.middleName ILIKE '%' || :search || '%' OR 
+                profile.lastName ILIKE '%' || :search || '%')`
+                    : '1=1',
+                { search },
+            )
+            .orderBy('user.createdAt', 'DESC') // Sort by newest users
+            .skip(skip)
+            .take(limit);
+
+        const [users, total] = await query.getManyAndCount();
+
+        return new PaginatedResponseDto<GetPaginatedUsersResponseDto[]>(
+            users.map((x) => {
+                return new GetPaginatedUsersResponseDto(x);
+            }),
+            total,
+            page,
+            limit,
+        );
     }
 }

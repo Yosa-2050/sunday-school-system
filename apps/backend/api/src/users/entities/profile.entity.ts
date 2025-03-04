@@ -30,9 +30,6 @@ export class Profile extends BaseModel {
     mothersFullName: string;
 
     @Column({ nullable: true })
-    baptistName: string;
-
-    @Column({ nullable: true })
     birthDate: string;
 
     @Column({ nullable: true })
@@ -52,13 +49,4 @@ export class Profile extends BaseModel {
 
     @Column({ nullable: true })
     profile_picture_id: string;
-
-    // @AfterInsert()
-    // logInsert() {}
-
-    // @AfterUpdate()
-    // logUpdate() {}
-
-    // @AfterRemove()
-    // logRemove() {}
 }
