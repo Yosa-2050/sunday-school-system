@@ -33,6 +33,7 @@ import { EmployeeType } from './enums/employee-type.enum';
 
 @Injectable()
 export class OrganizationService {
+    
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -239,7 +240,7 @@ export class OrganizationService {
         if (saved?.id) {
             await this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: `please login to your account using your email ${dto.email} and password 12345678. Then reset your password.`,
+                content: `please login to your account using your email ${dto.email} and password ${pwdGenerated}. Then reset your password.`,
                 to: dto.email,
                 subject: 'Shega jobs',
                 reference: saved.id,
