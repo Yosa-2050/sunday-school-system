@@ -33,14 +33,14 @@ export function CreateUser() {
             middleName: z.string().min(1, t('validation.middleNameRequired')),
             lastName: z.string().min(1, t('validation.lastNameRequired')),
             email: z.string().email(t('validation.invalidEmail')),
-            companyName: z.string().optional(),
+            organizationName: z.string().optional(),
         })
         .refine(
             (data) =>
                 data.role !== 'WORK_PROVIDER' ||
-                (data.companyName && data.companyName.length > 0),
+                (data.organizationName && data.organizationName.length > 0),
             {
-                path: ['companyName'],
+                path: ['organizationName'],
                 message: t('validation.companyNameRequired'),
             },
         );
@@ -173,8 +173,8 @@ export function CreateUser() {
                             <TextInput
                                 label={t('companyNameLabel')}
                                 placeholder={t('companyNamePlaceholder')}
-                                {...register('companyName')}
-                                error={errors.companyName?.message}
+                                {...register('organizationName')}
+                                error={errors.organizationName?.message}
                                 withAsterisk
                             />
                         )}

@@ -6,15 +6,20 @@ export type CreateUsers = {
     firstName: string;
     middleName: string;
     lastName: string;
-    companyName?: string;
+    organizationName?: string;
 };
 
 export const createUsers = async (data: CreateUsers) => {
-    const response: CreateUsers[] = await fetcher('/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-    });
+    const response: CreateUsers[] = await fetcher(
+        data.role === 'WORK_PROVIDER'
+            ? '/organization/createEmployee'
+            : '/profile/new',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        },
+    );
 
     return response;
 };
