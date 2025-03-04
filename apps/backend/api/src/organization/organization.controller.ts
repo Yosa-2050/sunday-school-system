@@ -20,6 +20,8 @@ import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 
 @Public()
 @Controller('organization')
@@ -49,6 +51,11 @@ export class OrganizationController {
         return this.organizationService.assignEmployee(request);
     }
 
+    @Post("/all")
+    findAll(@Body() dto: PaginationDto) {
+        return this.organizationService.findAllPaginated(dto);
+    }
+
     @Get('/listEmployee/:organizationId')
     findAllEmployee(@Param('organizationId') id: string) {
         return this.organizationService.findEmployee(id);
@@ -57,11 +64,6 @@ export class OrganizationController {
     @Get('/listBranches/:organizationId')
     findAllBranches(@Param('organizationId') id: string) {
         return this.organizationService.findBranches(id);
-    }
-
-    @Get()
-    findAll() {
-        return this.organizationService.findAll();
     }
 
     @Get(':id')

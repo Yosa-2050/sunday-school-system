@@ -13,7 +13,7 @@ import { NotificationService } from '@shega/notification/notification.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -30,9 +30,14 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
+import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 
 @Injectable()
 export class OrganizationService {
+   
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -93,6 +98,21 @@ export class OrganizationService {
             isActive: true,
             deletedAt: null,
         });
+    }
+
+    async findAllPaginated(dto: PaginationDto) {
+        const search = dto.search;
+        const [organizations, count] = await this.organizationRepo.findAndCount({
+            where : search 
+                    ? [
+                        {name: ILike(`%${search}`)}
+                    ] : {},
+            order: { createdAt: 'DESC' },
+            take: dto.limit,
+            skip: dto.skip,
+        });
+        
+        return new PaginatedResponseDto<GetOrganizationListResponseDto[]>(organizations.map(org => {return new GetOrganizationListResponseDto(org)}), count, dto.page, dto.limit);
     }
 
     async getOrganizationById(organizationId: string) {

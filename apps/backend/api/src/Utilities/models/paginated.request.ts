@@ -23,4 +23,6 @@ export class PaginationDto {
     @Min(1)
     @Transform(({ value }) => (value === 0 ? 10 : value))
     limit?: number = 10;
+
+    skip = (this.page - 1) * this.limit;
 }
