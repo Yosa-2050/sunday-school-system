@@ -33,7 +33,6 @@ import { EmployeeType } from './enums/employee-type.enum';
 
 @Injectable()
 export class OrganizationService {
-    
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
