@@ -15,6 +15,7 @@
     "jobPortal": {
         "dashboard": "Dashboard",
         "job-seekers": "Job Seekers",
+        "jobs": "Jobs",
         "users": "Users",
         "resume-builder": "Resume Builder",
         "applied-jobs": "Applied Jobs",
@@ -26,7 +27,8 @@
         "applicants": "Applicants",
         "shortlisted-candidates": "Shortlisted Candidates",
         "reports": "Reports",
-        "job-explorer": "Job Explorer",
+        "job-explorer": "Jobs",
+        "organizations": "Organizations",
         "messages": "Messages",
         "analytics": "Analytics",
         "settings": "Settings",

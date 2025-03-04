@@ -120,7 +120,7 @@ const Login = () => {
     };
 
     return (
-        <Box className="flex items-center justify-center bg-white shadow rounded w-1/2">
+        <Box className="flex items-center justify-center bg-white shadow rounded w-full md:w-1/2">
             <div className="relative w-full p-8">
                 <Flex direction={'column'} align="center">
                     <Title className="text-xl text-start">{t('title')}</Title>

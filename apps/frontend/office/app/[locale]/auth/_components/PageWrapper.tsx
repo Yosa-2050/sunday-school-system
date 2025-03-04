@@ -34,6 +34,7 @@ export default function PageWrapper({
                 `}
             >
                 <Carousel
+                    loop={true}
                     withControls={false}
                     plugins={[autoplay.current]}
                     onMouseEnter={autoplay.current.stop}

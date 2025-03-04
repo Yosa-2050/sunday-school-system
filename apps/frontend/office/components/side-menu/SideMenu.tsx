@@ -108,7 +108,7 @@ const MenuLabel = ({
                 )}
             />
             <div className={classes.labelIcon}>{icon}</div>
-            <span className="ml-2 truncate">{label}</span>
+            <span className="ml-2 truncate text-md">{label}</span>
         </div>
     );
 };
