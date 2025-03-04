@@ -1,7 +1,8 @@
 import {
     IconBuilding,
     IconFileText,
-    IconHome, IconSearch
+    IconHome,
+    IconSearch,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
