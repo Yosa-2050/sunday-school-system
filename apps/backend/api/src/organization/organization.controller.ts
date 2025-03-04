@@ -51,7 +51,7 @@ export class OrganizationController {
         return this.organizationService.assignEmployee(request);
     }
 
-    @Post("/all")
+    @Post('/all')
     findAll(@Body() dto: PaginationDto) {
         return this.organizationService.findAllPaginated(dto);
     }

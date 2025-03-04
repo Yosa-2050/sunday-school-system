@@ -1,13 +1,13 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { Organization } from "@shega/organization/entities/organization.entity";
+import { Organization } from '@shega/organization/entities/organization.entity';
 
-export class GetOrganizationListResponseDto{
+export class GetOrganizationListResponseDto {
     name: string;
     isActive: boolean;
     createdBy: string;
-    createdDate: string; 
+    createdDate: string;
 
-    constructor(org: Organization){
+    constructor(org: Organization) {
         this.createdBy = org.createdBy;
         this.createdDate = org.createdAt?.toISOString();
         this.isActive = org.isActive;

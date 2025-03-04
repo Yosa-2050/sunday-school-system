@@ -37,7 +37,6 @@ import { GetOrganizationListResponseDto } from './dto/response/get-organization.
 
 @Injectable()
 export class OrganizationService {
-   
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -102,17 +101,23 @@ export class OrganizationService {
 
     async findAllPaginated(dto: PaginationDto) {
         const search = dto.search;
-        const [organizations, count] = await this.organizationRepo.findAndCount({
-            where : search 
-                    ? [
-                        {name: ILike(`%${search}`)}
-                    ] : {},
-            order: { createdAt: 'DESC' },
-            take: dto.limit,
-            skip: dto.skip,
-        });
-        
-        return new PaginatedResponseDto<GetOrganizationListResponseDto[]>(organizations.map(org => {return new GetOrganizationListResponseDto(org)}), count, dto.page, dto.limit);
+        const [organizations, count] = await this.organizationRepo.findAndCount(
+            {
+                where: search ? [{ name: ILike(`%${search}`) }] : {},
+                order: { createdAt: 'DESC' },
+                take: dto.limit,
+                skip: dto.skip,
+            },
+        );
+
+        return new PaginatedResponseDto<GetOrganizationListResponseDto[]>(
+            organizations.map((org) => {
+                return new GetOrganizationListResponseDto(org);
+            }),
+            count,
+            dto.page,
+            dto.limit,
+        );
     }
 
     async getOrganizationById(organizationId: string) {
