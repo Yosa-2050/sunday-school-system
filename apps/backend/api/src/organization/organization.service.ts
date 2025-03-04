@@ -6,6 +6,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -24,16 +27,13 @@ import { CreateOrganizationEmployeeDto } from './dto/request/create-employee.dto
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 import { EmployeesService } from './employees.service';
 import { Branch } from './entities/branch.entity';
 import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
-import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
-import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 
 @Injectable()
 export class OrganizationService {
