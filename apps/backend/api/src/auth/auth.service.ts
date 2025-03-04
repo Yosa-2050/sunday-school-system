@@ -58,7 +58,9 @@ export class AuthService {
         //let details: any;
         const roles = await this.usersService.getUserRoles(user.id);
         const defaultRole = roles?.find((x) => x.isDefault)?.role;
-        if(!validateRole(defaultRole, origin)) {throw new UnauthorizedException()}
+        if (!validateRole(defaultRole, origin)) {
+            throw new UnauthorizedException();
+        }
 
         //checking only default roles as the assumption is the user only have one defaul user
         switch (defaultRole) {
