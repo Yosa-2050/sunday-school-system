@@ -133,11 +133,9 @@ export default function WrapperShell({
                     </ScrollArea>
                     <Box className="h-14 border-t border-gray-300 text-sm px-4 flex flex-col items-center justify-center">
                         <span className="text-gray-500">
-                            © {new Date().getFullYear()} All rights reserved by{" "}
+                            © {new Date().getFullYear()} All rights reserved by{' '}
                         </span>
-                            <span className='text-gray-500'>
-                                {" "} Shega Jobs
-                                </span>
+                        <span className="text-gray-500"> Shega Jobs</span>
                     </Box>
                 </AppShell.Navbar>
 
