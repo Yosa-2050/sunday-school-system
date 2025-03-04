@@ -25,6 +25,8 @@ import { PasswordResetDto } from './dtos/request/username.dto';
 import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UserResponsePayload } from './dtos/response/user-response-payload.reponse.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { OriginEnums, validateRole } from './enums/origin.enum';
 
 @Injectable()
 export class AuthService {
@@ -52,12 +54,16 @@ export class AuthService {
         return null;
     }
 
-    async login(user: User) {
+    async login(user: User, origin: OriginEnums) {
         //let details: any;
         const roles = await this.usersService.getUserRoles(user.id);
+        const defaultRole = roles?.find((x) => x.isDefault)?.role;
+        if (!validateRole(defaultRole, origin)) {
+            throw new UnauthorizedException();
+        }
 
         //checking only default roles as the assumption is the user only have one defaul user
-        switch (roles?.find((x) => x.isDefault)?.role) {
+        switch (defaultRole) {
             case UserRoleType.Administrator:
                 break;
             case UserRoleType.JobSeeker:

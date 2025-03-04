@@ -6,6 +6,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -13,7 +16,7 @@ import { NotificationService } from '@shega/notification/notification.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -24,6 +27,7 @@ import { CreateOrganizationEmployeeDto } from './dto/request/create-employee.dto
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 import { EmployeesService } from './employees.service';
 import { Branch } from './entities/branch.entity';
 import { EmployeeOrganization } from './entities/employee-organization.entity';
@@ -93,6 +97,27 @@ export class OrganizationService {
             isActive: true,
             deletedAt: null,
         });
+    }
+
+    async findAllPaginated(dto: PaginationDto) {
+        const search = dto.search;
+        const [organizations, count] = await this.organizationRepo.findAndCount(
+            {
+                where: search ? [{ name: ILike(`%${search}`) }] : {},
+                order: { createdAt: 'DESC' },
+                take: dto.limit,
+                skip: dto.skip,
+            },
+        );
+
+        return new PaginatedResponseDto<GetOrganizationListResponseDto[]>(
+            organizations.map((org) => {
+                return new GetOrganizationListResponseDto(org);
+            }),
+            count,
+            dto.page,
+            dto.limit,
+        );
     }
 
     async getOrganizationById(organizationId: string) {

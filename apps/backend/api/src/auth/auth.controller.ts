@@ -22,7 +22,7 @@ export class AuthController {
     @Post('login')
     @ApiBody({ type: LoginRequestDto })
     login(@Request() req) {
-        return this.authService.login(req.user);
+        return this.authService.login(req?.user, req?.body?.origin);
     }
 
     @Post('validateResetPassword')

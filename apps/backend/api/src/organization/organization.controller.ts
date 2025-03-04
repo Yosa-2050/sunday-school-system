@@ -7,6 +7,8 @@ import {
     Patch,
     Post,
 } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
@@ -49,6 +51,11 @@ export class OrganizationController {
         return this.organizationService.assignEmployee(request);
     }
 
+    @Post('/all')
+    findAll(@Body() dto: PaginationDto) {
+        return this.organizationService.findAllPaginated(dto);
+    }
+
     @Get('/listEmployee/:organizationId')
     findAllEmployee(@Param('organizationId') id: string) {
         return this.organizationService.findEmployee(id);
@@ -57,11 +64,6 @@ export class OrganizationController {
     @Get('/listBranches/:organizationId')
     findAllBranches(@Param('organizationId') id: string) {
         return this.organizationService.findBranches(id);
-    }
-
-    @Get()
-    findAll() {
-        return this.organizationService.findAll();
     }
 
     @Get(':id')

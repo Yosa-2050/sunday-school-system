@@ -5,8 +5,7 @@ export class GetPaginatedUsersResponseDto {
     fullName: string;
     email: string;
     role: string;
-    0;
-    status: boolean;
+    isActive: boolean;
     createdBy: string;
     createdDate: string;
 
@@ -15,7 +14,7 @@ export class GetPaginatedUsersResponseDto {
             this.fullName = `${user.profile?.firstName ?? ''} ${user.profile?.middleName ?? ''} ${user.profile?.lastName}`;
             this.email = user.email;
             this.role = user.roles[0]?.role;
-            this.status = user.isActive;
+            this.isActive = user.isActive;
             this.createdBy = user.createdBy;
             this.createdDate = user.createdAt?.toISOString();
         }

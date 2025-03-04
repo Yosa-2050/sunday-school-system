@@ -6,4 +6,8 @@ export class LoginRequestDto extends UsernameRequestDto {
     @ApiProperty()
     @IsString()
     password: string;
+
+    @ApiProperty()
+    @IsString()
+    origin: string;
 }
