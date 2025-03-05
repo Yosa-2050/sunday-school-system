@@ -1,3 +1,4 @@
+import { logger } from '@shega/shared';
 import { AuthProvider } from '@shega/ui';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
@@ -29,6 +30,8 @@ export default async function RootLayout({
     const user = await getUserAction();
     const role = cookieValues.get('role')?.value;
 
+    logger.log({ user, role });
+
     const messages = await getMessages();
 
     const colorArray = generateColors(defaultTheme);
@@ -50,7 +53,9 @@ export default async function RootLayout({
                             color={defaultTheme}
                             radius={'8px'}
                         >
-                            <AuthProvider user={{ ...user, role }}>
+                            <AuthProvider
+                                user={user ? { ...user, role } : undefined}
+                            >
                                 <NuqsAdapter>{children}</NuqsAdapter>
                             </AuthProvider>
                         </MantineThemeProvider>
