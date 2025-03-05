@@ -26,14 +26,13 @@ export function CreateUser() {
     const [opened, { open, close }] = useDisclosure(false);
     const t = useTranslations('crateUsers');
 
-    const userSchema = z
-        .object({
-            role: z.string(),
-            firstName: z.string().min(1, t('validation.firstNameRequired')),
-            middleName: z.string().min(1, t('validation.middleNameRequired')),
-            lastName: z.string().min(1, t('validation.lastNameRequired')),
-            email: z.string().email(t('validation.invalidEmail'))
-        })
+    const userSchema = z.object({
+        role: z.string(),
+        firstName: z.string().min(1, t('validation.firstNameRequired')),
+        middleName: z.string().min(1, t('validation.middleNameRequired')),
+        lastName: z.string().min(1, t('validation.lastNameRequired')),
+        email: z.string().email(t('validation.invalidEmail')),
+    });
 
     // Initialize react-hook-form with validation schema
     const {

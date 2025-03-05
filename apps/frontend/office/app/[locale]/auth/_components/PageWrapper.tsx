@@ -1,14 +1,14 @@
 'use client';
 
-import { Link, redirect} from '@/i18n/routing';
+import { Link, redirect } from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
+import { getCookie } from 'cookies-next';
 import Autoplay from 'embla-carousel-autoplay';
 import { useLocale, useTranslations } from 'next-intl';
 import type React from 'react';
 import { type JSX, useEffect, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';
-import { getCookie } from 'cookies-next';
 
 export default function PageWrapper({
     children,

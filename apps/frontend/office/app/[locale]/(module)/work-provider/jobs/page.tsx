@@ -32,7 +32,6 @@ import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { sampleUsers } from '../../admin/users/_components/users';
 
-
 const UsersPage = () => {
     const t = useTranslations('jobsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -88,7 +87,9 @@ const UsersPage = () => {
                     variant="filled"
                     color="blue"
                     className="text-white"
-                   onClick={() => {router.push('/work-provider/jobs/create');}}
+                    onClick={() => {
+                        router.push('/work-provider/jobs/create');
+                    }}
                 >
                     {t('createJob')}
                 </Button>

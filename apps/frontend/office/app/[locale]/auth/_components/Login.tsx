@@ -83,20 +83,21 @@ const Login = () => {
                 color: 'red',
             });
         },
+        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
         onSuccess: async ({ data }) => {
             try {
                 if (data.pwdChangeRequired) {
                     router.push(`/auth/change-password/${data.id}`);
                 } else {
                     logger.log(data);
-                   
+
                     const user = await getUserAction(data.access_token);
                     // temporary the role will be removed once the endpoint returns role
-                    setUser({...user,role: data.role});
-                    if(data.role === 'administrator'){ 
+                    setUser({ ...user, role: data.role });
+                    if (data.role === 'administrator') {
                         router.push('/admin/dashboard');
                     }
-                    if(data.role === 'work_provider'){ 
+                    if (data.role === 'work_provider') {
                         router.push('/work-provider/dashboard');
                     }
 
@@ -125,7 +126,7 @@ const Login = () => {
         loginMutation.mutateAsync({
             username: values.email,
             password: values.password,
-            origin: "office"
+            origin: 'office',
         });
     };
 

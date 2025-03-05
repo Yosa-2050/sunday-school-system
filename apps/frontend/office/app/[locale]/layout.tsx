@@ -3,13 +3,13 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Inter } from 'next/font/google';
+import { cookies } from 'next/headers';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
 import type { PropsWithChildren } from 'react';
 import { generateColors, lightenHexColor } from 'utility/colors';
 import { getUserAction } from './_api/get-user-action';
-import { cookies } from 'next/headers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,7 +25,7 @@ const defaultTheme = '#004c4c';
 export default async function RootLayout({
     children,
 }: Readonly<PropsWithChildren>) {
-    const cookieValues = await cookies()
+    const cookieValues = await cookies();
     const user = await getUserAction();
     const role = cookieValues.get('role')?.value;
 
@@ -50,7 +50,7 @@ export default async function RootLayout({
                             color={defaultTheme}
                             radius={'8px'}
                         >
-                            <AuthProvider user={{...user, role}}>
+                            <AuthProvider user={{ ...user, role }}>
                                 <NuqsAdapter>{children}</NuqsAdapter>
                             </AuthProvider>
                         </MantineThemeProvider>

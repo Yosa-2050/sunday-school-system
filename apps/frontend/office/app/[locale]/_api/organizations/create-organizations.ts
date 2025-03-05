@@ -9,7 +9,9 @@ export type CreateOrganizations = {
     organizationName?: string;
 };
 
-export const CreateOrganizations = async (data: CreateOrganizations) => {const response: CreateOrganizations[] = await fetcher('/organization/createEmployee',
+export const CreateOrganizations = async (data: CreateOrganizations) => {
+    const response: CreateOrganizations[] = await fetcher(
+        '/organization/createEmployee',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

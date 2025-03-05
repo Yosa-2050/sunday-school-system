@@ -13,26 +13,25 @@ import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
 import { IconXboxX } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
-import type {  CreateOrganizations } from 'app/[locale]/_api/organizations/create-organizations';
-import {
-    createUsers,
-} from 'app/[locale]/_api/users/create-users';
+import type { CreateOrganizations } from 'app/[locale]/_api/organizations/create-organizations';
+import { createUsers } from 'app/[locale]/_api/users/create-users';
 import { useTranslations } from 'next-intl';
-import {  useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 export function CreateOrganization() {
     const [opened, { open, close }] = useDisclosure(false);
     const t = useTranslations('crateUsers');
 
-    const organizationSchema = z
-        .object({
-            firstName: z.string().min(1, t('validation.firstNameRequired')),
-            middleName: z.string().min(1, t('validation.middleNameRequired')),
-            lastName: z.string().min(1, t('validation.lastNameRequired')),
-            email: z.string().email(t('validation.invalidEmail')),
-            organizationName: z.string().min(1, t('validation.companyNameRequired')),
-        })
+    const organizationSchema = z.object({
+        firstName: z.string().min(1, t('validation.firstNameRequired')),
+        middleName: z.string().min(1, t('validation.middleNameRequired')),
+        lastName: z.string().min(1, t('validation.lastNameRequired')),
+        email: z.string().email(t('validation.invalidEmail')),
+        organizationName: z
+            .string()
+            .min(1, t('validation.companyNameRequired')),
+    });
 
     // Initialize react-hook-form with validation schema
     const {
@@ -65,8 +64,8 @@ export function CreateOrganization() {
         },
     });
 
-    const onSubmit = (data: Omit<CreateOrganizations,'role'>) => {
-        createUserMutation.mutate({...data,role: 'WORK_PROVIDER'});
+    const onSubmit = (data: Omit<CreateOrganizations, 'role'>) => {
+        createUserMutation.mutate({ ...data, role: 'WORK_PROVIDER' });
     };
 
     return (
@@ -129,15 +128,13 @@ export function CreateOrganization() {
                             }}
                         />
 
-                        
-                            <TextInput
-                                label={t('companyNameLabel')}
-                                placeholder={t('companyNamePlaceholder')}
-                                {...register('organizationName')}
-                                error={errors.organizationName?.message}
-                                withAsterisk
-                            />
-                        
+                        <TextInput
+                            label={t('companyNameLabel')}
+                            placeholder={t('companyNamePlaceholder')}
+                            {...register('organizationName')}
+                            error={errors.organizationName?.message}
+                            withAsterisk
+                        />
 
                         <Group justify="flex-end" mt="md" w={'100%'}>
                             <Button
@@ -146,7 +143,7 @@ export function CreateOrganization() {
                                 disabled={createUserMutation.isPending}
                                 w={'100%'}
                             >
-                                {"Create Organization"}
+                                {'Create Organization'}
                             </Button>
                         </Group>
                     </Stack>
@@ -154,7 +151,7 @@ export function CreateOrganization() {
             </Drawer>
 
             <Button variant="default" onClick={open}>
-                {"Create Organization"}
+                {'Create Organization'}
             </Button>
         </>
     );

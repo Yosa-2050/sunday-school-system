@@ -1,4 +1,4 @@
-import { Center, Stack, Text, Button, Image } from '@mantine/core';
+import { Button, Center, Image, Stack, Text } from '@mantine/core';
 import { IconMoodSad } from '@tabler/icons-react';
 
 interface NoDataProps {

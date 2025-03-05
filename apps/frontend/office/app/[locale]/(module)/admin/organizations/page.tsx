@@ -1,5 +1,6 @@
 'use client';
 
+import NoData from '@/components/NoData';
 import {
     Button,
     Card,
@@ -7,7 +8,9 @@ import {
     Divider,
     Flex,
     Group,
+    LoadingOverlay,
     Menu,
+    Pagination,
     Paper,
     Select,
     Stack,
@@ -16,18 +19,22 @@ import {
     Text,
     TextInput,
     Tooltip,
-    Pagination,
-    LoadingOverlay
 } from '@mantine/core';
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
-import { IconDotsVertical, IconDownload, IconSearch } from '@tabler/icons-react';
+import {
+    IconDotsVertical,
+    IconDownload,
+    IconSearch,
+} from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import {
+    type Daum,
+    fetchOrganizations,
+} from 'app/[locale]/_api/organizations/fetch-organizations';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
-import { useQuery } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
-import NoData from '@/components/NoData';
-import { type Daum, fetchOrganizations } from 'app/[locale]/_api/organizations/fetch-organizations';
 import { CreateOrganization } from './_components/create-organization';
 
 const UsersPage = () => {
@@ -35,9 +42,15 @@ const UsersPage = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     const [selection, setSelection] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useQueryState('search', { defaultValue: '' });
-    const [roleFilter, setRoleFilter] = useQueryState('filter', { defaultValue: '' });
-    const [sortOrder, setSortOrder] = useQueryState('sort', { defaultValue: 'asc' });
+    const [searchQuery, setSearchQuery] = useQueryState('search', {
+        defaultValue: '',
+    });
+    const [roleFilter, setRoleFilter] = useQueryState('filter', {
+        defaultValue: '',
+    });
+    const [sortOrder, setSortOrder] = useQueryState('sort', {
+        defaultValue: 'asc',
+    });
     const [page, setPage] = useQueryState('page', { defaultValue: '1' });
     const [limit, setLimit] = useQueryState('limit', { defaultValue: '10' });
 
@@ -45,9 +58,19 @@ const UsersPage = () => {
 
     // Fetch users using TanStack Query
     const { data, isLoading, error } = useQuery({
-        queryKey: ['organizations', debouncedSearch, roleFilter, sortOrder, page, limit],
+        queryKey: [
+            'organizations',
+            debouncedSearch,
+            roleFilter,
+            sortOrder,
+            page,
+            limit,
+        ],
         queryFn: () =>
-            fetchOrganizations({search: debouncedSearch, page:+page, limit:+limit 
+            fetchOrganizations({
+                search: debouncedSearch,
+                page: +page,
+                limit: +limit,
             }),
     });
 
@@ -63,12 +86,16 @@ const UsersPage = () => {
 
     const toggleRow = (email: string) =>
         setSelection((current) =>
-            current.includes(email) ? current.filter((item) => item !== email) : [...current, email]
+            current.includes(email)
+                ? current.filter((item) => item !== email)
+                : [...current, email],
         );
 
     const toggleAll = () =>
         setSelection((current) =>
-            current.length === organizations.length ? [] : organizations.map((user:Daum) => user.createdDate ?? '')
+            current.length === organizations.length
+                ? []
+                : organizations.map((user: Daum) => user.createdDate ?? ''),
         );
 
     return (
@@ -109,17 +136,25 @@ const UsersPage = () => {
             {/* No Data State */}
             {organizations.length === 0 ? (
                 <NoData />
-            // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                // biome-ignore lint/nursery/noNestedTernary: <explanation>
             ) : isMobile ? (
                 <Stack>
                     {organizations.map((user: Daum) => (
-                        <Card key={user.createdDate} shadow="sm" p="lg" radius="md" withBorder>
+                        <Card
+                            key={user.createdDate}
+                            shadow="sm"
+                            p="lg"
+                            radius="md"
+                            withBorder
+                        >
                             <Flex justify="space-between" align="center">
                                 <Text fw={500}>{user.name}</Text>
                             </Flex>
                             <Divider my="xs" />
                             <Text size="xs" c="dimmed">
-                                {DateTime.fromISO(user.createdDate ?? '').toFormat('yyyy-MM-dd HH:mm:ss')}
+                                {DateTime.fromISO(
+                                    user.createdDate ?? '',
+                                ).toFormat('yyyy-MM-dd HH:mm:ss')}
                             </Text>
                             <Group mt="md">
                                 <Button variant="light" size="xs">
@@ -134,11 +169,27 @@ const UsersPage = () => {
                 </Stack>
             ) : (
                 <TableScrollContainer minWidth={800} type="native">
-                    <Table withRowBorders withColumnBorders striped verticalSpacing="md">
+                    <Table
+                        withRowBorders
+                        withColumnBorders
+                        striped
+                        verticalSpacing="md"
+                    >
                         <Table.Thead>
                             <Table.Tr>
                                 <Table.Th>
-                                    <Checkbox onChange={toggleAll} checked={selection.length === organizations.length} indeterminate={selection.length > 0 && selection.length !== organizations.length} />
+                                    <Checkbox
+                                        onChange={toggleAll}
+                                        checked={
+                                            selection.length ===
+                                            organizations.length
+                                        }
+                                        indeterminate={
+                                            selection.length > 0 &&
+                                            selection.length !==
+                                                organizations.length
+                                        }
+                                    />
                                 </Table.Th>
                                 <Table.Th>{t('table.name')}</Table.Th>
                                 <Table.Th>{t('table.status')}</Table.Th>
@@ -151,14 +202,35 @@ const UsersPage = () => {
                             {organizations.map((user: Daum) => (
                                 <Table.Tr key={user.createdDate}>
                                     <Table.Td>
-                                        <Checkbox checked={selection.includes(user.createdDate ?? '')} onChange={() => toggleRow(user.createdDate ?? '')} />
+                                        <Checkbox
+                                            checked={selection.includes(
+                                                user.createdDate ?? '',
+                                            )}
+                                            onChange={() =>
+                                                toggleRow(
+                                                    user.createdDate ?? '',
+                                                )
+                                            }
+                                        />
                                     </Table.Td>
                                     <Table.Td>{user.name}</Table.Td>
-                                    <Table.Td className={user.isActive ? 'text-green-600' : 'text-red-600'}>
-                                        {user.isActive ? t('status.active') : t('status.inactive')}
+                                    <Table.Td
+                                        className={
+                                            user.isActive
+                                                ? 'text-green-600'
+                                                : 'text-red-600'
+                                        }
+                                    >
+                                        {user.isActive
+                                            ? t('status.active')
+                                            : t('status.inactive')}
                                     </Table.Td>
                                     <Table.Td>{user.createdBy}</Table.Td>
-                                    <Table.Td>{DateTime.fromISO(user.createdDate ?? '').toFormat('yyyy-MM-dd HH:mm:ss')}</Table.Td>
+                                    <Table.Td>
+                                        {DateTime.fromISO(
+                                            user.createdDate ?? '',
+                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                    </Table.Td>
                                     <Table.Td>
                                         <Menu width={200}>
                                             <Menu.Target>
@@ -174,7 +246,11 @@ const UsersPage = () => {
             )}
 
             <Flex justify="center" mt="md">
-                <Pagination total={data?.totalPages ?? 1} value={+page} onChange={(value) => setPage(value.toString())} />
+                <Pagination
+                    total={data?.totalPages ?? 1}
+                    value={+page}
+                    onChange={(value) => setPage(value.toString())}
+                />
             </Flex>
         </Paper>
     );

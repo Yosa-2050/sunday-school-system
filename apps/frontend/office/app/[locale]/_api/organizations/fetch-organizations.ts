@@ -12,27 +12,25 @@ export type Users = {
 };
 
 export type FetchUsersPayload = {
-        search: string;
-        page: number;
-        limit: number;
+    search: string;
+    page: number;
+    limit: number;
 };
 
-
 export interface Response {
-    data: Daum[]
-    total: number
-    limit: number
-    page: number
-    totalPages: number
-  }
-  
-  export interface Daum {
-    createdBy: string
-    createdDate: string
-    isActive: boolean
-    name: string
-  }
-  
+    data: Daum[];
+    total: number;
+    limit: number;
+    page: number;
+    totalPages: number;
+}
+
+export interface Daum {
+    createdBy: string;
+    createdDate: string;
+    isActive: boolean;
+    name: string;
+}
 
 export const fetchOrganizations = async (payload: FetchUsersPayload) => {
     const response: Response = await fetcher('/organization/all', {

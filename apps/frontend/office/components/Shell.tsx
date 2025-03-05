@@ -19,12 +19,12 @@ import {
 } from '@tabler/icons-react';
 import Image from 'next/image';
 
+import { useAuth } from '@shega/ui';
 import Logo from '../public/logo.svg';
 import LocaleSwitcherSelect from './LocaleSwitcher';
 import { Menus } from './Menus';
 import UserProfile from './UserProfile';
 import { SideMenu } from './side-menu/SideMenu';
-import { useAuth } from '@shega/ui';
 
 interface ShellProps {
     children: React.ReactNode;
