@@ -1,4 +1,8 @@
 {
+    "jobsPage": {
+        "createJob": "Create Job",
+        "jobTitleLabel": "Job Title"
+    },
     "users": {
         "emailLabel": "Email",
         "emailPlaceholder": "Enter email address",
@@ -72,6 +76,7 @@
             "noAccount": "Don't have an account?",
             "signUp": "Sign up",
             "loginFailed": "Login failed. Please try again.",
+            "loginSuccess": "Login Successful",
             "rememberMe": "Remember me",
             "rightsReserved": "© All rights reserved by Shega Jobs"
         },
@@ -116,7 +121,13 @@
             "createdAt": "Created At",
             "actions": "Actions",
             "edit": "Edit",
-            "delete": "Delete"
+            "delete": "Delete",
+            "name": "Name"
+        },
+        "status": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "pending": "Pending"
         }
     },
     "crateUsers": {

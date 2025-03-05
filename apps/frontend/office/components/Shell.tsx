@@ -24,6 +24,7 @@ import LocaleSwitcherSelect from './LocaleSwitcher';
 import { Menus } from './Menus';
 import UserProfile from './UserProfile';
 import { SideMenu } from './side-menu/SideMenu';
+import { useAuth } from '@shega/ui';
 
 interface ShellProps {
     children: React.ReactNode;
@@ -32,6 +33,7 @@ interface ShellProps {
 export default function WrapperShell({
     children,
 }: ShellProps): React.ReactNode {
+    const {user} = useAuth()
     const [opened, { toggle }] = useDisclosure(false);
     const [sidebarOpen, { toggle: toggleSidebar }] = useDisclosure(true);
 
@@ -129,7 +131,7 @@ export default function WrapperShell({
                         />
                     </Flex>
                     <ScrollArea className="flex-1">
-                        <SideMenu menu={Menus()} />
+                        {user && <SideMenu menu={Menus()} role={user.role}/>}
                     </ScrollArea>
                     <Box className="h-14 border-t border-gray-300 text-sm px-4 flex flex-col items-center justify-center">
                         <span className="text-gray-500">

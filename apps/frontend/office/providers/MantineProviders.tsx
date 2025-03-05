@@ -25,7 +25,7 @@ export default function MantineThemeProvider({
     });
     return (
         <MantineProvider theme={theme}>
-            <Notifications />
+            <Notifications position='top-right'/>
             <ModalsProvider>{children}</ModalsProvider>
             <ProgressBar
                 height="4px"

@@ -9,13 +9,14 @@ import QueryProviders from 'providers/Query.provider';
 import type { PropsWithChildren } from 'react';
 import { generateColors, lightenHexColor } from 'utility/colors';
 import { getUserAction } from './_api/get-user-action';
+import { cookies } from 'next/headers';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'Shega Jobs',
     description:
-        'Impeding Job Seekers and connecting them to the best of the best',
+        'Empowering Job Seekers and connecting them to the best of the best',
 };
 
 //bluish theme
@@ -24,7 +25,9 @@ const defaultTheme = '#004c4c';
 export default async function RootLayout({
     children,
 }: Readonly<PropsWithChildren>) {
+    const cookieValues = await cookies()
     const user = await getUserAction();
+    const role = cookieValues.get('role')?.value;
 
     const messages = await getMessages();
 
@@ -47,7 +50,7 @@ export default async function RootLayout({
                             color={defaultTheme}
                             radius={'8px'}
                         >
-                            <AuthProvider user={user}>
+                            <AuthProvider user={{...user, role}}>
                                 <NuqsAdapter>{children}</NuqsAdapter>
                             </AuthProvider>
                         </MantineThemeProvider>

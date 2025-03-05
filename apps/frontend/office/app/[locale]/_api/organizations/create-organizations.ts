@@ -1,6 +1,6 @@
 import { fetcher } from '@shega/shared';
 
-export type CreateUsers = {
+export type CreateOrganizations = {
     role: string;
     email: string;
     firstName: string;
@@ -9,8 +9,7 @@ export type CreateUsers = {
     organizationName?: string;
 };
 
-export const createUsers = async (data: CreateUsers) => {
-    const response: CreateUsers[] = await fetcher('/profile/new',
+export const CreateOrganizations = async (data: CreateOrganizations) => {const response: CreateOrganizations[] = await fetcher('/organization/createEmployee',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

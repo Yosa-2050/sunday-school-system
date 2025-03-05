@@ -12,12 +12,9 @@ export type Users = {
 };
 
 export type FetchUsersPayload = {
-    status?: string;
-    pagination: {
         search: string;
         page: number;
         limit: number;
-    };
 };
 
 
@@ -30,15 +27,15 @@ export interface Response {
   }
   
   export interface Daum {
-    fullName?: string
-    email?: string
-    isActive?: boolean
-    createdBy?: string
-    createdDate?: string
+    createdBy: string
+    createdDate: string
+    isActive: boolean
+    name: string
   }
+  
 
-export const fetchUsers = async (payload: FetchUsersPayload) => {
-    const response: Response = await fetcher('/users/all', {
+export const fetchOrganizations = async (payload: FetchUsersPayload) => {
+    const response: Response = await fetcher('/organization/all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

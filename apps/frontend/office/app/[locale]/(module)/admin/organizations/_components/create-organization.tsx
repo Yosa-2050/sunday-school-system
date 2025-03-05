@@ -4,7 +4,6 @@ import {
     Drawer,
     Flex,
     Group,
-    Select,
     Stack,
     Text,
     TextInput,
@@ -14,25 +13,25 @@ import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
 import { IconXboxX } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
+import type {  CreateOrganizations } from 'app/[locale]/_api/organizations/create-organizations';
 import {
-    type CreateUsers,
     createUsers,
 } from 'app/[locale]/_api/users/create-users';
 import { useTranslations } from 'next-intl';
-import { Controller, useForm } from 'react-hook-form';
+import {  useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-export function CreateUser() {
+export function CreateOrganization() {
     const [opened, { open, close }] = useDisclosure(false);
     const t = useTranslations('crateUsers');
 
-    const userSchema = z
+    const organizationSchema = z
         .object({
-            role: z.string(),
             firstName: z.string().min(1, t('validation.firstNameRequired')),
             middleName: z.string().min(1, t('validation.middleNameRequired')),
             lastName: z.string().min(1, t('validation.lastNameRequired')),
-            email: z.string().email(t('validation.invalidEmail'))
+            email: z.string().email(t('validation.invalidEmail')),
+            organizationName: z.string().min(1, t('validation.companyNameRequired')),
         })
 
     // Initialize react-hook-form with validation schema
@@ -42,14 +41,14 @@ export function CreateUser() {
         handleSubmit,
         formState: { errors },
         watch,
-    } = useForm<CreateUsers>({
-        resolver: zodResolver(userSchema),
+    } = useForm({
+        resolver: zodResolver(organizationSchema),
     });
 
     // Create user mutation
     const createUserMutation = useMutation({
         mutationFn: createUsers,
-        mutationKey: ['users'],
+        mutationKey: ['organizations'],
         onSuccess: () => {
             notifications.show({
                 title: t('notifications.successTitle'),
@@ -66,10 +65,8 @@ export function CreateUser() {
         },
     });
 
-    const role = watch('role');
-
-    const onSubmit = (data: CreateUsers) => {
-        createUserMutation.mutate(data);
+    const onSubmit = (data: Omit<CreateOrganizations,'role'>) => {
+        createUserMutation.mutate({...data,role: 'WORK_PROVIDER'});
     };
 
     return (
@@ -90,29 +87,6 @@ export function CreateUser() {
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack gap="sm">
-                        <Controller
-                            name="role"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    label={t('roleLabel')}
-                                    placeholder={t('rolePlaceholder')}
-                                    data={[
-                                        {
-                                            value: 'JOB_SEEKER',
-                                            label: t('roles.jobSeeker'),
-                                        },
-                                        {
-                                            value: 'ADMINISTRATOR',
-                                            label: t('roles.administrator'),
-                                        },
-                                    ]}
-                                    error={errors.role?.message}
-                                    withAsterisk
-                                />
-                            )}
-                        />
                         <TextInput
                             label={t('firstNameLabel')}
                             placeholder={t('firstNamePlaceholder')}
@@ -155,6 +129,16 @@ export function CreateUser() {
                             }}
                         />
 
+                        
+                            <TextInput
+                                label={t('companyNameLabel')}
+                                placeholder={t('companyNamePlaceholder')}
+                                {...register('organizationName')}
+                                error={errors.organizationName?.message}
+                                withAsterisk
+                            />
+                        
+
                         <Group justify="flex-end" mt="md" w={'100%'}>
                             <Button
                                 type="submit"
@@ -162,7 +146,7 @@ export function CreateUser() {
                                 disabled={createUserMutation.isPending}
                                 w={'100%'}
                             >
-                                {t('createUserButton')}
+                                {"Create Organization"}
                             </Button>
                         </Group>
                     </Stack>
@@ -170,7 +154,7 @@ export function CreateUser() {
             </Drawer>
 
             <Button variant="default" onClick={open}>
-                {t('createUserButton')}
+                {"Create Organization"}
             </Button>
         </>
     );

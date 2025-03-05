@@ -1,13 +1,12 @@
 'use client';
 
-import { Link, redirect } from '@/i18n/routing';
+import { Link} from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
-import { useAuth } from '@shega/ui';
 import Autoplay from 'embla-carousel-autoplay';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import type React from 'react';
-import { type JSX, useEffect, useRef } from 'react';
+import { type JSX, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';
 
 export default function PageWrapper({
@@ -15,16 +14,15 @@ export default function PageWrapper({
 }: {
     children: React.ReactNode;
 }): JSX.Element {
-    const { user } = useAuth();
-    const locale = useLocale();
+    // const locale = useLocale();
     const t = useTranslations('auth.pageWrapper');
-    const autoplay = useRef(Autoplay({ delay: 2000 }));
+    const autoplay = useRef(Autoplay({ delay: 4000 }));
 
-    useEffect(() => {
-        if (user) {
-            redirect({ href: '/admin/dashboard', locale });
-        }
-    }, [user, locale]);
+    // useEffect(() => {
+    //     if (user) {
+    //         redirect({ href: '/admin/dashboard', locale });
+    //     }
+    // }, [user, locale]);
 
     return (
         <Flex className="relative min-h-screen w-full">
@@ -93,7 +91,7 @@ export default function PageWrapper({
                 {/* Footer */}
                 <Text
                     size="sm"
-                    color="gray"
+                    c="gray"
                     className="absolute bottom-4 text-center"
                 >
                     {new Date().getFullYear()} Shega Jobs. {t('rightsReserved')}

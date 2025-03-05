@@ -89,11 +89,23 @@ const Login = () => {
                     router.push(`/auth/change-password/${data.id}`);
                 } else {
                     logger.log(data);
+                   
+                    const user = await getUserAction(data.access_token);
+                    // temporary the role will be removed once the endpoint returns role
+                    setUser({...user,role: data.role});
+                    if(data.role === 'administrator'){ 
+                        router.push('/admin/dashboard');
+                    }
+                    if(data.role === 'work_provider'){ 
+                        router.push('/work-provider/dashboard');
+                    }
+
                     notifications.show({
                         title: 'Success',
                         message: t('loginSuccess'),
                         color: 'green',
                     });
+                    setCookie('role', data.role);
                     setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
                         maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
                     });
@@ -102,10 +114,6 @@ const Login = () => {
                         secure: true,
                         maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
                     });
-                    const user = await getUserAction();
-                    setUser(user);
-                    if(user.role === 'ADMINISTRATOR'){ router.push('/admin/dashboard');}
-                    if(user.role === 'WORK_PROVIDER'){ router.push('/work-provider/dashboard');}
                 }
             } catch (error) {
                 logger.error('Error processing login success:', error);
