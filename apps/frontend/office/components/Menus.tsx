@@ -23,7 +23,7 @@ export const Menus = (): MenuTree[] => {
             link: '/admin/users',
             role: 'administrator',
         },
-        
+
         {
             label: t('job-explorer'),
             icon: <IconSearch stroke={1.4} size={20} />,
@@ -46,8 +46,7 @@ export const Menus = (): MenuTree[] => {
             label: t('job-explorer'),
             icon: <IconFileText stroke={1.4} size={20} />,
             link: '/work-provider/jobs',
-            role: 'work_provider'
+            role: 'work_provider',
         },
-       
     ];
 };

@@ -49,7 +49,9 @@ export const fetcher = async (endpoint: string, options?: RequestInit) => {
 
         if (!response.ok) {
             const errorData = await response.json(); // Get error details from response
-            throw new Error(errorData?.message || `Error: ${response.statusText}`);
+            throw new Error(
+                errorData?.message || `Error: ${response.statusText}`,
+            );
         }
 
         return response.json();

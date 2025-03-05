@@ -15,13 +15,13 @@ export type MenuTree = {
     isExternal?: string;
     children?: MenuTree[];
     pathMatch?: number;
-    role: 'administrator' | 'work_provider'
+    role: 'administrator' | 'work_provider';
 };
 
 type MenuItemProps = {
     data: MenuTree;
     level?: number;
-    role: 'administrator' | 'work_provider'
+    role: 'administrator' | 'work_provider';
 };
 
 type MenuLabelProps = {
@@ -119,7 +119,7 @@ const MenuLabel = ({
     );
 };
 
-const MenuItem = ({ data, level = 0,role }: MenuItemProps) => {
+const MenuItem = ({ data, level = 0, role }: MenuItemProps) => {
     const { isGroup, label, link, icon, children, pathMatch: compare } = data;
     const pathname = usePathname();
 
@@ -136,13 +136,12 @@ const MenuItem = ({ data, level = 0,role }: MenuItemProps) => {
     const left = 20 * level + 10;
     const hasChildren = (children?.length ?? 0) > 0;
     const showChildren = (isGroup || open || isActiveChildren) && hasChildren;
-    
 
     return (
         <li className={cn('relative', isGroup ? 'mt-2' : 'mt-1')}>
             {isGroup && <span className={classes.groupLabel}>{label}</span>}
 
-            {!isGroup  &&
+            {!isGroup &&
                 (link ? (
                     <NavigationLink href={link} onClick={() => toggle()}>
                         <MenuLabel
@@ -189,21 +188,26 @@ const MenuItem = ({ data, level = 0,role }: MenuItemProps) => {
 
 export function SideMenu({
     menu,
-    role
+    role,
 }: {
     menu: MenuTree[];
-    role: 'administrator' | 'work_provider'
+    role: 'administrator' | 'work_provider';
 }) {
     return (
         <ScrollArea className="w-full px-4 py-4" scrollHideDelay={500}>
             <ul>
                 {menu.map((group, index) => {
-                    if(group.role === role){
-                        
-                        return <MenuItem data={group} key={`${group.label}-${index}`} role={role}/>
+                    if (group.role === role) {
+                        return (
+                            <MenuItem
+                                data={group}
+                                key={`${group.label}-${index}`}
+                                role={role}
+                            />
+                        );
                     }
-                    return null
-})}
+                    return null;
+                })}
             </ul>
         </ScrollArea>
     );
