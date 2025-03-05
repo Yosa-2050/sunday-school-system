@@ -10,6 +10,7 @@ import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
+import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationService } from '@shega/notification/notification.service';
@@ -34,7 +35,6 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
-import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 
 @Injectable()
 export class OrganizationService {

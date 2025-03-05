@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import * as nodemailer from 'nodemailer';
 // biome-ignore lint/style/useImportType: <explanation>
 import { IEmailService } from '../email-service.interface';
-import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class MailTrapImpl implements IEmailService {

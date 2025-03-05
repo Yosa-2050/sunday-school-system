@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -12,7 +13,6 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 import { Jobs } from './entities/jobs.entity';
-import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 
 @Injectable()
 export class JobPortalService {
