@@ -24,7 +24,7 @@ import { PasswordResetDto } from './dtos/request/username.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UserResponsePayload } from './dtos/response/user-response-payload.reponse.dto';
+import { UserDetails, UserResponsePayload } from './dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
 
@@ -61,14 +61,14 @@ export class AuthService {
         if (!validateRole(defaultRole, origin)) {
             throw new UnauthorizedException();
         }
+        let details: UserDetails;
 
         //checking only default roles as the assumption is the user only have one defaul user
         switch (defaultRole) {
             case UserRoleType.Administrator:
                 break;
-            case UserRoleType.JobSeeker:
-                //details = await this.organizationService.getOrganizationDetail(user.profile.id);
-
+            case UserRoleType.WorkProvider:
+                details = await this.organizationService.getOrganizationDetail(user.profile.id);
                 break;
             //   case UserRoleType.PARENT:
             //     break;
@@ -89,7 +89,7 @@ export class AuthService {
             role: roles?.find((x) => x.isDefault)?.role?.toLowerCase(),
             pwdChangeRequired: user.pwd_change_required,
             id: user.id,
-            //getMyBranchInfo: details,
+            details: details,
         };
 
         return {
@@ -101,7 +101,7 @@ export class AuthService {
                     : this.jwtService.sign(payload),
                 pwdChangeRequired: payload.pwdChangeRequired,
                 id: payload.id,
-                //details: details,
+                details: details,
             },
         };
     }

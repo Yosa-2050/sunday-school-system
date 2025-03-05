@@ -18,7 +18,7 @@ export class NodeMailImpl implements IEmailService {
             },
         });
     }
-    async sendEmail(
+    async sendEmail( 
         from: string,
         to: string,
         subject: string,

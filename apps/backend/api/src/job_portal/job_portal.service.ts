@@ -12,6 +12,7 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 import { Jobs } from './entities/jobs.entity';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 
 @Injectable()
 export class JobPortalService {
@@ -21,15 +22,16 @@ export class JobPortalService {
         private jobRepo: Repository<Jobs>,
     ) {}
 
-    async create(dto: CreateJobPortalDto) {
+    async create(employeeOrgId: string, organizationId:string, dto: CreateJobPortalDto) {
         const organization = await this.organizationService.getOrganizationById(
-            dto.organizationId,
+            organizationId,
         );
 
+        const employeeOrg = (await organization.employee).find(x => x.id === employeeOrgId);
         const job = this.jobRepo.create(dto);
         job.organization = organization;
         job.status = ApprovalType.New;
-
+        job.postedBy = employeeOrg;
         return this.jobRepo.save(job);
     }
 
@@ -46,13 +48,35 @@ export class JobPortalService {
             skip,
         });
 
-        return {
-            data: jobs,
+        return new PaginatedResponseDto<Jobs[]> (
+            jobs,
             total,
             page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-        };
+            limit
+        );
+    }
+
+    async getJobsByStatusAndByOrgPaginated(
+        organizationId: string,
+        status: ApprovalType,
+        paginationDto: PaginationDto,
+    ) {
+        const organization = await this.organizationService.findOne(organizationId);
+        const { page, limit } = paginationDto;
+        const skip = (page - 1) * limit;
+
+        const [jobs, total] = await this.jobRepo.findAndCount({
+            where: { status, organization: {id: organizationId} },
+            take: limit,
+            skip,
+        });
+
+        return new PaginatedResponseDto<Jobs[]> (
+            jobs,
+            total,
+            page,
+            limit
+        );
     }
 
     approveJob(id: string) {

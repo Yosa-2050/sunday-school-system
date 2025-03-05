@@ -34,6 +34,7 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
+import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 
 @Injectable()
 export class OrganizationService {
@@ -176,7 +177,6 @@ export class OrganizationService {
                 throw new BadRequestException('Branch not found');
             }
         }
-
         const person = this.employeeOrgRepo.create();
         person.organization = org;
         person.employee = employee;
@@ -220,13 +220,18 @@ export class OrganizationService {
         );
         const organization = await assignEmployee?.organization;
         const branch = await assignEmployee?.branch;
-
-        return {
-            employeeId: employee?.id,
-            assignedEmployeeId: assignEmployee?.id,
-            organizationId: organization?.id,
-            branchId: branch?.id,
-        };
+        const userDetails  = new UserDetails();
+        userDetails.organizationId = organization?.id;
+        userDetails.employeeId = employee?.id;
+        userDetails.employeeOrgId = assignEmployee.id;
+        userDetails.profileId = employee?.profile?.id;
+        return userDetails;
+        // return {
+        //     employeeId: employee?.id,
+        //     assignedEmployeeId: assignEmployee?.id,
+        //     organizationId: organization?.id,
+        //     branchId: branch?.id,
+        // };
     }
 
     async CreateEmployeeQDE(dto: CreateOrganizationEmployeeDto) {
@@ -239,6 +244,7 @@ export class OrganizationService {
             );
         }
         const pwdGenerated = this.passwordService.generatePassword();
+        //const pwdGenerated = "12345678";
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
             UserRoleType.WorkProvider,
