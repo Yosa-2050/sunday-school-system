@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { EmploymentType } from '../enums/employment-type.enum';
 
-
 export class CreateJobPortalDto {
     @ApiProperty()
     @IsString()

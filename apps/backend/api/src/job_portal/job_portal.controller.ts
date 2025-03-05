@@ -32,7 +32,11 @@ export class JobPortalController {
     create(@Request() req, @Body() dto: CreateJobPortalDto) {
         const organizationId = req?.user?.details?.organizationId;
         const employeeOrgId = req?.user?.details?.employeeOrgId;
-        if(!(organizationId && employeeOrgId)) {throw new BadRequestException("Unable to find linked organiazation id")}
+        if (!(organizationId && employeeOrgId)) {
+            throw new BadRequestException(
+                'Unable to find linked organiazation id',
+            );
+        }
 
         return this.jobPortalService.create(employeeOrgId, organizationId, dto);
     }
@@ -48,9 +52,16 @@ export class JobPortalController {
 
     @Roles(UserRoleType.WorkProvider)
     @Post('byProvider')
-    getAllPostedJobsByPorvider(@Request() req, @Body() dto: GetJobsByStatusRequestDto) {
+    getAllPostedJobsByPorvider(
+        @Request() req,
+        @Body() dto: GetJobsByStatusRequestDto,
+    ) {
         const organizationId = req?.user?.details?.organizationId;
-        if(!organizationId) {throw new BadRequestException("Unable to find linked organiazation id")}
+        if (!organizationId) {
+            throw new BadRequestException(
+                'Unable to find linked organiazation id',
+            );
+        }
         return this.jobPortalService.getJobsByStatusAndByOrgPaginated(
             organizationId,
             dto.status,

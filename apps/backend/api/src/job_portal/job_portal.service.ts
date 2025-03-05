@@ -22,12 +22,17 @@ export class JobPortalService {
         private jobRepo: Repository<Jobs>,
     ) {}
 
-    async create(employeeOrgId: string, organizationId:string, dto: CreateJobPortalDto) {
-        const organization = await this.organizationService.getOrganizationById(
-            organizationId,
-        );
+    async create(
+        employeeOrgId: string,
+        organizationId: string,
+        dto: CreateJobPortalDto,
+    ) {
+        const organization =
+            await this.organizationService.getOrganizationById(organizationId);
 
-        const employeeOrg = (await organization.employee).find(x => x.id === employeeOrgId);
+        const employeeOrg = (await organization.employee).find(
+            (x) => x.id === employeeOrgId,
+        );
         const job = this.jobRepo.create(dto);
         job.organization = organization;
         job.status = ApprovalType.New;
@@ -48,12 +53,7 @@ export class JobPortalService {
             skip,
         });
 
-        return new PaginatedResponseDto<Jobs[]> (
-            jobs,
-            total,
-            page,
-            limit
-        );
+        return new PaginatedResponseDto<Jobs[]>(jobs, total, page, limit);
     }
 
     async getJobsByStatusAndByOrgPaginated(
@@ -61,22 +61,18 @@ export class JobPortalService {
         status: ApprovalType,
         paginationDto: PaginationDto,
     ) {
-        const organization = await this.organizationService.findOne(organizationId);
+        const organization =
+            await this.organizationService.findOne(organizationId);
         const { page, limit } = paginationDto;
         const skip = (page - 1) * limit;
 
         const [jobs, total] = await this.jobRepo.findAndCount({
-            where: { status, organization: {id: organizationId} },
+            where: { status, organization: { id: organizationId } },
             take: limit,
             skip,
         });
 
-        return new PaginatedResponseDto<Jobs[]> (
-            jobs,
-            total,
-            page,
-            limit
-        );
+        return new PaginatedResponseDto<Jobs[]>(jobs, total, page, limit);
     }
 
     approveJob(id: string) {

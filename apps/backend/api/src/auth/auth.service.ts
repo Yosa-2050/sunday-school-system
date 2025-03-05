@@ -24,7 +24,10 @@ import { PasswordResetDto } from './dtos/request/username.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UserDetails, UserResponsePayload } from './dtos/response/user-response-payload.reponse.dto';
+import {
+    UserDetails,
+    UserResponsePayload,
+} from './dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
 
@@ -68,7 +71,9 @@ export class AuthService {
             case UserRoleType.Administrator:
                 break;
             case UserRoleType.WorkProvider:
-                details = await this.organizationService.getOrganizationDetail(user.profile.id);
+                details = await this.organizationService.getOrganizationDetail(
+                    user.profile.id,
+                );
                 break;
             //   case UserRoleType.PARENT:
             //     break;

@@ -1,7 +1,7 @@
 // biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 
-export class UserDetails{
+export class UserDetails {
     organizationId: string;
     employeeId: string;
     employeeOrgId: string;

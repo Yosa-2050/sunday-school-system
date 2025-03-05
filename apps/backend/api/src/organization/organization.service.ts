@@ -220,7 +220,7 @@ export class OrganizationService {
         );
         const organization = await assignEmployee?.organization;
         const branch = await assignEmployee?.branch;
-        const userDetails  = new UserDetails();
+        const userDetails = new UserDetails();
         userDetails.organizationId = organization?.id;
         userDetails.employeeId = employee?.id;
         userDetails.employeeOrgId = assignEmployee.id;
