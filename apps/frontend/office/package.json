@@ -51,6 +51,7 @@
         "@shega/api": "workspace:*",
         "@shega/jest-config": "workspace:*",
         "@shega/typescript-config": "workspace:*",
+        "@tailwindcss/postcss": "^4.0.10",
         "@testing-library/jest-dom": "^6.4.5",
         "@testing-library/react": "^15.0.7",
         "@types/chroma-js": "^3.1.1",
