@@ -1,9 +1,7 @@
 'use client';
 
 import NoData from '@/components/NoData';
-import { Link } from '@/i18n/routing';
 import {
-    Badge,
     Button,
     Card,
     Checkbox,
@@ -29,15 +27,18 @@ import {
     IconSearch,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { type Daum, fetchUsers } from 'app/[locale]/_api/users/fetch-user';
+import {
+    type Daum,
+    fetchOrganizations,
+} from 'app/[locale]/_api/organizations/fetch-organizations';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
-import { CreateUser } from './_components/CreateUser';
+import { CreateOrganization } from './_components/create-organization';
 
 const UsersPage = () => {
-    const t = useTranslations('usersPage');
+    const t = useTranslations('organizationsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     const [selection, setSelection] = useState<string[]>([]);
@@ -57,15 +58,19 @@ const UsersPage = () => {
 
     // Fetch users using TanStack Query
     const { data, isLoading, error } = useQuery({
-        queryKey: ['users'],
+        queryKey: [
+            'organizations',
+            debouncedSearch,
+            roleFilter,
+            sortOrder,
+            page,
+            limit,
+        ],
         queryFn: () =>
-            fetchUsers({
-                // status: roleFilter,
-                pagination: {
-                    search: debouncedSearch,
-                    page: +page,
-                    limit: +limit,
-                },
+            fetchOrganizations({
+                search: debouncedSearch,
+                page: +page,
+                limit: +limit,
             }),
     });
 
@@ -77,7 +82,7 @@ const UsersPage = () => {
         return <Text color="red">{t('error')}</Text>;
     }
 
-    const users = data?.data ?? [];
+    const organizations = data?.data ?? [];
 
     const toggleRow = (email: string) =>
         setSelection((current) =>
@@ -88,16 +93,16 @@ const UsersPage = () => {
 
     const toggleAll = () =>
         setSelection((current) =>
-            current.length === users.length
+            current.length === organizations.length
                 ? []
-                : users.map((user: Daum) => user.email ?? ''),
+                : organizations.map((user: Daum) => user.createdDate ?? ''),
         );
 
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align="center" justify="space-between" className="p-4">
                 <Text className="font-bold text-xl">{t('title')}</Text>
-                <CreateUser />
+                <CreateOrganization />
             </Flex>
 
             <Divider my="md" />
@@ -112,28 +117,6 @@ const UsersPage = () => {
                     style={{ width: 300 }}
                 />
                 <Flex gap={'xs'} align={'center'}>
-                    <Select
-                        placeholder={t('selectRole')}
-                        value={roleFilter}
-                        size="sm"
-                        onChange={(data) => setRoleFilter(data ?? '')}
-                        data={[
-                            { value: '', label: t('allRoles') },
-                            {
-                                value: 'ADMINISTRATOR',
-                                label: t('roles.administrator'),
-                            },
-                            {
-                                value: 'JOB_SEEKER',
-                                label: t('roles.jobSeeker'),
-                            },
-                            {
-                                value: 'WORK_PROVIDER',
-                                label: t('roles.workProvider'),
-                            },
-                        ]}
-                        style={{ width: 150 }}
-                    />
                     <Select
                         placeholder={t('sortBy')}
                         value={sortOrder}
@@ -151,29 +134,23 @@ const UsersPage = () => {
             </Group>
 
             {/* No Data State */}
-            {users.length === 0 ? (
+            {organizations.length === 0 ? (
                 <NoData />
                 // biome-ignore lint/nursery/noNestedTernary: <explanation>
             ) : isMobile ? (
                 <Stack>
-                    {users.map((user: Daum) => (
+                    {organizations.map((user: Daum) => (
                         <Card
-                            key={user.email}
+                            key={user.createdDate}
                             shadow="sm"
                             p="lg"
                             radius="md"
                             withBorder
                         >
                             <Flex justify="space-between" align="center">
-                                <Text fw={500}>{user.fullName}</Text>
-                                <Badge color={user.isActive ? 'green' : 'red'}>
-                                    {user.isActive
-                                        ? t('status.active')
-                                        : t('status.inactive')}
-                                </Badge>
+                                <Text fw={500}>{user.name}</Text>
                             </Flex>
                             <Divider my="xs" />
-                            <Text size="sm">{user.email}</Text>
                             <Text size="xs" c="dimmed">
                                 {DateTime.fromISO(
                                     user.createdDate ?? '',
@@ -204,16 +181,17 @@ const UsersPage = () => {
                                     <Checkbox
                                         onChange={toggleAll}
                                         checked={
-                                            selection.length === users.length
+                                            selection.length ===
+                                            organizations.length
                                         }
                                         indeterminate={
                                             selection.length > 0 &&
-                                            selection.length !== users.length
+                                            selection.length !==
+                                                organizations.length
                                         }
                                     />
                                 </Table.Th>
-                                <Table.Th>{t('table.fullName')}</Table.Th>
-                                <Table.Th>{t('table.email')}</Table.Th>
+                                <Table.Th>{t('table.name')}</Table.Th>
                                 <Table.Th>{t('table.status')}</Table.Th>
                                 <Table.Th>{t('table.createdBy')}</Table.Th>
                                 <Table.Th>{t('table.createdAt')}</Table.Th>
@@ -221,27 +199,21 @@ const UsersPage = () => {
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {users.map((user: Daum) => (
-                                <Table.Tr key={user.email}>
+                            {organizations.map((user: Daum) => (
+                                <Table.Tr key={user.createdDate}>
                                     <Table.Td>
                                         <Checkbox
                                             checked={selection.includes(
-                                                user.email ?? '',
+                                                user.createdDate ?? '',
                                             )}
                                             onChange={() =>
-                                                toggleRow(user.email ?? '')
+                                                toggleRow(
+                                                    user.createdDate ?? '',
+                                                )
                                             }
                                         />
                                     </Table.Td>
-                                    <Table.Td>{user.fullName}</Table.Td>
-                                    <Table.Td>
-                                        <Link
-                                            href={`mailto:${user.email}`}
-                                            className="hover:underline"
-                                        >
-                                            {user.email}
-                                        </Link>
-                                    </Table.Td>
+                                    <Table.Td>{user.name}</Table.Td>
                                     <Table.Td
                                         className={
                                             user.isActive

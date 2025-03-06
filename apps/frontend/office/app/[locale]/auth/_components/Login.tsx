@@ -25,9 +25,9 @@ import { useAuth } from '@shega/ui';
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'app/[locale]/_api/auth/login';
 import { getUserAction } from 'app/[locale]/_api/get-user-action';
-import { deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -65,15 +65,6 @@ const Login = () => {
         formState: { errors },
     } = useForm({ resolver: zodResolver(schema) });
 
-    useEffect(() => {
-        const token = getCookie(COOKIE_ACCESS_TOKEN);
-        if (token) {
-            getUserAction()
-                .then(setUser)
-                .catch(() => deleteCookie(COOKIE_ACCESS_TOKEN));
-        }
-    }, [setUser]);
-
     const loginMutation = useMutation({
         mutationFn: login,
         onError: () => {
@@ -83,17 +74,30 @@ const Login = () => {
                 color: 'red',
             });
         },
+        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
         onSuccess: async ({ data }) => {
             try {
                 if (data.pwdChangeRequired) {
                     router.push(`/auth/change-password/${data.id}`);
                 } else {
                     logger.log(data);
+
+                    const user = await getUserAction(data.access_token);
+                    // temporary the role will be removed once the endpoint returns role
+                    setUser({ ...user, role: data.role });
+                    if (data.role === 'administrator') {
+                        router.push('/admin/dashboard');
+                    }
+                    if (data.role === 'work_provider') {
+                        router.push('/work-provider/dashboard');
+                    }
+
                     notifications.show({
                         title: 'Success',
                         message: t('loginSuccess'),
                         color: 'green',
                     });
+                    setCookie('role', data.role);
                     setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
                         maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
                     });
@@ -102,9 +106,6 @@ const Login = () => {
                         secure: true,
                         maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
                     });
-                    const user = await getUserAction();
-                    setUser(user);
-                    router.push('/admin/dashboard');
                 }
             } catch (error) {
                 logger.error('Error processing login success:', error);
@@ -116,11 +117,12 @@ const Login = () => {
         loginMutation.mutateAsync({
             username: values.email,
             password: values.password,
+            origin: 'office',
         });
     };
 
     return (
-        <Box className="flex items-center justify-center bg-white shadow rounded w-1/2">
+        <Box className="flex items-center justify-center bg-white shadow rounded w-full md:w-1/2">
             <div className="relative w-full p-8">
                 <Flex direction={'column'} align="center">
                     <Title className="text-xl text-start">{t('title')}</Title>

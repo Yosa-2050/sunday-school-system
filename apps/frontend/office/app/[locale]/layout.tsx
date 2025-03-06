@@ -1,8 +1,10 @@
+import { logger } from '@shega/shared';
 import { AuthProvider } from '@shega/ui';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Inter } from 'next/font/google';
+import { cookies } from 'next/headers';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
@@ -15,7 +17,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
     title: 'Shega Jobs',
     description:
-        'Impeding Job Seekers and connecting them to the best of the best',
+        'Empowering Job Seekers and connecting them to the best of the best',
 };
 
 //bluish theme
@@ -24,9 +26,13 @@ const defaultTheme = '#004c4c';
 export default async function RootLayout({
     children,
 }: Readonly<PropsWithChildren>) {
+    const cookieValues = await cookies();
+    const messages = await getMessages();
     const user = await getUserAction();
 
-    const messages = await getMessages();
+    const role = cookieValues.get('role')?.value;
+
+    logger.log({ user, role });
 
     const colorArray = generateColors(defaultTheme);
     const styles: Record<string, string> = {
@@ -47,7 +53,9 @@ export default async function RootLayout({
                             color={defaultTheme}
                             radius={'8px'}
                         >
-                            <AuthProvider user={user}>
+                            <AuthProvider
+                                user={user ? { ...user, role } : undefined}
+                            >
                                 <NuqsAdapter>{children}</NuqsAdapter>
                             </AuthProvider>
                         </MantineThemeProvider>

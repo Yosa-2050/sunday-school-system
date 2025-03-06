@@ -48,12 +48,19 @@ export const fetcher = async (endpoint: string, options?: RequestInit) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
+            const errorData = await response.json(); // Get error details from response
+            throw new Error(
+                errorData?.message || `Error: ${response.statusText}`,
+            );
         }
 
         return response.json();
     } catch (error) {
         logger.error('Error during fetch:', error);
-        throw error;
+        // Throw a custom error object with additional info for TanStack Query
+        if (error instanceof Error) {
+            throw new Error(error.message || 'An unexpected error occurred.');
+        }
+        throw new Error('An unexpected error occurred.');
     }
 };

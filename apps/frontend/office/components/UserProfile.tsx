@@ -28,7 +28,7 @@ export default function UserProfile() {
                     visibleFrom="md"
                 >
                     <Avatar radius="xl" color="blue">
-                        {user?.firstName[0]} {user?.lastName[0]}
+                        {user?.firstName?.[0]} {user?.lastName?.[0]}
                     </Avatar>
                 </Box>
             </Menu.Target>
@@ -46,8 +46,9 @@ export default function UserProfile() {
                 <Menu.Item
                     leftSection={<IconLogout2 className="w-4 h-4" />}
                     color="red"
-                    onClick={async () => {
-                        await deleteCookie(COOKIE_ACCESS_TOKEN);
+                    onClick={() => {
+                        deleteCookie(COOKIE_ACCESS_TOKEN);
+                        deleteCookie('role');
                         setUser(undefined);
                         router.push('/auth/login');
                     }}
