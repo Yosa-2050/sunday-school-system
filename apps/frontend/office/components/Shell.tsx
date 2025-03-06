@@ -29,12 +29,12 @@ interface ShellProps {
     children: React.ReactNode;
 }
 
-export default function WrapperShell({ children,role }: ShellProps): React.ReactNode {
-   
+export default function WrapperShell({
+    children,
+    role,
+}: ShellProps): React.ReactNode {
     const [opened, { toggle }] = useDisclosure(false);
     const [sidebarOpen, { toggle: toggleSidebar }] = useDisclosure(true);
-
-   
 
     return (
         <ModalsProvider>
@@ -48,10 +48,21 @@ export default function WrapperShell({ children,role }: ShellProps): React.React
                 }}
                 padding="md"
             >
-
-                <AppShell.Header className="bg-white border-b border-gray-200" h={60}>
-                    <Flex align="center" justify={'space-between'} h="100%" px="md">
-                        <Flex onClick={toggleSidebar} style={{ cursor: 'pointer' }} visibleFrom="md">
+                <AppShell.Header
+                    className="bg-white border-b border-gray-200"
+                    h={60}
+                >
+                    <Flex
+                        align="center"
+                        justify={'space-between'}
+                        h="100%"
+                        px="md"
+                    >
+                        <Flex
+                            onClick={toggleSidebar}
+                            style={{ cursor: 'pointer' }}
+                            visibleFrom="md"
+                        >
                             {sidebarOpen ? (
                                 <IconLayoutSidebarRightExpand size={30} />
                             ) : (
@@ -59,10 +70,22 @@ export default function WrapperShell({ children,role }: ShellProps): React.React
                             )}
                         </Flex>
                         <Flex hiddenFrom="md">
-                            <Link href={role === 'administrator' ? '/admin/dashboard' : '/work-provider/dashboard'} className="ml-3 flex items-center gap-2">
-                            <div className="relative w-[150px] h-[60px]">
-                                <Image src={Logo.src} alt="logo" fill className="object-contain" />
-                            </div>
+                            <Link
+                                href={
+                                    role === 'administrator'
+                                        ? '/admin/dashboard'
+                                        : '/work-provider/dashboard'
+                                }
+                                className="ml-3 flex items-center gap-2"
+                            >
+                                <div className="relative w-[150px] h-[60px]">
+                                    <Image
+                                        src={Logo.src}
+                                        alt="logo"
+                                        fill
+                                        className="object-contain"
+                                    />
+                                </div>
                             </Link>
                         </Flex>
                         <Flex align="center" gap="md">
@@ -71,17 +94,43 @@ export default function WrapperShell({ children,role }: ShellProps): React.React
                                 <IconBell size={20} />
                             </Flex>
                             <UserProfile />
-                            <Burger onClick={toggle} style={{ cursor: 'pointer' }} size={20} hiddenFrom="md" />
+                            <Burger
+                                onClick={toggle}
+                                style={{ cursor: 'pointer' }}
+                                size={20}
+                                hiddenFrom="md"
+                            />
                         </Flex>
                     </Flex>
                 </AppShell.Header>
 
-                <AppShell.Navbar className="bg-white border-r border-gray-200" p={'md'} hidden={!sidebarOpen}>
-                    <Flex align="center" justify={'space-between'} className="pb-2 border-b border-gray-300">
-                        <Link href="/admin/dashboard" className="ml-3 flex items-center gap-2">
-                            <Image src={Logo.src} alt="logo" width={150} height={120} />
+                <AppShell.Navbar
+                    className="bg-white border-r border-gray-200"
+                    p={'md'}
+                    hidden={!sidebarOpen}
+                >
+                    <Flex
+                        align="center"
+                        justify={'space-between'}
+                        className="pb-2 border-b border-gray-300"
+                    >
+                        <Link
+                            href="/admin/dashboard"
+                            className="ml-3 flex items-center gap-2"
+                        >
+                            <Image
+                                src={Logo.src}
+                                alt="logo"
+                                width={150}
+                                height={120}
+                            />
                         </Link>
-                        <CloseButton onClick={toggle} style={{ cursor: 'pointer' }} size={30} hiddenFrom="md" />
+                        <CloseButton
+                            onClick={toggle}
+                            style={{ cursor: 'pointer' }}
+                            size={30}
+                            hiddenFrom="md"
+                        />
                     </Flex>
                     <ScrollArea className="flex-1">
                         <SideMenu menu={Menus()} role={role} />
@@ -94,7 +143,6 @@ export default function WrapperShell({ children,role }: ShellProps): React.React
                     </Box>
                 </AppShell.Navbar>
 
-
                 <AppShell.Main className="bg-primary-5">
                     <Box className="w-full flex-1">{children}</Box>
                 </AppShell.Main>
@@ -102,4 +150,3 @@ export default function WrapperShell({ children,role }: ShellProps): React.React
         </ModalsProvider>
     );
 }
-

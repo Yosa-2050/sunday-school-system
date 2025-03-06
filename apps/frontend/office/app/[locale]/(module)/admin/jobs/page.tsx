@@ -48,7 +48,7 @@ const sampleUsers = [
         id: '2',
         firstName: 'Jane',
         lastName: 'Smith',
-        email: 'hFtQK@example.com', 
+        email: 'hFtQK@example.com',
         userType: 'User',
         status: 'Active',
         createdBy: 'Admin',

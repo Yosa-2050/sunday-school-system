@@ -3,13 +3,13 @@
 import { Link } from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
+import { useAuth } from '@shega/ui';
+import { getCookie } from 'cookies-next';
 import Autoplay from 'embla-carousel-autoplay';
 import { useTranslations } from 'next-intl';
 import type React from 'react';
 import { type JSX, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';
-import { useAuth } from '@shega/ui';
-import { getCookie } from 'cookies-next';
 
 export default function PageWrapper({
     children,
@@ -20,16 +20,16 @@ export default function PageWrapper({
     const role = getCookie('role');
     const autoplay = useRef(Autoplay({ delay: 4000 }));
 
-    const {user}=useAuth();
+    const { user } = useAuth();
 
-    if(user && role) {
+    if (user && role) {
         if (role === 'administrator') {
             window.location.href = '/admin/dashboard';
         }
         if (role === 'work_provider') {
             window.location.href = '/work-provider/dashboard';
         }
-    } 
+    }
     return (
         <Flex className="relative min-h-screen w-full">
             <Box

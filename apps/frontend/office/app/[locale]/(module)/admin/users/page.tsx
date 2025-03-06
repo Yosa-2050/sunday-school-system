@@ -57,9 +57,7 @@ const UsersPage = () => {
 
     // Fetch users using TanStack Query
     const { data, isLoading, error } = useQuery({
-        queryKey: [
-            'users'
-        ],
+        queryKey: ['users'],
         queryFn: () =>
             fetchUsers({
                 // status: roleFilter,

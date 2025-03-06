@@ -29,11 +29,10 @@ export default async function RootLayout({
     const cookieValues = await cookies();
     const messages = await getMessages();
     const user = await getUserAction();
-    
+
     const role = cookieValues.get('role')?.value;
 
     logger.log({ user, role });
-
 
     const colorArray = generateColors(defaultTheme);
     const styles: Record<string, string> = {

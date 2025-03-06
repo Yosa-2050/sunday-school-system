@@ -16,7 +16,7 @@ export default function UserProfile() {
     return (
         <Menu
             opened={opened}
-            onChange={toggle} 
+            onChange={toggle}
             width={200}
             position="bottom-end"
             shadow="md"
