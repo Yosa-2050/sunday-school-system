@@ -10,7 +10,6 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 
     if (!role) {
         redirect({href: '/auth/login',locale});
-        return null;
     }
     return (
         <Shell role={role as 'administrator' | 'work_provider'}>
