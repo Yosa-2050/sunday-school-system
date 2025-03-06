@@ -34,7 +34,7 @@
         "luxon": "^3.5.0",
         "next": "15.2.1",
         "next-cookie": "^2.8.0",
-        "next-intl": "^3.26.4",
+        "next-intl": "^3.26.5",
         "next-nprogress-bar": "^2.4.7",
         "nuqs": "^2.4.0",
         "react": "19.0.0",
