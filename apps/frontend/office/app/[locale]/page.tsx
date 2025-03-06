@@ -9,7 +9,12 @@ export default function HomePage() {
     const locale = useLocale();
 
     if (user) {
-        redirect({ href: '/admin/dashboard', locale });
+        if (user.role === 'administrator') {
+            redirect({ href: '/admin/dashboard', locale });
+        }
+        if (user.role === 'work_provider') {
+            redirect({ href: '/work-provider/dashboard', locale });
+        }
     } else {
         redirect({ href: '/auth/login', locale });
     }

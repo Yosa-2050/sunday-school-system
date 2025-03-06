@@ -22,6 +22,7 @@
             "noAccount": "Don't have an account?",
             "signUp": "Sign up",
             "loginFailed": "Login failed. Please try again.",
+            "loginSuccess": "Login Successful",
             "rememberMe": "Remember me",
             "rightsReserved": "© All rights reserved by Shega Jobs"
         },
@@ -44,6 +45,7 @@
         "dashboard": "Dashboard",
         "job-seekers": "Job Seekers",
         "users": "Users",
+        "jobs": "Jobs",
         "resume-builder": "Resume Builder",
         "applied-jobs": "Applied Jobs",
         "saved-jobs": "Saved Jobs",

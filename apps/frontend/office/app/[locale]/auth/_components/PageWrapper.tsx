@@ -1,13 +1,14 @@
 'use client';
 
-import { Link, redirect } from '@/i18n/routing';
+import { Link } from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
 import { useAuth } from '@shega/ui';
+import { getCookie } from 'cookies-next';
 import Autoplay from 'embla-carousel-autoplay';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import type React from 'react';
-import { type JSX, useEffect, useRef } from 'react';
+import { type JSX, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';
 
 export default function PageWrapper({
@@ -15,25 +16,28 @@ export default function PageWrapper({
 }: {
     children: React.ReactNode;
 }): JSX.Element {
-    const { user } = useAuth();
-    const locale = useLocale();
     const t = useTranslations('auth.pageWrapper');
-    const autoplay = useRef(Autoplay({ delay: 2000 }));
+    const role = getCookie('role');
+    const autoplay = useRef(Autoplay({ delay: 4000 }));
 
-    useEffect(() => {
-        if (user) {
-            redirect({ href: '/admin/dashboard', locale });
+    const { user } = useAuth();
+
+    if (user && role) {
+        if (role === 'administrator') {
+            window.location.href = '/admin/dashboard';
         }
-    }, [user, locale]);
-
+        if (role === 'work_provider') {
+            window.location.href = '/work-provider/dashboard';
+        }
+    }
     return (
         <Flex className="relative min-h-screen w-full">
-            {/* Background Carousel - Moves to Background on Mobile */}
             <Box
                 className={`absolute inset-0 w-full h-[100vh] z-0 md:w-1/2 md:relative
                 `}
             >
                 <Carousel
+                    loop={true}
                     withControls={false}
                     plugins={[autoplay.current]}
                     onMouseEnter={autoplay.current.stop}
@@ -92,7 +96,7 @@ export default function PageWrapper({
                 {/* Footer */}
                 <Text
                     size="sm"
-                    color="gray"
+                    c="gray"
                     className="absolute bottom-4 text-center"
                 >
                     {new Date().getFullYear()} Shega Jobs. {t('rightsReserved')}

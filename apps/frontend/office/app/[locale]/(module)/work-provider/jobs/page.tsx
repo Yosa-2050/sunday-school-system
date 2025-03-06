@@ -1,7 +1,6 @@
 'use client';
 
-import NoData from '@/components/NoData';
-import { Link } from '@/i18n/routing';
+import { Link, useRouter } from '@/i18n/routing';
 import {
     Badge,
     Button,
@@ -10,9 +9,7 @@ import {
     Divider,
     Flex,
     Group,
-    LoadingOverlay,
     Menu,
-    Pagination,
     Paper,
     Select,
     Stack,
@@ -22,23 +19,23 @@ import {
     TextInput,
     Tooltip,
 } from '@mantine/core';
-import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
 import {
     IconDotsVertical,
     IconDownload,
+    IconPlus,
     IconSearch,
 } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import { type Daum, fetchUsers } from 'app/[locale]/_api/users/fetch-user';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
-import { CreateUser } from './_components/CreateUser';
+import { sampleUsers } from '../../admin/users/_components/users';
 
 const UsersPage = () => {
-    const t = useTranslations('usersPage');
+    const t = useTranslations('jobsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const router = useRouter();
 
     const [selection, setSelection] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useQueryState('search', {
@@ -50,54 +47,52 @@ const UsersPage = () => {
     const [sortOrder, setSortOrder] = useQueryState('sort', {
         defaultValue: 'asc',
     });
-    const [page, setPage] = useQueryState('page', { defaultValue: '1' });
-    const [limit, setLimit] = useQueryState('limit', { defaultValue: '10' });
 
-    const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
+    const filteredUsers = sampleUsers.filter(
+        (user) =>
+            (user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                user.lastName
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
+            (roleFilter ? user.userType === roleFilter : true),
+    );
 
-    // Fetch users using TanStack Query
-    const { data, isLoading, error } = useQuery({
-        queryKey: ['users'],
-        queryFn: () =>
-            fetchUsers({
-                // status: roleFilter,
-                pagination: {
-                    search: debouncedSearch,
-                    page: +page,
-                    limit: +limit,
-                },
-            }),
-    });
+    const sortedUsers = [...filteredUsers].sort((a, b) =>
+        sortOrder === 'asc'
+            ? a.firstName.localeCompare(b.firstName)
+            : b.firstName.localeCompare(a.firstName),
+    );
 
-    if (isLoading) {
-        return <LoadingOverlay visible={true} h={'100%'} />;
-    }
-
-    if (error) {
-        return <Text color="red">{t('error')}</Text>;
-    }
-
-    const users = data?.data ?? [];
-
-    const toggleRow = (email: string) =>
+    const toggleRow = (id: string) =>
         setSelection((current) =>
-            current.includes(email)
-                ? current.filter((item) => item !== email)
-                : [...current, email],
+            current.includes(id)
+                ? current.filter((item) => item !== id)
+                : [...current, id],
         );
 
     const toggleAll = () =>
         setSelection((current) =>
-            current.length === users.length
+            current.length === sortedUsers.length
                 ? []
-                : users.map((user: Daum) => user.email ?? ''),
+                : sortedUsers.map((item) => item.id),
         );
 
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align="center" justify="space-between" className="p-4">
                 <Text className="font-bold text-xl">{t('title')}</Text>
-                <CreateUser />
+                <Button
+                    leftSection={<IconPlus size={18} />}
+                    variant="filled"
+                    color="blue"
+                    className="text-white"
+                    onClick={() => {
+                        router.push('/work-provider/jobs/create');
+                    }}
+                >
+                    {t('createJob')}
+                </Button>
             </Flex>
 
             <Divider my="md" />
@@ -150,34 +145,40 @@ const UsersPage = () => {
                 </Flex>
             </Group>
 
-            {/* No Data State */}
-            {users.length === 0 ? (
-                <NoData />
-                // biome-ignore lint/nursery/noNestedTernary: <explanation>
-            ) : isMobile ? (
+            {/* Responsive Table or Cards */}
+            {isMobile ? (
                 <Stack>
-                    {users.map((user: Daum) => (
+                    {sortedUsers.map((user) => (
                         <Card
-                            key={user.email}
+                            key={user.id}
                             shadow="sm"
                             p="lg"
                             radius="md"
                             withBorder
                         >
                             <Flex justify="space-between" align="center">
-                                <Text fw={500}>{user.fullName}</Text>
-                                <Badge color={user.isActive ? 'green' : 'red'}>
-                                    {user.isActive
-                                        ? t('status.active')
-                                        : t('status.inactive')}
+                                <Text
+                                    fw={500}
+                                >{`${user.firstName} ${user.lastName}`}</Text>
+                                <Badge
+                                    color={
+                                        user.status === 'active'
+                                            ? 'green'
+                                            : 'red'
+                                    }
+                                >
+                                    {user.status}
                                 </Badge>
                             </Flex>
                             <Divider my="xs" />
                             <Text size="sm">{user.email}</Text>
+                            <Text size="sm" c="dimmed" className="capitalize">
+                                {user.userType}
+                            </Text>
                             <Text size="xs" c="dimmed">
-                                {DateTime.fromISO(
-                                    user.createdDate ?? '',
-                                ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                {DateTime.fromISO(user.createdAt).toFormat(
+                                    'yyyy-MM-dd HH:mm:ss',
+                                )}
                             </Text>
                             <Group mt="md">
                                 <Button variant="light" size="xs">
@@ -204,16 +205,19 @@ const UsersPage = () => {
                                     <Checkbox
                                         onChange={toggleAll}
                                         checked={
-                                            selection.length === users.length
+                                            selection.length ===
+                                            sortedUsers.length
                                         }
                                         indeterminate={
                                             selection.length > 0 &&
-                                            selection.length !== users.length
+                                            selection.length !==
+                                                sortedUsers.length
                                         }
                                     />
                                 </Table.Th>
                                 <Table.Th>{t('table.fullName')}</Table.Th>
                                 <Table.Th>{t('table.email')}</Table.Th>
+                                <Table.Th>{t('table.role')}</Table.Th>
                                 <Table.Th>{t('table.status')}</Table.Th>
                                 <Table.Th>{t('table.createdBy')}</Table.Th>
                                 <Table.Th>{t('table.createdAt')}</Table.Th>
@@ -221,42 +225,39 @@ const UsersPage = () => {
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {users.map((user: Daum) => (
-                                <Table.Tr key={user.email}>
+                            {sortedUsers.map((user) => (
+                                <Table.Tr key={user.id}>
                                     <Table.Td>
                                         <Checkbox
                                             checked={selection.includes(
-                                                user.email ?? '',
+                                                user.id,
                                             )}
-                                            onChange={() =>
-                                                toggleRow(user.email ?? '')
-                                            }
+                                            onChange={() => toggleRow(user.id)}
                                         />
                                     </Table.Td>
-                                    <Table.Td>{user.fullName}</Table.Td>
+                                    <Table.Td>{`${user.firstName} ${user.lastName}`}</Table.Td>
                                     <Table.Td>
                                         <Link
                                             href={`mailto:${user.email}`}
-                                            className="hover:underline"
+                                            className="hover:underline "
                                         >
                                             {user.email}
                                         </Link>
                                     </Table.Td>
+                                    <Table.Td>{user.userType}</Table.Td>
                                     <Table.Td
                                         className={
-                                            user.isActive
+                                            user.status === 'active'
                                                 ? 'text-green-600'
                                                 : 'text-red-600'
                                         }
                                     >
-                                        {user.isActive
-                                            ? t('status.active')
-                                            : t('status.inactive')}
+                                        {user.status}
                                     </Table.Td>
                                     <Table.Td>{user.createdBy}</Table.Td>
                                     <Table.Td>
                                         {DateTime.fromISO(
-                                            user.createdDate ?? '',
+                                            user.createdAt,
                                         ).toFormat('yyyy-MM-dd HH:mm:ss')}
                                     </Table.Td>
                                     <Table.Td>
@@ -272,14 +273,6 @@ const UsersPage = () => {
                     </Table>
                 </TableScrollContainer>
             )}
-
-            <Flex justify="center" mt="md">
-                <Pagination
-                    total={data?.totalPages ?? 1}
-                    value={+page}
-                    onChange={(value) => setPage(value.toString())}
-                />
-            </Flex>
         </Paper>
     );
 };
