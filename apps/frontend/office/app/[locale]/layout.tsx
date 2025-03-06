@@ -9,10 +9,10 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
 
+import type { ReactNode } from 'react';
+import { cn } from 'utilies/cn';
 import { generateColors, lightenHexColor } from 'utility/colors';
 import { getUserAction } from './_api/get-user-action';
-import { cn } from 'utilies/cn';
-import type { ReactNode } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -28,7 +28,8 @@ const defaultTheme = '#004c4c';
 export default async function RootLayout({
     children,
 }: {
-    children: ReactNode;}) {
+    children: ReactNode;
+}) {
     const cookieValues = await cookies();
     const messages = await getMessages();
     const user = await getUserAction();
@@ -49,25 +50,26 @@ export default async function RootLayout({
     });
     return (
         <html lang="en">
-            <body 
-            className={cn('h-screen w-full', inter.className)}
-        style={styles}
-        suppressHydrationWarning={true}>
-            <NuqsAdapter>
-                <NextIntlClientProvider messages={messages}>
-                    <QueryProviders>
-                        <MantineThemeProvider
-                            color={defaultTheme}
-                            radius={'8px'}
-                        >
-                            <AuthProvider
-                                user={user ? { ...user, role } : undefined}
+            <body
+                className={cn('h-screen w-full', inter.className)}
+                style={styles}
+                suppressHydrationWarning={true}
+            >
+                <NuqsAdapter>
+                    <NextIntlClientProvider messages={messages}>
+                        <QueryProviders>
+                            <MantineThemeProvider
+                                color={defaultTheme}
+                                radius={'8px'}
                             >
-                                {children}
-                            </AuthProvider>
-                        </MantineThemeProvider>
-                    </QueryProviders>
-                </NextIntlClientProvider>
+                                <AuthProvider
+                                    user={user ? { ...user, role } : undefined}
+                                >
+                                    {children}
+                                </AuthProvider>
+                            </MantineThemeProvider>
+                        </QueryProviders>
+                    </NextIntlClientProvider>
                 </NuqsAdapter>
             </body>
         </html>
