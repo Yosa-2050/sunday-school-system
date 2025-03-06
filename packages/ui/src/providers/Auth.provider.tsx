@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import type { User } from '@shega/shared';
 import { createContext, useContext, useState, type ReactNode } from 'react';
