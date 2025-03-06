@@ -16,7 +16,7 @@ export default function UserProfile() {
     return (
         <Menu
             opened={opened}
-            onChange={toggle} // Fix here
+            onChange={toggle} 
             width={200}
             position="bottom-end"
             shadow="md"
@@ -50,7 +50,7 @@ export default function UserProfile() {
                         deleteCookie(COOKIE_ACCESS_TOKEN);
                         deleteCookie('role');
                         setUser(undefined);
-                        router.push('/auth/login'); // Fix here
+                        router.push('/auth/login');
                     }}
                 >
                     {t('logout')}

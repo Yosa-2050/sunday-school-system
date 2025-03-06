@@ -38,7 +38,7 @@ import { useState } from 'react';
 import { CreateOrganization } from './_components/create-organization';
 
 const UsersPage = () => {
-    const t = useTranslations('usersPage');
+    const t = useTranslations('organizationsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     const [selection, setSelection] = useState<string[]>([]);

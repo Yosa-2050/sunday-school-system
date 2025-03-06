@@ -13,7 +13,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
 import { IconXboxX } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     type CreateUsers,
     createUsers,
@@ -33,6 +33,7 @@ export function CreateUser() {
         lastName: z.string().min(1, t('validation.lastNameRequired')),
         email: z.string().email(t('validation.invalidEmail')),
     });
+    const queryClient = useQueryClient();
 
     // Initialize react-hook-form with validation schema
     const {
@@ -54,6 +55,7 @@ export function CreateUser() {
                 title: t('notifications.successTitle'),
                 message: t('notifications.successMessage'),
             });
+            queryClient.invalidateQueries({ queryKey: ['users'] });
             close();
         },
         onError: (error) => {

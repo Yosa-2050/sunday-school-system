@@ -29,9 +29,32 @@ import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
-import { sampleUsers } from '../users/_components/users';
+
 // import { CreateUser } from './_components/CreateUser';
 // import { sampleUsers } from './_components/users';
+
+const sampleUsers = [
+    {
+        id: '1',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'iVt4T@example.com',
+        userType: 'Admin',
+        status: 'Active',
+        createdBy: 'Admin',
+        createdAt: DateTime.now().toISO(),
+    },
+    {
+        id: '2',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        email: 'hFtQK@example.com', 
+        userType: 'User',
+        status: 'Active',
+        createdBy: 'Admin',
+        createdAt: DateTime.now().toISO(),
+    },
+];
 
 const UsersPage = () => {
     const t = useTranslations('usersPage');

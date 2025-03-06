@@ -12,16 +12,15 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
 import { IconXboxX } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
-import type { CreateOrganizations } from 'app/[locale]/_api/organizations/create-organizations';
-import { createUsers } from 'app/[locale]/_api/users/create-users';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CreateOrganizations } from 'app/[locale]/_api/organizations/create-organizations';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 export function CreateOrganization() {
     const [opened, { open, close }] = useDisclosure(false);
-    const t = useTranslations('crateUsers');
+    const t = useTranslations('createOrganizations');
 
     const organizationSchema = z.object({
         firstName: z.string().min(1, t('validation.firstNameRequired')),
@@ -32,6 +31,8 @@ export function CreateOrganization() {
             .string()
             .min(1, t('validation.companyNameRequired')),
     });
+
+    const queryClient = useQueryClient();
 
     // Initialize react-hook-form with validation schema
     const {
@@ -46,9 +47,10 @@ export function CreateOrganization() {
 
     // Create user mutation
     const createUserMutation = useMutation({
-        mutationFn: createUsers,
+        mutationFn: CreateOrganizations,
         mutationKey: ['organizations'],
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['organizations'] });
             notifications.show({
                 title: t('notifications.successTitle'),
                 message: t('notifications.successMessage'),

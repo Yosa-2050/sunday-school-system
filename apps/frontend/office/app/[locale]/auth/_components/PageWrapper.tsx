@@ -1,37 +1,37 @@
 'use client';
 
-import { Link, redirect } from '@/i18n/routing';
+import { Link } from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
-import { getCookie } from 'cookies-next';
 import Autoplay from 'embla-carousel-autoplay';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import type React from 'react';
-import { type JSX, useEffect, useRef } from 'react';
+import { type JSX, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';
+import { useAuth } from '@shega/ui';
+import { getCookie } from 'cookies-next';
 
 export default function PageWrapper({
     children,
 }: {
     children: React.ReactNode;
 }): JSX.Element {
-    const locale = useLocale();
     const t = useTranslations('auth.pageWrapper');
+    const role = getCookie('role');
     const autoplay = useRef(Autoplay({ delay: 4000 }));
-    const role = getCookie('role')?.toString();
 
-    useEffect(() => {
+    const {user}=useAuth();
+
+    if(user && role) {
         if (role === 'administrator') {
-            redirect({ href: '/admin/dashboard', locale });
+            window.location.href = '/admin/dashboard';
         }
         if (role === 'work_provider') {
-            redirect({ href: '/work-provider/dashboard', locale });
+            window.location.href = '/work-provider/dashboard';
         }
-    }, [role, locale]);
-
+    } 
     return (
         <Flex className="relative min-h-screen w-full">
-            {/* Background Carousel - Moves to Background on Mobile */}
             <Box
                 className={`absolute inset-0 w-full h-[100vh] z-0 md:w-1/2 md:relative
                 `}

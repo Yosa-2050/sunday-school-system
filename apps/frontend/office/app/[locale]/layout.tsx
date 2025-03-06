@@ -27,12 +27,13 @@ export default async function RootLayout({
     children,
 }: Readonly<PropsWithChildren>) {
     const cookieValues = await cookies();
+    const messages = await getMessages();
     const user = await getUserAction();
+    
     const role = cookieValues.get('role')?.value;
 
     logger.log({ user, role });
 
-    const messages = await getMessages();
 
     const colorArray = generateColors(defaultTheme);
     const styles: Record<string, string> = {

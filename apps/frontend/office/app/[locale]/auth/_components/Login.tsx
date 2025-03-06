@@ -25,9 +25,9 @@ import { useAuth } from '@shega/ui';
 import { useMutation } from '@tanstack/react-query';
 import { login } from 'app/[locale]/_api/auth/login';
 import { getUserAction } from 'app/[locale]/_api/get-user-action';
-import { deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -65,14 +65,6 @@ const Login = () => {
         formState: { errors },
     } = useForm({ resolver: zodResolver(schema) });
 
-    useEffect(() => {
-        const token = getCookie(COOKIE_ACCESS_TOKEN);
-        if (token) {
-            getUserAction()
-                .then(setUser)
-                .catch(() => deleteCookie(COOKIE_ACCESS_TOKEN));
-        }
-    }, [setUser]);
 
     const loginMutation = useMutation({
         mutationFn: login,
