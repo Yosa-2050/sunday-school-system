@@ -11,6 +11,7 @@ import QueryProviders from 'providers/Query.provider';
 import type { PropsWithChildren } from 'react';
 import { generateColors, lightenHexColor } from 'utility/colors';
 import { getUserAction } from './_api/get-user-action';
+import { cn } from 'utilies/cn';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -46,7 +47,11 @@ export default async function RootLayout({
     });
     return (
         <html lang="en">
-            <body className={inter.className} style={styles}>
+            <body 
+            className={cn('h-screen w-full', inter.className)}
+        style={styles}
+        suppressHydrationWarning={true}>
+            <NuqsAdapter>
                 <NextIntlClientProvider messages={messages}>
                     <QueryProviders>
                         <MantineThemeProvider
@@ -56,11 +61,12 @@ export default async function RootLayout({
                             <AuthProvider
                                 user={user ? { ...user, role } : undefined}
                             >
-                                <NuqsAdapter>{children}</NuqsAdapter>
+                                {children}
                             </AuthProvider>
                         </MantineThemeProvider>
                     </QueryProviders>
                 </NextIntlClientProvider>
+                </NuqsAdapter>
             </body>
         </html>
     );

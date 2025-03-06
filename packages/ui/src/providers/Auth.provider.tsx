@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
 import type { User } from '@shega/shared';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 
 type AuthContextType = {
     user?: User;
@@ -10,10 +10,16 @@ type AuthContextType = {
 
 type AuthProviderProps = {
     user?: User;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const defaultAuthContext: AuthContextType = {
+    user: undefined,
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
+    setUser: () => {},
+};
+
+const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
 export function AuthProvider({ user, children }: AuthProviderProps) {
     const [userInfo, setUserInfo] = useState<User | undefined>(user);

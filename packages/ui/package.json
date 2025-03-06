@@ -4,21 +4,26 @@
     "private": true,
     "type": "module",
     "exports": {
-        ".": ["./src/index.ts"]
+        ".": [
+            "./src/index.ts"
+        ]
     },
     "scripts": {
         "generate:component": "turbo gen react-component"
     },
     "devDependencies": {
-        "@shega/typescript-config": "workspace:*",
         "@shega/shared": "workspace:*",
+        "@shega/typescript-config": "workspace:*",
         "@turbo/gen": "^1.12.4",
-        "@types/node": "^20.11.24",
         "@types/eslint": "^8.56.5",
-        "@types/react": "^18.2.61",
-        "@types/react-dom": "^18.2.19",
+        "@types/node": "^20.11.24",
+        "@types/react": "^19.0.10",
+        "@types/react-dom": "^19.0.4",
         "eslint": "^8.57.0",
-        "react": "^18.2.0",
+        "react": "^19.0.0",
         "typescript": "5.5.4"
+    },
+    "dependencies": {
+        "react-dom": "^19.0.0"
     }
 }

@@ -1,32 +1,47 @@
 {
-    "extends": "@shega/typescript-config/nextjs.json",
-    "compilerOptions": {
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ],
-        "allowJs": true,
-        "module": "esnext",
-        "outDir": "dist",
-        "baseUrl": ".",
-        "jsx": "preserve",
-        "paths": {
-            "@/actions/*": ["actions/*"],
-            "@/components/*": ["components/*"],
-            "@/hooks/*": ["./hooks/*"],
-            "@/i18n/*": ["i18n/*"],
-            "@/lib/*": ["./lib/*"],
-            "@/models/*": ["models/*"]
-        },
-        "noEmit": true
-    },
-    "include": [
-        "next-env.d.ts",
-        "next.config.js",
-        "**/*.ts",
-        "**/*.tsx",
-        ".next/types/**/*.ts"
+  "extends": "@shega/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
     ],
-    "exclude": ["node_modules", "dist"]
+    "allowJs": true,
+    "module": "esnext",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/actions/*": [
+        "actions/*"
+      ],
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/hooks/*": [
+        "./hooks/*"
+      ],
+      "@/i18n/*": [
+        "i18n/*"
+      ],
+      "@/lib/*": [
+        "./lib/*"
+      ],
+      "@/models/*": [
+        "models/*"
+      ]
+    },
+    "noEmit": true,
+    "jsx": "preserve"
+  },
+  "include": [
+    "next-env.d.ts",
+    "next.config.js",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
