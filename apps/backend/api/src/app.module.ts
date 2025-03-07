@@ -24,9 +24,9 @@ import { ClsModule } from 'nestjs-cls';
                 // and use the setup method to
                 // provide default store values.
                 setup: (cls, req) => {
-                  cls.set('token', req.headers?.authorization?.split(' ')[1]);
+                    cls.set('token', req.headers?.authorization?.split(' ')[1]);
                 },
-            }
+            },
         }),
         ConfigModule.forRoot({
             // envFilePath: `.env.${process.env.NODE_ENV}`, // Loads the correct .env file

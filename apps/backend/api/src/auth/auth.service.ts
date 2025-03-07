@@ -41,7 +41,7 @@ export class AuthService {
         private otpService: OtpService,
         private notificationService: NotificationService,
         private organizationService: OrganizationService,
-        private clasService: ClsService
+        private clasService: ClsService,
     ) {}
 
     async validateUser(
@@ -174,14 +174,13 @@ export class AuthService {
         throw new UnauthorizedException();
     }
 
-    CurrentUser(){
+    CurrentUser() {
         const token = this.clasService.get('token');
-        if(token)
-        {
-        const user = this.jwtService.decode(token);
-        const detail =  new UserDetails();
-        detail.userId = user.userId;
-        return detail;
+        if (token) {
+            const user = this.jwtService.decode(token);
+            const detail = new UserDetails();
+            detail.userId = user.userId;
+            return detail;
         }
         return null;
     }
