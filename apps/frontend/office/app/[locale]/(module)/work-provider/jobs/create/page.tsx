@@ -1,31 +1,31 @@
 "use client";
 
+import useIsAuthorized from "@/hooks/useIsAuthorized";
+import { useRouter } from "@/i18n/routing";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
+  Container,
   Grid,
+  Paper,
   Select,
   TextInput,
   Title,
-  Paper,
-  Container,
 } from "@mantine/core";
-import { useForm, Controller } from "react-hook-form";
+import { notifications } from "@mantine/notifications";
+import { Link, RichTextEditor } from "@mantine/tiptap";
 import { logger } from "@shega/shared";
-import { RichTextEditor, Link } from "@mantine/tiptap";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Highlight from "@tiptap/extension-highlight";
+import SubScript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
+import TextAlign from "@tiptap/extension-text-align";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Highlight from "@tiptap/extension-highlight";
-import TextAlign from "@tiptap/extension-text-align";
-import Superscript from "@tiptap/extension-superscript";
-import SubScript from "@tiptap/extension-subscript";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createJob } from "app/[locale]/_api/organizations/create-jobs";
-import { notifications } from "@mantine/notifications";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import useIsAuthorized from "@/hooks/useIsAuthorized";
 import { memo, useCallback } from "react";
-import { useRouter } from "@/i18n/routing";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 
 const jobSchema = z.object({
   title: z.string().min(1, { message: "Job title is required" }),
@@ -45,7 +45,7 @@ const MemoizedRichTextEditor = memo(
     onChange,
     error,
   }: {
-    editor: any;
+    editor: ReturnType<typeof useEditor>;
     onChange: (html: string) => void;
     error?: string;
   }) => {
@@ -55,7 +55,10 @@ const MemoizedRichTextEditor = memo(
 
     return (
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Description
         </label>
         <RichTextEditor
@@ -136,7 +139,6 @@ const PostJobForm = () => {
     mutationFn: createJob,
     mutationKey: ["jobs"],
     onSuccess: () => {
-      console.log(getValues());
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       notifications.show({
         title: "Success",
@@ -146,7 +148,6 @@ const PostJobForm = () => {
       router.push("/work-provider/jobs");
     },
     onError: (error) => {
-      console.log(getValues());
       notifications.show({
         title: "Error",
         message: error.message,
@@ -200,7 +201,9 @@ const PostJobForm = () => {
                 label="Salary From"
                 placeholder="Minimum salary"
                 type="number"
-                {...register("salaryFrom", { valueAsNumber: true })}
+                {...register("salaryFrom", {
+                  valueAsNumber: true,
+                })}
                 error={errors.salaryFrom?.message}
               />
             </Grid.Col>
@@ -210,7 +213,9 @@ const PostJobForm = () => {
                 label="Salary To"
                 placeholder="Maximum salary"
                 type="number"
-                {...register("salaryTo", { valueAsNumber: true })}
+                {...register("salaryTo", {
+                  valueAsNumber: true,
+                })}
                 error={errors.salaryTo?.message}
               />
             </Grid.Col>
@@ -242,10 +247,22 @@ const PostJobForm = () => {
                     label="Employment Type"
                     required
                     data={[
-                      { value: "FULL_TIME", label: "Full-time" },
-                      { value: "PART_TIME", label: "Part-time" },
-                      { value: "CONTRACT", label: "Contract" },
-                      { value: "INTERNSHIP", label: "Internship" },
+                      {
+                        value: "FULL_TIME",
+                        label: "Full-time",
+                      },
+                      {
+                        value: "PART_TIME",
+                        label: "Part-time",
+                      },
+                      {
+                        value: "CONTRACT",
+                        label: "Contract",
+                      },
+                      {
+                        value: "INTERNSHIP",
+                        label: "Internship",
+                      },
                     ]}
                     {...field}
                     error={errors.type?.message}

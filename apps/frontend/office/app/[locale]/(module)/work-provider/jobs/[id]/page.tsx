@@ -2,8 +2,8 @@
 
 import { useRouter } from "@/i18n/routing";
 import {
-  Badge,
-  Button,
+  Avatar,
+  Card,
   Container,
   Divider,
   Flex,
@@ -13,12 +13,11 @@ import {
   Stack,
   Text,
   Title,
-  Card,
-  Avatar,
 } from "@mantine/core";
 import { IconMail, IconPhone } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import parse from "html-react-parser";
 
 interface JobDetailsResponse {
   id: string;
@@ -189,7 +188,7 @@ const JobDetails = () => {
 
           <Stack>
             <Text fw={600}>Full Job Description</Text>
-            <div dangerouslySetInnerHTML={{ __html: job.description }} />
+            <div className="job-description">{parse(job.description)}</div>
           </Stack>
         </Paper>
       </Flex>

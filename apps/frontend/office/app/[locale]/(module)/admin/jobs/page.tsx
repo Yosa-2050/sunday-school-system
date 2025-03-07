@@ -3,13 +3,15 @@
 import { useRouter } from "@/i18n/routing";
 import {
   Badge,
-  Button,
   Card,
+  Center,
   Divider,
   Flex,
   Group,
+  LoadingOverlay,
   Menu,
   MenuItem,
+  Pagination,
   Paper,
   Select,
   Stack,
@@ -17,27 +19,15 @@ import {
   TableScrollContainer,
   Text,
   TextInput,
-  Pagination,
-  LoadingOverlay,
-  Center,
 } from "@mantine/core";
 import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
-import {
-  IconDotsVertical,
-  IconEdit,
-  IconPlus,
-  IconSearch,
-  IconTrash,
-  IconEye,
-  IconRefresh,
-} from "@tabler/icons-react";
+import { IconDotsVertical, IconEye, IconSearch } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchJobsAdmin } from "app/[locale]/_api/admin/fetch-jobs";
-import { fetchJobs } from "app/[locale]/_api/organizations/fetch-jobs";
-import { DateTime } from "luxon";
 import { useTranslations } from "next-intl";
 import { useQueryState } from "nuqs";
-import { useState, useMemo } from "react";
+import { useState } from "react";
+import parse from "html-react-parser";
 
 interface Organization {
   id: string;
@@ -159,11 +149,9 @@ const JobsList = () => {
           {jobs.map((job: Job) => (
             <Card key={job.id} shadow="sm" p="lg" radius="md" withBorder>
               <Text fw={500}>{job.title}</Text>
-              <Text
-                size="sm"
-                c="dimmed"
-                dangerouslySetInnerHTML={{ __html: job.description }}
-              />
+              <Stack>
+                <div className="job-description">{parse(job.description)}</div>
+              </Stack>
               <Text size="sm" c="dimmed">
                 {job.type}
               </Text>
@@ -217,7 +205,9 @@ const JobsList = () => {
                       <Menu.Target>
                         <IconDotsVertical
                           size={18}
-                          style={{ cursor: "pointer" }}
+                          style={{
+                            cursor: "pointer",
+                          }}
                         />
                       </Menu.Target>
                       <Menu.Dropdown>

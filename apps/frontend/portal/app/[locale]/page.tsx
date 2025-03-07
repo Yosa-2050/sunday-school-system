@@ -1,53 +1,53 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 import {
+  ActionIcon,
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Card,
   Container,
+  Divider,
   Grid,
+  Group,
+  Menu,
+  Paper,
+  SimpleGrid,
+  Text,
   TextInput,
   Title,
-  Paper,
-  Button,
-  Text,
-  Badge,
-  Group,
-  Card,
-  Avatar,
-  Divider,
-  ActionIcon,
-  SimpleGrid,
-  Box,
-  Menu,
 } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { COOKIE_ACCESS_TOKEN } from "@shega/shared";
+import { useAuth } from "@shega/ui";
 import {
-  IconSearch,
-  IconMapPin,
-  IconBriefcase,
-  IconClock,
-  IconCurrencyDollar,
+  IconBell,
   IconBookmark,
-  IconHeart,
   IconBookmarkFilled,
-  IconHeartFilled,
-  IconCode,
-  IconPencil,
-  IconChartBar,
+  IconBriefcase,
   IconBuildingSkyscraper,
-  IconDeviceMobile,
   IconBulb,
-  IconUsers,
+  IconChartBar,
+  IconClock,
+  IconCode,
+  IconCurrencyDollar,
+  IconDeviceMobile,
+  IconHeart,
+  IconHeartFilled,
+  IconLogout,
+  IconMapPin,
+  IconPencil,
+  IconSearch,
+  IconSettings,
   IconTruck,
   IconUser,
-  IconLogout,
-  IconSettings,
-  IconBell,
+  IconUsers,
 } from "@tabler/icons-react";
-import { useState } from "react";
-import { useRouter } from "@/i18n/routing";
-import { useAuth } from "@shega/ui";
 import { deleteCookie } from "cookies-next";
-import { COOKIE_ACCESS_TOKEN } from "@shega/shared";
-import { modals } from "@mantine/modals";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 // Types for our filters
 interface JobFilters {
@@ -278,7 +278,13 @@ function Can({ children, fallback, action }: CanProps) {
   };
 
   return (
-    <div onClick={handleAction} style={{ cursor: "pointer" }}>
+    <div
+      onClick={handleAction}
+      onKeyUp={(e) => e.key === "Enter" && handleAction()}
+      onKeyDown={(e) => e.key === "Enter" && handleAction()}
+      onKeyPress={(e) => e.key === "Enter" && handleAction()}
+      style={{ cursor: "pointer" }}
+    >
       {isAuthenticated ? children : fallback || children}
     </div>
   );
@@ -404,7 +410,10 @@ function JobFilterSidebar({
           label={t("salaryRange")}
           value={filters.salaryRange}
           onChange={(e) =>
-            onFilterChange({ ...filters, salaryRange: e.target.value })
+            onFilterChange({
+              ...filters,
+              salaryRange: e.target.value,
+            })
           }
           placeholder="Salary range"
           leftSection={<IconCurrencyDollar size={16} />}
@@ -413,7 +422,10 @@ function JobFilterSidebar({
           label={t("experience")}
           value={filters.experienceLevel}
           onChange={(e) =>
-            onFilterChange({ ...filters, experienceLevel: e.target.value })
+            onFilterChange({
+              ...filters,
+              experienceLevel: e.target.value,
+            })
           }
           placeholder="Experience level"
           leftSection={<IconClock size={16} />}
@@ -629,8 +641,8 @@ export default function HomePage() {
           Browse by Category
         </Title>
         <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing="lg">
-          {jobCategories.map((category, index) => (
-            <CategoryCard key={index} category={category} />
+          {jobCategories.map((category) => (
+            <CategoryCard key={category.title} category={category} />
           ))}
         </SimpleGrid>
       </Container>

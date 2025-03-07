@@ -1,21 +1,21 @@
-import { fetcher } from "@shega/shared";
+import { fetcher } from '@shega/shared';
 
 export type CreateJob = {
-  organizationId: string;
-  title: string;
-  description: string;
-  type: string;
-  salaryFrom: number;
-  salaryTo: number;
+    organizationId: string;
+    title: string;
+    description: string;
+    type: string;
+    salaryFrom: number;
+    salaryTo: number;
 };
 
 export const createJob = async (data: CreateJob) => {
-  console.log("DATAADD", data);
-  const response: CreateJob[] = await fetcher("/job-portal", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
+    console.log('DATAADD', data);
+    const response: CreateJob[] = await fetcher('/job-portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
 
-  return response;
+    return response;
 };

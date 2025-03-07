@@ -1,7 +1,7 @@
-@import '@mantine/core/styles.css' layer(base);
-@import '@mantine/notifications/styles.css' layer(base);
+@import "@mantine/core/styles.css" layer(base);
+@import "@mantine/notifications/styles.css" layer(base);
 
-@import 'tailwindcss';
+@import "tailwindcss";
 
 :root {
     --background: #ffffff;
