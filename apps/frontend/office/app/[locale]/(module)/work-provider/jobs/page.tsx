@@ -17,6 +17,7 @@ import {
     TableScrollContainer,
     Text,
     TextInput,
+    Pagination,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import {
@@ -25,6 +26,8 @@ import {
     IconPlus,
     IconSearch,
     IconTrash,
+    IconEye,
+    IconRefresh,
 } from '@tabler/icons-react';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
@@ -35,35 +38,41 @@ const sampleJobs = [
     {
         id: '1',
         title: 'Frontend Developer',
+        description: 'Develop and maintain web applications.',
+        employmentType: 'Full-time',
         category: 'Software Development',
         company: 'Herani Tech',
-        status: 'open',
+        salaryRange: '$50k - $70k',
+        location: 'Remote',
+        status: 'Waiting Approval',
         postedAt: '2024-02-15T12:00:00Z',
     },
     {
         id: '2',
         title: 'Project Manager',
+        description: 'Manage and oversee projects from start to finish.',
+        employmentType: 'Contract',
         category: 'Management',
         company: 'Meklit Solutions',
-        status: 'closed',
+        salaryRange: '$60k - $90k',
+        location: 'New York',
+        status: 'Approved',
         postedAt: '2024-01-20T09:30:00Z',
     },
 ];
 
 const JobsList = () => {
-    const t = useTranslations('jobsPage');
+    const t = useTranslations('jobsListPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
     const router = useRouter();
+    const [currentPage, setCurrentPage] = useState(1);
+    const jobsPerPage = 5;
 
-    const [selection, setSelection] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useQueryState('search', {
         defaultValue: '',
     });
     const [categoryFilter, setCategoryFilter] = useQueryState('filter', {
         defaultValue: '',
-    });
-    const [sortOrder, setSortOrder] = useQueryState('sort', {
-        defaultValue: 'asc',
     });
 
     const filteredJobs = sampleJobs.filter(
@@ -72,18 +81,10 @@ const JobsList = () => {
             (categoryFilter ? job.category === categoryFilter : true),
     );
 
-    const sortedJobs = [...filteredJobs].sort((a, b) =>
-        sortOrder === 'asc'
-            ? a.title.localeCompare(b.title)
-            : b.title.localeCompare(a.title),
+    const paginatedJobs = filteredJobs.slice(
+        (currentPage - 1) * jobsPerPage,
+        currentPage * jobsPerPage,
     );
-
-    const toggleRow = (id: string) =>
-        setSelection((current) =>
-            current.includes(id)
-                ? current.filter((item) => item !== id)
-                : [...current, id],
-        );
 
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
@@ -95,7 +96,7 @@ const JobsList = () => {
                     color="blue"
                     onClick={() => router.push('/work-provider/jobs/create')}
                 >
-                    {t('createJob')}
+                    {t('postJob')}
                 </Button>
             </Flex>
             <Divider my="md" />
@@ -125,29 +126,20 @@ const JobsList = () => {
                 />
             </Group>
 
-            {isMobile ? (
+            {filteredJobs.length === 0 ? (
+                <Text ta="center">You haven’t any posted jobs yet.</Text>
+            // biome-ignore lint/nursery/noNestedTernary: <explanation>
+            ) : isMobile ? (
                 <Stack>
-                    {sortedJobs.map((job) => (
-                        <Card
-                            key={job.id}
-                            shadow="sm"
-                            p="lg"
-                            radius="md"
-                            withBorder
-                        >
+                    {paginatedJobs.map((job) => (
+                        <Card key={job.id} shadow="sm" p="lg" radius="md" withBorder>
                             <Text fw={500}>{job.title}</Text>
-                            <Text size="sm" c="dimmed">
-                                {job.company}
-                            </Text>
-                            <Badge
-                                color={job.status === 'open' ? 'green' : 'red'}
-                            >
+                            <Text size="sm" c="dimmed">{job.company}</Text>
+                            <Badge color={job.status === 'Approved' ? 'green' : 'yellow'}>
                                 {job.status}
                             </Badge>
                             <Text size="xs" c="dimmed">
-                                {DateTime.fromISO(job.postedAt).toFormat(
-                                    'yyyy-MM-dd HH:mm:ss',
-                                )}
+                                {DateTime.fromISO(job.postedAt).toFormat('yyyy-MM-dd HH:mm:ss')}
                             </Text>
                         </Card>
                     ))}
@@ -158,56 +150,35 @@ const JobsList = () => {
                         <Table.Thead>
                             <Table.Tr>
                                 <Table.Th>Title</Table.Th>
-                                <Table.Th>Category</Table.Th>
-                                <Table.Th>Company</Table.Th>
+                                <Table.Th>Employment Type</Table.Th>
+                                <Table.Th>Salary Range</Table.Th>
+                                <Table.Th>Location</Table.Th>
                                 <Table.Th>Status</Table.Th>
-                                <Table.Th>Posted At</Table.Th>
                                 <Table.Th>Actions</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {sortedJobs.map((job) => (
+                            {paginatedJobs.map((job) => (
                                 <Table.Tr key={job.id}>
                                     <Table.Td>{job.title}</Table.Td>
-                                    <Table.Td>{job.category}</Table.Td>
-                                    <Table.Td>{job.company}</Table.Td>
+                                    <Table.Td>{job.employmentType}</Table.Td>
+                                    <Table.Td>{job.salaryRange}</Table.Td>
+                                    <Table.Td>{job.location}</Table.Td>
                                     <Table.Td>
-                                        <Badge
-                                            color={
-                                                job.status === 'open'
-                                                    ? 'green'
-                                                    : 'red'
-                                            }
-                                        >
+                                        <Badge color={job.status === 'Approved' ? 'green' : 'yellow'}>
                                             {job.status}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
-                                        {DateTime.fromISO(
-                                            job.postedAt,
-                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <Menu width={150}>
+                                        <Menu width={200}>
                                             <Menu.Target>
                                                 <IconDotsVertical size={18} />
                                             </Menu.Target>
                                             <Menu.Dropdown>
-                                                <MenuItem
-                                                    leftSection={
-                                                        <IconEdit size={14} />
-                                                    }
-                                                >
-                                                    Edit
-                                                </MenuItem>
-                                                <MenuItem
-                                                    leftSection={
-                                                        <IconTrash size={14} />
-                                                    }
-                                                    color="red"
-                                                >
-                                                    Delete
-                                                </MenuItem>
+                                                <MenuItem leftSection={<IconEdit size={14} />}>Edit</MenuItem>
+                                                <MenuItem leftSection={<IconTrash size={14} />} color="red">Close</MenuItem>
+                                                <MenuItem leftSection={<IconEye size={14} />}>View Applications</MenuItem>
+                                                <MenuItem leftSection={<IconRefresh size={14} />}>Reactivate</MenuItem>
                                             </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
@@ -217,6 +188,8 @@ const JobsList = () => {
                     </Table>
                 </TableScrollContainer>
             )}
+
+            <Pagination total={Math.ceil(filteredJobs.length / jobsPerPage)} value={currentPage} onChange={setCurrentPage} mt="md" />
         </Paper>
     );
 };

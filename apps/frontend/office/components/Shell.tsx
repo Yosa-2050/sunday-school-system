@@ -10,7 +10,6 @@ import {
     ScrollArea,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ModalsProvider } from '@mantine/modals';
 import {
     IconBell,
     IconLayoutSidebarLeftExpand,
@@ -37,7 +36,7 @@ export default function WrapperShell({
     const [sidebarOpen, { toggle: toggleSidebar }] = useDisclosure(true);
 
     return (
-        <ModalsProvider>
+        <>
             <AppShell
                 layout="alt"
                 header={{ height: 60 }}
@@ -147,6 +146,6 @@ export default function WrapperShell({
                     <Box className="w-full flex-1">{children}</Box>
                 </AppShell.Main>
             </AppShell>
-        </ModalsProvider>
+        </>
     );
 }

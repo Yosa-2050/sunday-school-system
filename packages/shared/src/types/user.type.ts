@@ -20,4 +20,5 @@ export type User = {
     profile_picture_id: string | null;
     roles: Record<string, string>; // Adjust based on the structure of roles
     role: 'administrator' | 'work_provider';
+    organizationId: string | null;
 };
