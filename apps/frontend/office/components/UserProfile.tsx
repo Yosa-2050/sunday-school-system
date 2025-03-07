@@ -1,5 +1,5 @@
 import { useRouter } from '@/i18n/routing';
-import { Avatar, Box, Divider, Menu,Text } from '@mantine/core';
+import { Avatar, Box, Divider, Menu, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
 import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
@@ -14,24 +14,26 @@ export default function UserProfile() {
     const [opened, { toggle }] = useDisclosure(false);
     const router = useRouter();
 
-    const openModal = () => modals.openConfirmModal({
-        title: 'Are you sure you want to logout?',
-        children: (
-          <Text size="sm">
-            You will be logged out of your accoutn. Any unsaved changes will be lost
-          </Text>
-        ),
-        labels: { cancel: 'Cancel', confirm: 'Logout' },
-        centered: true,
-        confirmProps: { color: 'red' },
-        onCancel: () => console.log('Cancel'),
-        onConfirm: () => {
-            deleteCookie(COOKIE_ACCESS_TOKEN);
-            deleteCookie('role');
-            setUser(undefined);
-            router.push('/auth/login');
-        },
-      });
+    const openModal = () =>
+        modals.openConfirmModal({
+            title: 'Are you sure you want to logout?',
+            children: (
+                <Text size="sm">
+                    You will be logged out of your accoutn. Any unsaved changes
+                    will be lost
+                </Text>
+            ),
+            labels: { cancel: 'Cancel', confirm: 'Logout' },
+            centered: true,
+            confirmProps: { color: 'red' },
+            onCancel: () => console.log('Cancel'),
+            onConfirm: () => {
+                deleteCookie(COOKIE_ACCESS_TOKEN);
+                deleteCookie('role');
+                setUser(undefined);
+                router.push('/auth/login');
+            },
+        });
 
     return (
         <Menu
@@ -63,14 +65,15 @@ export default function UserProfile() {
 
                 <Divider />
 
-                {user && <Menu.Item
-                    leftSection={<IconLogout2 className="w-4 h-4" />}
-                    color="red"
-                    onClick={openModal}
-                >
-                    {t('logout')}
-                </Menu.Item>
-}
+                {user && (
+                    <Menu.Item
+                        leftSection={<IconLogout2 className="w-4 h-4" />}
+                        color="red"
+                        onClick={openModal}
+                    >
+                        {t('logout')}
+                    </Menu.Item>
+                )}
             </Menu.Dropdown>
         </Menu>
     );

@@ -17,7 +17,9 @@ const useIsAuthorized = ({ resourceRole, userRole }: UseIsAuthorizedProps) => {
     const isAuthorized = currentRole === resourceRole;
 
     // Redirect logic inline (avoiding useEffect)
-    if (!user) { return redirect({ href: '/login', locale }); }
+    if (!user) {
+        return redirect({ href: '/login', locale });
+    }
     // if(!user?.organizationId && userRole === 'work_provider') { return redirect({ href: '/auth/login', locale }); }
 
     if (!isAuthorized) {
