@@ -30,6 +30,8 @@ import {
 } from './dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +41,7 @@ export class AuthService {
         private otpService: OtpService,
         private notificationService: NotificationService,
         private organizationService: OrganizationService,
+        private clasService: ClsService
     ) {}
 
     async validateUser(
@@ -90,7 +93,7 @@ export class AuthService {
         }
         const payload: UserResponsePayload = {
             email: user.email,
-            sub: user.id,
+            userId: user.id,
             role: roles?.find((x) => x.isDefault)?.role?.toLowerCase(),
             pwdChangeRequired: user.pwd_change_required,
             id: user.id,
@@ -169,5 +172,17 @@ export class AuthService {
             };
         }
         throw new UnauthorizedException();
+    }
+
+    CurrentUser(){
+        const token = this.clasService.get('token');
+        if(token)
+        {
+        const user = this.jwtService.decode(token);
+        const detail =  new UserDetails();
+        detail.userId = user.userId;
+        return detail;
+        }
+        return null;
     }
 }

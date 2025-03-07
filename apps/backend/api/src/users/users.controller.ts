@@ -9,7 +9,6 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from '@shega/auth/jwt-public';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
@@ -33,7 +32,6 @@ export class UsersController {
         private notificationService: NotificationService,
     ) {}
 
-    @Public()
     @Post('all')
     findAll(@Body() dto: GetPaginatedProfileByTypeRequstDto) {
         return this.usersService.getUsersByUserType(dto.status, dto.pagination);

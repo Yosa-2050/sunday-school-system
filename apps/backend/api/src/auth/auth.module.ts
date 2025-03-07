@@ -10,9 +10,11 @@ import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
+import { ClsModule } from 'nestjs-cls';
 
 @Module({
     imports: [
+        ClsModule,
         UsersModule,
         PassportModule,
         NotificationModule,

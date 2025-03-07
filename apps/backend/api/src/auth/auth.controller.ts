@@ -14,10 +14,10 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Public } from './jwt-public';
 
 @Controller('auth')
-@Public()
 export class AuthController {
     constructor(private authService: AuthService) {}
 
+    @Public()
     @UseGuards(LocalAuthGuard)
     @Post('login')
     @ApiBody({ type: LoginRequestDto })
@@ -25,11 +25,13 @@ export class AuthController {
         return this.authService.login(req?.user, req?.body?.origin);
     }
 
+    @Public()
     @Post('validateResetPassword')
     forgotPassword(@Body() req: ValidateResteRequestDto) {
         return this.authService.validateResetPassword(req);
     }
 
+    @Public()
     @Post('resetPassword')
     resetPassword(@Body() req: UsernameRequestDto) {
         return this.authService.resetPassword(req.username);
