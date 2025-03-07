@@ -85,20 +85,23 @@ export class DocumentService {
     }
 
     generateCsv<T>(data: T[], res: Response, fileName: string) {
-         // Create a stream to write the CSV data
-            const stringifier = stringify({
-              header: true,
-              columns: Object.keys(data[0] || {}), // Dynamically get column names from the first object
-            });
-        
-            // Convert the list of data into a readable stream
-            const readableStream = Readable.from(data);
-            res.setHeader('Content-Type', 'text/csv');
-                    res.setHeader('Content-Disposition', `attachment; filename="${fileName}.csv"`);
+        // Create a stream to write the CSV data
+        const stringifier = stringify({
+            header: true,
+            columns: Object.keys(data[0] || {}), // Dynamically get column names from the first object
+        });
 
-            // Pipe the readable stream to the CSV stringifier and then to the response
-            readableStream.pipe(stringifier).pipe(res as unknown as NodeJS.WritableStream);
+        // Convert the list of data into a readable stream
+        const readableStream = Readable.from(data);
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="${fileName}.csv"`,
+        );
+
+        // Pipe the readable stream to the CSV stringifier and then to the response
+        readableStream
+            .pipe(stringifier)
+            .pipe(res as unknown as NodeJS.WritableStream);
     }
-
-
 }

@@ -30,8 +30,9 @@ import { Response } from 'express';
 @ApiTags('job-portal')
 @Controller('job-portal')
 export class JobPortalController {
-    constructor(private readonly jobPortalService: JobPortalService,
-        private readonly documentService: DocumentService
+    constructor(
+        private readonly jobPortalService: JobPortalService,
+        private readonly documentService: DocumentService,
     ) {}
 
     @Roles(UserRoleType.WorkProvider)
@@ -59,13 +60,16 @@ export class JobPortalController {
 
     @Roles(UserRoleType.Administrator)
     @Post('jobsByStatus/export')
-    async exportByStatus(@Body() dto: GetJobsByStatusRequestDto, @Res() res: Response) {
+    async exportByStatus(
+        @Body() dto: GetJobsByStatusRequestDto,
+        @Res() res: Response,
+    ) {
         const data = await this.jobPortalService.getJobsByStatusPaginated(
             dto.status,
             dto.pagination,
         );
 
-        this.documentService.generateCsv(data.data, res ,"jobList");
+        this.documentService.generateCsv(data.data, res, 'jobList');
     }
 
     @Roles(UserRoleType.WorkProvider)

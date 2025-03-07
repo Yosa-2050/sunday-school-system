@@ -10,6 +10,10 @@ import { DocumentModule } from '@shega/document/document.module';
 @Module({
     controllers: [JobPortalController, JobSeekerController],
     providers: [JobPortalService],
-    imports: [TypeOrmModule.forFeature([Jobs]), OrganizationModule, DocumentModule],
+    imports: [
+        TypeOrmModule.forFeature([Jobs]),
+        OrganizationModule,
+        DocumentModule,
+    ],
 })
 export class JobPortalModule {}

@@ -6,7 +6,7 @@ import {
     Param,
     Patch,
     Post,
-    Res
+    Res,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
@@ -30,8 +30,9 @@ import { DocumentService } from '@shega/document/document.service';
 
 @Controller('organization')
 export class OrganizationController {
-    constructor(private readonly organizationService: OrganizationService, 
-         private documentService: DocumentService
+    constructor(
+        private readonly organizationService: OrganizationService,
+        private documentService: DocumentService,
     ) {}
 
     @Post('createEmployee')
@@ -64,10 +65,9 @@ export class OrganizationController {
 
     @Post('/export')
     async export(@Body() dto: PaginationDto, @Res() res: Response) {
-        const  org = await this.organizationService.findAllPaginated(dto);
+        const org = await this.organizationService.findAllPaginated(dto);
 
-        this.documentService.generateCsv(org.data, res,"organizationList");
-        
+        this.documentService.generateCsv(org.data, res, 'organizationList');
     }
 
     @Get('/listEmployee/:organizationId')

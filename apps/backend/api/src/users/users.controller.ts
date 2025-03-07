@@ -35,7 +35,7 @@ export class UsersController {
     constructor(
         private readonly usersService: UsersService,
         private notificationService: NotificationService,
-        private documentService: DocumentService
+        private documentService: DocumentService,
     ) {}
 
     @Post('all')
@@ -44,10 +44,16 @@ export class UsersController {
     }
 
     @Post('export')
-    async export(@Body() dto: GetPaginatedProfileByTypeRequstDto, @Res() res: Response) {
-        const data = await this.usersService.getUsersByUserType(dto.status, dto.pagination);
+    async export(
+        @Body() dto: GetPaginatedProfileByTypeRequstDto,
+        @Res() res: Response,
+    ) {
+        const data = await this.usersService.getUsersByUserType(
+            dto.status,
+            dto.pagination,
+        );
 
-        this.documentService.generateCsv(data.data, res ,"userList");
+        this.documentService.generateCsv(data.data, res, 'userList');
     }
 
     @Post()

@@ -24,7 +24,7 @@ import { DocumentModule } from '@shega/document/document.module';
         UsersModule,
         AddressModule,
         NotificationModule,
-        DocumentModule
+        DocumentModule,
     ],
     controllers: [OrganizationController, EmployeesController],
     providers: [OrganizationService, EmployeesService],
