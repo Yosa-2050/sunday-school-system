@@ -1,2 +1,2 @@
 // biome-ignore lint/performance/noBarrelFile: <explanation>
-export { welcomeEmail } from "./welcomeEmail";
+export { welcomeEmail } from './welcomeEmail';

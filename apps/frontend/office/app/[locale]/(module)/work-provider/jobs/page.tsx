@@ -33,6 +33,7 @@ import {
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/[locale]/_api/organizations/fetch-jobs';
+import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
@@ -171,13 +172,9 @@ const JobsList = () => {
                             withBorder
                         >
                             <Text fw={500}>{job.title}</Text>
-                            <Text
-                                size="sm"
-                                c="dimmed"
-                                dangerouslySetInnerHTML={{
-                                    __html: job.description,
-                                }}
-                            />
+                            <Text size="sm" c="dimmed">
+                                {parse(job.description)}
+                            </Text>
                             <Text size="sm" c="dimmed">
                                 {job.type}
                             </Text>

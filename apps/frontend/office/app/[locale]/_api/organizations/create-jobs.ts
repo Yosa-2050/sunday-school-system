@@ -10,7 +10,6 @@ export type CreateJob = {
 };
 
 export const createJob = async (data: CreateJob) => {
-    console.log('DATAADD', data);
     const response: CreateJob[] = await fetcher('/job-portal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
