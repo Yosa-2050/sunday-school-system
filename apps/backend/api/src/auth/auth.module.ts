@@ -5,12 +5,12 @@ import { PasswordService } from '@shega/Utilities/password.service';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { OrganizationModule } from '@shega/organization/organization.module';
 import { UsersModule } from '@shega/users/users.module';
+import { ClsModule } from 'nestjs-cls';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
-import { ClsModule } from 'nestjs-cls';
 
 @Module({
     imports: [

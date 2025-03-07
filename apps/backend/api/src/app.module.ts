@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ClsModule } from 'nestjs-cls';
+import { DateService } from './Utilities/date.service';
+import { BaseModelSubscriber } from './Utilities/interceptor/base-model-subscriber';
 import { TransformInterceptor } from './Utilities/interceptor/transform-interceptor';
 import { RequestContextService } from './Utilities/request-context.service';
 import { AppController } from './app.controller';
@@ -12,9 +15,6 @@ import { AppEntities } from './entities';
 import { JobPortalModule } from './job_portal/job_portal.module';
 import { AppModules } from './modules';
 import { OrganizationModule } from './organization/organization.module';
-import { ClsModule } from 'nestjs-cls';
-import { BaseModelSubscriber } from './Utilities/interceptor/base-model-subscriber';
-import { DateService } from './Utilities/date.service';
 
 @Module({
     imports: [

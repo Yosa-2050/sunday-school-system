@@ -1,19 +1,19 @@
 // biome-ignore lint/style/useImportType: <explanation>
 import { Injectable, OnModuleInit } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
-import {
-    EventSubscriber,
-    EntitySubscriberInterface,
-    InsertEvent,
-    UpdateEvent,
-    DataSource,
-} from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
-import { BaseModel } from '../entities/base-model.entity';
-import { DateService } from '../date.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ModuleRef } from '@nestjs/core';
 import { AuthService } from '@shega/auth/auth.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import {
+    DataSource,
+    EntitySubscriberInterface,
+    EventSubscriber,
+    InsertEvent,
+    UpdateEvent,
+} from 'typeorm';
+import { DateService } from '../date.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { BaseModel } from '../entities/base-model.entity';
 
 @Injectable()
 @EventSubscriber()
