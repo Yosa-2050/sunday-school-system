@@ -38,5 +38,4 @@ export abstract class BaseModel extends BaseEntity {
 
     @Column({ default: true })
     isActive: boolean;
-
 }

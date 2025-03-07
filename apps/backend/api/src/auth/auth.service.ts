@@ -180,6 +180,7 @@ export class AuthService {
             const user = this.jwtService.decode(token);
             const detail = new UserDetails();
             detail.userId = user.userId;
+            detail.email = user.email;
             return detail;
         }
         return null;

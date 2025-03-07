@@ -44,7 +44,7 @@ import { DateService } from './Utilities/date.service';
                 password: configService.get('POSTGRES_PASSWORD'),
                 database: configService.get('POSTGRES_DATABASE'),
                 entities: AppEntities,
-                synchronize: true
+                synchronize: true,
             }),
             inject: [ConfigService],
         }),

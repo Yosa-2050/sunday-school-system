@@ -1,7 +1,13 @@
 // biome-ignore lint/style/useImportType: <explanation>
 import { Injectable, OnModuleInit } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EventSubscriber, EntitySubscriberInterface, InsertEvent, UpdateEvent, DataSource } from 'typeorm';
+import {
+    EventSubscriber,
+    EntitySubscriberInterface,
+    InsertEvent,
+    UpdateEvent,
+    DataSource,
+} from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { BaseModel } from '../entities/base-model.entity';
 import { DateService } from '../date.service';
@@ -11,7 +17,9 @@ import { AuthService } from '@shega/auth/auth.service';
 
 @Injectable()
 @EventSubscriber()
-export class BaseModelSubscriber implements EntitySubscriberInterface<BaseModel> , OnModuleInit{
+export class BaseModelSubscriber
+    implements EntitySubscriberInterface<BaseModel>, OnModuleInit
+{
     // constructor(
     //     private readonly dateService: DateService,
     //     private readonly clsService: ClsService, // To get current user
@@ -20,7 +28,10 @@ export class BaseModelSubscriber implements EntitySubscriberInterface<BaseModel>
     private dateService: DateService;
     private authService: AuthService;
 
-    constructor(private readonly dataSource: DataSource, private readonly moduleRef: ModuleRef) {
+    constructor(
+        private readonly dataSource: DataSource,
+        private readonly moduleRef: ModuleRef,
+    ) {
         this.dataSource.subscribers.push(this);
     }
 
@@ -36,9 +47,9 @@ export class BaseModelSubscriber implements EntitySubscriberInterface<BaseModel>
             entity.createdAt = this.dateService.getCurrentDate();
             entity.updatedAt = this.dateService.getCurrentDate();
 
-             const currentUser = this.authService.CurrentUser();
-             entity.createdBy = currentUser.userId || 'System';
-             entity.updatedBy = currentUser.userId || 'System';
+            const currentUser = this.authService.CurrentUser();
+            entity.createdBy = currentUser.email || 'System';
+            entity.updatedBy = currentUser.email || 'System';
         }
     }
 
@@ -48,7 +59,7 @@ export class BaseModelSubscriber implements EntitySubscriberInterface<BaseModel>
             entity.updatedAt = this.dateService.getCurrentDate();
 
             const currentUser = this.authService.CurrentUser();
-            entity.updatedBy = currentUser || 'System';
+            entity.updatedBy = currentUser.email || 'System';
         }
     }
 }

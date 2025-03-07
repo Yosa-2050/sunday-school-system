@@ -7,6 +7,7 @@ export class UserDetails {
     employeeOrgId?: string;
     profileId: string;
     userId: string;
+    email: string;
 }
 
 export class UserResponsePayload {
