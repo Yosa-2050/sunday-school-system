@@ -11,6 +11,11 @@ import {
 // biome-ignore lint/style/useImportType: <explanation>
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 // biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
+// import { DocumentService } from '@shega/document/document.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Response } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
@@ -22,11 +27,6 @@ import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
-// import { DocumentService } from '@shega/document/document.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { Response } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
-import { DocumentService } from '@shega/document/document.service';
 
 @Controller('organization')
 export class OrganizationController {

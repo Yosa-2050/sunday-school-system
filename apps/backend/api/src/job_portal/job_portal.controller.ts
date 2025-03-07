@@ -13,7 +13,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -22,10 +26,6 @@ import { GetJobsByStatusRequestDto } from './dto/request/get-job-by-status.reque
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { DocumentService } from '@shega/document/document.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { Response } from 'express';
 
 @ApiTags('job-portal')
 @Controller('job-portal')
