@@ -4,6 +4,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from './notification.service';
+import { Public } from '@shega/auth/jwt-public';
 
 @ApiBearerAuth()
 @ApiTags('notification')
@@ -11,6 +12,7 @@ import { NotificationService } from './notification.service';
 export class NotificationController {
     constructor(private readonly notificationService: NotificationService) {}
 
+    @Public()
     @Post()
     sendEmail(@Body() req: CreateNotificationDto) {
         return this.notificationService.send(req);

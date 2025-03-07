@@ -84,7 +84,7 @@ export class JobPortalService {
     }
 
     findOne(id: string) {
-        return this.jobRepo.findOneBy({id});
+        return this.jobRepo.findOneBy({ id });
     }
 
     update(id: number, updateJobPortalDto: UpdateJobPortalDto) {
