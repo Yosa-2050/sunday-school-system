@@ -13,6 +13,8 @@ import { JobPortalModule } from './job_portal/job_portal.module';
 import { AppModules } from './modules';
 import { OrganizationModule } from './organization/organization.module';
 import { ClsModule } from 'nestjs-cls';
+import { BaseModelSubscriber } from './Utilities/interceptor/base-model-subscriber';
+import { DateService } from './Utilities/date.service';
 
 @Module({
     imports: [
@@ -42,7 +44,7 @@ import { ClsModule } from 'nestjs-cls';
                 password: configService.get('POSTGRES_PASSWORD'),
                 database: configService.get('POSTGRES_DATABASE'),
                 entities: AppEntities,
-                synchronize: true,
+                synchronize: true
             }),
             inject: [ConfigService],
         }),
@@ -52,6 +54,8 @@ import { ClsModule } from 'nestjs-cls';
     ],
     controllers: [AppController],
     providers: [
+        DateService,
+        BaseModelSubscriber,
         RequestContextService,
         AppService,
         {
