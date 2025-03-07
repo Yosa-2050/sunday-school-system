@@ -1,14 +1,21 @@
 // biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 
+export class UserDetails {
+    organizationId: string;
+    employeeId: string;
+    employeeOrgId: string;
+    profileId: string;
+}
+
 export class UserResponsePayload {
-    constructor(user: User, getInfo: object) {
+    constructor(user: User, details: UserDetails) {
         this.email = user.email;
         this.sub = user.id;
         this.role = user.roles.find((x) => x.isDefault)?.role;
         this.pwdChangeRequired = user.pwd_change_required;
         this.id = user.id;
-        //(this.getMyBranchInfo = getInfo);
+        this.details = details;
     }
 
     email: string;
@@ -16,5 +23,5 @@ export class UserResponsePayload {
     role: string;
     pwdChangeRequired: boolean;
     id: string;
-    //getMyBranchInfo: any;
+    details: UserDetails;
 }

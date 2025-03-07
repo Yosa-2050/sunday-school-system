@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -21,15 +22,21 @@ export class JobPortalService {
         private jobRepo: Repository<Jobs>,
     ) {}
 
-    async create(dto: CreateJobPortalDto) {
-        const organization = await this.organizationService.getOrganizationById(
-            dto.organizationId,
-        );
+    async create(
+        employeeOrgId: string,
+        organizationId: string,
+        dto: CreateJobPortalDto,
+    ) {
+        const organization =
+            await this.organizationService.getOrganizationById(organizationId);
 
+        const employeeOrg = (await organization.employee).find(
+            (x) => x.id === employeeOrgId,
+        );
         const job = this.jobRepo.create(dto);
         job.organization = organization;
         job.status = ApprovalType.New;
-
+        job.postedBy = employeeOrg;
         return this.jobRepo.save(job);
     }
 
@@ -46,13 +53,26 @@ export class JobPortalService {
             skip,
         });
 
-        return {
-            data: jobs,
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-        };
+        return new PaginatedResponseDto<Jobs[]>(jobs, total, page, limit);
+    }
+
+    async getJobsByStatusAndByOrgPaginated(
+        organizationId: string,
+        status: ApprovalType,
+        paginationDto: PaginationDto,
+    ) {
+        const organization =
+            await this.organizationService.findOne(organizationId);
+        const { page, limit } = paginationDto;
+        const skip = (page - 1) * limit;
+
+        const [jobs, total] = await this.jobRepo.findAndCount({
+            where: { status, organization: { id: organizationId } },
+            take: limit,
+            skip,
+        });
+
+        return new PaginatedResponseDto<Jobs[]>(jobs, total, page, limit);
     }
 
     approveJob(id: string) {
