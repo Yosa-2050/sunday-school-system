@@ -36,7 +36,8 @@
         "messages": "Messages",
         "analytics": "Analytics",
         "settings": "Settings",
-        "logout": "Logout"
+        "logout": "Logout",
+        "profile": "Profile"
     },
     "header": {
         "title": "Admin Dashboard"

@@ -27,7 +27,8 @@ import { login } from "app/_api/auth/login";
 import { getUserAction } from "app/_api/get-user-action";
 import { setCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -56,8 +57,17 @@ const schema = z.object({
 const Login = () => {
   const { setUser } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations("auth.login");
   const [rememberMe, setRememberMe] = useState(false);
+  const [redirectPath, setRedirectPath] = useState("/");
+
+  useEffect(() => {
+    const returnTo = searchParams.get("returnTo");
+    if (returnTo) {
+      setRedirectPath(decodeURIComponent(returnTo));
+    }
+  }, [searchParams]);
 
   const {
     register,
@@ -85,7 +95,7 @@ const Login = () => {
           const user = await getUserAction(data.access_token);
           // temporary the role will be removed once the endpoint returns role
           setUser({ ...user, role: data.role });
-          router.push("/");
+          router.push(redirectPath);
 
           notifications.show({
             title: "Success",

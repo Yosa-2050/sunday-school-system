@@ -1,4 +1,11 @@
 {
+    "jobPortal":{
+        "settings": "Settings",
+        "logout": "Logout",
+        "profile": "Profile",
+        "signup": "Sign up",
+        "login": "Login"
+    },
     "auth": {
         "OTP": {
             "title": "Enter OTP",
@@ -7,10 +14,12 @@
             "verifyButton": "Verify"
         },
         "pageWrapper": {
-            "shegaobs": "Shega Jobs"
+            "shegaobs": "Shega Jobs",
+            "rightsReserved": "© All rights reserved by Shega Jobs"
         },
         "login": {
             "title": "Login",
+            "subtitle": "Please enter your details.",
             "emailLabel": "Email",
             "emailPlaceholder": "Enter your email",
             "passwordLabel": "Password",
@@ -20,7 +29,9 @@
             "noAccount": "Don't have an account?",
             "signUp": "Sign up",
             "loginFailed": "Login failed. Please try again.",
-            "rememberMe": "Remember me"
+            "loginSuccess": "Login Successful",
+            "rememberMe": "Remember me",
+            "rightsReserved": "© All rights reserved by Shega Jobs"
         },
         "forgotPassword": {
             "title": "Forgot your password?",
@@ -29,9 +40,24 @@
             "emailPlaceholder": "you@example.com",
             "backToLogin": "Back to login",
             "sendResetLink": "Send Reset Link"
+        },
+        "changePassword": {
+            "title": "Change Password",
+            "newPassword": "New Password",
+            "confirmPassword": "Confirm New Password",
+            "proceedBtn": "Proceed",
+            "rightsReserved": "© All rights reserved by Shega Jobs"
         }
     },
-
+    "jobListing": {
+        "filterLabel": "Filters",
+        "location": "Location",
+        "jobType": "Job Type",
+        "salaryRange": "Salary Range",
+        "experience": "Experience Level",
+        "searchPlaceholder": "Search for jobs...",
+        "resetFilters": "Reset Filters"
+    },
     "header": {
         "title": "Job Portal",
         "welcomeMessage": "Welcome to the Job Portal"
@@ -42,16 +68,6 @@
         "companies": "Companies",
         "contact": "Contact",
         "about": "About"
-    },
-    "jobListing": {
-        "searchPlaceholder": "Search for jobs, keywords...",
-        "filterLabel": "Filter Jobs",
-        "location": "Location",
-        "jobType": "Job Type",
-        "salaryRange": "Salary Range",
-        "apply": "Apply Now",
-        "details": "Job Details",
-        "experience": "Experience Level"
     },
     "user": {
         "login": "Login",
