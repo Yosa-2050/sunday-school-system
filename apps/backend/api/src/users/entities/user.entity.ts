@@ -34,7 +34,7 @@ class User extends BaseModel {
         (type) => UserRoles,
         (roles) => roles.user,
         {
-            lazy: true,
+            eager: true,
             cascade: true,
             onUpdate: 'NO ACTION',
         },
