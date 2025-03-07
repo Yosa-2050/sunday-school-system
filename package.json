@@ -33,6 +33,9 @@
     },
     "dependencies": {
         "jest": "^29.7.0",
-        "@shega/typescript-config": "workspace:*"
+        "@shega/typescript-config": "workspace:*",
+        "next": "15.2.1",
+        "react": "19.0.0",
+        "react-dom": "19.0.0"
     }
 }

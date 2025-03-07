@@ -1,15 +1,17 @@
 'use client';
 
-import { Link } from '@/i18n/routing';
+import { useRouter } from '@/i18n/routing';
 import {
     Badge,
-    Button,
     Card,
-    Checkbox,
+    Center,
     Divider,
     Flex,
     Group,
+    LoadingOverlay,
     Menu,
+    MenuItem,
+    Pagination,
     Paper,
     Select,
     Stack,
@@ -17,100 +19,100 @@ import {
     TableScrollContainer,
     Text,
     TextInput,
-    Tooltip,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-import {
-    IconDotsVertical,
-    IconDownload,
-    IconSearch,
-} from '@tabler/icons-react';
-import { DateTime } from 'luxon';
+import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
+import { IconDotsVertical, IconEye, IconSearch } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchJobsAdmin } from 'app/[locale]/_api/admin/fetch-jobs';
+import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
-// import { CreateUser } from './_components/CreateUser';
-// import { sampleUsers } from './_components/users';
+interface Organization {
+    id: string;
+    name: string;
+    isActive: boolean;
+}
 
-const sampleUsers = [
-    {
-        id: '1',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'iVt4T@example.com',
-        userType: 'Admin',
-        status: 'Active',
-        createdBy: 'Admin',
-        createdAt: DateTime.now().toISO(),
-    },
-    {
-        id: '2',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        email: 'hFtQK@example.com',
-        userType: 'User',
-        status: 'Active',
-        createdBy: 'Admin',
-        createdAt: DateTime.now().toISO(),
-    },
-];
+interface Job {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    salaryFrom: number;
+    salaryTo: number;
+    status: string;
+    organization: Organization;
+    postedBy: {
+        employee: {
+            profile: {
+                firstName: string;
+                lastName: string;
+            };
+        };
+    };
+}
 
-const UsersPage = () => {
-    const t = useTranslations('usersPage');
+const JobsList = () => {
+    const router = useRouter();
+    const t = useTranslations('jobsListPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     const [selection, setSelection] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useQueryState('search', {
         defaultValue: '',
     });
-    const [roleFilter, setRoleFilter] = useQueryState('filter', {
+    const [categoryFilter, setCategoryFilter] = useQueryState('category', {
         defaultValue: '',
     });
     const [sortOrder, setSortOrder] = useQueryState('sort', {
         defaultValue: 'asc',
     });
+    const [page, setPage] = useQueryState('page', { defaultValue: '1' });
+    const [limit, setLimit] = useQueryState('limit', { defaultValue: '10' });
 
-    const filteredUsers = sampleUsers.filter(
-        (user) =>
-            (user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                user.lastName
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-            (roleFilter ? user.userType === roleFilter : true),
-    );
+    const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
 
-    const sortedUsers = [...filteredUsers].sort((a, b) =>
-        sortOrder === 'asc'
-            ? a.firstName.localeCompare(b.firstName)
-            : b.firstName.localeCompare(a.firstName),
-    );
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['jobs', debouncedSearch, page, limit, categoryFilter],
+        queryFn: () =>
+            fetchJobsAdmin({
+                // status: categoryFilter,
+                pagination: {
+                    search: debouncedSearch,
+                    page: +page,
+                    limit: +limit,
+                },
+            }),
+    });
 
-    const toggleRow = (id: string) =>
-        setSelection((current) =>
-            current.includes(id)
-                ? current.filter((item) => item !== id)
-                : [...current, id],
-        );
+    const jobs = data?.data || [];
+    const totalPages = data?.totalPages || 0;
 
-    const toggleAll = () =>
-        setSelection((current) =>
-            current.length === sortedUsers.length
-                ? []
-                : sortedUsers.map((item) => item.id),
-        );
+    if (isLoading) {
+        return <LoadingOverlay visible={true} h="100vh" />;
+    }
+
+    if (error) {
+        return <Text color="red">Error loading jobs</Text>;
+    }
+
+    const handleEditJob = (jobId: string) => {
+        router.push(`/work-provider/jobs/edit/${jobId}`);
+    };
+
+    const handleViewApplications = (jobId: string) => {
+        router.push(`/work-provider/jobs/${jobId}/applications`);
+    };
 
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align="center" justify="space-between" className="p-4">
                 <Text className="font-bold text-xl">{t('title')}</Text>
-                {/* <CreateUser /> */}
             </Flex>
-
             <Divider my="md" />
 
-            {/* Search, Filter, Sort Controls */}
             <Group justify="space-between" className="mb-4">
                 <TextInput
                     leftSection={<IconSearch size={18} />}
@@ -119,165 +121,128 @@ const UsersPage = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{ width: 300 }}
                 />
-                <Flex gap={'xs'} align={'center'}>
-                    <Select
-                        placeholder={t('selectRole')}
-                        value={roleFilter}
-                        size="sm"
-                        onChange={(data) => setRoleFilter(data ?? '')}
-                        data={[
-                            { value: '', label: t('allRoles') },
-                            {
-                                value: 'ADMINISTRATOR',
-                                label: t('roles.administrator'),
-                            },
-                            {
-                                value: 'JOB_SEEKER',
-                                label: t('roles.jobSeeker'),
-                            },
-                            {
-                                value: 'WORK_PROVIDER',
-                                label: t('roles.workProvider'),
-                            },
-                        ]}
-                        style={{ width: 150 }}
-                    />
-                    <Select
-                        placeholder={t('sortBy')}
-                        value={sortOrder}
-                        onChange={(data) => setSortOrder(data ?? '')}
-                        data={[
-                            { value: 'asc', label: t('sortOptions.asc') },
-                            { value: 'desc', label: t('sortOptions.desc') },
-                        ]}
-                        style={{ width: 150 }}
-                    />
-                    <Tooltip label={t('exportCSV')} withArrow>
-                        <IconDownload size={18} />
-                    </Tooltip>
-                </Flex>
+                <Select
+                    placeholder={t('selectCategory')}
+                    value={categoryFilter}
+                    size="sm"
+                    onChange={(value) => setCategoryFilter(value ?? '')}
+                    data={[
+                        { value: '', label: t('allCategories') },
+                        { value: 'FULL_TIME', label: 'Full Time' },
+                        { value: 'PART_TIME', label: 'Part Time' },
+                        { value: 'CONTRACT', label: 'Contract' },
+                        { value: 'INTERNSHIP', label: 'Internship' },
+                    ]}
+                    style={{ width: 200 }}
+                />
             </Group>
 
-            {/* Responsive Table or Cards */}
-            {isMobile ? (
+            {jobs.length === 0 ? (
+                <Center h={200}>
+                    <Text c="dimmed" ta="center">
+                        You haven&apos;t posted any jobs yet.
+                    </Text>
+                </Center>
+            ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+            isMobile ? (
                 <Stack>
-                    {sortedUsers.map((user) => (
+                    {jobs.map((job: Job) => (
                         <Card
-                            key={user.id}
+                            key={job.id}
                             shadow="sm"
                             p="lg"
                             radius="md"
                             withBorder
                         >
-                            <Flex justify="space-between" align="center">
-                                <Text
-                                    fw={500}
-                                >{`${user.firstName} ${user.lastName}`}</Text>
-                                <Badge
-                                    color={
-                                        user.status === 'active'
-                                            ? 'green'
-                                            : 'red'
-                                    }
-                                >
-                                    {user.status}
-                                </Badge>
-                            </Flex>
-                            <Divider my="xs" />
-                            <Text size="sm">{user.email}</Text>
-                            <Text size="sm" c="dimmed" className="capitalize">
-                                {user.userType}
+                            <Text fw={500}>{job.title}</Text>
+                            <Stack>
+                                <div className="job-description">
+                                    {parse(job.description)}
+                                </div>
+                            </Stack>
+                            <Text size="sm" c="dimmed">
+                                {job.type}
                             </Text>
+                            <Text size="sm">
+                                Salary: ${job.salaryFrom.toLocaleString()} - $
+                                {job.salaryTo.toLocaleString()}
+                            </Text>
+                            <Badge
+                                color={
+                                    job.status === 'APPROVED'
+                                        ? 'green'
+                                        : 'yellow'
+                                }
+                            >
+                                {job.status}
+                            </Badge>
                             <Text size="xs" c="dimmed">
-                                {DateTime.fromISO(user.createdAt).toFormat(
-                                    'yyyy-MM-dd HH:mm:ss',
-                                )}
+                                Posted by:{' '}
+                                {job.postedBy.employee.profile.firstName}{' '}
+                                {job.postedBy.employee.profile.lastName}
                             </Text>
-                            <Group mt="md">
-                                <Button variant="light" size="xs">
-                                    {t('table.edit')}
-                                </Button>
-                                <Button variant="light" size="xs" color="red">
-                                    {t('table.delete')}
-                                </Button>
-                            </Group>
                         </Card>
                     ))}
                 </Stack>
             ) : (
                 <TableScrollContainer minWidth={800} type="native">
-                    <Table
-                        withRowBorders
-                        withColumnBorders
-                        striped
-                        verticalSpacing="md"
-                    >
+                    <Table striped verticalSpacing="md">
                         <Table.Thead>
                             <Table.Tr>
-                                <Table.Th>
-                                    <Checkbox
-                                        onChange={toggleAll}
-                                        checked={
-                                            selection.length ===
-                                            sortedUsers.length
-                                        }
-                                        indeterminate={
-                                            selection.length > 0 &&
-                                            selection.length !==
-                                                sortedUsers.length
-                                        }
-                                    />
-                                </Table.Th>
-                                <Table.Th>{t('table.fullName')}</Table.Th>
-                                <Table.Th>{t('table.email')}</Table.Th>
-                                <Table.Th>{t('table.role')}</Table.Th>
-                                <Table.Th>{t('table.status')}</Table.Th>
-                                <Table.Th>{t('table.createdBy')}</Table.Th>
-                                <Table.Th>{t('table.createdAt')}</Table.Th>
-                                <Table.Th>{t('table.actions')}</Table.Th>
+                                <Table.Th>Company Name</Table.Th>
+                                <Table.Th>Job Title</Table.Th>
+                                <Table.Th>Salary</Table.Th>
+                                <Table.Th>Location</Table.Th>
+                                <Table.Th>Status</Table.Th>
+                                <Table.Th>Actions</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {sortedUsers.map((user) => (
-                                <Table.Tr key={user.id}>
+                            {jobs.map((job: Job) => (
+                                <Table.Tr key={job.id}>
+                                    <Table.Td>{job.organization.name}</Table.Td>
+                                    <Table.Td>{job.title}</Table.Td>
+
                                     <Table.Td>
-                                        <Checkbox
-                                            checked={selection.includes(
-                                                user.id,
-                                            )}
-                                            onChange={() => toggleRow(user.id)}
-                                        />
+                                        ${job.salaryFrom.toLocaleString()} - $
+                                        {job.salaryTo.toLocaleString()}
                                     </Table.Td>
-                                    <Table.Td>{`${user.firstName} ${user.lastName}`}</Table.Td>
+                                    <Table.Td>{'Location'}</Table.Td>
                                     <Table.Td>
-                                        <Link
-                                            href={`mailto:${user.email}`}
-                                            className="hover:underline "
+                                        <Badge
+                                            color={
+                                                job.status === 'APPROVED'
+                                                    ? 'green'
+                                                    : 'yellow'
+                                            }
                                         >
-                                            {user.email}
-                                        </Link>
-                                    </Table.Td>
-                                    <Table.Td>{user.userType}</Table.Td>
-                                    <Table.Td
-                                        className={
-                                            user.status === 'active'
-                                                ? 'text-green-600'
-                                                : 'text-red-600'
-                                        }
-                                    >
-                                        {user.status}
-                                    </Table.Td>
-                                    <Table.Td>{user.createdBy}</Table.Td>
-                                    <Table.Td>
-                                        {DateTime.fromISO(
-                                            user.createdAt,
-                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                            {job.status}
+                                        </Badge>
                                     </Table.Td>
                                     <Table.Td>
                                         <Menu width={200}>
                                             <Menu.Target>
-                                                <IconDotsVertical size={18} />
+                                                <IconDotsVertical
+                                                    size={18}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                    }}
+                                                />
                                             </Menu.Target>
+                                            <Menu.Dropdown>
+                                                <MenuItem
+                                                    leftSection={
+                                                        <IconEye size={14} />
+                                                    }
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `/admin/jobs/${job.id}`,
+                                                        )
+                                                    }
+                                                >
+                                                    Details
+                                                </MenuItem>
+                                            </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
                                 </Table.Tr>
@@ -286,8 +251,15 @@ const UsersPage = () => {
                     </Table>
                 </TableScrollContainer>
             )}
+
+            <Pagination
+                total={totalPages}
+                value={+page}
+                onChange={(newPage) => setPage(newPage.toString())}
+                mt="md"
+            />
         </Paper>
     );
 };
 
-export default UsersPage;
+export default JobsList;

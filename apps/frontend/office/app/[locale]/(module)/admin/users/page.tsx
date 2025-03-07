@@ -60,7 +60,6 @@ const UsersPage = () => {
         queryKey: ['users'],
         queryFn: () =>
             fetchUsers({
-                // status: roleFilter,
                 pagination: {
                     search: debouncedSearch,
                     page: +page,
@@ -153,8 +152,8 @@ const UsersPage = () => {
             {/* No Data State */}
             {users.length === 0 ? (
                 <NoData />
-                // biome-ignore lint/nursery/noNestedTernary: <explanation>
-            ) : isMobile ? (
+            ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+            isMobile ? (
                 <Stack>
                     {users.map((user: Daum) => (
                         <Card

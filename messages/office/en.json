@@ -36,7 +36,8 @@
         "messages": "Messages",
         "analytics": "Analytics",
         "settings": "Settings",
-        "logout": "Logout"
+        "logout": "Logout",
+        "profile": "Profile"
     },
     "header": {
         "title": "Admin Dashboard"
@@ -231,5 +232,53 @@
             "invalidEmail": "Invalid email address",
             "companyNameRequired": "Company name is required for job providers"
         }
+    },
+    "jobsListPage": {
+        "title": "Job Listings",
+        "postJob": "Post a Job",
+        "searchPlaceholder": "Search jobs...",
+        "selectCategory": "Select a category",
+        "allCategories": "All Categories",
+        "noJobsMessage": "You haven’t any posted jobs yet.",
+        "tableHeaders": {
+            "title": "Title",
+            "employmentType": "Employment Type",
+            "salaryRange": "Salary Range",
+            "location": "Location",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "actions": {
+            "edit": "Edit",
+            "close": "Close",
+            "viewApplications": "View Applications",
+            "reactivate": "Reactivate"
+        },
+        "sampleJobs": [
+            {
+                "id": "1",
+                "title": "Frontend Developer",
+                "description": "Develop and maintain web applications.",
+                "employmentType": "Full-time",
+                "category": "Software Development",
+                "company": "Herani Tech",
+                "salaryRange": "$50k - $70k",
+                "location": "Remote",
+                "status": "Waiting Approval",
+                "postedAt": "2024-02-15T12:00:00Z"
+            },
+            {
+                "id": "2",
+                "title": "Project Manager",
+                "description": "Manage and oversee projects from start to finish.",
+                "employmentType": "Contract",
+                "category": "Management",
+                "company": "Meklit Solutions",
+                "salaryRange": "$60k - $90k",
+                "location": "New York",
+                "status": "Approved",
+                "postedAt": "2024-01-20T09:30:00Z"
+            }
+        ]
     }
 }
