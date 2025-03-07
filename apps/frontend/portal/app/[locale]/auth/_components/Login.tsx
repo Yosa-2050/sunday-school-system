@@ -1,117 +1,173 @@
-'use client';
+"use client";
 
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from "@/i18n/routing";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-    Alert,
-    Anchor,
-    Box,
-    Button,
-    Card,
-    Checkbox,
-    Group,
-    PasswordInput,
-    Stack,
-    TextInput,
-    Title,
-} from '@mantine/core';
-import { IconAlertCircle } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+  Anchor,
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  Group,
+  PasswordInput,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import {
+  COOKIE_ACCESS_TOKEN,
+  COOKIE_REFRESH_TOKEN,
+  logger,
+} from "@shega/shared";
+import { useAuth } from "@shega/ui";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "app/_api/auth/login";
+import { getUserAction } from "app/_api/get-user-action";
+import { setCookie } from "cookies-next";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+const schema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Invalid email format")
+    .regex(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Invalid email format"
+    ),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Password must contain at least one special character"
+    ),
+  rememberMe: z.boolean().optional(),
+});
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const router = useRouter();
-    const t = useTranslations('auth.login');
+  const { setUser } = useAuth();
+  const router = useRouter();
+  const t = useTranslations("auth.login");
+  const [rememberMe, setRememberMe] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(schema) });
 
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onError: () => {
+      notifications.show({
+        title: "Error",
+        message: t("loginFailed"),
+        color: "red",
+      });
+    },
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+    onSuccess: async ({ data }) => {
+      try {
+        if (data.pwdChangeRequired) {
+          router.push(`/auth/change-password/${data.id}`);
+        } else {
+          logger.log(data);
 
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || t('loginFailed'));
-            }
+          const user = await getUserAction(data.access_token);
+          // temporary the role will be removed once the endpoint returns role
+          setUser({ ...user, role: data.role });
+          router.push("/");
 
-            router.push('/dashboard');
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError('An unexpected error occurred.');
-            }
+          notifications.show({
+            title: "Success",
+            message: t("loginSuccess"),
+            color: "green",
+          });
+          setCookie("role", data.role);
+          setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
+            maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
+          });
+          setCookie(COOKIE_REFRESH_TOKEN, data.access_token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
+          });
         }
-    };
+      } catch (error) {
+        logger.error("Error processing login success:", error);
+      }
+    },
+  });
 
-    return (
-        <Box className="flex items-center justify-center min-h-screen w-full bg-gray-100 p-4">
-            <Card
-                shadow="sm"
-                padding="lg"
-                radius="md"
-                className="w-full max-w-md bg-white"
+  const onSubmit = (values: { email: string; password: string }) => {
+    loginMutation.mutateAsync({
+      username: values.email,
+      password: values.password,
+      origin: "portal",
+    });
+  };
+
+  return (
+    <Box className="flex items-center justify-center bg-white shadow rounded w-full md:w-1/2">
+      <div className="relative w-full p-8">
+        <Flex direction={"column"} align="center">
+          <Title className="text-xl text-start">{t("title")}</Title>
+          <Text ta="start" className="mb-3 text-gray-500 text-sm">
+            {t("subtitle")}
+          </Text>
+        </Flex>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack gap="md">
+            <TextInput
+              label={t("emailLabel")}
+              placeholder={t("emailPlaceholder")}
+              {...register("email")}
+              error={errors.email?.message}
+            />
+            <PasswordInput
+              label={t("passwordLabel")}
+              placeholder={t("passwordPlaceholder")}
+              {...register("password")}
+              error={errors.password?.message}
+            />
+            <Group justify="space-between" mt={"sm"}>
+              <Checkbox
+                title="Remember me"
+                label={t("rememberMe")}
+                className="text-teal-600"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <Anchor
+                size="sm"
+                onClick={() => router.push("/auth/forgot-password")}
+                className="text-sm text-teal-600 hover:underline"
+              >
+                {t("forgotPassword")}
+              </Anchor>
+            </Group>
+            <Button
+              type="submit"
+              fullWidth
+              className="w-full rounded-md px-4 py-2 text-white"
+              loading={loginMutation.isPending}
             >
-                <Stack>
-                    <Title ta="center">{t('title')}</Title>
-
-                    {error && (
-                        <Alert
-                            icon={<IconAlertCircle size={16} />}
-                            color="red"
-                            mb="md"
-                        >
-                            {error}
-                        </Alert>
-                    )}
-
-                    <form onSubmit={handleSubmit}>
-                        <Stack gap="md">
-                            <TextInput
-                                label={t('emailLabel')}
-                                placeholder={t('emailPlaceholder')}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                            <PasswordInput
-                                label={t('passwordLabel')}
-                                placeholder={t('passwordPlaceholder')}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                            <Group justify="space-between" mt={'xl'}>
-                                <Checkbox
-                                    title="Remember me"
-                                    label={t('rememberMe')}
-                                />
-                                <Anchor
-                                    size="sm"
-                                    onClick={() =>
-                                        router.push('/auth/forgot-password')
-                                    }
-                                    className="cursor-pointer"
-                                >
-                                    {t('forgotPassword')}
-                                </Anchor>
-                            </Group>
-                            <Button type="submit" fullWidth className="mt-auto">
-                                {t('loginButton')}
-                            </Button>
-                        </Stack>
-                    </form>
-                </Stack>
-            </Card>
-        </Box>
-    );
+              {t("loginButton")}
+            </Button>
+          </Stack>
+        </form>
+      </div>
+    </Box>
+  );
 };
 
 export default Login;

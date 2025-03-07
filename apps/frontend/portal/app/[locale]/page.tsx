@@ -1,11 +1,16 @@
-import { Text } from '@mantine/core';
-import { getTranslations } from 'next-intl/server';
+'use client';
 
-export default async function HomePage() {
-    const t = await getTranslations();
-    return (
-        <main className="bg-red-500 pt-20">
-            <Text className="bg-green-800">{t('header.title')}</Text>
-        </main>
-    );
+import { redirect } from '@/i18n/routing';
+import { useAuth } from '@shega/ui';
+import { useLocale } from 'next-intl';
+
+export default function HomePage() {
+    const { user } = useAuth();
+    const locale = useLocale();
+
+    if (user) {
+      redirect({ href: '', locale });
+    } else {
+        redirect({ href: '/auth/login', locale });
+    }
 }
