@@ -7,6 +7,7 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -23,6 +24,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginBy } from './enums/login-by.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from './users.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Response } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
 
 @ApiTags('users')
 @Controller('users')
@@ -30,11 +35,19 @@ export class UsersController {
     constructor(
         private readonly usersService: UsersService,
         private notificationService: NotificationService,
+        private documentService: DocumentService
     ) {}
 
     @Post('all')
     findAll(@Body() dto: GetPaginatedProfileByTypeRequstDto) {
         return this.usersService.getUsersByUserType(dto.status, dto.pagination);
+    }
+
+    @Post('export')
+    async export(@Body() dto: GetPaginatedProfileByTypeRequstDto, @Res() res: Response) {
+        const data = await this.usersService.getUsersByUserType(dto.status, dto.pagination);
+
+        this.documentService.generateCsv(data.data, res ,"userList");
     }
 
     @Post()

@@ -11,6 +11,7 @@ import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { OrganizationController } from './organization.controller';
 import { OrganizationService } from './organization.service';
+import { DocumentModule } from '@shega/document/document.module';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { OrganizationService } from './organization.service';
         UsersModule,
         AddressModule,
         NotificationModule,
+        DocumentModule
     ],
     controllers: [OrganizationController, EmployeesController],
     providers: [OrganizationService, EmployeesService],
