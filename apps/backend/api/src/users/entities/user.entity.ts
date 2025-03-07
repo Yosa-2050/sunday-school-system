@@ -31,7 +31,7 @@ class User extends BaseModel {
     profile: Profile;
 
     @OneToMany(
-        (type) => UserRoles,
+        () => UserRoles,
         (roles) => roles.user,
         {
             eager: true,
@@ -41,5 +41,4 @@ class User extends BaseModel {
     )
     roles: UserRoles[];
 }
-
 export { User };

@@ -48,8 +48,8 @@ export class BaseModelSubscriber
             entity.updatedAt = this.dateService.getCurrentDate();
 
             const currentUser = this.authService.CurrentUser();
-            entity.createdBy = currentUser.email || 'System';
-            entity.updatedBy = currentUser.email || 'System';
+            entity.createdBy = currentUser?.email || 'System';
+            entity.updatedBy = currentUser?.email || 'System';
         }
     }
 
@@ -59,7 +59,7 @@ export class BaseModelSubscriber
             entity.updatedAt = this.dateService.getCurrentDate();
 
             const currentUser = this.authService.CurrentUser();
-            entity.updatedBy = currentUser.email || 'System';
+            entity.updatedBy = currentUser?.email || 'System';
         }
     }
 }
