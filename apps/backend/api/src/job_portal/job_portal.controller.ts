@@ -97,9 +97,9 @@ export class JobPortalController {
         return this.jobPortalService.approveJob(id);
     }
 
-    @Get('')
-    findOne(@Param('id') id: string) {
-        return this.jobPortalService.findOne(+id);
+    @Get(':id')
+    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.jobPortalService.findOne(id);
     }
 
     @Patch(':id')
