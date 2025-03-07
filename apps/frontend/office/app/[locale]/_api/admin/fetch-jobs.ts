@@ -72,10 +72,10 @@ export interface Pagination {
   limit: number;
 }
 
-export const fetchJobs = async (
+export const fetchJobsAdmin = async (
   payload: FetchJobsPayload
 ): Promise<JobsResponse> => {
-  const response = await fetcher("/job-portal/byProvider", {
+  const response = await fetcher("/job-portal/jobsByStatus", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
