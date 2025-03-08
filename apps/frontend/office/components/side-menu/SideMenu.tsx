@@ -1,5 +1,5 @@
 'use client';
-import { ScrollArea } from '@mantine/core';
+import { ScrollArea, useMantineColorScheme } from '@mantine/core';
 import { useToggle } from '@mantine/hooks';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -38,7 +38,11 @@ const NavigationLink = ({
     href,
     children,
     onClick,
-}: { href: string; children: React.ReactNode; onClick?: () => void }) => (
+}: {
+    href: string;
+    children: React.ReactNode;
+    onClick?: () => void;
+}) => (
     <Link href={href} onClick={onClick}>
         {children}
     </Link>
@@ -90,6 +94,7 @@ const MenuLabel = ({
     level = 0,
 }: MenuLabelProps) => {
     const pathname = usePathname();
+    const { colorScheme } = useMantineColorScheme();
 
     const active =
         link &&
@@ -102,7 +107,8 @@ const MenuLabel = ({
         <div
             className={cn(
                 classes.menuItem,
-                'text-primary-text flex cursor-pointer items-center  rounded-md px-2 py-1 transition duration-300 ease-in-out',
+                'flex cursor-pointer items-center rounded-md px-2 py-1 transition duration-300 ease-in-out  dark:text-gray-700 text-gray-50',
+
                 active ? classes.active : '',
             )}
             style={{ paddingLeft: paddingLeft <= 0 ? 20 : paddingLeft }}

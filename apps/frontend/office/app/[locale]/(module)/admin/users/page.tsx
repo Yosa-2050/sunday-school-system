@@ -20,7 +20,6 @@ import {
     TableScrollContainer,
     Text,
     TextInput,
-    Tooltip,
 } from '@mantine/core';
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
 import {
@@ -57,7 +56,7 @@ const UsersPage = () => {
 
     // Fetch users using TanStack Query
     const { data, isLoading, error } = useQuery({
-        queryKey: ['users'],
+        queryKey: ['users', debouncedSearch, page, limit],
         queryFn: () =>
             fetchUsers({
                 pagination: {
@@ -108,7 +107,7 @@ const UsersPage = () => {
                     placeholder={t('searchPlaceholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ width: 300 }}
+                    style={{ width: 350 }}
                 />
                 <Flex gap={'xs'} align={'center'}>
                     <Select
@@ -123,15 +122,15 @@ const UsersPage = () => {
                                 label: t('roles.administrator'),
                             },
                             {
-                                value: 'JOB_SEEKER',
-                                label: t('roles.jobSeeker'),
-                            },
-                            {
                                 value: 'WORK_PROVIDER',
                                 label: t('roles.workProvider'),
                             },
+                            {
+                                value: 'JOB_SEEKER',
+                                label: t('roles.jobSeeker'),
+                            },
                         ]}
-                        style={{ width: 150 }}
+                        style={{ width: 200 }}
                     />
                     <Select
                         placeholder={t('sortBy')}
@@ -141,11 +140,14 @@ const UsersPage = () => {
                             { value: 'asc', label: t('sortOptions.asc') },
                             { value: 'desc', label: t('sortOptions.desc') },
                         ]}
-                        style={{ width: 150 }}
+                        style={{ width: 200 }}
                     />
-                    <Tooltip label={t('exportCSV')} withArrow>
-                        <IconDownload size={18} />
-                    </Tooltip>
+                    <Button
+                        variant="light"
+                        leftSection={<IconDownload size={18} />}
+                    >
+                        {t('exportCSV')}
+                    </Button>
                 </Flex>
             </Group>
 
@@ -213,13 +215,15 @@ const UsersPage = () => {
                                 </Table.Th>
                                 <Table.Th>{t('table.fullName')}</Table.Th>
                                 <Table.Th>{t('table.email')}</Table.Th>
-                                <Table.Th>{t('table.status')}</Table.Th>
+                                <Table.Th>{t('table.role')}</Table.Th>
                                 <Table.Th>{t('table.createdBy')}</Table.Th>
                                 <Table.Th>{t('table.createdAt')}</Table.Th>
+                                <Table.Th>{t('table.status')}</Table.Th>
                                 <Table.Th>{t('table.actions')}</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
+                            {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                             {users.map((user: Daum) => (
                                 <Table.Tr key={user.email}>
                                     <Table.Td>
@@ -241,6 +245,21 @@ const UsersPage = () => {
                                             {user.email}
                                         </Link>
                                     </Table.Td>
+                                    <Table.Td>
+                                        {user.role === 'WORK_PROVIDER'
+                                            ? 'Employer'
+                                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                              user.role === 'ADMINISTRATOR'
+                                              ? 'Administrator'
+                                              : 'Job Seeker'}
+                                    </Table.Td>
+
+                                    <Table.Td>{user.createdBy}</Table.Td>
+                                    <Table.Td>
+                                        {DateTime.fromISO(
+                                            user.createdDate ?? '',
+                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                    </Table.Td>
                                     <Table.Td
                                         className={
                                             user.isActive
@@ -251,12 +270,6 @@ const UsersPage = () => {
                                         {user.isActive
                                             ? t('status.active')
                                             : t('status.inactive')}
-                                    </Table.Td>
-                                    <Table.Td>{user.createdBy}</Table.Td>
-                                    <Table.Td>
-                                        {DateTime.fromISO(
-                                            user.createdDate ?? '',
-                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
                                     </Table.Td>
                                     <Table.Td>
                                         <Menu width={200}>

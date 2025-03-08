@@ -3,12 +3,9 @@
 import { useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-    Anchor,
     Box,
     Button,
-    Checkbox,
     Flex,
-    Group,
     PasswordInput,
     Stack,
     Text,
@@ -40,16 +37,7 @@ const schema = z.object({
             /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             'Invalid email format',
         ),
-    password: z
-        .string()
-        .min(8, 'Password must be at least 8 characters long')
-        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-        .regex(/[0-9]/, 'Password must contain at least one number')
-        .regex(
-            /[!@#$%^&*(),.?":{}|<>]/,
-            'Password must contain at least one special character',
-        ),
+    password: z.string().min(1, 'Password field is required'),
     rememberMe: z.boolean().optional(),
 });
 
@@ -92,11 +80,11 @@ const Login = () => {
                         router.push('/work-provider/dashboard');
                     }
 
-                    notifications.show({
-                        title: 'Success',
-                        message: t('loginSuccess'),
-                        color: 'green',
-                    });
+                    // notifications.show({
+                    //     title: 'Success',
+                    //     message: t('loginSuccess'),
+                    //     color: 'green',
+                    // });
                     setCookie('role', data.role);
                     setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
                         maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
@@ -144,26 +132,22 @@ const Login = () => {
                             {...register('password')}
                             error={errors.password?.message}
                         />
-                        <Group justify="space-between" mt={'sm'}>
-                            <Checkbox
-                                title="Remember me"
-                                label={t('rememberMe')}
-                                className="text-teal-600"
-                                checked={rememberMe}
-                                onChange={(e) =>
-                                    setRememberMe(e.target.checked)
-                                }
-                            />
-                            <Anchor
-                                size="sm"
-                                onClick={() =>
-                                    router.push('/auth/forgot-password')
-                                }
-                                className="text-sm text-teal-600 hover:underline"
-                            >
-                                {t('forgotPassword')}
-                            </Anchor>
-                        </Group>
+                        {/* <Group justify="space-between" mt={"sm"}>
+              <Checkbox
+                title="Remember me"
+                label={t("rememberMe")}
+                className="text-teal-600"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <Anchor
+                size="sm"
+                onClick={() => router.push("/auth/forgot-password")}
+                className="text-sm text-teal-600 hover:underline"
+              >
+                {t("forgotPassword")}
+              </Anchor>
+            </Group> */}
                         <Button
                             type="submit"
                             fullWidth

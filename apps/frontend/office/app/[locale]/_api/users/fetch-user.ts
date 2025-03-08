@@ -34,6 +34,7 @@ export interface Daum {
     isActive?: boolean;
     createdBy?: string;
     createdDate?: string;
+    role?: string;
 }
 
 export const fetchUsers = async (payload: FetchUsersPayload) => {

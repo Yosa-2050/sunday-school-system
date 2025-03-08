@@ -8,17 +8,17 @@ import {
     CloseButton,
     Flex,
     ScrollArea,
+    useComputedColorScheme,
+    useMantineColorScheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
-    IconBell,
     IconLayoutSidebarLeftExpand,
     IconLayoutSidebarRightExpand,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 
 import Logo from '../public/logo.svg';
-import LocaleSwitcherSelect from './LocaleSwitcher';
 import { Menus } from './Menus';
 import UserProfile from './UserProfile';
 import { SideMenu } from './side-menu/SideMenu';
@@ -34,6 +34,10 @@ export default function WrapperShell({
 }: ShellProps): React.ReactNode {
     const [opened, { toggle }] = useDisclosure(false);
     const [sidebarOpen, { toggle: toggleSidebar }] = useDisclosure(true);
+    const { setColorScheme } = useMantineColorScheme();
+    const computedColorScheme = useComputedColorScheme('light', {
+        getInitialValueInEffect: true,
+    });
 
     return (
         <>
@@ -47,10 +51,7 @@ export default function WrapperShell({
                 }}
                 padding="md"
             >
-                <AppShell.Header
-                    className="bg-white border-b border-gray-200"
-                    h={60}
-                >
+                <AppShell.Header className=" border-b border-gray-200" h={60}>
                     <Flex
                         align="center"
                         justify={'space-between'}
@@ -88,11 +89,28 @@ export default function WrapperShell({
                             </Link>
                         </Flex>
                         <Flex align="center" gap="md">
-                            <LocaleSwitcherSelect />
-                            <Flex style={{ cursor: 'pointer' }}>
-                                <IconBell size={20} />
-                            </Flex>
+                            {/* <LocaleSwitcherSelect />
+              <Flex style={{ cursor: "pointer" }}>
+                <IconBell size={20} />
+              </Flex> */}
                             <UserProfile />
+                            {/* <ActionIcon
+                onClick={() =>
+                  setColorScheme(
+                    computedColorScheme === "light" ? "dark" : "light"
+                  )
+                }
+                variant="default"
+                size="xl"
+                aria-label="Toggle color scheme"
+                className="border-none"
+              >
+                {computedColorScheme === "dark" ? (
+                  <IconSun className="w-5.5 h-5.5 stroke-1.5" />
+                ) : (
+                  <IconMoon className="w-5.5 h-5.5 stroke-1.5" />
+                )}
+              </ActionIcon> */}
                             <Burger
                                 onClick={toggle}
                                 style={{ cursor: 'pointer' }}
@@ -104,7 +122,7 @@ export default function WrapperShell({
                 </AppShell.Header>
 
                 <AppShell.Navbar
-                    className="bg-white border-r border-gray-200"
+                    className=" border-r border-gray-200"
                     p={'md'}
                     hidden={!sidebarOpen}
                 >
@@ -142,7 +160,7 @@ export default function WrapperShell({
                     </Box>
                 </AppShell.Navbar>
 
-                <AppShell.Main className="bg-primary-5">
+                <AppShell.Main className="bg-primary-5 dark:bg-primary-1">
                     <Box className="w-full flex-1">{children}</Box>
                 </AppShell.Main>
             </AppShell>

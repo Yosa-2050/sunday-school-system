@@ -3,12 +3,9 @@
 import { useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-    Anchor,
     Box,
     Button,
-    Checkbox,
     Flex,
-    Group,
     PasswordInput,
     Stack,
     Text,
@@ -41,16 +38,7 @@ const schema = z.object({
             /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             'Invalid email format',
         ),
-    password: z
-        .string()
-        .min(8, 'Password must be at least 8 characters long')
-        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-        .regex(/[0-9]/, 'Password must contain at least one number')
-        .regex(
-            /[!@#$%^&*(),.?":{}|<>]/,
-            'Password must contain at least one special character',
-        ),
+    password: z.string().min(1, 'Password field is required'),
     rememberMe: z.boolean().optional(),
 });
 
@@ -97,11 +85,11 @@ const Login = () => {
                     setUser({ ...user, role: data.role });
                     router.push(redirectPath);
 
-                    notifications.show({
-                        title: 'Success',
-                        message: t('loginSuccess'),
-                        color: 'green',
-                    });
+                    //   notifications.show({
+                    //     title: "Success",
+                    //     message: t("loginSuccess"),
+                    //     color: "green",
+                    //   });
                     setCookie('role', data.role);
                     setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
                         maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
@@ -149,7 +137,7 @@ const Login = () => {
                             {...register('password')}
                             error={errors.password?.message}
                         />
-                        <Group justify="space-between" mt={'sm'}>
+                        {/* <Group justify="space-between" mt={'sm'}>
                             <Checkbox
                                 title="Remember me"
                                 label={t('rememberMe')}
@@ -168,11 +156,11 @@ const Login = () => {
                             >
                                 {t('forgotPassword')}
                             </Anchor>
-                        </Group>
+                        </Group> */}
                         <Button
                             type="submit"
                             fullWidth
-                            className="w-full rounded-md px-4 py-2 text-white"
+                            className="w-full rounded-md px-4 py-2 text-white mt-4"
                             loading={loginMutation.isPending}
                         >
                             {t('loginButton')}

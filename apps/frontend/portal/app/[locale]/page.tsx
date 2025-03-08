@@ -4,7 +4,6 @@ import { useRouter } from '@/i18n/routing';
 import {
     ActionIcon,
     Avatar,
-    Badge,
     Box,
     Button,
     Card,
@@ -12,15 +11,19 @@ import {
     Divider,
     Grid,
     Group,
+    LoadingOverlay,
     Menu,
+    NumberFormatter,
     Paper,
     SimpleGrid,
     Text,
     TextInput,
     Title,
+    TypographyStylesProvider,
 } from '@mantine/core';
+import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
-import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
+import { COOKIE_ACCESS_TOKEN, logger } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import {
     IconBell,
@@ -45,8 +48,12 @@ import {
     IconUser,
     IconUsers,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
+import { jobTypes } from 'constants/job-type';
 import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
+import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
 // Types for our filters
@@ -93,7 +100,7 @@ function AppHeader() {
             title: 'Are you sure you want to logout?',
             children: (
                 <Text size="sm">
-                    You will be logged out of your accoutn. Any unsaved changes
+                    You will be logged out of your account. Any unsaved changes
                     will be lost
                 </Text>
             ),
@@ -207,12 +214,12 @@ function AppHeader() {
                                 >
                                     {t('login')}
                                 </Button>
-                                <Button
-                                    className="bg-[#14a800] hover:bg-[#14a800]/90"
-                                    onClick={() => router.push('/auth/signup')}
-                                >
-                                    {t('signup')}
-                                </Button>
+                                {/* <Button
+                  className="bg-[#14a800] hover:bg-[#14a800]/90"
+                  onClick={() => router.push("/auth/signup")}
+                >
+                  {t("signup")}
+                </Button> */}
                             </Group>
                         )}
                     </Group>
@@ -282,8 +289,8 @@ interface CanProps {
 
 function Can({ children, fallback, action }: CanProps) {
     const router = useRouter();
-    // TODO: Replace with actual auth check
-    const isAuthenticated = false;
+    const { user } = useAuth();
+    const isAuthenticated = !!user;
 
     const handleAction = () => {
         if (isAuthenticated) {
@@ -305,57 +312,6 @@ function Can({ children, fallback, action }: CanProps) {
         </div>
     );
 }
-
-// Dummy data for job listings
-const initialJobs: Job[] = [
-    {
-        id: 1,
-        title: 'Senior Software Engineer',
-        company: 'Tech Corp',
-        companyLogo: 'TC',
-        location: 'San Francisco, CA',
-        jobType: 'Full-time',
-        salaryRange: '$100,000 - $130,000',
-        experienceLevel: 'Mid-level',
-        description:
-            "We're looking for an experienced software engineer to join our growing team...",
-        postedDate: '2 days ago',
-        skills: ['React', 'Node.js', 'TypeScript'],
-        isBookmarked: false,
-        isFavorite: false,
-    },
-    {
-        id: 2,
-        title: 'Product Manager',
-        company: 'Innovate Inc',
-        companyLogo: 'IN',
-        location: 'New York, NY',
-        jobType: 'Full-time',
-        salaryRange: '$120,000 - $150,000',
-        experienceLevel: 'Senior',
-        description:
-            'Lead product strategy and execution for our flagship product...',
-        postedDate: '1 week ago',
-        skills: ['Product Strategy', 'Agile', 'User Research'],
-        isBookmarked: false,
-        isFavorite: false,
-    },
-    {
-        id: 3,
-        title: 'Data Scientist',
-        company: 'DataWorks',
-        companyLogo: 'DW',
-        location: 'Remote',
-        jobType: 'Contract',
-        salaryRange: '$90,000 - $110,000',
-        experienceLevel: 'Entry-level',
-        description: 'Join our data science team to build predictive models...',
-        postedDate: '3 days ago',
-        skills: ['Python', 'Machine Learning', 'SQL'],
-        isBookmarked: false,
-        isFavorite: false,
-    },
-];
 
 // Category Card Component
 function CategoryCard({ category }: { category: Category }) {
@@ -469,47 +425,56 @@ function JobFilterSidebar({
 // Job List Component
 function JobList({ filters }: { filters: JobFilters }) {
     const router = useRouter();
-    const [jobs, setJobs] = useState<Job[]>(initialJobs);
+    const t = useTranslations('jobListing');
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
-    const filteredJobs = jobs.filter((job) => {
-        return (
-            job.title.toLowerCase().includes(filters.keyword.toLowerCase()) &&
-            job.location
-                .toLowerCase()
-                .includes(filters.location.toLowerCase()) &&
-            job.jobType.toLowerCase().includes(filters.jobType.toLowerCase()) &&
-            job.salaryRange
-                .toLowerCase()
-                .includes(filters.salaryRange.toLowerCase()) &&
-            job.experienceLevel
-                .toLowerCase()
-                .includes(filters.experienceLevel.toLowerCase())
-        );
+    const [selection, setSelection] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useQueryState('search', {
+        defaultValue: '',
+    });
+    const [categoryFilter, setCategoryFilter] = useQueryState('category', {
+        defaultValue: '',
+    });
+    const [sortOrder, setSortOrder] = useQueryState('sort', {
+        defaultValue: 'asc',
+    });
+    const [page, setPage] = useQueryState('page', { defaultValue: '1' });
+    const [limit, setLimit] = useQueryState('limit', { defaultValue: '10' });
+
+    const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['jobs', debouncedSearch, page, limit, categoryFilter],
+        queryFn: () =>
+            fetchJobs({
+                search: debouncedSearch,
+                page: +page,
+                limit: +limit,
+            }),
     });
 
-    const toggleBookmark = (jobId: number) => {
-        setJobs(
-            jobs.map((job) =>
-                job.id === jobId
-                    ? { ...job, isBookmarked: !job.isBookmarked }
-                    : job,
-            ),
-        );
+    const jobs = data?.data || [];
+    const totalPages = data?.totalPages || 0;
+
+    if (isLoading) {
+        return <LoadingOverlay visible={true} h="100vh" />;
+    }
+
+    if (error) {
+        return <Text color="red">Error loading jobs</Text>;
+    }
+
+    const toggleBookmark = (jobId: string) => {
+        logger.log(jobId);
     };
 
-    const toggleFavorite = (jobId: number) => {
-        setJobs(
-            jobs.map((job) =>
-                job.id === jobId
-                    ? { ...job, isFavorite: !job.isFavorite }
-                    : job,
-            ),
-        );
+    const toggleFavorite = (jobId: string) => {
+        logger.log(jobId);
     };
 
     return (
         <div className="space-y-4">
-            {filteredJobs.map((job) => (
+            {data?.data.map((job) => (
                 <Card
                     key={job.id}
                     className="hover:shadow-md transition-shadow duration-200"
@@ -518,14 +483,14 @@ function JobList({ filters }: { filters: JobFilters }) {
                     <Group justify="space-between" align="flex-start">
                         <Group>
                             <Avatar size="lg" color="blue">
-                                {job.companyLogo}
+                                {job.organization.name.slice(0, 2)}
                             </Avatar>
                             <div>
                                 <Title order={4} className="font-semibold">
                                     {job.title}
                                 </Title>
                                 <Text size="sm" c="dimmed">
-                                    {job.company}
+                                    {job.organization?.name}
                                 </Text>
                             </div>
                         </Group>
@@ -539,7 +504,8 @@ function JobList({ filters }: { filters: JobFilters }) {
                                 }
                             >
                                 <ActionIcon variant="subtle">
-                                    {job.isBookmarked ? (
+                                    {/* biome-ignore lint/correctness/noConstantCondition: <explanation> */}
+                                    {false ? (
                                         <IconBookmarkFilled
                                             size={20}
                                             color="#228be6"
@@ -558,7 +524,8 @@ function JobList({ filters }: { filters: JobFilters }) {
                                 }
                             >
                                 <ActionIcon variant="subtle">
-                                    {job.isFavorite ? (
+                                    {/* biome-ignore lint/correctness/noConstantCondition: <explanation> */}
+                                    {false ? (
                                         <IconHeartFilled
                                             size={20}
                                             color="#ff6b6b"
@@ -569,22 +536,28 @@ function JobList({ filters }: { filters: JobFilters }) {
                                 </ActionIcon>
                             </Can>
                             <Text size="sm" c="dimmed">
-                                {job.postedDate}
+                                {new Date().toDateString()}
                             </Text>
                         </Group>
                     </Group>
 
-                    <Text className="mt-4" lineClamp={2}>
-                        {job.description}
-                    </Text>
+                    <TypographyStylesProvider mt={'md'}>
+                        <div
+                            // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                            dangerouslySetInnerHTML={{
+                                __html: job.description,
+                            }}
+                            className="line-clamp-2"
+                        />
+                    </TypographyStylesProvider>
 
-                    <Group className="mt-4" gap="xs">
-                        {job.skills.map((skill) => (
-                            <Badge key={skill} variant="light">
-                                {skill}
-                            </Badge>
-                        ))}
-                    </Group>
+                    {/* <Group className="mt-4" gap="xs">
+            {job.skills.map((skill) => (
+              <Badge key={skill} variant="light">
+                {skill}
+              </Badge>
+            ))}
+          </Group> */}
 
                     <Divider className="my-4" />
 
@@ -592,26 +565,32 @@ function JobList({ filters }: { filters: JobFilters }) {
                         <Group gap="lg">
                             <Group gap="xs">
                                 <IconMapPin size={16} />
-                                <Text size="sm">{job.location}</Text>
+                                <Text size="sm">{'job.location'}</Text>
                             </Group>
                             <Group gap="xs">
                                 <IconBriefcase size={16} />
-                                <Text size="sm">{job.jobType}</Text>
+                                <Text size="sm">{jobTypes[job.type]}</Text>
                             </Group>
                             <Group gap="xs">
                                 <IconCurrencyDollar size={16} />
-                                <Text size="sm">{job.salaryRange}</Text>
+                                <Text size="sm">
+                                    <NumberFormatter
+                                        value={job.salaryFrom}
+                                        thousandSeparator=","
+                                    />{' '}
+                                    to{' '}
+                                    <NumberFormatter
+                                        value={job.salaryTo}
+                                        thousandSeparator=","
+                                    />{' '}
+                                </Text>
                             </Group>
                         </Group>
                         <Can
-                            action={() => router.push(`/jobs/${job.id}/apply`)}
-                            fallback={
-                                <Button variant="filled">
-                                    Sign in to Apply
-                                </Button>
-                            }
+                            action={() => logger.log('lasdfjk')}
+                            fallback={<Button>Sign in to Apply</Button>}
                         >
-                            <Button variant="filled">Apply Now</Button>
+                            <Button>Apply Now</Button>
                         </Can>
                     </Group>
                 </Card>

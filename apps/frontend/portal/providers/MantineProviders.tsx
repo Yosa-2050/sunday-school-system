@@ -1,9 +1,5 @@
 'use client';
 
-import '@mantine/carousel/styles.css';
-import '@mantine/dates/styles.css';
-import '@mantine/dropzone/styles.css';
-
 import { generateColors } from '@mantine/colors-generator';
 import { MantineProvider, type MantineThemeOverride } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
@@ -25,7 +21,7 @@ export default function MantineThemeProvider({
     });
     return (
         <MantineProvider theme={theme}>
-            <Notifications />
+            <Notifications position="top-right" />
             <ModalsProvider>{children}</ModalsProvider>
             <ProgressBar
                 height="4px"
@@ -49,7 +45,7 @@ const baseTheme = ({
     return {
         defaultRadius: radius ?? '8px',
         primaryColor: 'primary',
-        primaryShade: 6,
+        primaryShade: 9,
         fontFamily: 'var(--font-inter)',
         headings: {
             fontFamily: 'var(--font-inter)',

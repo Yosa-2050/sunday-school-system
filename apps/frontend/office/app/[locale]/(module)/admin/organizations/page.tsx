@@ -18,7 +18,6 @@ import {
     TableScrollContainer,
     Text,
     TextInput,
-    Tooltip,
 } from '@mantine/core';
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
 import {
@@ -114,7 +113,7 @@ const UsersPage = () => {
                     placeholder={t('searchPlaceholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ width: 300 }}
+                    style={{ width: 350 }}
                 />
                 <Flex gap={'xs'} align={'center'}>
                     <Select
@@ -125,19 +124,22 @@ const UsersPage = () => {
                             { value: 'asc', label: t('sortOptions.asc') },
                             { value: 'desc', label: t('sortOptions.desc') },
                         ]}
-                        style={{ width: 150 }}
+                        style={{ width: 200 }}
                     />
-                    <Tooltip label={t('exportCSV')} withArrow>
-                        <IconDownload size={18} />
-                    </Tooltip>
+                    <Button
+                        variant="light"
+                        leftSection={<IconDownload size={18} />}
+                    >
+                        {t('exportCSV')}
+                    </Button>
                 </Flex>
             </Group>
 
             {/* No Data State */}
             {organizations.length === 0 ? (
                 <NoData />
-                // biome-ignore lint/nursery/noNestedTernary: <explanation>
-            ) : isMobile ? (
+            ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+            isMobile ? (
                 <Stack>
                     {organizations.map((user: Daum) => (
                         <Card

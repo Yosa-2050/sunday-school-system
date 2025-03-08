@@ -152,9 +152,7 @@ export function CreateOrganization() {
                 </form>
             </Drawer>
 
-            <Button variant="default" onClick={open}>
-                {'Create Organization'}
-            </Button>
+            <Button onClick={open}>{'Create Organization'}</Button>
         </>
     );
 }

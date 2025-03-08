@@ -12,7 +12,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
-import { IconXboxX } from '@tabler/icons-react';
+import { IconPlus, IconXboxX } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     type CreateUsers,
@@ -27,11 +27,15 @@ export function CreateUser() {
     const t = useTranslations('crateUsers');
 
     const userSchema = z.object({
-        role: z.string(),
+        role: z.string().min(1, t('validation.roleRequired')),
         firstName: z.string().min(1, t('validation.firstNameRequired')),
         middleName: z.string().min(1, t('validation.middleNameRequired')),
         lastName: z.string().min(1, t('validation.lastNameRequired')),
-        email: z.string().email(t('validation.invalidEmail')),
+        email: z
+            .string()
+            .min(1, t('validation.emailRequired'))
+            .email(t('validation.invalidEmail'))
+            .nonempty(t('validation.emailRequired')),
     });
     const queryClient = useQueryClient();
 
@@ -42,6 +46,7 @@ export function CreateUser() {
         handleSubmit,
         formState: { errors },
         watch,
+        reset,
     } = useForm<CreateUsers>({
         resolver: zodResolver(userSchema),
     });
@@ -57,12 +62,14 @@ export function CreateUser() {
             });
             queryClient.invalidateQueries({ queryKey: ['users'] });
             close();
+            reset(); // Reset form data to default after success
         },
         onError: (error) => {
             logger.log(error);
             notifications.show({
                 title: t('notifications.errorTitle'),
-                message: `${t('notifications.errorMessage')} ${error.message}`,
+                message: `${t('notifications.errorMessage')} ${error.message.replace('Email', '')}`,
+                color: 'red',
             });
         },
     });
@@ -170,7 +177,7 @@ export function CreateUser() {
                 </form>
             </Drawer>
 
-            <Button variant="default" onClick={open}>
+            <Button leftSection={<IconPlus size={18} />} onClick={open}>
                 {t('createUserButton')}
             </Button>
         </>

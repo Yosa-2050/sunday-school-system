@@ -42,7 +42,7 @@ export default async function RootLayout({
     const styles: Record<string, string> = {
         '--primary-color-default': defaultTheme,
         '--primary-radius': '8px',
-        backgroundColor: lightenHexColor(defaultTheme, 98) || '#014d4e',
+        backgroundColor: lightenHexColor(defaultTheme, 98) || '#004c4c',
     };
 
     colorArray.forEach((color, index) => {

@@ -25,15 +25,15 @@ export const Menus = (): MenuTree[] => {
         },
 
         {
-            label: t('job-explorer'),
-            icon: <IconSearch stroke={1.4} size={20} />,
-            link: '/admin/jobs',
-            role: 'administrator',
-        },
-        {
             label: t('organizations'),
             icon: <IconBuilding stroke={1.4} size={20} />,
             link: '/admin/organizations',
+            role: 'administrator',
+        },
+        {
+            label: t('job-explorer'),
+            icon: <IconSearch stroke={1.4} size={20} />,
+            link: '/admin/jobs',
             role: 'administrator',
         },
         {

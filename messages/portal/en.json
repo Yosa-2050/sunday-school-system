@@ -28,7 +28,7 @@
             "loginButton": "Login",
             "noAccount": "Don't have an account?",
             "signUp": "Sign up",
-            "loginFailed": "Login failed. Please try again.",
+            "loginFailed": "Username or Password is incorrect",
             "loginSuccess": "Login Successful",
             "rememberMe": "Remember me",
             "rightsReserved": "© All rights reserved by Shega Jobs"
