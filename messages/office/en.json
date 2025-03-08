@@ -19,8 +19,8 @@
     "jobPortal": {
         "dashboard": "Dashboard",
         "job-seekers": "Job Seekers",
-        "jobs": "Jobs",
-        "users": "Users",
+        "jobs": "Posted Jobs",
+        "users": "Users Management",
         "resume-builder": "Resume Builder",
         "applied-jobs": "Applied Jobs",
         "saved-jobs": "Saved Jobs",
@@ -31,8 +31,8 @@
         "applicants": "Applicants",
         "shortlisted-candidates": "Shortlisted Candidates",
         "reports": "Reports",
-        "job-explorer": "Jobs",
-        "organizations": "Organizations",
+        "job-explorer": "Posted Jobs",
+        "organizations": "Organizations Management",
         "messages": "Messages",
         "analytics": "Analytics",
         "settings": "Settings",
@@ -76,7 +76,7 @@
             "loginButton": "Login",
             "noAccount": "Don't have an account?",
             "signUp": "Sign up",
-            "loginFailed": "Login failed. Please try again.",
+            "loginFailed": "Username or Password is incorrect",
             "loginSuccess": "Login Successful",
             "rememberMe": "Remember me",
             "rightsReserved": "© All rights reserved by Shega Jobs"
@@ -99,14 +99,14 @@
     },
     "usersPage": {
         "title": "List of Users",
-        "searchPlaceholder": "Search users",
+        "searchPlaceholder": "Search by Name, Email address, or Status",
         "selectRole": "Select role",
         "sortBy": "Sort by",
         "exportCSV": "Export to CSV",
         "allRoles": "All Roles",
         "roles": {
-            "jobSeeker": "Applicants",
-            "workProvider": "Job Providers",
+            "jobSeeker": "Job Seeker",
+            "workProvider": "Employer",
             "administrator": "Administrator"
         },
         "sortOptions": {
@@ -114,12 +114,12 @@
             "desc": "Sort Descending"
         },
         "table": {
-            "fullName": "Full Name",
-            "email": "Email",
-            "role": "Role",
+            "fullName": "Name",
+            "email": "Email Address",
+            "role": "User Role",
             "status": "Status",
             "createdBy": "Created By",
-            "createdAt": "Created At",
+            "createdAt": "Created Date",
             "actions": "Actions",
             "edit": "Edit",
             "delete": "Delete",
@@ -139,7 +139,7 @@
         "exportCSV": "Export to CSV",
         "allRoles": "All Roles",
         "roles": {
-            "jobSeeker": "Applicants",
+            "jobSeeker": "Job Seeker",
             "workProvider": "Job Providers",
             "administrator": "Administrator"
         },
@@ -170,7 +170,7 @@
         "roleLabel": "Role",
         "rolePlaceholder": "Select your role",
         "roles": {
-            "jobSeeker": "Applicants",
+            "jobSeeker": "Job Seeker",
             "workProvider": "Job Providers",
             "administrator": "Administrator"
         },
@@ -192,11 +192,13 @@
             "errorMessage": "Error creating user"
         },
         "validation": {
+            "roleRequired": "Role is Required",
             "firstNameRequired": "First name is required",
             "middleNameRequired": "Father name is required",
             "lastNameRequired": "Grandfather name is required",
             "invalidEmail": "Invalid email address",
-            "companyNameRequired": "Company name is required for job providers"
+            "companyNameRequired": "Company name is required for job providers",
+            "emailRequired": "Email is required"
         }
     },
     "createOrganizations": {
