@@ -1,12 +1,12 @@
 'use client';
 
-import { Link } from '@/i18n/routing';
+import { Link, redirect } from '@/i18n/routing';
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import { getCookie } from 'cookies-next';
 import Autoplay from 'embla-carousel-autoplay';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import type React from 'react';
 import { type JSX, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';
@@ -18,17 +18,13 @@ export default function PageWrapper({
 }): JSX.Element {
     const t = useTranslations('auth.pageWrapper');
     const role = getCookie('role');
+    const locale = useLocale();
     const autoplay = useRef(Autoplay({ delay: 4000 }));
 
     const { user } = useAuth();
 
     if (user && role) {
-        if (role === 'administrator') {
-            window.location.href = '/admin/dashboard';
-        }
-        if (role === 'work_provider') {
-            window.location.href = '/work-provider/dashboard';
-        }
+        redirect({ href: '/', locale });
     }
     return (
         <Flex className="relative min-h-screen w-full">
