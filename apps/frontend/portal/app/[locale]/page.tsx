@@ -57,7 +57,7 @@ import { jobTypes } from 'constants/job-type';
 import { deleteCookie } from 'cookies-next';
 import { useLocale, useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Types for our filters
 interface JobFilters {
@@ -644,9 +644,11 @@ export default function HomePage() {
     const [opened, setOpened] = useState(false); // State for Drawer
     const isMobile = useMediaQuery('(max-width: 768px)'); // Detect mobile screens
 
-    if (!user) {
-        redirect({ href: '/auth/login', locale });
-    }
+    useEffect(() => {
+        if (!user) {
+            redirect({ href: '/auth/login', locale });
+        }
+    }, [user, locale]);
 
     return (
         <>
