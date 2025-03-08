@@ -85,9 +85,10 @@ export default function PageWrapper({
                     <Image
                         src={Logo.src}
                         alt="Logo"
-                        width={40}
-                        height={30}
-                        className="block w-[30%] absolute top-10 left-2"
+                        width={60}
+                        height={90}
+                        fit="contain"
+                        className="block !w-[30%] absolute top-10 left-2"
                     />
                 </Link>
 

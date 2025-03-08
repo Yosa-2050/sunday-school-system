@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from '@/i18n/routing';
+import { redirect, useRouter } from '@/i18n/routing';
 import {
     ActionIcon,
     Avatar,
@@ -52,7 +52,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import { jobTypes } from 'constants/job-type';
 import { deleteCookie } from 'cookies-next';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
@@ -600,6 +600,8 @@ function JobList({ filters }: { filters: JobFilters }) {
 }
 
 export default function HomePage() {
+    const { user } = useAuth();
+    const locale = useLocale();
     const t = useTranslations('jobListing');
     const [filters, setFilters] = useState<JobFilters>({
         location: '',
@@ -608,6 +610,10 @@ export default function HomePage() {
         experienceLevel: '',
         keyword: '',
     });
+
+    if (!user) {
+        redirect({ href: '/auth/login', locale });
+    }
 
     return (
         <>
