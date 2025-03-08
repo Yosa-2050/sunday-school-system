@@ -19,6 +19,7 @@ import {
   Text,
   TextInput,
   Title,
+  TypographyStylesProvider,
 } from "@mantine/core";
 import { useMediaQuery, useDebouncedValue } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
@@ -518,15 +519,13 @@ function JobList({ filters }: { filters: JobFilters }) {
             </Group>
           </Group>
 
-          <Text className="mt-4" lineClamp={2}>
+          <TypographyStylesProvider mt={"md"}>
             <div
-              className="job-description"
               // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-              dangerouslySetInnerHTML={{
-                __html: job.description,
-              }}
+              dangerouslySetInnerHTML={{ __html: job.description }}
+              className="line-clamp-2"
             />
-          </Text>
+          </TypographyStylesProvider>
 
           {/* <Group className="mt-4" gap="xs">
             {job.skills.map((skill) => (
@@ -564,10 +563,10 @@ function JobList({ filters }: { filters: JobFilters }) {
               </Group>
             </Group>
             <Can
-              action={() => router.push(`/jobs/${job.id}/apply`)}
-              fallback={<Button variant="filled">Sign in to Apply</Button>}
+              action={() => logger.log("lasdfjk")}
+              fallback={<Button>Sign in to Apply</Button>}
             >
-              <Button variant="filled">Apply Now</Button>
+              <Button>Apply Now</Button>
             </Can>
           </Group>
         </Card>

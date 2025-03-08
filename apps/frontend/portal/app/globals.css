@@ -1,18 +1,15 @@
-@import "@mantine/core/styles.css" layer(base);
-@import "@mantine/notifications/styles.css" layer(base);
+@import "@mantine/core/styles.css";
+@import "@mantine/notifications/styles.css";
+@import '@mantine/carousel/styles.css';
+@import '@mantine/dates/styles.css';
+@import '@mantine/dropzone/styles.css';
+/* @import "@mantine/tiptap/styles.css"; */
 
 @import "tailwindcss";
 
 :root {
     --background: #ffffff;
     --foreground: #171717;
-    --primary-color-0: #00599b;
-    --primary-color-1: #f5fbfe;
-    --primary-color-8: #4ea85f;
-    --primary-color-text: #191919;
-    /* --primary-color-background: #1e4353; */
-    --primary-color-default: #00599b;
-    --primary-color-border: #cbd5e1;
 }
 
 body {
