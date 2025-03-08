@@ -9,6 +9,7 @@ import {
   Card,
   Container,
   Divider,
+  Drawer,
   Grid,
   Group,
   LoadingOverlay,
@@ -16,6 +17,7 @@ import {
   NumberFormatter,
   Paper,
   SimpleGrid,
+  Stack,
   Text,
   TextInput,
   Title,
@@ -37,6 +39,7 @@ import {
   IconCode,
   IconCurrencyDollar,
   IconDeviceMobile,
+  IconFilter,
   IconHeart,
   IconHeartFilled,
   IconLogout,
@@ -340,11 +343,11 @@ function JobFilterSidebar({
   const t = useTranslations("jobListing");
 
   return (
-    <Paper className="p-6 rounded-lg sticky top-4" shadow="sm">
-      <Title order={4} className="mb-6 font-semibold">
+    <Paper className="p-4 md:p-6 rounded-lg sticky top-4" shadow="sm">
+      <Title order={4} className="mb-4 md:mb-6 font-semibold">
         {t("filterLabel")}
       </Title>
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         <TextInput
           label={t("location")}
           value={filters.location}
@@ -459,117 +462,124 @@ function JobList({ filters }: { filters: JobFilters }) {
 
   return (
     <div className="space-y-4">
+      {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
       {data?.data.map((job) => (
         <Card
           key={job.id}
           className="hover:shadow-md transition-shadow duration-200"
-          padding="lg"
+          padding={isMobile ? "sm" : "lg"} // Reduce padding on mobile
         >
-          <Group justify="space-between" align="flex-start">
-            <Group>
-              <Avatar size={isMobile ? "md" : "lg"} color="blue">
+          {/* Job Header */}
+          <Group justify="space-between" align="flex-start" wrap="nowrap">
+            <Group gap="sm">
+              <Avatar size={isMobile ? "sm" : "lg"} color="blue">
                 {job.organization.name.slice(0, 2)}
               </Avatar>
               <div>
-                <Title order={isMobile ? 5 : 4} className="font-semibold">
+                <Title
+                  order={isMobile ? 5 : 4}
+                  className="font-semibold line-clamp-1" // Truncate long titles
+                >
                   {job.title}
                 </Title>
-                <Text size="sm" c="dimmed">
+                <Text size="sm" c="dimmed" className="line-clamp-1">
                   {job.organization?.name}
                 </Text>
               </div>
             </Group>
-            <Group>
+            <Group gap="xs">
               <Can
                 action={() => toggleBookmark(job.id)}
                 fallback={
-                  <ActionIcon variant="subtle">
-                    <IconBookmark size={20} />
+                  <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
+                    <IconBookmark size={16} />
                   </ActionIcon>
                 }
               >
-                <ActionIcon variant="subtle">
+                <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
                   {/* biome-ignore lint/correctness/noConstantCondition: <explanation> */}
                   {false ? (
-                    <IconBookmarkFilled size={20} color="#228be6" />
+                    <IconBookmarkFilled size={16} color="#228be6" />
                   ) : (
-                    <IconBookmark size={20} />
+                    <IconBookmark size={16} />
                   )}
                 </ActionIcon>
               </Can>
               <Can
                 action={() => toggleFavorite(job.id)}
                 fallback={
-                  <ActionIcon variant="subtle">
-                    <IconHeart size={20} />
+                  <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
+                    <IconHeart size={16} />
                   </ActionIcon>
                 }
               >
-                <ActionIcon variant="subtle">
+                <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
                   {/* biome-ignore lint/correctness/noConstantCondition: <explanation> */}
                   {false ? (
-                    <IconHeartFilled size={20} color="#ff6b6b" />
+                    <IconHeartFilled size={16} color="#ff6b6b" />
                   ) : (
-                    <IconHeart size={20} />
+                    <IconHeart size={16} />
                   )}
                 </ActionIcon>
               </Can>
-              <Text size="sm" c="dimmed">
-                {new Date().toDateString()}
-              </Text>
             </Group>
           </Group>
 
-          <TypographyStylesProvider mt={"md"}>
+          {/* Job Description */}
+          <TypographyStylesProvider mt="sm">
             <div
               // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-              dangerouslySetInnerHTML={{
-                __html: job.description,
-              }}
-              className="line-clamp-2"
+              dangerouslySetInnerHTML={{ __html: job.description }}
+              className="line-clamp-2 text-sm" // Truncate description
             />
           </TypographyStylesProvider>
 
-          <Divider className="my-4" />
+          <Divider className="my-3" />
 
-          <Group justify="space-between" align="center">
-            <Group gap="lg">
-              <Group gap="xs">
-                <IconMapPin size={16} />
-                <Text size="sm">{"job.location"}</Text>
-              </Group>
-              <Group gap="xs">
-                <IconBriefcase size={16} />
-                <Text size="sm">{jobTypes[job.type]}</Text>
-              </Group>
-              <Group gap="xs">
-                <IconCurrencyDollar size={16} />
-                <Text size="sm">
-                  <NumberFormatter
-                    value={job.salaryFrom}
-                    thousandSeparator=","
-                  />{" "}
-                  to{" "}
-                  <NumberFormatter
-                    value={job.salaryTo}
-                    thousandSeparator=","
-                  />{" "}
-                </Text>
-              </Group>
+          {/* Job Details */}
+          <Stack gap="xs">
+            <Group gap="xs">
+              <IconMapPin size={14} />
+              <Text size="sm" className="line-clamp-1">
+                {"job.location"}
+              </Text>
             </Group>
-            <Can
-              action={() => logger.log("lasdfjk")}
-              fallback={<Button>Sign in to Apply</Button>}
-            >
-              <Button>Apply Now</Button>
-            </Can>
-          </Group>
+            <Group gap="xs">
+              <IconBriefcase size={14} />
+              <Text size="sm" className="line-clamp-1">
+                {jobTypes[job.type]}
+              </Text>
+            </Group>
+            <Group gap="xs">
+              <IconCurrencyDollar size={14} />
+              <Text size="sm" className="line-clamp-1">
+                <NumberFormatter value={job.salaryFrom} thousandSeparator="," />{" "}
+                to{" "}
+                <NumberFormatter value={job.salaryTo} thousandSeparator="," />
+              </Text>
+            </Group>
+          </Stack>
+
+          {/* Apply Button */}
+          <Can
+            action={() => logger.log("Apply clicked")}
+            fallback={
+              <Button fullWidth size={isMobile ? "sm" : "md"} mt="sm">
+                Sign in to Apply
+              </Button>
+            }
+          >
+            <Button fullWidth size={isMobile ? "sm" : "md"} mt="sm">
+              Apply Now
+            </Button>
+          </Can>
         </Card>
       ))}
     </div>
   );
 }
 
+// Inside the HomePage component
 export default function HomePage() {
   const { user } = useAuth();
   const locale = useLocale();
@@ -581,6 +591,8 @@ export default function HomePage() {
     experienceLevel: "",
     keyword: "",
   });
+  const [opened, setOpened] = useState(false); // State for Drawer
+  const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screens
 
   if (!user) {
     redirect({ href: "/auth/login", locale });
@@ -638,16 +650,42 @@ export default function HomePage() {
       <Container size="xl">
         <Grid>
           {/* Filters Sidebar */}
-          <Grid.Col span={{ base: 12, md: 3 }}>
-            <JobFilterSidebar filters={filters} onFilterChange={setFilters} />
-          </Grid.Col>
+          {!isMobile && ( // Show sidebar only on desktop
+            <Grid.Col span={{ base: 12, md: 3 }}>
+              <JobFilterSidebar filters={filters} onFilterChange={setFilters} />
+            </Grid.Col>
+          )}
 
           {/* Job Listings */}
-          <Grid.Col span={{ base: 12, md: 9 }}>
+          <Grid.Col span={{ base: 12, md: isMobile ? 12 : 9 }}>
+            {/* Filter Button for Mobile */}
+            {isMobile && (
+              <Button
+                fullWidth
+                leftSection={<IconFilter size={18} />}
+                onClick={() => setOpened(true)}
+                className="mb-4"
+              >
+                Filter Jobs
+              </Button>
+            )}
+
             <JobList filters={filters} />
           </Grid.Col>
         </Grid>
       </Container>
+
+      {/* Drawer for Mobile Filters */}
+      <Drawer
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Filter Jobs"
+        position="right"
+        size="sm"
+        padding="md"
+      >
+        <JobFilterSidebar filters={filters} onFilterChange={setFilters} />
+      </Drawer>
     </>
   );
 }
