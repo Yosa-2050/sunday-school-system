@@ -1,7 +1,10 @@
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
+import { Readable } from 'stream';
 import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { stringify } from 'csv-stringify';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Express } from 'express';
+import { Express, Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -79,5 +82,26 @@ export class DocumentService {
         } catch (error) {
             //TODO: handle error
         }
+    }
+
+    generateCsv<T>(data: T[], res: Response, fileName: string) {
+        // Create a stream to write the CSV data
+        const stringifier = stringify({
+            header: true,
+            columns: Object.keys(data[0] || {}), // Dynamically get column names from the first object
+        });
+
+        // Convert the list of data into a readable stream
+        const readableStream = Readable.from(data);
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="${fileName}.csv"`,
+        );
+
+        // Pipe the readable stream to the CSV stringifier and then to the response
+        readableStream
+            .pipe(stringifier)
+            .pipe(res as unknown as NodeJS.WritableStream);
     }
 }

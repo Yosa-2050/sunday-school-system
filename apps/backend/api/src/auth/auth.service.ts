@@ -20,6 +20,8 @@ import { OtpService } from '@shega/users/otp.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ClsService } from 'nestjs-cls';
+// biome-ignore lint/style/useImportType: <explanation>
 import { PasswordResetDto } from './dtos/request/username.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
@@ -39,6 +41,7 @@ export class AuthService {
         private otpService: OtpService,
         private notificationService: NotificationService,
         private organizationService: OrganizationService,
+        private clasService: ClsService,
     ) {}
 
     async validateUser(
@@ -90,7 +93,7 @@ export class AuthService {
         }
         const payload: UserResponsePayload = {
             email: user.email,
-            sub: user.id,
+            userId: user.id,
             role: roles?.find((x) => x.isDefault)?.role?.toLowerCase(),
             pwdChangeRequired: user.pwd_change_required,
             id: user.id,
@@ -169,5 +172,17 @@ export class AuthService {
             };
         }
         throw new UnauthorizedException();
+    }
+
+    CurrentUser() {
+        const token = this.clasService.get('token');
+        if (token) {
+            const user = this.jwtService.decode(token);
+            const detail = new UserDetails();
+            detail.userId = user.userId;
+            detail.email = user.email;
+            return detail;
+        }
+        return null;
     }
 }

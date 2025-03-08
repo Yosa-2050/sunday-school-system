@@ -6,10 +6,15 @@ import {
     Param,
     Patch,
     Post,
+    Res,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
-import { Public } from '@shega/auth/jwt-public';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
+// import { DocumentService } from '@shega/document/document.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -23,10 +28,12 @@ import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
 
-@Public()
 @Controller('organization')
 export class OrganizationController {
-    constructor(private readonly organizationService: OrganizationService) {}
+    constructor(
+        private readonly organizationService: OrganizationService,
+        private documentService: DocumentService,
+    ) {}
 
     @Post('createEmployee')
     createEmployee(@Body() dto: CreateOrganizationEmployeeDto) {
@@ -54,6 +61,13 @@ export class OrganizationController {
     @Post('/all')
     findAll(@Body() dto: PaginationDto) {
         return this.organizationService.findAllPaginated(dto);
+    }
+
+    @Post('/export')
+    async export(@Body() dto: PaginationDto, @Res() res: Response) {
+        const org = await this.organizationService.findAllPaginated(dto);
+
+        this.documentService.generateCsv(org.data, res, 'organizationList');
     }
 
     @Get('/listEmployee/:organizationId')

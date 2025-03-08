@@ -9,10 +9,15 @@ import {
     Patch,
     Post,
     Request,
+    Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -25,7 +30,10 @@ import { JobPortalService } from './job_portal.service';
 @ApiTags('job-portal')
 @Controller('job-portal')
 export class JobPortalController {
-    constructor(private readonly jobPortalService: JobPortalService) {}
+    constructor(
+        private readonly jobPortalService: JobPortalService,
+        private readonly documentService: DocumentService,
+    ) {}
 
     @Roles(UserRoleType.WorkProvider)
     @Post()
@@ -43,11 +51,25 @@ export class JobPortalController {
 
     @Roles(UserRoleType.Administrator)
     @Post('jobsByStatus')
-    getAllPending(@Body() dto: GetJobsByStatusRequestDto) {
+    getAllByStatus(@Body() dto: GetJobsByStatusRequestDto) {
         return this.jobPortalService.getJobsByStatusPaginated(
             dto.status,
             dto.pagination,
         );
+    }
+
+    @Roles(UserRoleType.Administrator)
+    @Post('jobsByStatus/export')
+    async exportByStatus(
+        @Body() dto: GetJobsByStatusRequestDto,
+        @Res() res: Response,
+    ) {
+        const data = await this.jobPortalService.getJobsByStatusPaginated(
+            dto.status,
+            dto.pagination,
+        );
+
+        this.documentService.generateCsv(data.data, res, 'jobList');
     }
 
     @Roles(UserRoleType.WorkProvider)
@@ -75,9 +97,9 @@ export class JobPortalController {
         return this.jobPortalService.approveJob(id);
     }
 
-    @Get('')
-    findOne(@Param('id') id: string) {
-        return this.jobPortalService.findOne(+id);
+    @Get(':id')
+    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.jobPortalService.findOne(id);
     }
 
     @Patch(':id')

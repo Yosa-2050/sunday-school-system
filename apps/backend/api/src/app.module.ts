@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ClsModule } from 'nestjs-cls';
+import { DateService } from './Utilities/date.service';
+import { BaseModelSubscriber } from './Utilities/interceptor/base-model-subscriber';
 import { TransformInterceptor } from './Utilities/interceptor/transform-interceptor';
 import { RequestContextService } from './Utilities/request-context.service';
 import { AppController } from './app.controller';
@@ -15,6 +18,18 @@ import { OrganizationModule } from './organization/organization.module';
 
 @Module({
     imports: [
+        ClsModule.forRoot({
+            middleware: {
+                // automatically mount the
+                // ClsMiddleware for all routes
+                mount: true,
+                // and use the setup method to
+                // provide default store values.
+                setup: (cls, req) => {
+                    cls.set('token', req.headers?.authorization?.split(' ')[1]);
+                },
+            },
+        }),
         ConfigModule.forRoot({
             // envFilePath: `.env.${process.env.NODE_ENV}`, // Loads the correct .env file
             // isGlobal: true,
@@ -39,6 +54,8 @@ import { OrganizationModule } from './organization/organization.module';
     ],
     controllers: [AppController],
     providers: [
+        DateService,
+        BaseModelSubscriber,
         RequestContextService,
         AppService,
         {

@@ -7,12 +7,16 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from '@shega/auth/jwt-public';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -31,12 +35,25 @@ export class UsersController {
     constructor(
         private readonly usersService: UsersService,
         private notificationService: NotificationService,
+        private documentService: DocumentService,
     ) {}
 
-    @Public()
     @Post('all')
     findAll(@Body() dto: GetPaginatedProfileByTypeRequstDto) {
         return this.usersService.getUsersByUserType(dto.status, dto.pagination);
+    }
+
+    @Post('export')
+    async export(
+        @Body() dto: GetPaginatedProfileByTypeRequstDto,
+        @Res() res: Response,
+    ) {
+        const data = await this.usersService.getUsersByUserType(
+            dto.status,
+            dto.pagination,
+        );
+
+        this.documentService.generateCsv(data.data, res, 'userList');
     }
 
     @Post()

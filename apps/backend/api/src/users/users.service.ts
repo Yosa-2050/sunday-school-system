@@ -121,7 +121,6 @@ export class UsersService {
                 break;
         }
         if (user) {
-            user.roles = await user.roles;
             return user;
         }
         return null;
@@ -147,8 +146,14 @@ export class UsersService {
         const query = this.userRepo
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.profile', 'profile') // Join Profile entity
-            .leftJoinAndSelect('user.roles', 'role') // Join Roles entity
-            .where(type ? 'role.role = :type' : '1=1', { type }) // Filter by role if provided
+            .leftJoinAndMapMany(
+                'user.roles', // Property to map the result to
+                'user.roles', // Relationship to join
+                'role', // Alias for the joined table
+                type ? 'role.role = :type' : '1=1', // Condition for the join
+                { type },
+            )
+            //.where(type ? 'role.role = :type' : '1=1', { type }) // Filter by role if provided
             .andWhere(
                 search
                     ? `(user.email ILIKE '%' || :search || '%' OR 

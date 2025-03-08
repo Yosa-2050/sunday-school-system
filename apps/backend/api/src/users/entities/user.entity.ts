@@ -31,15 +31,14 @@ class User extends BaseModel {
     profile: Profile;
 
     @OneToMany(
-        (type) => UserRoles,
+        () => UserRoles,
         (roles) => roles.user,
         {
-            lazy: true,
+            eager: true,
             cascade: true,
             onUpdate: 'NO ACTION',
         },
     )
     roles: UserRoles[];
 }
-
 export { User };

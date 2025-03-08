@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DocumentModule } from '@shega/document/document.module';
 import { AddressModule } from '@shega/location/address.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { UsersModule } from '@shega/users/users.module';
@@ -23,6 +24,7 @@ import { OrganizationService } from './organization.service';
         UsersModule,
         AddressModule,
         NotificationModule,
+        DocumentModule,
     ],
     controllers: [OrganizationController, EmployeesController],
     providers: [OrganizationService, EmployeesService],

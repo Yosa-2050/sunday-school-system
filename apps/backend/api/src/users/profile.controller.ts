@@ -23,7 +23,6 @@ import {
 } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
-import { Public } from '@shega/auth/jwt-public';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
@@ -48,7 +47,6 @@ export class ProfileController {
         private passwordService: PasswordService,
     ) {}
 
-    @Public()
     @Post('/new')
     async create(@Body() dto: CreateUserDto) {
         const pwdGenerated = this.passwordService.generatePassword();

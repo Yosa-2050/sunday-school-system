@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -20,7 +19,6 @@ import { DocumentService } from './document.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateDocumentDto } from './dto/update-document.dto';
 
-@Public()
 @ApiTags('document')
 @Controller('document')
 export class DocumentController {

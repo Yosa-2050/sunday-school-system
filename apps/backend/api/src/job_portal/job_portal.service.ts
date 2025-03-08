@@ -83,8 +83,8 @@ export class JobPortalService {
         throw new NotImplementedException();
     }
 
-    findOne(id: number) {
-        throw new NotImplementedException();
+    findOne(id: string) {
+        return this.jobRepo.findOneBy({ id });
     }
 
     update(id: number, updateJobPortalDto: UpdateJobPortalDto) {
