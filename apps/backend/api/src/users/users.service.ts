@@ -38,6 +38,7 @@ export class UsersService {
             );
         }
         const user = this.userRepo.create(createUserDto);
+        user.email = user.email.toLowerCase();
         const roles = this.userRoleRepo.create();
         roles.role = UserRoleType.Administrator;
         user.roles = [roles];
@@ -73,7 +74,7 @@ export class UsersService {
         }
 
         const user = this.userRepo.create({
-            email,
+            email: email.toLowerCase(),
             password: await this.passwordService.hashPassword(
                 password ?? '123456789',
             ),
@@ -111,7 +112,9 @@ export class UsersService {
         let user: User;
         switch (type) {
             case LoginBy.EMAIL:
-                user = await this.userRepo.findOneBy({ email: login });
+                user = await this.userRepo.findOneBy({
+                    email: login.toLowerCase(),
+                });
                 break;
             case LoginBy.ID:
                 user = await this.userRepo.findOneBy({ id: login });
