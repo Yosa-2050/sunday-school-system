@@ -112,7 +112,9 @@ export class UsersService {
         let user: User;
         switch (type) {
             case LoginBy.EMAIL:
-                user = await this.userRepo.findOneBy({ email: login.toLowerCase() });
+                user = await this.userRepo.findOneBy({
+                    email: login.toLowerCase(),
+                });
                 break;
             case LoginBy.ID:
                 user = await this.userRepo.findOneBy({ id: login });

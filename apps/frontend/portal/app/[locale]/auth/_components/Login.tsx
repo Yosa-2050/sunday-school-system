@@ -72,7 +72,6 @@ const Login = () => {
                 color: 'red',
             });
         },
-        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
         onSuccess: async ({ data }) => {
             try {
                 if (data.pwdChangeRequired) {
