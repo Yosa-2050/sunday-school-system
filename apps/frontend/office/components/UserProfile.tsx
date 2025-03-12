@@ -19,13 +19,13 @@ export default function UserProfile() {
             title: 'Are you sure you want to logout?',
             children: (
                 <Text size="sm">
-                    You will be logged out of your accoutn. Any unsaved changes
-                    will be lost
+                    You will be logged out of your account. Any unsaved changes
+                    will be lost!
                 </Text>
             ),
             labels: { cancel: 'Cancel', confirm: 'Logout' },
             centered: true,
-            confirmProps: { color: 'red' },
+            confirmProps: { color: 'primary' },
             onCancel: () => console.log('Cancel'),
             onConfirm: () => {
                 deleteCookie(COOKIE_ACCESS_TOKEN);

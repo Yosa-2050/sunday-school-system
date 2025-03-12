@@ -27,15 +27,15 @@ export function CreateUser() {
     const t = useTranslations('crateUsers');
 
     const userSchema = z.object({
-        role: z.string().min(1, t('validation.roleRequired')),
-        firstName: z.string().min(1, t('validation.firstNameRequired')),
-        middleName: z.string().min(1, t('validation.middleNameRequired')),
-        lastName: z.string().min(1, t('validation.lastNameRequired')),
-        email: z
-            .string()
-            .min(1, t('validation.emailRequired'))
-            .email(t('validation.invalidEmail'))
-            .nonempty(t('validation.emailRequired')),
+      role: z.string().min(1, t("validation.roleRequired")),
+      firstName: z.string().min(1, t("validation.firstNameRequired")),
+      middleName: z.string().min(1, t("validation.middleNameRequired")),
+      lastName: z.string().min(1, t("validation.lastNameRequired")),
+      email: z
+        .string()
+        .min(1, t("validation.emailRequired"))
+        .email(t("validation.invalidEmail"))
+        .nonempty(t("validation.emailRequired")),
     });
     const queryClient = useQueryClient();
 
@@ -68,7 +68,7 @@ export function CreateUser() {
             logger.log(error);
             notifications.show({
                 title: t('notifications.errorTitle'),
-                message: `${t('notifications.errorMessage')} ${error.message.replace('Email', '')}`,
+                message: `${t('notifications.errorMessage')}`,
                 color: 'red',
             });
         },

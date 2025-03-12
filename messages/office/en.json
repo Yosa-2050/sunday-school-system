@@ -1,286 +1,286 @@
 {
-    "jobsPage": {
-        "createJob": "Create Job",
-        "jobTitleLabel": "Job Title"
+  "jobsPage": {
+    "createJob": "Create Job",
+    "jobTitleLabel": "Job Title"
+  },
+  "users": {
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter email address",
+    "firstNameLabel": "First Name",
+    "firstNamePlaceholder": "Enter first name",
+    "middleNameLabel": "Middle Name",
+    "middleNamePlaceholder": "Enter middle name",
+    "lastNameLabel": "Last Name",
+    "lastNamePlaceholder": "Enter last name",
+    "createUserButton": "Create User",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember me"
+  },
+  "jobPortal": {
+    "dashboard": "Dashboard",
+    "job-seekers": "Job Seekers",
+    "jobs": "Posted Jobs",
+    "users": "User Management",
+    "resume-builder": "Resume Builder",
+    "applied-jobs": "Applied Jobs",
+    "saved-jobs": "Saved Jobs",
+    "notifications": "Notifications",
+    "employers": "Employers",
+    "company-profile": "Company Profile",
+    "job-postings": "Job Postings",
+    "applicants": "Applicants",
+    "shortlisted-candidates": "Shortlisted Candidates",
+    "reports": "Reports",
+    "job-explorer": "Posted Jobs",
+    "organizations": "Organization Management",
+    "messages": "Messages",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "logout": "Logout",
+    "profile": "Profile"
+  },
+  "header": {
+    "title": "Admin Dashboard"
+  },
+  "navbar": {
+    "header": "Job Portal Admin",
+    "dashboard": "Dashboard",
+    "jobListings": "Job Listings",
+    "applicants": "Applicants",
+    "settings": "Settings",
+    "footer": "© 2023 Job Portal"
+  },
+  "main": {
+    "welcome": "Welcome to the Admin Dashboard",
+    "description": "Manage job listings, applicants, and more."
+  },
+  "auth": {
+    "OTP": {
+      "title": "Enter OTP",
+      "otpLabel": "One Time Password",
+      "otpPlaceholder": "Enter your OTP",
+      "verifyButton": "Verify"
     },
-    "users": {
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter email address",
-        "firstNameLabel": "First Name",
-        "firstNamePlaceholder": "Enter first name",
-        "middleNameLabel": "Middle Name",
-        "middleNamePlaceholder": "Enter middle name",
-        "lastNameLabel": "Last Name",
-        "lastNamePlaceholder": "Enter last name",
-        "createUserButton": "Create User",
-        "forgotPassword": "Forgot Password?",
-        "rememberMe": "Remember me"
+    "pageWrapper": {
+      "shegaobs": "Shega Jobs",
+      "rightsReserved": "© All rights reserved by Shega Jobs"
     },
-    "jobPortal": {
-        "dashboard": "Dashboard",
-        "job-seekers": "Job Seekers",
-        "jobs": "Posted Jobs",
-        "users": "Users Management",
-        "resume-builder": "Resume Builder",
-        "applied-jobs": "Applied Jobs",
-        "saved-jobs": "Saved Jobs",
-        "notifications": "Notifications",
-        "employers": "Employers",
-        "company-profile": "Company Profile",
-        "job-postings": "Job Postings",
-        "applicants": "Applicants",
-        "shortlisted-candidates": "Shortlisted Candidates",
-        "reports": "Reports",
-        "job-explorer": "Posted Jobs",
-        "organizations": "Organizations Management",
-        "messages": "Messages",
-        "analytics": "Analytics",
-        "settings": "Settings",
-        "logout": "Logout",
-        "profile": "Profile"
+    "login": {
+      "title": "Login",
+      "subtitle": "Please enter your details.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot Password?",
+      "loginButton": "Login",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "loginFailed": "Username or Password is incorrect",
+      "loginSuccess": "Login Successful",
+      "rememberMe": "Remember me",
+      "rightsReserved": "© All rights reserved by Shega Jobs"
     },
-    "header": {
-        "title": "Admin Dashboard"
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email address and we'll send you a link to reset your password.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "backToLogin": "Back to login",
+      "sendResetLink": "Send Reset Link"
     },
-    "navbar": {
-        "header": "Job Portal Admin",
-        "dashboard": "Dashboard",
-        "jobListings": "Job Listings",
-        "applicants": "Applicants",
-        "settings": "Settings",
-        "footer": "© 2023 Job Portal"
-    },
-    "main": {
-        "welcome": "Welcome to the Admin Dashboard",
-        "description": "Manage job listings, applicants, and more."
-    },
-    "auth": {
-        "OTP": {
-            "title": "Enter OTP",
-            "otpLabel": "One Time Password",
-            "otpPlaceholder": "Enter your OTP",
-            "verifyButton": "Verify"
-        },
-        "pageWrapper": {
-            "shegaobs": "Shega Jobs",
-            "rightsReserved": "© All rights reserved by Shega Jobs"
-        },
-        "login": {
-            "title": "Login",
-            "subtitle": "Please enter your details.",
-            "emailLabel": "Email",
-            "emailPlaceholder": "Enter your email",
-            "passwordLabel": "Password",
-            "passwordPlaceholder": "Enter your password",
-            "forgotPassword": "Forgot Password?",
-            "loginButton": "Login",
-            "noAccount": "Don't have an account?",
-            "signUp": "Sign up",
-            "loginFailed": "Username or Password is incorrect",
-            "loginSuccess": "Login Successful",
-            "rememberMe": "Remember me",
-            "rightsReserved": "© All rights reserved by Shega Jobs"
-        },
-        "forgotPassword": {
-            "title": "Forgot your password?",
-            "subtitle": "Enter your email address and we'll send you a link to reset your password.",
-            "emailLabel": "Email",
-            "emailPlaceholder": "you@example.com",
-            "backToLogin": "Back to login",
-            "sendResetLink": "Send Reset Link"
-        },
-        "changePassword": {
-            "title": "Change Password",
-            "newPassword": "New Password",
-            "confirmPassword": "Confirm New Password",
-            "proccedBtn": "Procced",
-            "rightsReserved": "© All rights reserved by Shega Jobs"
-        }
-    },
-    "usersPage": {
-        "title": "List of Users",
-        "searchPlaceholder": "Search by Name, Email address, or Status",
-        "selectRole": "Select role",
-        "sortBy": "Sort by",
-        "exportCSV": "Export to CSV",
-        "allRoles": "All Roles",
-        "roles": {
-            "jobSeeker": "Job Seeker",
-            "workProvider": "Employer",
-            "administrator": "Administrator"
-        },
-        "sortOptions": {
-            "asc": "Sort Ascending",
-            "desc": "Sort Descending"
-        },
-        "table": {
-            "fullName": "Name",
-            "email": "Email Address",
-            "role": "User Role",
-            "status": "Status",
-            "createdBy": "Created By",
-            "createdAt": "Created Date",
-            "actions": "Actions",
-            "edit": "Edit",
-            "delete": "Delete",
-            "name": "Name"
-        },
-        "status": {
-            "active": "Active",
-            "inactive": "Inactive",
-            "pending": "Pending"
-        }
-    },
-    "organizationsPage": {
-        "title": "List of Organizations",
-        "searchPlaceholder": "Search Organizations",
-        "selectRole": "Select role",
-        "sortBy": "Sort by",
-        "exportCSV": "Export to CSV",
-        "allRoles": "All Roles",
-        "roles": {
-            "jobSeeker": "Job Seeker",
-            "workProvider": "Job Providers",
-            "administrator": "Administrator"
-        },
-        "sortOptions": {
-            "asc": "Sort Ascending",
-            "desc": "Sort Descending"
-        },
-        "table": {
-            "fullName": "Full Name",
-            "email": "Email",
-            "role": "Role",
-            "status": "Status",
-            "createdBy": "Created By",
-            "createdAt": "Created At",
-            "actions": "Actions",
-            "edit": "Edit",
-            "delete": "Delete",
-            "name": "Name"
-        },
-        "status": {
-            "active": "Active",
-            "inactive": "Inactive",
-            "pending": "Pending"
-        }
-    },
-    "crateUsers": {
-        "createUserTitle": "Create User",
-        "roleLabel": "Role",
-        "rolePlaceholder": "Select your role",
-        "roles": {
-            "jobSeeker": "Job Seeker",
-            "workProvider": "Job Providers",
-            "administrator": "Administrator"
-        },
-        "firstNameLabel": "First Name",
-        "firstNamePlaceholder": "Enter first name",
-        "middleNameLabel": "Father's Name",
-        "middleNamePlaceholder": "Enter father’s name",
-        "lastNameLabel": "Grandfather's Name",
-        "lastNamePlaceholder": "Enter grandfather’s name",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter email address",
-        "companyNameLabel": "Company Name",
-        "companyNamePlaceholder": "Enter company name",
-        "createUserButton": "Create User",
-        "notifications": {
-            "successTitle": "Success",
-            "successMessage": "User created successfully",
-            "errorTitle": "Error",
-            "errorMessage": "Error creating user"
-        },
-        "validation": {
-            "roleRequired": "Role is Required",
-            "firstNameRequired": "First name is required",
-            "middleNameRequired": "Father name is required",
-            "lastNameRequired": "Grandfather name is required",
-            "invalidEmail": "Invalid email address",
-            "companyNameRequired": "Company name is required for job providers",
-            "emailRequired": "Email is required"
-        }
-    },
-    "createOrganizations": {
-        "createUserTitle": "Create Organizations",
-        "roleLabel": "Role",
-        "rolePlaceholder": "Select your role",
-        "roles": {
-            "jobSeeker": "Applicants",
-            "workProvider": "Job Providers",
-            "administrator": "Administrator"
-        },
-        "firstNameLabel": "First Name",
-        "firstNamePlaceholder": "Enter first name",
-        "middleNameLabel": "Father's Name",
-        "middleNamePlaceholder": "Enter father’s name",
-        "lastNameLabel": "Grandfather's Name",
-        "lastNamePlaceholder": "Enter grandfather’s name",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter email address",
-        "companyNameLabel": "Company Name",
-        "companyNamePlaceholder": "Enter company name",
-        "createUserButton": "Create Organizations",
-        "notifications": {
-            "successTitle": "Success",
-            "successMessage": "Organization created successfully",
-            "errorTitle": "Error",
-            "errorMessage": "Error creating Organizations"
-        },
-        "validation": {
-            "firstNameRequired": "First name is required",
-            "middleNameRequired": "Father name is required",
-            "lastNameRequired": "Grandfather name is required",
-            "invalidEmail": "Invalid email address",
-            "companyNameRequired": "Company name is required for job providers"
-        }
-    },
-    "jobsListPage": {
-        "title": "Job Listings",
-        "postJob": "Post a Job",
-        "searchPlaceholder": "Search jobs...",
-        "selectCategory": "Select a category",
-        "allCategories": "All Categories",
-        "noJobsMessage": "You haven’t any posted jobs yet.",
-        "tableHeaders": {
-            "title": "Title",
-            "employmentType": "Employment Type",
-            "salaryRange": "Salary Range",
-            "location": "Location",
-            "status": "Status",
-            "actions": "Actions"
-        },
-        "actions": {
-            "edit": "Edit",
-            "close": "Close",
-            "viewApplications": "View Applications",
-            "reactivate": "Reactivate"
-        },
-        "sampleJobs": [
-            {
-                "id": "1",
-                "title": "Frontend Developer",
-                "description": "Develop and maintain web applications.",
-                "employmentType": "Full-time",
-                "category": "Software Development",
-                "company": "Herani Tech",
-                "salaryRange": "$50k - $70k",
-                "location": "Remote",
-                "status": "Waiting Approval",
-                "postedAt": "2024-02-15T12:00:00Z"
-            },
-            {
-                "id": "2",
-                "title": "Project Manager",
-                "description": "Manage and oversee projects from start to finish.",
-                "employmentType": "Contract",
-                "category": "Management",
-                "company": "Meklit Solutions",
-                "salaryRange": "$60k - $90k",
-                "location": "New York",
-                "status": "Approved",
-                "postedAt": "2024-01-20T09:30:00Z"
-            }
-        ]
+    "changePassword": {
+      "title": "Change Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "proccedBtn": "Procced",
+      "rightsReserved": "© All rights reserved by Shega Jobs"
     }
+  },
+  "usersPage": {
+    "title": "List of Users",
+    "searchPlaceholder": "Search by Name, Email address, or Status",
+    "selectRole": "Select role",
+    "sortBy": "Sort by",
+    "exportCSV": "Export to CSV",
+    "allRoles": "All Roles",
+    "roles": {
+      "jobSeeker": "Job Seeker",
+      "workProvider": "Employer",
+      "administrator": "Administrator"
+    },
+    "sortOptions": {
+      "asc": "Sort Ascending",
+      "desc": "Sort Descending"
+    },
+    "table": {
+      "fullName": "Name",
+      "email": "Email Address",
+      "role": "User Role",
+      "status": "Status",
+      "createdBy": "Created By",
+      "createdAt": "Created Date",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "name": "Name"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending"
+    }
+  },
+  "organizationsPage": {
+    "title": "List of Organizations",
+    "searchPlaceholder": "Search Organizations",
+    "selectRole": "Select role",
+    "sortBy": "Sort by",
+    "exportCSV": "Export to CSV",
+    "allRoles": "All Roles",
+    "roles": {
+      "jobSeeker": "Job Seeker",
+      "workProvider": "Job Providers",
+      "administrator": "Administrator"
+    },
+    "sortOptions": {
+      "asc": "Sort Ascending",
+      "desc": "Sort Descending"
+    },
+    "table": {
+      "fullName": "Full Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "createdBy": "Created By",
+      "createdAt": "Created At",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "name": "Name"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending"
+    }
+  },
+  "crateUsers": {
+    "createUserTitle": "Create User",
+    "roleLabel": "Role",
+    "rolePlaceholder": "Select your role",
+    "roles": {
+      "jobSeeker": "Job Seeker",
+      "workProvider": "Job Providers",
+      "administrator": "Administrator"
+    },
+    "firstNameLabel": "First Name",
+    "firstNamePlaceholder": "Enter first name",
+    "middleNameLabel": "Father's Name",
+    "middleNamePlaceholder": "Enter father’s name",
+    "lastNameLabel": "Grandfather's Name",
+    "lastNamePlaceholder": "Enter grandfather’s name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter email address",
+    "companyNameLabel": "Company Name",
+    "companyNamePlaceholder": "Enter company name",
+    "createUserButton": "Create User",
+    "notifications": {
+      "successTitle": "Success",
+      "successMessage": "User created successfully",
+      "errorTitle": "Error",
+      "errorMessage": "Email already exists!"
+    },
+    "validation": {
+      "roleRequired": "Role is Required",
+      "firstNameRequired": "First name is required",
+      "middleNameRequired": "Father name is required",
+      "lastNameRequired": "Grandfather name is required",
+      "invalidEmail": "Invalid email address",
+      "companyNameRequired": "Company name is required",
+      "emailRequired": "Email is required"
+    }
+  },
+  "createOrganizations": {
+    "createUserTitle": "Create Organizations",
+    "roleLabel": "Role",
+    "rolePlaceholder": "Select your role",
+    "roles": {
+      "jobSeeker": "Applicants",
+      "workProvider": "Job Providers",
+      "administrator": "Administrator"
+    },
+    "firstNameLabel": "First Name",
+    "firstNamePlaceholder": "Enter first name",
+    "middleNameLabel": "Father's Name",
+    "middleNamePlaceholder": "Enter father’s name",
+    "lastNameLabel": "Grandfather's Name",
+    "lastNamePlaceholder": "Enter grandfather’s name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter email address",
+    "companyNameLabel": "Company Name",
+    "companyNamePlaceholder": "Enter company name",
+    "createUserButton": "Create Organizations",
+    "notifications": {
+      "successTitle": "Success",
+      "successMessage": "Organization created successfully",
+      "errorTitle": "Error",
+      "errorMessage": "Error creating Organizations"
+    },
+    "validation": {
+      "firstNameRequired": "First name is required",
+      "middleNameRequired": "Father name is required",
+      "lastNameRequired": "Grandfather name is required",
+      "invalidEmail": "Invalid email address",
+      "companyNameRequired": "Company name is required"
+    }
+  },
+  "jobsListPage": {
+    "title": "Job Listings",
+    "postJob": "Post a Job",
+    "searchPlaceholder": "Search jobs...",
+    "selectCategory": "Select a category",
+    "allCategories": "All Categories",
+    "noJobsMessage": "You haven’t any posted jobs yet.",
+    "tableHeaders": {
+      "title": "Title",
+      "employmentType": "Employment Type",
+      "salaryRange": "Salary Range",
+      "location": "Location",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit",
+      "close": "Close",
+      "viewApplications": "View Applications",
+      "reactivate": "Reactivate"
+    },
+    "sampleJobs": [
+      {
+        "id": "1",
+        "title": "Frontend Developer",
+        "description": "Develop and maintain web applications.",
+        "employmentType": "Full-time",
+        "category": "Software Development",
+        "company": "Herani Tech",
+        "salaryRange": "$50k - $70k",
+        "location": "Remote",
+        "status": "Waiting Approval",
+        "postedAt": "2024-02-15T12:00:00Z"
+      },
+      {
+        "id": "2",
+        "title": "Project Manager",
+        "description": "Manage and oversee projects from start to finish.",
+        "employmentType": "Contract",
+        "category": "Management",
+        "company": "Meklit Solutions",
+        "salaryRange": "$60k - $90k",
+        "location": "New York",
+        "status": "Approved",
+        "postedAt": "2024-01-20T09:30:00Z"
+      }
+    ]
+  }
 }

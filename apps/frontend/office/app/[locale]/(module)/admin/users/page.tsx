@@ -143,7 +143,7 @@ const UsersPage = () => {
                         style={{ width: 200 }}
                     />
                     <Button
-                        variant="light"
+                        variant="primary"
                         leftSection={<IconDownload size={18} />}
                     >
                         {t('exportCSV')}
