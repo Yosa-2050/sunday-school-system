@@ -51,7 +51,7 @@
         "saved-jobs": "Saved Jobs",
         "notifications": "Notifications",
         "employers": "Employers",
-        "company-profile": "Company Profile",
+        "company-profile": "Organization Profile",
         "job-postings": "Job Postings",
         "applicants": "Applicants",
         "shortlisted-candidates": "Shortlisted Candidates",
@@ -135,21 +135,22 @@
         "lastNamePlaceholder": "Enter grandfather’s name",
         "emailLabel": "Email",
         "emailPlaceholder": "Enter email address",
-        "companyNameLabel": "Company Name",
-        "companyNamePlaceholder": "Enter company name",
+        "companyNameLabel": "Organization Name",
+        "companyNamePlaceholder": "Enter organization name",
         "createUserButton": "Create User",
         "notifications": {
             "successTitle": "Success",
             "successMessage": "User created successfully",
             "errorTitle": "Error",
-            "errorMessage": "Error creating user"
+            "errorMessage": "Email already exists!"
         },
         "validation": {
+            "roleRequired": "Role is Required",
             "firstNameRequired": "First name is required",
             "middleNameRequired": "Father name is required",
             "lastNameRequired": "Grandfather name is required",
             "invalidEmail": "Invalid email address",
-            "companyNameRequired": "Company name is required for job providers"
+            "companyNameRequired": "Organization name is required"
         }
     }
 }

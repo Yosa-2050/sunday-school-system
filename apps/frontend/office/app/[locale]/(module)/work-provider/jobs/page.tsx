@@ -122,7 +122,7 @@ const JobsList = () => {
                 <Button
                     leftSection={<IconPlus size={18} />}
                     variant="filled"
-                    color="blue"
+                    color="primary"
                     onClick={() => router.push('/work-provider/jobs/create')}
                 >
                     {t('postJob')}

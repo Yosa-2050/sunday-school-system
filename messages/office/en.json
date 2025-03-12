@@ -20,19 +20,19 @@
         "dashboard": "Dashboard",
         "job-seekers": "Job Seekers",
         "jobs": "Posted Jobs",
-        "users": "Users Management",
+        "users": "User Management",
         "resume-builder": "Resume Builder",
         "applied-jobs": "Applied Jobs",
         "saved-jobs": "Saved Jobs",
         "notifications": "Notifications",
         "employers": "Employers",
-        "company-profile": "Company Profile",
+        "company-profile": "Organization Profile",
         "job-postings": "Job Postings",
         "applicants": "Applicants",
         "shortlisted-candidates": "Shortlisted Candidates",
         "reports": "Reports",
         "job-explorer": "Posted Jobs",
-        "organizations": "Organizations Management",
+        "organizations": "Organization Management",
         "messages": "Messages",
         "analytics": "Analytics",
         "settings": "Settings",
@@ -182,14 +182,14 @@
         "lastNamePlaceholder": "Enter grandfather’s name",
         "emailLabel": "Email",
         "emailPlaceholder": "Enter email address",
-        "companyNameLabel": "Company Name",
-        "companyNamePlaceholder": "Enter company name",
+        "companyNameLabel": "Organization Name",
+        "companyNamePlaceholder": "Enter organization name",
         "createUserButton": "Create User",
         "notifications": {
             "successTitle": "Success",
             "successMessage": "User created successfully",
             "errorTitle": "Error",
-            "errorMessage": "Error creating user"
+            "errorMessage": "Email already exists!"
         },
         "validation": {
             "roleRequired": "Role is Required",
@@ -197,12 +197,12 @@
             "middleNameRequired": "Father name is required",
             "lastNameRequired": "Grandfather name is required",
             "invalidEmail": "Invalid email address",
-            "companyNameRequired": "Company name is required for job providers",
+            "companyNameRequired": "Organization name is required",
             "emailRequired": "Email is required"
         }
     },
     "createOrganizations": {
-        "createUserTitle": "Create Organizations",
+        "createUserTitle": "Create Organization",
         "roleLabel": "Role",
         "rolePlaceholder": "Select your role",
         "roles": {
@@ -218,21 +218,21 @@
         "lastNamePlaceholder": "Enter grandfather’s name",
         "emailLabel": "Email",
         "emailPlaceholder": "Enter email address",
-        "companyNameLabel": "Company Name",
-        "companyNamePlaceholder": "Enter company name",
-        "createUserButton": "Create Organizations",
+        "companyNameLabel": "Organization Name",
+        "companyNamePlaceholder": "Enter organization name",
+        "createUserButton": "Create Organization",
         "notifications": {
             "successTitle": "Success",
             "successMessage": "Organization created successfully",
             "errorTitle": "Error",
-            "errorMessage": "Error creating Organizations"
+            "errorMessage": "Error creating Organization"
         },
         "validation": {
             "firstNameRequired": "First name is required",
             "middleNameRequired": "Father name is required",
             "lastNameRequired": "Grandfather name is required",
             "invalidEmail": "Invalid email address",
-            "companyNameRequired": "Company name is required for job providers"
+            "companyNameRequired": "Organization name is required"
         }
     },
     "jobsListPage": {

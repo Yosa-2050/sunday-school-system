@@ -175,14 +175,13 @@ const JobDetails = () => {
                         <Flex mt="xl" justify="flex-end" gap="md">
                             <Button
                                 color="red"
-                                variant="light"
                                 size="md"
                                 loading={isApprovingJob}
                             >
                                 Decline
                             </Button>
                             <Button
-                                color="green"
+                                color="primary"
                                 size="md"
                                 onClick={() => approveJobMutate()}
                                 loading={isApprovingJob}

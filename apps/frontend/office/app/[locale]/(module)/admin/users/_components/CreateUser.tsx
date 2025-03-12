@@ -68,7 +68,7 @@ export function CreateUser() {
             logger.log(error);
             notifications.show({
                 title: t('notifications.errorTitle'),
-                message: `${t('notifications.errorMessage')} ${error.message.replace('Email', '')}`,
+                message: `${t('notifications.errorMessage')}`,
                 color: 'red',
             });
         },
