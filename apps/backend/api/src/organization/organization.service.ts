@@ -35,6 +35,7 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
+import { StatusType } from '@shega/Utilities/enums/status-type.enum';
 
 @Injectable()
 export class OrganizationService {
@@ -102,14 +103,32 @@ export class OrganizationService {
 
     async findAllPaginated(dto: PaginationDto) {
         const search = dto.search;
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const filters: any = {
+            
+        };
+        
+        if(dto.status === StatusType.Active) {
+            filters.isActive = true
+        }
+        if(dto.status === StatusType.InActive) {
+            filters.isActive = false
+        }
+        // If search is provided, add OR conditions
+        if (search) {
+            filters.name = ILike(`%${search}%`);
+        }
+
         const [organizations, count] = await this.organizationRepo.findAndCount(
             {
-                where: search ? [{ name: ILike(`%${search}`) }] : {},
+                //where: search ? [{ name: ILike(`%${search}`) }] : {},
+                where: filters,
                 order: { createdAt: 'DESC' },
                 take: dto.limit,
                 skip: dto.skip,
             },
         );
+
 
         return new PaginatedResponseDto<GetOrganizationListResponseDto[]>(
             organizations.map((org) => {
