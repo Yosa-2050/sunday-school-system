@@ -37,6 +37,7 @@ export class AuthController {
         return this.authService.resetPassword(req.username);
     }
 
+    @Public()
     @Post('changePassword')
     changePassword(@Body() req: PasswordResetDto) {
         return this.authService.ChangePassword(req);
