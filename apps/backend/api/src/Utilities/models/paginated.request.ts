@@ -9,7 +9,7 @@ export class PaginationDto {
     @IsBoolean()
     @IsOptional()
     status: StatusType;
-    
+
     @ApiProperty()
     @IsString()
     @IsOptional()

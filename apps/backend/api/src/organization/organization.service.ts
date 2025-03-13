@@ -104,15 +104,13 @@ export class OrganizationService {
     async findAllPaginated(dto: PaginationDto) {
         const search = dto.search;
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const filters: any = {
-            
-        };
-        
-        if(dto.status === StatusType.Active) {
-            filters.isActive = true
+        const filters: any = {};
+
+        if (dto.status === StatusType.Active) {
+            filters.isActive = true;
         }
-        if(dto.status === StatusType.InActive) {
-            filters.isActive = false
+        if (dto.status === StatusType.InActive) {
+            filters.isActive = false;
         }
         // If search is provided, add OR conditions
         if (search) {
@@ -128,7 +126,6 @@ export class OrganizationService {
                 skip: dto.skip,
             },
         );
-
 
         return new PaginatedResponseDto<GetOrganizationListResponseDto[]>(
             organizations.map((org) => {
