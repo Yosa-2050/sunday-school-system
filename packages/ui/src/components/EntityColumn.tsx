@@ -37,7 +37,7 @@ export function EntityColumn({
     setEntityParams({
       ...entityParams,
       o: updatedSorts,
-      p: 1, // Reset to the first page when sorting changes
+      p: 1,
     });
   };
 

@@ -14,14 +14,12 @@ import { ProfileController } from "./profile.controller";
 import { ProfileService } from "./profile.service";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
-import { SharedModule } from "shared/shared.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Profile, Otp, UserRoles]),
     DocumentModule,
     NotificationModule,
-    SharedModule,
   ],
   controllers: [UsersController, ProfileController, EnumsController],
   providers: [

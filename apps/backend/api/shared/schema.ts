@@ -2,7 +2,7 @@ import { createZodDto } from "nestjs-zod";
 import qs from "qs";
 import { z } from "zod";
 
-export const PER_PAGE = 15;
+export const PER_PAGE = 10;
 
 export const entityParamSchema = z.object({
   s: z.string().optional(),

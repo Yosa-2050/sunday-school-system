@@ -1,25 +1,33 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+import { Body, Controller, Post } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 // biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
-import { Roles } from '@shega/auth/decorators/roles.decorator';
-import { UserRoleType } from '@shega/users/enums/user-role.enum';
+import { Roles } from "@shega/auth/decorators/roles.decorator";
+import { UserRoleType } from "@shega/users/enums/user-role.enum";
 // biome-ignore lint/style/useImportType: <explanation>
-import { JobPortalService } from './job_portal.service';
+import { JobPortalService } from "./job_portal.service";
+import { entityParamDeserializer, entityParamSerializer } from "shared/schema";
+import { ApprovalType } from "@shega/Utilities/enums/approval-type.enum";
 
 @Roles(UserRoleType.JobSeeker)
-@ApiTags('job-seeker')
-@Controller('job-seeker')
+@ApiTags("job-seeker")
+@Controller("job-seeker")
 export class JobSeekerController {
-    constructor(private readonly jobPortalService: JobPortalService) {}
+  constructor(private readonly jobPortalService: JobPortalService) {}
 
-    @Roles(UserRoleType.JobSeeker)
-    @Post('jobs')
-    getAllPending(@Body() dto: PaginationDto) {
-        return this.jobPortalService.getJobsByStatusPaginated(
-            ApprovalType.Approved,
-            dto,
-        );
-    }
+  @Roles(UserRoleType.JobSeeker)
+  @Post("jobs")
+  getAllPending(@Body() dto: { q: string }) {
+    const deserialized = entityParamDeserializer(dto.q);
+
+    const searchableColumns = [];
+
+    const queryString = entityParamSerializer({
+      ...deserialized,
+      f: [
+        { f: "status", v: ApprovalType.Approved, o: "eq" },
+        ...(deserialized.f ?? []),
+      ],
+    });
+    return this.jobPortalService.getJobsByStatusPaginated(queryString);
+  }
 }

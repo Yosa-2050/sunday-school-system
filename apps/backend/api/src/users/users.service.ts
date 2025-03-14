@@ -21,6 +21,7 @@ import {
   entityParamDeserializer,
   entityParamSerializer,
 } from "shared/schema";
+// biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from "shared/query-builder.service";
 
 @Injectable()
@@ -30,8 +31,7 @@ export class UsersService {
     @InjectRepository(UserRoles)
     private userRoleRepo: Repository<UserRoles>,
     @Inject(PasswordService) private passwordService: PasswordService,
-    @Inject(QueryBuilderService)
-    private queryBuilderService: QueryBuilderService
+    private readonly queryBuilderService: QueryBuilderService
   ) {}
 
   async createMainAdministrator(createUserDto: CreateUserDto) {

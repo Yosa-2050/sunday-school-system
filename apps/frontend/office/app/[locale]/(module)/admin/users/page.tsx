@@ -36,7 +36,6 @@ import {
 import {
   entityParamSchema,
   entityParamSerializer,
-  logger,
   PER_PAGE,
 } from "@shega/shared";
 
@@ -64,15 +63,13 @@ const UsersPage = () => {
       value ? encodeURIComponent(JSON.stringify(value)) : "",
   });
 
-  const [entityParams, setEntityParams] = useQueryState(
+  const [entityParams] = useQueryState(
     "users",
     parseAsJson(entityParamSchema.parse).withDefault({
       p: 1,
       pp: PER_PAGE,
     })
   );
-
-  logger.log("test", entityParams);
 
   const roles = [
     { value: "ADMINISTRATOR", label: t("roles.administrator") },
