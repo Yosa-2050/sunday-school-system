@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsBoolean, IsInt, IsOptional, IsString, Min } from 'class-validator';
-// biome-ignore lint/style/useImportType: <explanation>
+import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { StatusType } from '../enums/status-type.enum';
 
 export class PaginationDto {
     @ApiProperty()
-    @IsBoolean()
+    @IsEnum(StatusType)
     @IsOptional()
     status: StatusType;
 
@@ -31,5 +30,5 @@ export class PaginationDto {
     @Transform(({ value }) => (value === 0 ? 10 : value))
     limit?: number = 10;
 
-    skip = (this.page - 1) * this.limit;
+    skip() { return (this.page - 1) * this.limit};
 }

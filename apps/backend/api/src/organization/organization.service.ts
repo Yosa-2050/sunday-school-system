@@ -105,6 +105,8 @@ export class OrganizationService {
         const search = dto.search;
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const filters: any = {};
+        
+        const skip = (dto.page - 1) * dto.limit;
 
         if (dto.status === StatusType.Active) {
             filters.isActive = true;
@@ -123,7 +125,7 @@ export class OrganizationService {
                 where: filters,
                 order: { createdAt: 'DESC' },
                 take: dto.limit,
-                skip: dto.skip,
+                skip: skip,
             },
         );
 
