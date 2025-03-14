@@ -46,9 +46,7 @@ export class UsersService {
         user.password = await this.passwordService.hashPassword(user.password);
         return this.userRepo.save(user);
     }
-
     async UpdatePassword(updatePwdDto: updatePasswordRequest) {
-
         const user = await this.findById(updatePwdDto.id);
         if (!user) {
             throw new BadRequestException('Email doesnt exists');
@@ -56,7 +54,10 @@ export class UsersService {
         const pass = await this.passwordService.hashPassword(
             updatePwdDto.password,
         );
-        this.userRepo.update({ id: user.id }, {pwd_change_required: false, password: pass});
+        this.userRepo.update(
+            { id: user.id },
+            { pwd_change_required: false, password: pass },
+        );
         return user;
     }
 
