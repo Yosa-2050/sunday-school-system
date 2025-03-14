@@ -46,17 +46,18 @@ export class UsersService {
         user.password = await this.passwordService.hashPassword(user.password);
         return this.userRepo.save(user);
     }
-
     async UpdatePassword(updatePwdDto: updatePasswordRequest) {
         const user = await this.findById(updatePwdDto.id);
         if (!user) {
             throw new BadRequestException('Email doesnt exists');
         }
-        user.password = await this.passwordService.hashPassword(
+        const pass = await this.passwordService.hashPassword(
             updatePwdDto.password,
         );
-        user.pwd_change_required = false;
-        this.userRepo.update({ id: user.id }, user);
+        this.userRepo.update(
+            { id: user.id },
+            { pwd_change_required: false, password: pass },
+        );
         return user;
     }
 

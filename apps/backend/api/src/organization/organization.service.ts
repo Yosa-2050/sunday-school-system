@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+import { StatusType } from '@shega/Utilities/enums/status-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
@@ -102,12 +103,29 @@ export class OrganizationService {
 
     async findAllPaginated(dto: PaginationDto) {
         const search = dto.search;
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const filters: any = {};
+
+        const skip = (dto.page - 1) * dto.limit;
+
+        if (dto.status === StatusType.Active) {
+            filters.isActive = true;
+        }
+        if (dto.status === StatusType.InActive) {
+            filters.isActive = false;
+        }
+        // If search is provided, add OR conditions
+        if (search) {
+            filters.name = ILike(`%${search}%`);
+        }
+
         const [organizations, count] = await this.organizationRepo.findAndCount(
             {
-                where: search ? [{ name: ILike(`%${search}`) }] : {},
+                //where: search ? [{ name: ILike(`%${search}`) }] : {},
+                where: filters,
                 order: { createdAt: 'DESC' },
                 take: dto.limit,
-                skip: dto.skip,
+                skip: skip,
             },
         );
 
