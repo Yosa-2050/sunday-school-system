@@ -105,7 +105,7 @@ export class OrganizationService {
         const search = dto.search;
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const filters: any = {};
-        
+
         const skip = (dto.page - 1) * dto.limit;
 
         if (dto.status === StatusType.Active) {
