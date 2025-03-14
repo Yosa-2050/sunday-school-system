@@ -1,3 +1,4 @@
+import { createZodDto } from "nestjs-zod";
 import qs from "qs";
 import { z } from "zod";
 
@@ -26,7 +27,7 @@ export const entityParamSchema = z.object({
           .optional(),
       })
     )
-    .optional(),
+    .optional(), // filter
   o: z
     .array(
       z.object({
@@ -34,12 +35,12 @@ export const entityParamSchema = z.object({
         d: z.enum(["asc", "desc"]),
       })
     )
-    .optional(),
-  p: z.number().optional(),
-  pp: z.number().optional(),
+    .optional(), // order
+  p: z.number().optional(), // page
+  pp: z.number().optional(), // perPage
 });
-
 export type EntityParam = z.infer<typeof entityParamSchema>;
+export class EntityParamDto extends createZodDto(entityParamSchema) {}
 
 export const entityParamSerializer = (param?: EntityParam | null): string => {
   return qs.stringify(param, { skipNulls: true });

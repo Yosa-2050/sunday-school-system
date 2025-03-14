@@ -24,17 +24,19 @@ export function EntityColumn({
     parseAsJson(entityParamSchema.parse)
   );
 
-  const currentSortField = entityParams?.o?.f; // Field being sorted
-  const currentSortDirection = entityParams?.o?.d; // Sort direction (asc or desc)
+  const currentSort = entityParams?.o?.find((sortItem) => sortItem.f === field);
+  const currentSortDirection = currentSort?.d;
 
   const handleSortChange = () => {
-    const newSortDirection =
-      currentSortField === field && currentSortDirection === "asc"
-        ? "desc"
-        : "asc";
+    const newSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+
+    const updatedSorts =
+      entityParams?.o?.filter((sortItem) => sortItem.f !== field) || [];
+    updatedSorts.push({ f: field, d: newSortDirection });
+
     setEntityParams({
       ...entityParams,
-      o: { f: field, d: newSortDirection }, // Update the sort field and direction
+      o: updatedSorts,
       p: 1, // Reset to the first page when sorting changes
     });
   };
@@ -47,7 +49,7 @@ export function EntityColumn({
       onClick={handleSortChange}
     >
       <Text>{label}</Text>
-      {currentSortField === field &&
+      {currentSortDirection &&
         (currentSortDirection === "asc" ? (
           <IconSortAscending size={18} className="text-primary bg-primary-2" />
         ) : (

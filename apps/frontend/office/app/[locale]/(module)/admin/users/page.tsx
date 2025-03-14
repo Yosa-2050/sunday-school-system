@@ -17,7 +17,6 @@ import {
   Table,
   TableScrollContainer,
   Text,
-  Select,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconDotsVertical, IconDownload, IconX } from "@tabler/icons-react";
@@ -25,7 +24,7 @@ import { useQuery } from "@tanstack/react-query";
 import { type Daum, fetchUsers } from "app/[locale]/_api/users/fetch-user";
 import { DateTime } from "luxon";
 import { useTranslations } from "next-intl";
-import { useQueryState } from "nuqs";
+import { parseAsJson, useQueryState } from "nuqs";
 import { useState } from "react";
 import { CreateUser } from "./_components/CreateUser";
 import {
@@ -34,6 +33,12 @@ import {
   EntityPagination,
   EntityColumn,
 } from "@shega/ui";
+import {
+  entityParamSchema,
+  entityParamSerializer,
+  logger,
+  PER_PAGE,
+} from "@shega/shared";
 
 interface Filters {
   roles: string[];
@@ -41,7 +46,6 @@ interface Filters {
   sort: { [key: string]: "asc" | "desc" };
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 const UsersPage = () => {
   const t = useTranslations("usersPage");
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -53,14 +57,22 @@ const UsersPage = () => {
       try {
         return JSON.parse(decodeURIComponent(value));
       } catch {
-        return null; // Return null if parsing fails or no filters are active
+        return null;
       }
     },
     serialize: (value) =>
-      value ? encodeURIComponent(JSON.stringify(value)) : "", // Return empty string for null
+      value ? encodeURIComponent(JSON.stringify(value)) : "",
   });
-  const [page, setPage] = useQueryState("page", { defaultValue: "1" });
-  const [limit, setLimit] = useQueryState("limit", { defaultValue: "10" });
+
+  const [entityParams, setEntityParams] = useQueryState(
+    "users",
+    parseAsJson(entityParamSchema.parse).withDefault({
+      p: 1,
+      pp: PER_PAGE,
+    })
+  );
+
+  logger.log("test", entityParams);
 
   const roles = [
     { value: "ADMINISTRATOR", label: t("roles.administrator") },
@@ -75,11 +87,10 @@ const UsersPage = () => {
       status: filters?.status || "",
       sort: filters?.sort || { createdAt: "desc" },
     };
-    // Only update URL if there are active roles or status
+
     if (selectedRoles.length > 0 || newFilters.status) {
       setFilters(newFilters);
     } else {
-      // If no filters are active, remove the `filters` query param
       setFilters(null);
     }
   };
@@ -91,26 +102,18 @@ const UsersPage = () => {
       roles: filters?.roles || [],
       sort: filters?.sort || { createdAt: "desc" },
     };
-    // Only update URL if there are active roles or status
+
     if (newFilters.roles.length > 0 || newFilters.status) {
       setFilters(newFilters);
     } else {
-      // If no filters are active, remove the `filters` query param
       setFilters(null);
     }
   };
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["users", page, limit, filters],
-    queryFn: () =>
-      fetchUsers({
-        sort: filters?.sort || { createdAt: "desc" },
-        pagination: {
-          page: +page,
-          limit: +limit,
-        },
-        filter: filters?.roles || [],
-      }),
+    queryKey: ["users", entityParamSerializer(entityParams)],
+    queryFn: () => fetchUsers(entityParamSerializer(entityParams)),
+    enabled: !!entityParams,
   });
 
   if (isLoading) {
@@ -122,7 +125,6 @@ const UsersPage = () => {
   }
 
   const users = data?.data ?? [];
-  const totalPages = data?.totalPages ?? 1;
 
   const toggleRow = (email: string) =>
     setSelection((current) =>
@@ -172,25 +174,27 @@ const UsersPage = () => {
 
       {/* Search, Filter, Sort Controls */}
       <Group justify="space-between" className="mb-4">
-        <EntitySearch entity="user" placeholder={t("searchPlaceholder")} />
+        <EntitySearch
+          entity="users"
+          placeholder={t("searchPlaceholder")}
+          className="!w-[300px]"
+        />
         <Flex gap={"xs"} align={"center"}>
           <EntityFilter
-            entity="user"
+            entity="users"
             filterOptions={roles}
-            mode="multi"
-            field="roles"
-            onChange={handleRoleSelect}
+            mode="select"
+            field="roles.role"
           />
-          <Select
-            placeholder={t("status.name")}
-            value={filters?.status || ""}
-            onChange={(value) => handleStatusChange(value ?? "")}
-            data={[
-              { value: "", label: t("status.allStatuses") },
-              { value: "ACTIVE", label: t("status.active") },
-              { value: "INACTIVE", label: t("status.inactive") },
+          <EntityFilter
+            entity="users"
+            filterOptions={[
+              { value: "", label: t("status.all") },
+              { value: "true", label: t("status.active") },
+              { value: "false", label: t("status.inactive") },
             ]}
-            style={{ width: 200 }}
+            mode="select"
+            field="isActive"
           />
           <Button variant="primary" leftSection={<IconDownload size={18} />}>
             {t("exportCSV")}
@@ -241,7 +245,7 @@ const UsersPage = () => {
                 />
               }
             >
-              {Object.keys(filters.sort)[0]}{" "}
+              {Object.keys(filters.sort)[0]}
               {Object.values(filters.sort)[0] as React.ReactNode}
             </Badge>
           </Group>
@@ -300,7 +304,7 @@ const UsersPage = () => {
                 <Table.Th>{t("table.createdBy")}</Table.Th>
                 <Table.Th>
                   <EntityColumn
-                    entity="user"
+                    entity="users"
                     field="createdAt"
                     label={t("table.createdAt")}
                   />
@@ -364,11 +368,7 @@ const UsersPage = () => {
       )}
 
       {/* Pagination */}
-      <EntityPagination
-        entity="user"
-        total={data?.total ?? 0}
-        perPage={+limit}
-      />
+      <EntityPagination entity="users" total={data?.total ?? 0} />
     </Paper>
   );
 };

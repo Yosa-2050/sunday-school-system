@@ -1,185 +1,189 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
 // biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
-import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
-import { PasswordService } from '@shega/Utilities/password.service';
+import { PaginatedResponseDto } from "@shega/Utilities/models/paginated.response";
+import { PasswordService } from "@shega/Utilities/password.service";
 // biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
+import { Repository } from "typeorm";
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateUserDto } from './dto/create-user.dto';
-import { GetPaginatedUsersResponseDto } from './dto/response/get-all-user.paginated.response.dto';
+import { CreateUserDto } from "./dto/create-user.dto";
+import { GetPaginatedUsersResponseDto } from "./dto/response/get-all-user.paginated.response.dto";
 // biome-ignore lint/style/useImportType: <explanation>
-import { updatePasswordRequest } from './dto/update-password.request.dto';
+import { updatePasswordRequest } from "./dto/update-password.request.dto";
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRoles } from './entities/role.entity';
-import { User } from './entities/user.entity';
-import { LoginBy } from './enums/login-by.enum';
-import { UserRoleType } from './enums/user-role.enum';
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { UserRoles } from "./entities/role.entity";
+import { User } from "./entities/user.entity";
+import { LoginBy } from "./enums/login-by.enum";
+import { UserRoleType } from "./enums/user-role.enum";
+import {
+  type EntityParam,
+  entityParamDeserializer,
+  entityParamSerializer,
+} from "shared/schema";
+import { QueryBuilderService } from "shared/query-builder.service";
 
 @Injectable()
 export class UsersService {
-    constructor(
-        @InjectRepository(User) private userRepo: Repository<User>,
-        @InjectRepository(UserRoles)
-        private userRoleRepo: Repository<UserRoles>,
-        @Inject(PasswordService) private passwordService: PasswordService,
-    ) {}
+  constructor(
+    @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(UserRoles)
+    private userRoleRepo: Repository<UserRoles>,
+    @Inject(PasswordService) private passwordService: PasswordService,
+    @Inject(QueryBuilderService)
+    private queryBuilderService: QueryBuilderService
+  ) {}
 
-    async createMainAdministrator(createUserDto: CreateUserDto) {
-        const check = await this.findOneUser(
-            createUserDto.email,
-            LoginBy.EMAIL,
-        );
-        if (check) {
-            throw new BadRequestException(
-                `Email ${createUserDto.email} already exists`,
-            );
-        }
-        const user = this.userRepo.create(createUserDto);
-        user.email = user.email.toLowerCase();
-        const roles = this.userRoleRepo.create();
-        roles.role = UserRoleType.Administrator;
-        user.roles = [roles];
-        roles.isDefault = true;
-        user.password = await this.passwordService.hashPassword(user.password);
-        return this.userRepo.save(user);
+  async createMainAdministrator(createUserDto: CreateUserDto) {
+    const check = await this.findOneUser(createUserDto.email, LoginBy.EMAIL);
+    if (check) {
+      throw new BadRequestException(
+        `Email ${createUserDto.email} already exists`
+      );
     }
-    async UpdatePassword(updatePwdDto: updatePasswordRequest) {
-        const user = await this.findById(updatePwdDto.id);
-        if (!user) {
-            throw new BadRequestException('Email doesnt exists');
-        }
-        const pass = await this.passwordService.hashPassword(
-            updatePwdDto.password,
-        );
-        this.userRepo.update(
-            { id: user.id },
-            { pwd_change_required: false, password: pass },
-        );
-        return user;
+    const user = this.userRepo.create(createUserDto);
+    user.email = user.email.toLowerCase();
+    const roles = this.userRoleRepo.create();
+    roles.role = UserRoleType.Administrator;
+    user.roles = [roles];
+    roles.isDefault = true;
+    user.password = await this.passwordService.hashPassword(user.password);
+    return this.userRepo.save(user);
+  }
+
+  async UpdatePassword(updatePwdDto: updatePasswordRequest) {
+    const user = await this.findById(updatePwdDto.id);
+    if (!user) {
+      throw new BadRequestException("Email doesnt exists");
+    }
+    user.password = await this.passwordService.hashPassword(
+      updatePwdDto.password
+    );
+    user.pwd_change_required = false;
+    this.userRepo.update({ id: user.id }, user);
+    return user;
+  }
+
+  async createFromProfile(
+    email: string,
+    role: UserRoleType,
+    password: string,
+    saveProfile = true,
+    logInType: LoginBy = LoginBy.EMAIL,
+    pwdChangeRequired = false
+  ) {
+    const check = await this.findOneUser(email, logInType);
+    if (check) {
+      throw new BadRequestException(`Email ${email} already exists`);
     }
 
-    async createFromProfile(
-        email: string,
-        role: UserRoleType,
-        password: string,
-        saveProfile = true,
-        logInType: LoginBy = LoginBy.EMAIL,
-        pwdChangeRequired = false,
+    const user = this.userRepo.create({
+      email: email.toLowerCase(),
+      password: await this.passwordService.hashPassword(
+        password ?? "123456789"
+      ),
+      pwd_change_required: !password || pwdChangeRequired,
+    });
+    const roles = this.userRoleRepo.create();
+    roles.role = role;
+    roles.isDefault = true;
+    user.roles = [roles];
+    if (saveProfile) {
+      return await this.userRepo.save(user);
+    }
+    return user;
+  }
+
+  findById(id: string) {
+    return this.userRepo.findOneBy({ id });
+  }
+
+  async validateUser(login: string, password: string, type: LoginBy) {
+    const user = await this.findOneUser(login, type);
+    if (
+      user &&
+      (await this.passwordService.comparePasswords(password, user.password))
     ) {
-        const check = await this.findOneUser(email, logInType);
-        if (check) {
-            throw new BadRequestException(`Email ${email} already exists`);
-        }
+      return user;
+    }
+    return null;
+  }
 
-        const user = this.userRepo.create({
-            email: email.toLowerCase(),
-            password: await this.passwordService.hashPassword(
-                password ?? '123456789',
-            ),
-            pwd_change_required: !password || pwdChangeRequired,
+  async findOneUser(login: string, type: LoginBy) {
+    let user: User;
+    switch (type) {
+      case LoginBy.EMAIL:
+        user = await this.userRepo.findOneBy({
+          email: login.toLowerCase(),
         });
-        const roles = this.userRoleRepo.create();
-        roles.role = role;
-        roles.isDefault = true;
-        user.roles = [roles];
-        if (saveProfile) {
-            return await this.userRepo.save(user);
-        }
-        return user;
+        break;
+      case LoginBy.ID:
+        user = await this.userRepo.findOneBy({ id: login });
+        break;
+      case LoginBy.USERNAME:
+        user = await this.userRepo.findOneBy({ userName: login });
+        break;
     }
-
-    findById(id: string) {
-        return this.userRepo.findOneBy({ id });
+    if (user) {
+      return user;
     }
+    return null;
+  }
 
-    async validateUser(login: string, password: string, type: LoginBy) {
-        const user = await this.findOneUser(login, type);
-        if (
-            user &&
-            (await this.passwordService.comparePasswords(
-                password,
-                user.password,
-            ))
-        ) {
-            return user;
-        }
-        return null;
-    }
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${id} user`;
+  }
 
-    async findOneUser(login: string, type: LoginBy) {
-        let user: User;
-        switch (type) {
-            case LoginBy.EMAIL:
-                user = await this.userRepo.findOneBy({
-                    email: login.toLowerCase(),
-                });
-                break;
-            case LoginBy.ID:
-                user = await this.userRepo.findOneBy({ id: login });
-                break;
-            case LoginBy.USERNAME:
-                user = await this.userRepo.findOneBy({ userName: login });
-                break;
-        }
-        if (user) {
-            return user;
-        }
-        return null;
-    }
+  remove(id: string) {
+    return this.userRepo.softDelete(id);
+  }
 
-    update(id: string, updateUserDto: UpdateUserDto) {
-        return `This action updates a #${id} user`;
-    }
+  getUserRoles(userId: string) {
+    return this.userRoleRepo.findBy({ user: { id: userId } });
+  }
 
-    remove(id: string) {
-        return this.userRepo.softDelete(id);
-    }
+  async getUsersByUserType(payload: string) {
+    const { p, pp, s, f, o } = entityParamDeserializer(payload);
 
-    getUserRoles(userId: string) {
-        return this.userRoleRepo.findBy({ user: { id: userId } });
-    }
+    const queryParams: EntityParam = {
+      p,
+      pp,
+      s,
+      f,
+      o: o || [{ f: "createdAt", d: "desc" }],
+    };
 
-    async getUsersByUserType(type: UserRoleType, pagination: PaginationDto) {
-        const { page, limit } = pagination;
-        const skip = (page - 1) * limit;
-        const search = pagination.search;
+    const queryString = entityParamSerializer(queryParams);
 
-        const query = this.userRepo
-            .createQueryBuilder('user')
-            .leftJoinAndSelect('user.profile', 'profile') // Join Profile entity
-            .leftJoinAndMapMany(
-                'user.roles', // Property to map the result to
-                'user.roles', // Relationship to join
-                'role', // Alias for the joined table
-                type ? 'role.role = :type' : '1=1', // Condition for the join
-                { type },
-            )
-            //.where(type ? 'role.role = :type' : '1=1', { type }) // Filter by role if provided
-            .andWhere(
-                search
-                    ? `(user.email ILIKE '%' || :search || '%' OR 
-                profile.firstName ILIKE '%' || :search || '%' OR 
-                profile.middleName ILIKE '%' || :search || '%' OR 
-                profile.lastName ILIKE '%' || :search || '%')`
-                    : '1=1',
-                { search },
-            )
-            .orderBy('user.createdAt', 'DESC') // Sort by newest users
-            .skip(skip)
-            .take(limit);
+    const searchableColumns = [
+      "entity.email",
+      "profile.firstName",
+      "profile.lastName",
+    ];
 
-        const [users, total] = await query.getManyAndCount();
+    const joinOptions = [
+      {
+        relation: "entity.profile",
+        alias: "profile",
+      },
+      {
+        relation: "entity.roles",
+        alias: "roles",
+      },
+    ];
 
-        return new PaginatedResponseDto<GetPaginatedUsersResponseDto[]>(
-            users.map((x) => {
-                return new GetPaginatedUsersResponseDto(x);
-            }),
-            total,
-            page,
-            limit,
-        );
-    }
+    const { data: users, total } = await this.queryBuilderService.buildQuery(
+      this.userRepo,
+      queryString,
+      joinOptions,
+      searchableColumns
+    );
+
+    return new PaginatedResponseDto(
+      users.map((user) => new GetPaginatedUsersResponseDto(user)),
+      total,
+      p,
+      pp
+    );
+  }
 }

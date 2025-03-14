@@ -59,7 +59,8 @@ export function EntitySearch({
         handleSearch(e.target.value);
       }}
       defaultValue={entityParams?.s}
-      className={cn(className)}
+      className={cn(className, "w-1/3")}
+      min={"30%"}
     />
   );
 }

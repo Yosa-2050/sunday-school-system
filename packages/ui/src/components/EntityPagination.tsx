@@ -4,6 +4,7 @@ import { Box, Pagination } from "@mantine/core";
 import { PER_PAGE, entityParamSchema } from "@shega/shared";
 import { cn } from "../utilities/cn";
 import { parseAsJson, useQueryState } from "nuqs";
+
 type EntityPaginationProps = {
   total: number;
   entity: string;
@@ -20,14 +21,18 @@ export function EntityPagination({
 }: EntityPaginationProps) {
   const [entityParams, setEntityParams] = useQueryState(
     entity,
-    parseAsJson(entityParamSchema.parse)
+    parseAsJson(entityParamSchema.parse).withDefault({
+      p: 1,
+      pp: perPage,
+    })
   );
 
-  const currentPage = entityParams?.p || 1;
+  const currentPage = entityParams.p || 1;
   const createPageURL = (pageNumber: number | string) => {
     setEntityParams({
       ...entityParams,
       p: Number.parseInt(pageNumber.toString()),
+      pp: perPage,
     });
   };
 
@@ -38,10 +43,11 @@ export function EntityPagination({
   if (totalPages <= 1) {
     return null;
   }
+
   return (
     <Box
       className={cn(
-        "flex items-center",
+        "flex items-center mt-6",
         hideCounter ? "justify-center" : "justify-between"
       )}
     >
