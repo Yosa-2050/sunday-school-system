@@ -3,9 +3,11 @@
 import { useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+    Anchor,
     Box,
     Button,
     Flex,
+    Group,
     PasswordInput,
     Stack,
     Text,
@@ -136,8 +138,8 @@ const Login = () => {
                             {...register('password')}
                             error={errors.password?.message}
                         />
-                        {/* <Group justify="space-between" mt={'sm'}>
-                            <Checkbox
+                        <Group justify="flex-end" mt={'sm'}>
+                            {/* <Checkbox
                                 title="Remember me"
                                 label={t('rememberMe')}
                                 className="text-teal-600"
@@ -145,7 +147,7 @@ const Login = () => {
                                 onChange={(e) =>
                                     setRememberMe(e.target.checked)
                                 }
-                            />
+                            /> */}
                             <Anchor
                                 size="sm"
                                 onClick={() =>
@@ -155,7 +157,7 @@ const Login = () => {
                             >
                                 {t('forgotPassword')}
                             </Anchor>
-                        </Group> */}
+                        </Group>
                         <Button
                             type="submit"
                             fullWidth

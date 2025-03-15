@@ -1,3 +1,4 @@
+import { useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Anchor,
@@ -9,39 +10,61 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
+import { resetPassword } from 'app/_api/auth/reset-password';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const forgetPasswordSchema = z.object({
-    email: z.string().email({ message: 'Please enter a valid email address' }),
+    username: z
+        .string()
+        .email({ message: 'Please enter a valid email address' }),
 });
 
 type ForgetPasswordFormValues = z.infer<typeof forgetPasswordSchema>;
 
 export default function ForgetPassword() {
     const t = useTranslations('auth');
+    const router = useRouter();
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        watch,
     } = useForm<ForgetPasswordFormValues>({
         resolver: zodResolver(forgetPasswordSchema),
         defaultValues: {
-            email: '',
+            username: '',
         },
     });
 
     const mutation = useMutation<
-        ForgetPasswordFormValues,
+        { success: true },
         Error,
         ForgetPasswordFormValues
     >({
-        mutationFn: async (data: ForgetPasswordFormValues) => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            return data;
+        mutationFn: (data) => resetPassword(data),
+        onSuccess: (data) => {
+            router.push({
+                pathname: '/auth/otp',
+                query: { username: watch('username') },
+            });
+            notifications.show({
+                title: 'Reset Password Request',
+                color: 'green',
+                message:
+                    'Your password reset request is successful. Check your email for the one time password(OTP)',
+            });
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Reset Password Request',
+                color: 'red',
+                message: 'Failed to process Password reset request ',
+            });
         },
     });
 
@@ -62,8 +85,8 @@ export default function ForgetPassword() {
                         label={t('forgotPassword.emailLabel')}
                         placeholder={t('forgotPassword.emailPlaceholder')}
                         required
-                        error={errors.email ? errors.email.message : null}
-                        {...register('email')}
+                        error={errors.username ? errors.username.message : null}
+                        {...register('username')}
                     />
 
                     <Group justify="space-between" mt="lg">
