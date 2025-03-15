@@ -1,98 +1,98 @@
-import type React from "react";
-import { RichTextEditor, Link } from "@mantine/tiptap";
-import { useEditor } from "@tiptap/react";
-import Highlight from "@tiptap/extension-highlight";
-import Underline from "@tiptap/extension-underline";
-import TextAlign from "@tiptap/extension-text-align";
-import Superscript from "@tiptap/extension-superscript";
-import SubScript from "@tiptap/extension-subscript";
-import OrderedList from "@tiptap/extension-ordered-list";
-import ListItem from "@tiptap/extension-list-item";
+import { Link, RichTextEditor } from '@mantine/tiptap';
+import Highlight from '@tiptap/extension-highlight';
+import ListItem from '@tiptap/extension-list-item';
+import OrderedList from '@tiptap/extension-ordered-list';
+import SubScript from '@tiptap/extension-subscript';
+import Superscript from '@tiptap/extension-superscript';
+import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
+import { useEditor } from '@tiptap/react';
+import type React from 'react';
 
 // Define the props for the component
 interface JobDescriptionInputProps {
-  initialContent?: string;
-  onChange?: (content: string) => void;
-  placeholder?: string;
-  stickyOffset?: number;
+    initialContent?: string;
+    onChange?: (content: string) => void;
+    placeholder?: string;
+    stickyOffset?: number;
 }
 
 const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({
-  initialContent = "",
-  onChange,
-  placeholder = "Enter job description...",
-  stickyOffset = 60,
+    initialContent = '',
+    onChange,
+    placeholder = 'Enter job description...',
+    stickyOffset = 60,
 }) => {
-  const editor = useEditor({
-    extensions: [
-      OrderedList,
-      ListItem,
-      Underline,
-      Link,
-      Superscript,
-      SubScript,
-      Highlight,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-    ],
-    content: initialContent,
-    onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      if (onChange) {
-        onChange(html);
-      }
-    },
-  });
+    const editor = useEditor({
+        extensions: [
+            OrderedList,
+            ListItem,
+            Underline,
+            Link,
+            Superscript,
+            SubScript,
+            Highlight,
+            TextAlign.configure({ types: ['heading', 'paragraph'] }),
+        ],
+        content: initialContent,
+        onUpdate: ({ editor }) => {
+            const html = editor.getHTML();
+            if (onChange) {
+                onChange(html);
+            }
+        },
+    });
 
-  return (
-    <RichTextEditor editor={editor}>
-      <RichTextEditor.Toolbar sticky stickyOffset={stickyOffset}>
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Bold />
-          <RichTextEditor.Italic />
-          <RichTextEditor.Underline />
-          <RichTextEditor.Strikethrough />
-          <RichTextEditor.ClearFormatting />
-          <RichTextEditor.Highlight />
-          <RichTextEditor.Code />
-        </RichTextEditor.ControlsGroup>
+    return (
+        <RichTextEditor editor={editor}>
+            <RichTextEditor.Toolbar sticky stickyOffset={stickyOffset}>
+                <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Bold />
+                    <RichTextEditor.Italic />
+                    <RichTextEditor.Underline />
+                    <RichTextEditor.Strikethrough />
+                    <RichTextEditor.ClearFormatting />
+                    <RichTextEditor.Highlight />
+                    <RichTextEditor.Code />
+                </RichTextEditor.ControlsGroup>
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.H1 />
-          <RichTextEditor.H2 />
-          <RichTextEditor.H3 />
-          <RichTextEditor.H4 />
-        </RichTextEditor.ControlsGroup>
+                <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.H1 />
+                    <RichTextEditor.H2 />
+                    <RichTextEditor.H3 />
+                    <RichTextEditor.H4 />
+                </RichTextEditor.ControlsGroup>
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Blockquote />
-          <RichTextEditor.Hr />
-          <RichTextEditor.BulletList />
-          <RichTextEditor.OrderedList />
-          <RichTextEditor.Subscript />
-          <RichTextEditor.Superscript />
-        </RichTextEditor.ControlsGroup>
+                <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Blockquote />
+                    <RichTextEditor.Hr />
+                    <RichTextEditor.BulletList />
+                    <RichTextEditor.OrderedList />
+                    <RichTextEditor.Subscript />
+                    <RichTextEditor.Superscript />
+                </RichTextEditor.ControlsGroup>
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Link />
-          <RichTextEditor.Unlink />
-        </RichTextEditor.ControlsGroup>
+                <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Link />
+                    <RichTextEditor.Unlink />
+                </RichTextEditor.ControlsGroup>
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.AlignLeft />
-          <RichTextEditor.AlignCenter />
-          <RichTextEditor.AlignJustify />
-          <RichTextEditor.AlignRight />
-        </RichTextEditor.ControlsGroup>
+                <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.AlignLeft />
+                    <RichTextEditor.AlignCenter />
+                    <RichTextEditor.AlignJustify />
+                    <RichTextEditor.AlignRight />
+                </RichTextEditor.ControlsGroup>
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Undo />
-          <RichTextEditor.Redo />
-        </RichTextEditor.ControlsGroup>
-      </RichTextEditor.Toolbar>
+                <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Undo />
+                    <RichTextEditor.Redo />
+                </RichTextEditor.ControlsGroup>
+            </RichTextEditor.Toolbar>
 
-      <RichTextEditor.Content />
-    </RichTextEditor>
-  );
+            <RichTextEditor.Content />
+        </RichTextEditor>
+    );
 };
 
 export default JobDescriptionInput;
