@@ -1,12 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
+import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
-import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 
 @Roles(UserRoleType.JobSeeker)
 @ApiTags('job-seeker')

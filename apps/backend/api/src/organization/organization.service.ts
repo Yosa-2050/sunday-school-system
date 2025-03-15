@@ -16,6 +16,9 @@ import { NotificationService } from '@shega/notification/notification.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { QueryBuilderService } from 'shared/query-builder.service';
+import { entityParamDeserializer } from 'shared/schema';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
@@ -34,9 +37,6 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
-import { entityParamDeserializer } from 'shared/schema';
-// biome-ignore lint/style/useImportType: <explanation>
-import { QueryBuilderService } from 'shared/query-builder.service';
 
 @Injectable()
 export class OrganizationService {

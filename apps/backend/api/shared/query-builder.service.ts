@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { Repository } from 'typeorm';
-import { entityParamDeserializer, PER_PAGE } from './schema';
+import { PER_PAGE, entityParamDeserializer } from './schema';
 
 @Injectable()
 export class QueryBuilderService {

@@ -1,11 +1,11 @@
 'use client';
 
 import { CloseButton, TextInput } from '@mantine/core';
+import { entityParamSchema } from '@shega/shared';
 import { IconSearch } from '@tabler/icons-react';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useRef } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { entityParamSchema } from '@shega/shared';
 import { cn } from '../utilities/cn';
 
 type EntitySearchProps = {

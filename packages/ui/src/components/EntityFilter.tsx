@@ -1,9 +1,9 @@
 'use client';
 
 import { Select } from '@mantine/core';
+import { entityParamSchema } from '@shega/shared';
 import { IconFilter } from '@tabler/icons-react';
 import { parseAsJson, useQueryState } from 'nuqs';
-import { entityParamSchema } from '@shega/shared';
 import { cn } from '../utilities/cn';
 import { MultiSelectPills } from './MultiSelect';
 

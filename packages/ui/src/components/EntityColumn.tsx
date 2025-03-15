@@ -1,9 +1,9 @@
 'use client';
 
 import { Flex, Text } from '@mantine/core';
+import { entityParamSchema } from '@shega/shared';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { parseAsJson, useQueryState } from 'nuqs';
-import { entityParamSchema } from '@shega/shared';
 import { cn } from '../utilities/cn';
 
 type EntityColumnProps = {

@@ -2,8 +2,8 @@
 
 import { Box, Pagination } from '@mantine/core';
 import { PER_PAGE, entityParamSchema } from '@shega/shared';
-import { cn } from '../utilities/cn';
 import { parseAsJson, useQueryState } from 'nuqs';
+import { cn } from '../utilities/cn';
 
 type EntityPaginationProps = {
     total: number;

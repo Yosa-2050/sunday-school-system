@@ -4,6 +4,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { QueryBuilderService } from 'shared/query-builder.service';
+import {
+    type EntityParam,
+    entityParamDeserializer,
+    entityParamSerializer,
+} from 'shared/schema';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,13 +23,6 @@ import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { LoginBy } from './enums/login-by.enum';
 import { UserRoleType } from './enums/user-role.enum';
-import {
-    type EntityParam,
-    entityParamDeserializer,
-    entityParamSerializer,
-} from 'shared/schema';
-// biome-ignore lint/style/useImportType: <explanation>
-import { QueryBuilderService } from 'shared/query-builder.service';
 
 @Injectable()
 export class UsersService {
