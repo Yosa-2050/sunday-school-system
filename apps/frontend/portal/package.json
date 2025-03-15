@@ -26,6 +26,7 @@
         "cookies-next": "^5.1.0",
         "dayjs": "^1.11.13",
         "embla-carousel-autoplay": "^8.5.2",
+        "html-react-parser": "^5.2.2",
         "next": "15.2.1",
         "next-intl": "^3.26.4",
         "next-nprogress-bar": "^2.4.7",
