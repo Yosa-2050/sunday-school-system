@@ -13,6 +13,7 @@ import {
     LoadingOverlay,
     Menu,
     Paper,
+    Pill,
     Stack,
     Table,
     TableScrollContainer,
@@ -196,7 +197,7 @@ const UsersPage = () => {
                         field="isActive"
                     />
                     <Button
-                        variant="primary"
+                        variant="light"
                         leftSection={<IconDownload size={18} />}
                     >
                         {t('exportCSV')}
@@ -375,16 +376,15 @@ const UsersPage = () => {
                                             user.createdDate ?? '',
                                         ).toFormat('yyyy-MM-dd HH:mm:ss')}
                                     </Table.Td>
-                                    <Table.Td
-                                        className={
-                                            user.isActive
-                                                ? 'text-green-600'
-                                                : 'text-red-600'
-                                        }
-                                    >
-                                        {user.isActive
-                                            ? t('status.active')
-                                            : t('status.inactive')}
+                                    <Table.Td>
+                                        <Pill
+                                            variant="filled"
+                                            className={`bg-gray-100 ${user.isActive ? 'text-green-600' : 'text-red-600'}`}
+                                        >
+                                            {user.isActive
+                                                ? t('status.active')
+                                                : t('status.inactive')}
+                                        </Pill>
                                     </Table.Td>
                                     <Table.Td>
                                         <Menu width={200}>

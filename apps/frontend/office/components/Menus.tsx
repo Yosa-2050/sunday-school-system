@@ -1,8 +1,8 @@
 import {
     IconBuilding,
-    IconFileText,
     IconHome,
     IconSearch,
+    IconUser,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import type { MenuTree } from './side-menu/SideMenu';
@@ -19,7 +19,7 @@ export const Menus = (): MenuTree[] => {
         },
         {
             label: t('users'),
-            icon: <IconFileText stroke={1.4} size={20} />,
+            icon: <IconUser stroke={1.4} size={20} />,
             link: '/admin/users',
             role: 'administrator',
         },
@@ -36,15 +36,15 @@ export const Menus = (): MenuTree[] => {
             link: '/admin/jobs',
             role: 'administrator',
         },
-        {
-            label: t('dashboard'),
-            icon: <IconHome stroke={1.4} size={20} />,
-            link: '/work-provider/dashboard',
-            role: 'work_provider',
-        },
+        // {
+        //     label: t('dashboard'),
+        //     icon: <IconHome stroke={1.4} size={20} />,
+        //     link: '/work-provider/dashboard',
+        //     role: 'work_provider',
+        // },
         {
             label: t('job-explorer'),
-            icon: <IconFileText stroke={1.4} size={20} />,
+            icon: <IconSearch stroke={1.4} size={20} />,
             link: '/work-provider/jobs',
             role: 'work_provider',
         },

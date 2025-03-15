@@ -10,7 +10,6 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { logger } from '@shega/shared';
 import { IconXboxX } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CreateOrganizations } from 'app/[locale]/_api/organizations/create-organizations';
@@ -59,7 +58,6 @@ export function CreateOrganization() {
             reset();
         },
         onError: (error) => {
-            logger.log(error);
             notifications.show({
                 title: t('notifications.errorTitle'),
                 message: `${t('notifications.errorMessage')} ${error.message}`,

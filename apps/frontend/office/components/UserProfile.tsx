@@ -4,7 +4,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
 import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 import { useAuth } from '@shega/ui';
-import { IconLogout2, IconSettings2, IconUserDown } from '@tabler/icons-react';
+import { IconLogout2 } from '@tabler/icons-react';
 import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
 
@@ -56,12 +56,12 @@ export default function UserProfile() {
             </Menu.Target>
 
             <Menu.Dropdown>
-                <Menu.Item leftSection={<IconUserDown className="w-4 h-4" />}>
+                {/* <Menu.Item leftSection={<IconUserDown className="w-4 h-4" />}>
                     {t('users')}
                 </Menu.Item>
                 <Menu.Item leftSection={<IconSettings2 className="w-4 h-4" />}>
                     {t('settings')}
-                </Menu.Item>
+                </Menu.Item> */}
 
                 <Divider />
 

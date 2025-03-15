@@ -4,7 +4,10 @@
             "title": "Enter OTP",
             "otpLabel": "One Time Password",
             "otpPlaceholder": "Enter your OTP",
-            "verifyButton": "Verify"
+            "verifyButton": "Verify",
+            "newPassword": "New Password",
+            "confirmPassword": "Confirm New Password",
+            "confirmPasswordLable": "Confirm Password"
         },
         "pageWrapper": {
             "shegaobs": "Shega Jobs",

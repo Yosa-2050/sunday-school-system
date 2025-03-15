@@ -4,7 +4,7 @@ export type ConfirmResetPasswordRequest = {
     username: string;
     password: string;
     otp: string;
-    origin: 'portal';
+    origin: 'office';
 };
 
 export type Data = {

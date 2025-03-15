@@ -1,10 +1,7 @@
 import { fetcher } from '@shega/shared';
 
-export type ConfirmResetPasswordRequest = {
+type LoginRequest = {
     username: string;
-    password: string;
-    otp: string;
-    origin: 'portal';
 };
 
 export type Data = {
@@ -19,10 +16,8 @@ export type Response = {
     success: true;
 };
 
-export const confirmResetPassword = async (
-    data: ConfirmResetPasswordRequest,
-) => {
-    const response: Response = await fetcher('/auth/validateResetPassword', {
+export const resetPassword = async (data: LoginRequest) => {
+    const response: Response = await fetcher('/auth/resetPassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
