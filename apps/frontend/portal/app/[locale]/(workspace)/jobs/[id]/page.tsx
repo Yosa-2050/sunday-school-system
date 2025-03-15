@@ -2,8 +2,8 @@
 
 import {
     Avatar,
-    Box,
     Card,
+    Container,
     Divider,
     Flex,
     Group,
@@ -62,7 +62,7 @@ const JobDetails = () => {
     }
 
     return (
-        <Box className="container mx-auto mt-12">
+        <Container size={'xl'}>
             <Flex
                 gap="xl"
                 align="start"
@@ -139,7 +139,7 @@ const JobDetails = () => {
                     </Stack>
                 </Paper>
             </Flex>
-        </Box>
+        </Container>
     );
 };
 

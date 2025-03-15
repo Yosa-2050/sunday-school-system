@@ -1,4 +1,3 @@
-import { AppHeader } from '@/components/AppHeader';
 import { logger } from '@shega/shared';
 import { AuthProvider } from '@shega/ui';
 import { getUserAction } from 'app/_api/get-user-action';
@@ -66,7 +65,6 @@ export default async function RootLayout({
                                 <AuthProvider
                                     user={user ? { ...user, role } : undefined}
                                 >
-                                    <AppHeader />
                                     {children}
                                 </AuthProvider>
                             </MantineThemeProvider>

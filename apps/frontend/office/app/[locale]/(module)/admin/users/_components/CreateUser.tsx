@@ -27,7 +27,9 @@ export function CreateUser() {
     const t = useTranslations('crateUsers');
 
     const userSchema = z.object({
-        role: z.string().min(1, t('validation.roleRequired')),
+        role: z
+            .string({ required_error: t('validation.roleRequired') })
+            .min(1, t('validation.roleRequired')),
         firstName: z.string().min(1, t('validation.firstNameRequired')),
         middleName: z.string().min(1, t('validation.middleNameRequired')),
         lastName: z.string().min(1, t('validation.lastNameRequired')),
@@ -117,6 +119,7 @@ export function CreateUser() {
                                         },
                                     ]}
                                     error={errors.role?.message}
+                                    unselectable="off"
                                     withAsterisk
                                 />
                             )}

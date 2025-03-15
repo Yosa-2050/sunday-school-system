@@ -4,8 +4,8 @@ import { useRouter } from '@/i18n/routing';
 import {
     ActionIcon,
     Avatar,
-    Box,
     Button,
+    Container,
     Group,
     Menu,
     Text,
@@ -52,24 +52,27 @@ function AppHeader() {
         });
 
     return (
-        <Box className="border-b border-gray-200 container mx-auto">
+        <Container
+            size={'xl'}
+            className="border-b border-gray-200 container mx-auto"
+        >
             <Group h={80} justify="space-between">
                 <Group>
                     <Text size="xl" fw={700} className="text-[#14a800]">
                         Shega Jobs
                     </Text>
                     {isAuthenticated && !isMobile && (
-                        <Group ml={48} gap="xl">
-                            <Text className="font-medium hover:text-[#14a800] cursor-pointer">
+                        <Group ml={48} gap="xl" className="text-xs">
+                            <Text className="text-xs font-medium hover:text-[#14a800] cursor-pointer">
                                 Find Work
                             </Text>
-                            <Text className="font-medium hover:text-[#14a800] cursor-pointer">
+                            <Text className="text-xs font-medium hover:text-[#14a800] cursor-pointer">
                                 My Jobs
                             </Text>
-                            <Text className="font-medium hover:text-[#14a800] cursor-pointer">
+                            <Text className="text-xs font-medium hover:text-[#14a800] cursor-pointer">
                                 Reports
                             </Text>
-                            <Text className="font-medium hover:text-[#14a800] cursor-pointer">
+                            <Text className="text-xs font-medium hover:text-[#14a800] cursor-pointer">
                                 Messages
                             </Text>
                         </Group>
@@ -143,7 +146,7 @@ function AppHeader() {
                     )}
                 </Group>
             </Group>
-        </Box>
+        </Container>
     );
 }
 
