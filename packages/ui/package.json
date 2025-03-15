@@ -22,6 +22,14 @@
         "typescript": "5.5.4"
     },
     "dependencies": {
-        "react-dom": "^19.0.0"
+        "@mantine/core": "^7.17.2",
+        "@mantine/hooks": "^7.17.2",
+        "@shega/ui": "link:",
+        "@tabler/icons-react": "^3.30.0",
+        "clsx": "^2.1.1",
+        "nuqs": "^2.4.0",
+        "react-dom": "^19.0.0",
+        "tailwind-merge": "^3.0.2",
+        "use-debounce": "^10.0.4"
     }
 }

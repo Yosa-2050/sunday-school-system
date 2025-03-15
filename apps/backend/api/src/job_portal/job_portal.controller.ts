@@ -21,7 +21,6 @@ import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { GetJobsByStatusRequestDto } from './dto/request/get-job-by-status.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -51,22 +50,15 @@ export class JobPortalController {
 
     @Roles(UserRoleType.Administrator)
     @Post('jobsByStatus')
-    getAllByStatus(@Body() dto: GetJobsByStatusRequestDto) {
-        return this.jobPortalService.getJobsByStatusPaginated(
-            dto.status,
-            dto.pagination,
-        );
+    getAllByStatus(@Body() dto: { q: string }) {
+        return this.jobPortalService.getJobsByStatusPaginated(dto.q);
     }
 
     @Roles(UserRoleType.Administrator)
     @Post('jobsByStatus/export')
-    async exportByStatus(
-        @Body() dto: GetJobsByStatusRequestDto,
-        @Res() res: Response,
-    ) {
+    async exportByStatus(@Res() res: Response, @Body() dto: { q: string }) {
         const data = await this.jobPortalService.getJobsByStatusPaginated(
-            dto.status,
-            dto.pagination,
+            dto.q,
         );
 
         this.documentService.generateCsv(data.data, res, 'jobList');
@@ -74,10 +66,7 @@ export class JobPortalController {
 
     @Roles(UserRoleType.WorkProvider)
     @Post('byProvider')
-    getAllPostedJobsByPorvider(
-        @Request() req,
-        @Body() dto: GetJobsByStatusRequestDto,
-    ) {
+    getAllPostedJobsByPorvider(@Request() req, @Body() dto: { q: string }) {
         const organizationId = req?.user?.details?.organizationId;
         if (!organizationId) {
             throw new BadRequestException(
@@ -86,8 +75,7 @@ export class JobPortalController {
         }
         return this.jobPortalService.getJobsByStatusAndByOrgPaginated(
             organizationId,
-            dto.status,
-            dto.pagination,
+            dto.q,
         );
     }
 

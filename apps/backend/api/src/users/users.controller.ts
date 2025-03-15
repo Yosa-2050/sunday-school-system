@@ -7,7 +7,6 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
-    Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -16,11 +15,8 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Response } from 'express';
+import type { CreateUserDto } from './dto/create-user.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateUserDto } from './dto/create-user.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { GetPaginatedProfileByTypeRequstDto } from './dto/request/get-paginated-profile-by-type.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { updatePasswordRequest } from './dto/update-password.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -39,22 +35,22 @@ export class UsersController {
     ) {}
 
     @Post('all')
-    findAll(@Body() dto: GetPaginatedProfileByTypeRequstDto) {
-        return this.usersService.getUsersByUserType(dto.status, dto.pagination);
+    findAll(@Body() dto: { q: string }) {
+        return this.usersService.getUsersByUserType(dto.q);
     }
 
-    @Post('export')
-    async export(
-        @Body() dto: GetPaginatedProfileByTypeRequstDto,
-        @Res() res: Response,
-    ) {
-        const data = await this.usersService.getUsersByUserType(
-            dto.status,
-            dto.pagination,
-        );
+    //   @Post("export")
+    //   async export(
+    //     @Body() dto: GetPaginatedProfileByTypeRequstDto,
+    //     @Res() res: Response
+    //   ) {
+    //     const data = await this.usersService.getUsersByUserType(
+    //       dto.status,
+    //       dto.pagination
+    //     );
 
-        this.documentService.generateCsv(data.data, res, 'userList');
-    }
+    //     this.documentService.generateCsv(data.data, res, "userList");
+    //   }
 
     @Post()
     async create(@Body() dto: CreateUserDto) {

@@ -37,11 +37,14 @@ export interface Daum {
     role?: string;
 }
 
-export const fetchUsers = async (payload: FetchUsersPayload) => {
+export const fetchUsers = async (payload: string) => {
+    if (!payload) {
+        throw new Error('Payload can not be empty');
+    }
     const response: Response = await fetcher('/users/all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ q: payload }),
     });
 
     return response;

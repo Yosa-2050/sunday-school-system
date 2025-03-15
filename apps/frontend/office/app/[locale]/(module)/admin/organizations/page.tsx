@@ -10,21 +10,20 @@ import {
     Group,
     LoadingOverlay,
     Menu,
-    Pagination,
     Paper,
-    Select,
     Stack,
     Table,
     TableScrollContainer,
     Text,
-    TextInput,
 } from '@mantine/core';
-import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
 import {
-    IconDotsVertical,
-    IconDownload,
-    IconSearch,
-} from '@tabler/icons-react';
+    PER_PAGE,
+    entityParamSchema,
+    entityParamSerializer,
+} from '@shega/shared';
+import { EntityColumn, EntityPagination, EntitySearch } from '@shega/ui';
+import { IconDotsVertical, IconDownload } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import {
     type Daum,
@@ -32,45 +31,27 @@ import {
 } from 'app/[locale]/_api/organizations/fetch-organizations';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
-import { useQueryState } from 'nuqs';
+import { parseAsJson, useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { CreateOrganization } from './_components/create-organization';
 
-const UsersPage = () => {
+const OrganizationsPage = () => {
     const t = useTranslations('organizationsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
+    const [entityParams] = useQueryState(
+        'organizations',
+        parseAsJson(entityParamSchema.parse).withDefault({
+            p: 1,
+            pp: PER_PAGE,
+            o: [{ f: 'createdAt', d: 'desc' }],
+        }),
+    );
     const [selection, setSelection] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useQueryState('search', {
-        defaultValue: '',
-    });
-    const [roleFilter, setRoleFilter] = useQueryState('filter', {
-        defaultValue: '',
-    });
-    const [sortOrder, setSortOrder] = useQueryState('sort', {
-        defaultValue: 'asc',
-    });
-    const [page, setPage] = useQueryState('page', { defaultValue: '1' });
-    const [limit, setLimit] = useQueryState('limit', { defaultValue: '10' });
-
-    const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
-
     // Fetch users using TanStack Query
     const { data, isLoading, error } = useQuery({
-        queryKey: [
-            'organizations',
-            debouncedSearch,
-            roleFilter,
-            sortOrder,
-            page,
-            limit,
-        ],
-        queryFn: () =>
-            fetchOrganizations({
-                search: debouncedSearch,
-                page: +page,
-                limit: +limit,
-            }),
+        queryKey: ['organizations', entityParamSerializer(entityParams)],
+        queryFn: () => fetchOrganizations(entityParamSerializer(entityParams)),
     });
 
     if (isLoading) {
@@ -108,24 +89,12 @@ const UsersPage = () => {
 
             {/* Search, Filter, Sort Controls */}
             <Group justify="space-between" className="mb-4">
-                <TextInput
-                    leftSection={<IconSearch size={18} />}
+                <EntitySearch
+                    entity="organizations"
                     placeholder={t('searchPlaceholder')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ width: 350 }}
+                    className="!w-[300px]"
                 />
                 <Flex gap={'xs'} align={'center'}>
-                    <Select
-                        placeholder={t('sortBy')}
-                        value={sortOrder}
-                        onChange={(data) => setSortOrder(data ?? '')}
-                        data={[
-                            { value: 'asc', label: t('sortOptions.asc') },
-                            { value: 'desc', label: t('sortOptions.desc') },
-                        ]}
-                        style={{ width: 200 }}
-                    />
                     <Button
                         variant="primary"
                         leftSection={<IconDownload size={18} />}
@@ -194,9 +163,15 @@ const UsersPage = () => {
                                     />
                                 </Table.Th>
                                 <Table.Th>{t('table.name')}</Table.Th>
-                                <Table.Th>{t('table.status')}</Table.Th>
                                 <Table.Th>{t('table.createdBy')}</Table.Th>
-                                <Table.Th>{t('table.createdAt')}</Table.Th>
+                                <Table.Th>
+                                    <EntityColumn
+                                        entity="organizations"
+                                        field="createdAt"
+                                        label={t('table.createdAt')}
+                                    />
+                                </Table.Th>
+                                <Table.Th>{t('table.status')}</Table.Th>
                                 <Table.Th>{t('table.actions')}</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
@@ -216,6 +191,13 @@ const UsersPage = () => {
                                         />
                                     </Table.Td>
                                     <Table.Td>{user.name}</Table.Td>
+
+                                    <Table.Td>{user.createdBy}</Table.Td>
+                                    <Table.Td>
+                                        {DateTime.fromISO(
+                                            user.createdDate ?? '',
+                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                    </Table.Td>
                                     <Table.Td
                                         className={
                                             user.isActive
@@ -226,12 +208,6 @@ const UsersPage = () => {
                                         {user.isActive
                                             ? t('status.active')
                                             : t('status.inactive')}
-                                    </Table.Td>
-                                    <Table.Td>{user.createdBy}</Table.Td>
-                                    <Table.Td>
-                                        {DateTime.fromISO(
-                                            user.createdDate ?? '',
-                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
                                     </Table.Td>
                                     <Table.Td>
                                         <Menu width={200}>
@@ -247,15 +223,9 @@ const UsersPage = () => {
                 </TableScrollContainer>
             )}
 
-            <Flex justify="center" mt="md">
-                <Pagination
-                    total={data?.totalPages ?? 1}
-                    value={+page}
-                    onChange={(value) => setPage(value.toString())}
-                />
-            </Flex>
+            <EntityPagination entity="organizations" total={data?.total ?? 0} />
         </Paper>
     );
 };
 
-export default UsersPage;
+export default OrganizationsPage;

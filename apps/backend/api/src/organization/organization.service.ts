@@ -6,9 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
-import { StatusType } from '@shega/Utilities/enums/status-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
@@ -18,7 +16,10 @@ import { NotificationService } from '@shega/notification/notification.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ILike, Repository } from 'typeorm';
+import { QueryBuilderService } from 'shared/query-builder.service';
+import { entityParamDeserializer } from 'shared/schema';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -54,6 +55,7 @@ export class OrganizationService {
         private notificationService: NotificationService,
         @Inject(PasswordService)
         private readonly passwordService: PasswordService,
+        private queryBuilderService: QueryBuilderService,
     ) {}
 
     async create(request: CreateOrganizationDto) {
@@ -101,41 +103,28 @@ export class OrganizationService {
         });
     }
 
-    async findAllPaginated(dto: PaginationDto) {
-        const search = dto.search;
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const filters: any = {};
+    async findAllPaginated(dto: string) {
+        // Convert PaginationDto to the format expected by QueryBuilderService
+        const { p, pp, s } = entityParamDeserializer(dto);
 
-        const skip = (dto.page - 1) * dto.limit;
+        // Define searchable columns (if applicable)
+        const searchableColumns = ['name']; // Add other searchable columns if needed
 
-        if (dto.status === StatusType.Active) {
-            filters.isActive = true;
-        }
-        if (dto.status === StatusType.InActive) {
-            filters.isActive = false;
-        }
-        // If search is provided, add OR conditions
-        if (search) {
-            filters.name = ILike(`%${search}%`);
-        }
+        // Use the QueryBuilderService to build and execute the query
+        const { data: organizations, total } =
+            await this.queryBuilderService.buildQuery(
+                this.organizationRepo,
+                dto,
+                [], // No joins needed for this query
+                searchableColumns,
+            );
 
-        const [organizations, count] = await this.organizationRepo.findAndCount(
-            {
-                //where: search ? [{ name: ILike(`%${search}`) }] : {},
-                where: filters,
-                order: { createdAt: 'DESC' },
-                take: dto.limit,
-                skip: skip,
-            },
-        );
-
+        // Map the results to the response DTO
         return new PaginatedResponseDto<GetOrganizationListResponseDto[]>(
-            organizations.map((org) => {
-                return new GetOrganizationListResponseDto(org);
-            }),
-            count,
-            dto.page,
-            dto.limit,
+            organizations.map((org) => new GetOrganizationListResponseDto(org)),
+            total,
+            p,
+            pp,
         );
     }
 

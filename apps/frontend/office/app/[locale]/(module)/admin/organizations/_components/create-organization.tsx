@@ -40,7 +40,7 @@ export function CreateOrganization() {
         register,
         handleSubmit,
         formState: { errors },
-        watch,
+        reset,
     } = useForm({
         resolver: zodResolver(organizationSchema),
     });
@@ -56,6 +56,7 @@ export function CreateOrganization() {
                 message: t('notifications.successMessage'),
             });
             close();
+            reset();
         },
         onError: (error) => {
             logger.log(error);

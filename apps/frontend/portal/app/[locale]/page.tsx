@@ -2,9 +2,7 @@
 
 import { redirect, useRouter } from '@/i18n/routing';
 import {
-    ActionIcon,
     Avatar,
-    Box,
     Button,
     Card,
     Container,
@@ -13,7 +11,6 @@ import {
     Grid,
     Group,
     LoadingOverlay,
-    Menu,
     NumberFormatter,
     Paper,
     SimpleGrid,
@@ -24,13 +21,9 @@ import {
     TypographyStylesProvider,
 } from '@mantine/core';
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
-import { modals } from '@mantine/modals';
-import { COOKIE_ACCESS_TOKEN, logger } from '@shega/shared';
+import { logger } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import {
-    IconBell,
-    IconBookmark,
-    IconBookmarkFilled,
     IconBriefcase,
     IconBuildingSkyscraper,
     IconBulb,
@@ -40,21 +33,15 @@ import {
     IconCurrencyDollar,
     IconDeviceMobile,
     IconFilter,
-    IconHeart,
-    IconHeartFilled,
-    IconLogout,
     IconMapPin,
     IconPencil,
     IconSearch,
-    IconSettings,
     IconTruck,
-    IconUser,
     IconUsers,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import { jobTypes } from 'constants/job-type';
-import { deleteCookie } from 'cookies-next';
 import { useLocale, useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
@@ -92,142 +79,6 @@ interface Category {
 }
 
 // App Header Component
-function AppHeader() {
-    const router = useRouter();
-    const { user, setUser } = useAuth();
-    const isAuthenticated = !!user;
-    const t = useTranslations('jobPortal');
-    const isMobile = useMediaQuery('(max-width: 768px)');
-
-    const openModal = () =>
-        modals.openConfirmModal({
-            title: 'Are you sure you want to logout?',
-            children: (
-                <Text size="sm">
-                    You will be logged out of your account. Any unsaved changes
-                    will be lost
-                </Text>
-            ),
-            labels: { cancel: 'Cancel', confirm: 'Logout' },
-            centered: true,
-            confirmProps: { color: 'red' },
-            onCancel: () => console.log('Cancel'),
-            onConfirm: () => {
-                deleteCookie(COOKIE_ACCESS_TOKEN);
-                deleteCookie('role');
-                setUser(undefined);
-                router.push('/auth/login');
-            },
-        });
-
-    return (
-        <Box className="border-b border-gray-200">
-            <Container size="xl">
-                <Group h={80} justify="space-between">
-                    <Group>
-                        <Text size="xl" fw={700} className="text-[#14a800]">
-                            Shega Jobs
-                        </Text>
-                        {isAuthenticated && !isMobile && (
-                            <Group ml={48} gap="xl">
-                                <Text className="font-medium hover:text-[#14a800] cursor-pointer">
-                                    Find Work
-                                </Text>
-                                <Text className="font-medium hover:text-[#14a800] cursor-pointer">
-                                    My Jobs
-                                </Text>
-                                <Text className="font-medium hover:text-[#14a800] cursor-pointer">
-                                    Reports
-                                </Text>
-                                <Text className="font-medium hover:text-[#14a800] cursor-pointer">
-                                    Messages
-                                </Text>
-                            </Group>
-                        )}
-                    </Group>
-
-                    <Group>
-                        {isAuthenticated ? (
-                            <Group>
-                                <ActionIcon variant="subtle" size="lg">
-                                    <IconBell size={20} />
-                                </ActionIcon>
-                                <Menu shadow="md" width={280}>
-                                    <Menu.Target>
-                                        <Group
-                                            gap="xs"
-                                            className="cursor-pointer"
-                                        >
-                                            <Avatar
-                                                size={isMobile ? 'sm' : 'md'}
-                                                radius="xl"
-                                                color="green"
-                                            >
-                                                {user.firstName?.[0]}
-                                                {user.lastName?.[0]}
-                                            </Avatar>
-                                            {!isMobile && (
-                                                <div>
-                                                    <Text size="sm" fw={500}>
-                                                        {user.firstName}{' '}
-                                                        {user.lastName}
-                                                    </Text>
-                                                    <Text size="xs" c="dimmed">
-                                                        {user.phoneNumber}
-                                                    </Text>
-                                                </div>
-                                            )}
-                                        </Group>
-                                    </Menu.Target>
-
-                                    <Menu.Dropdown>
-                                        <Menu.Item
-                                            leftSection={<IconUser size={14} />}
-                                            onClick={() =>
-                                                router.push('/profile')
-                                            }
-                                        >
-                                            {t('profile')}
-                                        </Menu.Item>
-                                        <Menu.Item
-                                            leftSection={
-                                                <IconSettings size={14} />
-                                            }
-                                            onClick={() =>
-                                                router.push('/settings')
-                                            }
-                                        >
-                                            {t('settings')}
-                                        </Menu.Item>
-                                        <Menu.Divider />
-                                        <Menu.Item
-                                            leftSection={
-                                                <IconLogout size={14} />
-                                            }
-                                            color="red"
-                                            onClick={openModal}
-                                        >
-                                            {t('logout')}
-                                        </Menu.Item>
-                                    </Menu.Dropdown>
-                                </Menu>
-                            </Group>
-                        ) : (
-                            <Group>
-                                <Button
-                                    variant="subtle"
-                                    onClick={() => router.push('/auth/login')}
-                                >
-                                    {t('login')}
-                                </Button>
-                            </Group>
-                        )}
-                    </Group>
-                </Group>
-            </Container>
-        </Box>
-    );
-}
 
 const jobCategories: Category[] = [
     {
@@ -494,7 +345,10 @@ function JobList({ filters }: { filters: JobFilters }) {
                             <div>
                                 <Title
                                     order={isMobile ? 5 : 4}
-                                    className="font-semibold line-clamp-1" // Truncate long titles
+                                    className="font-semibold line-clamp-1"
+                                    onClick={() =>
+                                        router.push(`/jobs/${job.id}`)
+                                    }
                                 >
                                     {job.title}
                                 </Title>
@@ -507,60 +361,42 @@ function JobList({ filters }: { filters: JobFilters }) {
                                 </Text>
                             </div>
                         </Group>
-                        <Group gap="xs">
-                            <Can
-                                action={() => toggleBookmark(job.id)}
-                                fallback={
-                                    <ActionIcon
-                                        variant="subtle"
-                                        size={isMobile ? 'sm' : 'md'}
-                                    >
-                                        <IconBookmark size={16} />
-                                    </ActionIcon>
-                                }
-                            >
-                                <ActionIcon
-                                    variant="subtle"
-                                    size={isMobile ? 'sm' : 'md'}
-                                >
-                                    {/* biome-ignore lint/correctness/noConstantCondition: <explanation> */}
-                                    {false ? (
-                                        <IconBookmarkFilled
-                                            size={16}
-                                            color="#228be6"
-                                        />
-                                    ) : (
-                                        <IconBookmark size={16} />
-                                    )}
-                                </ActionIcon>
-                            </Can>
-                            <Can
-                                action={() => toggleFavorite(job.id)}
-                                fallback={
-                                    <ActionIcon
-                                        variant="subtle"
-                                        size={isMobile ? 'sm' : 'md'}
-                                    >
-                                        <IconHeart size={16} />
-                                    </ActionIcon>
-                                }
-                            >
-                                <ActionIcon
-                                    variant="subtle"
-                                    size={isMobile ? 'sm' : 'md'}
-                                >
-                                    {/* biome-ignore lint/correctness/noConstantCondition: <explanation> */}
-                                    {false ? (
-                                        <IconHeartFilled
-                                            size={16}
-                                            color="#ff6b6b"
-                                        />
-                                    ) : (
-                                        <IconHeart size={16} />
-                                    )}
-                                </ActionIcon>
-                            </Can>
-                        </Group>
+                        {/* <Group gap="xs">
+              <Can
+                action={() => toggleBookmark(job.id)}
+                fallback={
+                  <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
+                    <IconBookmark size={16} />
+                  </ActionIcon>
+                }
+              >
+                <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
+                  biome-ignore lint/correctness/noConstantCondition: <explanation>
+                  {false ? (
+                    <IconBookmarkFilled size={16} color="#228be6" />
+                  ) : (
+                    <IconBookmark size={16} />
+                  )}
+                </ActionIcon>
+              </Can>
+              <Can
+                action={() => toggleFavorite(job.id)}
+                fallback={
+                  <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
+                    <IconHeart size={16} />
+                  </ActionIcon>
+                }
+              >
+                <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
+                  {/* biome-ignore lint/correctness/noConstantCondition: <explanation> */}
+                        {/* {false ? (
+                    <IconHeartFilled size={16} color="#ff6b6b" />
+                  ) : (
+                    <IconHeart size={16} />
+                  )}
+                </ActionIcon>
+              </Can>
+            </Group>  */}
                     </Group>
 
                     {/* Job Description */}
@@ -608,7 +444,7 @@ function JobList({ filters }: { filters: JobFilters }) {
 
                     {/* Apply Button */}
                     <Can
-                        action={() => logger.log('Apply clicked')}
+                        action={() => router.push(`/jobs/${job.id}`)}
                         fallback={
                             <Button
                                 fullWidth
@@ -619,8 +455,8 @@ function JobList({ filters }: { filters: JobFilters }) {
                             </Button>
                         }
                     >
-                        <Button fullWidth size={isMobile ? 'sm' : 'md'} mt="sm">
-                            Apply Now
+                        <Button fullWidth size={isMobile ? 'sm' : 'md'} mt="md">
+                            Detail
                         </Button>
                     </Can>
                 </Card>
@@ -652,8 +488,6 @@ export default function HomePage() {
 
     return (
         <>
-            <AppHeader />
-
             {/* Hero Section */}
             <div
                 className="py-12 md:py-20 mb-12 bg-cover bg-center relative"
@@ -708,17 +542,17 @@ export default function HomePage() {
             <Container size="xl">
                 <Grid>
                     {/* Filters Sidebar */}
-                    {!isMobile && ( // Show sidebar only on desktop
+                    {/* {!isMobile && ( // Show sidebar only on desktop
                         <Grid.Col span={{ base: 12, md: 3 }}>
                             <JobFilterSidebar
                                 filters={filters}
                                 onFilterChange={setFilters}
                             />
                         </Grid.Col>
-                    )}
+                    )} */}
 
                     {/* Job Listings */}
-                    <Grid.Col span={{ base: 12, md: isMobile ? 12 : 9 }}>
+                    <Grid.Col span={{ base: 12, md: isMobile ? 12 : 12 }}>
                         {/* Filter Button for Mobile */}
                         {isMobile && (
                             <Button

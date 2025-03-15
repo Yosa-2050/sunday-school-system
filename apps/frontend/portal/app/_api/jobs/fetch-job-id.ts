@@ -53,30 +53,10 @@ interface Job {
     postedBy: PostedBy;
 }
 
-interface JobsResponse {
-    data: Job[];
-    total: number;
-    limit: number;
-    page: number;
-    totalPages: number;
-}
-
-type FetchJobsPayload = {
-    status?: string;
-    pagination: Pagination;
-};
-
-export interface Pagination {
-    search: string;
-    page: number;
-    limit: number;
-}
-
-export const fetchJobs = async (payload: string): Promise<JobsResponse> => {
-    const response = await fetcher('/job-portal/byProvider', {
-        method: 'POST',
+export const fetchJobsById = async (id: string): Promise<Job> => {
+    const response = await fetcher(`/job-portal/${id}`, {
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: payload }),
     });
 
     return response;

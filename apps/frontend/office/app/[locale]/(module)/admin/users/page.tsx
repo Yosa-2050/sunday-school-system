@@ -12,59 +12,105 @@ import {
     Group,
     LoadingOverlay,
     Menu,
-    Pagination,
     Paper,
-    Select,
     Stack,
     Table,
     TableScrollContainer,
     Text,
-    TextInput,
 } from '@mantine/core';
-import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
 import {
-    IconDotsVertical,
-    IconDownload,
-    IconSearch,
-} from '@tabler/icons-react';
+    PER_PAGE,
+    entityParamSchema,
+    entityParamSerializer,
+} from '@shega/shared';
+import {
+    EntityColumn,
+    EntityFilter,
+    EntityPagination,
+    EntitySearch,
+} from '@shega/ui';
+import { IconDotsVertical, IconDownload, IconX } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { type Daum, fetchUsers } from 'app/[locale]/_api/users/fetch-user';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
-import { useQueryState } from 'nuqs';
+import { parseAsJson, useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { CreateUser } from './_components/CreateUser';
+
+interface Filters {
+    roles: string[];
+    status: string;
+    sort: { [key: string]: 'asc' | 'desc' };
+}
 
 const UsersPage = () => {
     const t = useTranslations('usersPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     const [selection, setSelection] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useQueryState('search', {
-        defaultValue: '',
+    const [filters, setFilters] = useQueryState<Filters | null>('filters', {
+        defaultValue: null,
+        parse: (value) => {
+            try {
+                return JSON.parse(decodeURIComponent(value));
+            } catch {
+                return null;
+            }
+        },
+        serialize: (value) =>
+            value ? encodeURIComponent(JSON.stringify(value)) : '',
     });
-    const [roleFilter, setRoleFilter] = useQueryState('filter', {
-        defaultValue: '',
-    });
-    const [sortOrder, setSortOrder] = useQueryState('sort', {
-        defaultValue: 'asc',
-    });
-    const [page, setPage] = useQueryState('page', { defaultValue: '1' });
-    const [limit, setLimit] = useQueryState('limit', { defaultValue: '10' });
 
-    const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
+    const [entityParams] = useQueryState(
+        'users',
+        parseAsJson(entityParamSchema.parse).withDefault({
+            p: 1,
+            pp: PER_PAGE,
+        }),
+    );
 
-    // Fetch users using TanStack Query
+    const roles = [
+        { value: 'ADMINISTRATOR', label: t('roles.administrator') },
+        { value: 'WORK_PROVIDER', label: t('roles.workProvider') },
+        { value: 'JOB_SEEKER', label: t('roles.jobSeeker') },
+    ];
+
+    const handleRoleSelect = (selectedRoles: string[]) => {
+        const newFilters = {
+            ...filters,
+            roles: selectedRoles,
+            status: filters?.status || '',
+            sort: filters?.sort || { createdAt: 'desc' },
+        };
+
+        if (selectedRoles.length > 0 || newFilters.status) {
+            setFilters(newFilters);
+        } else {
+            setFilters(null);
+        }
+    };
+
+    const handleStatusChange = (status: string) => {
+        const newFilters = {
+            ...filters,
+            status,
+            roles: filters?.roles || [],
+            sort: filters?.sort || { createdAt: 'desc' },
+        };
+
+        if (newFilters.roles.length > 0 || newFilters.status) {
+            setFilters(newFilters);
+        } else {
+            setFilters(null);
+        }
+    };
+
     const { data, isLoading, error } = useQuery({
-        queryKey: ['users', debouncedSearch, page, limit],
-        queryFn: () =>
-            fetchUsers({
-                pagination: {
-                    search: debouncedSearch,
-                    page: +page,
-                    limit: +limit,
-                },
-            }),
+        queryKey: ['users', entityParamSerializer(entityParams)],
+        queryFn: () => fetchUsers(entityParamSerializer(entityParams)),
+        enabled: !!entityParams,
     });
 
     if (isLoading) {
@@ -91,6 +137,31 @@ const UsersPage = () => {
                 : users.map((user: Daum) => user.email ?? ''),
         );
 
+    const activeFilters = filters
+        ? [
+              {
+                  type: 'Role',
+                  filters: filters.roles.map((role) => ({
+                      label: roles.find((r) => r.value === role)?.label,
+                      value: role,
+                  })),
+              },
+              {
+                  type: 'Status',
+                  filters: filters.status
+                      ? [
+                            {
+                                label: t(
+                                    `status.${filters.status.toLowerCase()}`,
+                                ),
+                                value: filters.status,
+                            },
+                        ]
+                      : [],
+              },
+          ].filter((group) => group.filters.length > 0)
+        : [];
+
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align="center" justify="space-between" className="p-4">
@@ -102,45 +173,27 @@ const UsersPage = () => {
 
             {/* Search, Filter, Sort Controls */}
             <Group justify="space-between" className="mb-4">
-                <TextInput
-                    leftSection={<IconSearch size={18} />}
+                <EntitySearch
+                    entity="users"
                     placeholder={t('searchPlaceholder')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ width: 350 }}
+                    className="!w-[300px]"
                 />
                 <Flex gap={'xs'} align={'center'}>
-                    <Select
-                        placeholder={t('selectRole')}
-                        value={roleFilter}
-                        size="sm"
-                        onChange={(data) => setRoleFilter(data ?? '')}
-                        data={[
-                            { value: '', label: t('allRoles') },
-                            {
-                                value: 'ADMINISTRATOR',
-                                label: t('roles.administrator'),
-                            },
-                            {
-                                value: 'WORK_PROVIDER',
-                                label: t('roles.workProvider'),
-                            },
-                            {
-                                value: 'JOB_SEEKER',
-                                label: t('roles.jobSeeker'),
-                            },
-                        ]}
-                        style={{ width: 200 }}
+                    <EntityFilter
+                        entity="users"
+                        filterOptions={roles}
+                        mode="select"
+                        field="roles.role"
                     />
-                    <Select
-                        placeholder={t('sortBy')}
-                        value={sortOrder}
-                        onChange={(data) => setSortOrder(data ?? '')}
-                        data={[
-                            { value: 'asc', label: t('sortOptions.asc') },
-                            { value: 'desc', label: t('sortOptions.desc') },
+                    <EntityFilter
+                        entity="users"
+                        filterOptions={[
+                            { value: '', label: t('status.all') },
+                            { value: 'true', label: t('status.active') },
+                            { value: 'false', label: t('status.inactive') },
                         ]}
-                        style={{ width: 200 }}
+                        mode="select"
+                        field="isActive"
                     />
                     <Button
                         variant="primary"
@@ -149,6 +202,63 @@ const UsersPage = () => {
                         {t('exportCSV')}
                     </Button>
                 </Flex>
+            </Group>
+
+            {/* Active Filters and Sort */}
+            <Group gap="sm" className="mb-4">
+                {activeFilters.map((group) => (
+                    <Group key={group.type} gap="sm">
+                        <Text size="sm" c="dimmed">
+                            {group.type}:
+                        </Text>
+                        {group.filters.map((filter) => (
+                            <Badge
+                                key={filter.value}
+                                rightSection={
+                                    <IconX
+                                        size={12}
+                                        onClick={() => {
+                                            if (group.type === 'Role') {
+                                                handleRoleSelect(
+                                                    filters?.roles.filter(
+                                                        (r) =>
+                                                            r !== filter.value,
+                                                    ) || [],
+                                                );
+                                            } else if (
+                                                group.type === 'Status'
+                                            ) {
+                                                handleStatusChange('');
+                                            }
+                                        }}
+                                    />
+                                }
+                            >
+                                {filter.label}
+                            </Badge>
+                        ))}
+                    </Group>
+                ))}
+                {filters?.sort && Object.keys(filters.sort).length > 0 && (
+                    <Group gap="sm">
+                        <Text size="sm" c="dimmed">
+                            Sort:
+                        </Text>
+                        <Badge
+                            rightSection={
+                                <IconX
+                                    size={12}
+                                    onClick={() =>
+                                        setFilters({ ...filters, sort: {} })
+                                    }
+                                />
+                            }
+                        >
+                            {Object.keys(filters.sort)[0]}
+                            {Object.values(filters.sort)[0] as React.ReactNode}
+                        </Badge>
+                    </Group>
+                )}
             </Group>
 
             {/* No Data State */}
@@ -217,7 +327,13 @@ const UsersPage = () => {
                                 <Table.Th>{t('table.email')}</Table.Th>
                                 <Table.Th>{t('table.role')}</Table.Th>
                                 <Table.Th>{t('table.createdBy')}</Table.Th>
-                                <Table.Th>{t('table.createdAt')}</Table.Th>
+                                <Table.Th>
+                                    <EntityColumn
+                                        entity="users"
+                                        field="createdAt"
+                                        label={t('table.createdAt')}
+                                    />
+                                </Table.Th>
                                 <Table.Th>{t('table.status')}</Table.Th>
                                 <Table.Th>{t('table.actions')}</Table.Th>
                             </Table.Tr>
@@ -253,7 +369,6 @@ const UsersPage = () => {
                                               ? 'Administrator'
                                               : 'Job Seeker'}
                                     </Table.Td>
-
                                     <Table.Td>{user.createdBy}</Table.Td>
                                     <Table.Td>
                                         {DateTime.fromISO(
@@ -285,13 +400,8 @@ const UsersPage = () => {
                 </TableScrollContainer>
             )}
 
-            <Flex justify="center" mt="md">
-                <Pagination
-                    total={data?.totalPages ?? 1}
-                    value={+page}
-                    onChange={(value) => setPage(value.toString())}
-                />
-            </Flex>
+            {/* Pagination */}
+            <EntityPagination entity="users" total={data?.total ?? 0} />
         </Paper>
     );
 };

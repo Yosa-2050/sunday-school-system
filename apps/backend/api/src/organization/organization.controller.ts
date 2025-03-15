@@ -9,7 +9,6 @@ import {
     Res,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 // import { DocumentService } from '@shega/document/document.service';
@@ -59,13 +58,13 @@ export class OrganizationController {
     }
 
     @Post('/all')
-    findAll(@Body() dto: PaginationDto) {
-        return this.organizationService.findAllPaginated(dto);
+    findAll(@Body() dto: { q: string }) {
+        return this.organizationService.findAllPaginated(dto.q);
     }
 
     @Post('/export')
-    async export(@Body() dto: PaginationDto, @Res() res: Response) {
-        const org = await this.organizationService.findAllPaginated(dto);
+    async export(@Body() dto: { q: string }, @Res() res: Response) {
+        const org = await this.organizationService.findAllPaginated(dto.q);
 
         this.documentService.generateCsv(org.data, res, 'organizationList');
     }

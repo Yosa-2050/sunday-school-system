@@ -32,11 +32,11 @@ export interface Daum {
     name: string;
 }
 
-export const fetchOrganizations = async (payload: FetchUsersPayload) => {
+export const fetchOrganizations = async (payload: string) => {
     const response: Response = await fetcher('/organization/all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ q: payload }),
     });
 
     return response;

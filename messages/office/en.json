@@ -126,6 +126,7 @@
             "name": "Name"
         },
         "status": {
+            "all": "All Status",
             "active": "Active",
             "inactive": "Inactive",
             "pending": "Pending"

@@ -1,9 +1,15 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { QueryBuilderService } from 'shared/query-builder.service';
+import {
+    type EntityParam,
+    entityParamDeserializer,
+    entityParamSerializer,
+} from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -25,6 +31,7 @@ export class UsersService {
         @InjectRepository(UserRoles)
         private userRoleRepo: Repository<UserRoles>,
         @Inject(PasswordService) private passwordService: PasswordService,
+        private readonly queryBuilderService: QueryBuilderService,
     ) {}
 
     async createMainAdministrator(createUserDto: CreateUserDto) {
@@ -46,18 +53,17 @@ export class UsersService {
         user.password = await this.passwordService.hashPassword(user.password);
         return this.userRepo.save(user);
     }
+
     async UpdatePassword(updatePwdDto: updatePasswordRequest) {
         const user = await this.findById(updatePwdDto.id);
         if (!user) {
             throw new BadRequestException('Email doesnt exists');
         }
-        const pass = await this.passwordService.hashPassword(
+        user.password = await this.passwordService.hashPassword(
             updatePwdDto.password,
         );
-        this.userRepo.update(
-            { id: user.id },
-            { pwd_change_required: false, password: pass },
-        );
+        user.pwd_change_required = false;
+        this.userRepo.update({ id: user.id }, user);
         return user;
     }
 
@@ -142,44 +148,49 @@ export class UsersService {
         return this.userRoleRepo.findBy({ user: { id: userId } });
     }
 
-    async getUsersByUserType(type: UserRoleType, pagination: PaginationDto) {
-        const { page, limit } = pagination;
-        const skip = (page - 1) * limit;
-        const search = pagination.search;
+    async getUsersByUserType(payload: string) {
+        const { p, pp, s, f, o } = entityParamDeserializer(payload);
 
-        const query = this.userRepo
-            .createQueryBuilder('user')
-            .leftJoinAndSelect('user.profile', 'profile') // Join Profile entity
-            .leftJoinAndMapMany(
-                'user.roles', // Property to map the result to
-                'user.roles', // Relationship to join
-                'role', // Alias for the joined table
-                type ? 'role.role = :type' : '1=1', // Condition for the join
-                { type },
-            )
-            //.where(type ? 'role.role = :type' : '1=1', { type }) // Filter by role if provided
-            .andWhere(
-                search
-                    ? `(user.email ILIKE '%' || :search || '%' OR 
-                profile.firstName ILIKE '%' || :search || '%' OR 
-                profile.middleName ILIKE '%' || :search || '%' OR 
-                profile.lastName ILIKE '%' || :search || '%')`
-                    : '1=1',
-                { search },
-            )
-            .orderBy('user.createdAt', 'DESC') // Sort by newest users
-            .skip(skip)
-            .take(limit);
+        const queryParams: EntityParam = {
+            p,
+            pp,
+            s,
+            f,
+            o: o || [{ f: 'createdAt', d: 'desc' }],
+        };
 
-        const [users, total] = await query.getManyAndCount();
+        const queryString = entityParamSerializer(queryParams);
 
-        return new PaginatedResponseDto<GetPaginatedUsersResponseDto[]>(
-            users.map((x) => {
-                return new GetPaginatedUsersResponseDto(x);
-            }),
+        const searchableColumns = [
+            'entity.email',
+            'profile.firstName',
+            'profile.lastName',
+        ];
+
+        const joinOptions = [
+            {
+                relation: 'entity.profile',
+                alias: 'profile',
+            },
+            {
+                relation: 'entity.roles',
+                alias: 'roles',
+            },
+        ];
+
+        const { data: users, total } =
+            await this.queryBuilderService.buildQuery(
+                this.userRepo,
+                queryString,
+                joinOptions,
+                searchableColumns,
+            );
+
+        return new PaginatedResponseDto(
+            users.map((user) => new GetPaginatedUsersResponseDto(user)),
             total,
-            page,
-            limit,
+            p,
+            pp,
         );
     }
 }

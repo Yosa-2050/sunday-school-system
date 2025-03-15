@@ -11,23 +11,25 @@ import {
     LoadingOverlay,
     Menu,
     MenuItem,
-    Pagination,
     Paper,
-    Select,
     Stack,
     Table,
     TableScrollContainer,
     Text,
-    TextInput,
 } from '@mantine/core';
-import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
-import { IconDotsVertical, IconEye, IconSearch } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
+import {
+    PER_PAGE,
+    entityParamSchema,
+    entityParamSerializer,
+} from '@shega/shared';
+import { EntityFilter, EntityPagination, EntitySearch } from '@shega/ui';
+import { IconDotsVertical, IconEye } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobsAdmin } from 'app/[locale]/_api/admin/fetch-jobs';
 import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
-import { useQueryState } from 'nuqs';
-import { useState } from 'react';
+import { parseAsJson, useQueryState } from 'nuqs';
 
 interface Organization {
     id: string;
@@ -59,36 +61,20 @@ const JobsList = () => {
     const t = useTranslations('jobsListPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
-    const [selection, setSelection] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useQueryState('search', {
-        defaultValue: '',
-    });
-    const [categoryFilter, setCategoryFilter] = useQueryState('category', {
-        defaultValue: '',
-    });
-    const [sortOrder, setSortOrder] = useQueryState('sort', {
-        defaultValue: 'asc',
-    });
-    const [page, setPage] = useQueryState('page', { defaultValue: '1' });
-    const [limit, setLimit] = useQueryState('limit', { defaultValue: '10' });
-
-    const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
+    const [entityParams] = useQueryState(
+        'jobs',
+        parseAsJson(entityParamSchema.parse).withDefault({
+            p: 1,
+            pp: PER_PAGE,
+        }),
+    );
 
     const { data, isLoading, error } = useQuery({
-        queryKey: ['jobs', debouncedSearch, page, limit, categoryFilter],
-        queryFn: () =>
-            fetchJobsAdmin({
-                // status: categoryFilter,
-                pagination: {
-                    search: debouncedSearch,
-                    page: +page,
-                    limit: +limit,
-                },
-            }),
+        queryKey: ['jobs', entityParamSerializer(entityParams)],
+        queryFn: () => fetchJobsAdmin(entityParamSerializer(entityParams)),
     });
 
     const jobs = data?.data || [];
-    const totalPages = data?.totalPages || 0;
 
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
@@ -114,26 +100,22 @@ const JobsList = () => {
             <Divider my="md" />
 
             <Group justify="space-between" className="mb-4">
-                <TextInput
-                    leftSection={<IconSearch size={18} />}
+                <EntitySearch
+                    entity="jobs"
                     placeholder={t('searchPlaceholder')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ width: 300 }}
+                    className="!w-[300px]"
                 />
-                <Select
-                    placeholder={t('selectCategory')}
-                    value={categoryFilter}
-                    size="sm"
-                    onChange={(value) => setCategoryFilter(value ?? '')}
-                    data={[
+                <EntityFilter
+                    entity="jobs"
+                    filterOptions={[
                         { value: '', label: t('allCategories') },
                         { value: 'FULL_TIME', label: 'Full Time' },
                         { value: 'PART_TIME', label: 'Part Time' },
                         { value: 'CONTRACT', label: 'Contract' },
                         { value: 'INTERNSHIP', label: 'Internship' },
                     ]}
-                    style={{ width: 200 }}
+                    mode="select"
+                    field="type"
                 />
             </Group>
 
@@ -252,12 +234,7 @@ const JobsList = () => {
                 </TableScrollContainer>
             )}
 
-            <Pagination
-                total={totalPages}
-                value={+page}
-                onChange={(newPage) => setPage(newPage.toString())}
-                mt="md"
-            />
+            <EntityPagination entity="jobs" total={data?.total ?? 0} />
         </Paper>
     );
 };

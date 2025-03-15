@@ -2,10 +2,12 @@ import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { QueryBuilderService } from 'shared/query-builder.service';
+import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -20,6 +22,7 @@ export class JobPortalService {
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)
         private jobRepo: Repository<Jobs>,
+        private readonly queryBuilderService: QueryBuilderService,
     ) {}
 
     async create(
@@ -40,39 +43,79 @@ export class JobPortalService {
         return this.jobRepo.save(job);
     }
 
-    async getJobsByStatusPaginated(
-        status: ApprovalType,
-        paginationDto: PaginationDto,
-    ) {
-        const { page, limit } = paginationDto;
-        const skip = (page - 1) * limit;
+    async getJobsByStatusPaginated(paginationDto: string) {
+        const { p, pp } = entityParamDeserializer(paginationDto);
 
-        const [jobs, total] = await this.jobRepo.findAndCount({
-            where: { status },
-            take: limit,
-            skip,
-        });
+        const joinOptions = [
+            {
+                relation: 'entity.organization',
+                alias: 'organization',
+            },
+            {
+                relation: 'entity.postedBy',
+                alias: 'postedBy',
+            },
+        ];
 
-        return new PaginatedResponseDto<Jobs[]>(jobs, total, page, limit);
+        const searchableColumns = [
+            'entity.title',
+            'entity.description',
+            'organization.name',
+        ];
+
+        const { data: jobs, total } = await this.queryBuilderService.buildQuery(
+            this.jobRepo,
+            paginationDto,
+            joinOptions,
+            searchableColumns,
+        );
+
+        return new PaginatedResponseDto<Jobs[]>(jobs, total, p, pp);
     }
 
     async getJobsByStatusAndByOrgPaginated(
         organizationId: string,
-        status: ApprovalType,
-        paginationDto: PaginationDto,
+        paginationDto: string,
     ) {
-        const organization =
-            await this.organizationService.findOne(organizationId);
-        const { page, limit } = paginationDto;
-        const skip = (page - 1) * limit;
+        const deserialized = entityParamDeserializer(paginationDto);
 
-        const [jobs, total] = await this.jobRepo.findAndCount({
-            where: { status, organization: { id: organizationId } },
-            take: limit,
-            skip,
+        const searchableColumns = [
+            'entity.title',
+            'entity.description',
+            'organization.name',
+        ];
+        const queryString = entityParamSerializer({
+            ...deserialized,
+            f: [
+                // { f: "organization.id", v: organizationId, o: "eq" }, // Uncommented filter
+                ...(deserialized.f ?? []),
+            ],
         });
 
-        return new PaginatedResponseDto<Jobs[]>(jobs, total, page, limit);
+        const joinOptions = [
+            {
+                relation: 'entity.organization',
+                alias: 'organization',
+            },
+            {
+                relation: 'entity.postedBy',
+                alias: 'postedBy',
+            },
+        ];
+
+        const { data: jobs, total } = await this.queryBuilderService.buildQuery(
+            this.jobRepo,
+            queryString,
+            joinOptions,
+            searchableColumns,
+        );
+
+        return new PaginatedResponseDto<Jobs[]>(
+            jobs,
+            total,
+            deserialized.p,
+            deserialized.pp,
+        );
     }
 
     approveJob(id: string) {
