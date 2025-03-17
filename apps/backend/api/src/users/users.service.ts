@@ -69,7 +69,6 @@ export class UsersService {
         return user;
     }
 
-
     async createFromProfile(
         email: string,
         role: UserRoleType,
