@@ -185,6 +185,7 @@ const UsersPage = () => {
                         filterOptions={roles}
                         mode="select"
                         field="roles.role"
+                        placeholder="Filter By Role"
                     />
                     <EntityFilter
                         entity="users"
@@ -195,6 +196,7 @@ const UsersPage = () => {
                         ]}
                         mode="select"
                         field="isActive"
+                        placeholder="Filter By Status"
                     />
                     <Button
                         variant="light"

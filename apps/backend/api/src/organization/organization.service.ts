@@ -17,7 +17,11 @@ import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
-import { entityParamDeserializer } from 'shared/schema';
+import {
+    type EntityParam,
+    entityParamDeserializer,
+    entityParamSerializer,
+} from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -105,16 +109,25 @@ export class OrganizationService {
 
     async findAllPaginated(dto: string) {
         // Convert PaginationDto to the format expected by QueryBuilderService
-        const { p, pp, s } = entityParamDeserializer(dto);
+        const { p, pp, s, f, o } = entityParamDeserializer(dto);
 
+        const queryParams: EntityParam = {
+            p,
+            pp,
+            s,
+            f,
+            o: o || [{ f: 'createdAt', d: 'desc' }],
+        };
         // Define searchable columns (if applicable)
         const searchableColumns = ['name']; // Add other searchable columns if needed
+
+        const queryString = entityParamSerializer(queryParams);
 
         // Use the QueryBuilderService to build and execute the query
         const { data: organizations, total } =
             await this.queryBuilderService.buildQuery(
                 this.organizationRepo,
-                dto,
+                queryString,
                 [], // No joins needed for this query
                 searchableColumns,
             );

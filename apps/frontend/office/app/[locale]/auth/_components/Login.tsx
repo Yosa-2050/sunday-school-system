@@ -79,7 +79,7 @@ const Login = () => {
                         router.push('/admin/dashboard');
                     }
                     if (data.role === 'work_provider') {
-                        router.push('/work-provider/dashboard');
+                        router.push('/work-provider/jobs');
                     }
 
                     // notifications.show({

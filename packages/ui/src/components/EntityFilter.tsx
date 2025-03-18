@@ -14,6 +14,7 @@ type EntityFilterProps = {
     field: string;
     className?: string;
     item?: string;
+    placeholder?: string;
 };
 
 export function EntityFilter({
@@ -23,22 +24,22 @@ export function EntityFilter({
     entity,
     field,
     item,
+    placeholder,
 }: EntityFilterProps) {
     const [entityParams, setEntityParams] = useQueryState(
         entity,
         parseAsJson(entityParamSchema.parse),
     );
 
-    const defaultOption = filterOptions[0];
+    //   const defaultOption = filterOptions[0];
 
-    if (!defaultOption) {
-        throw new Error('filterOptions must not be empty');
-    }
+    //   if (!defaultOption) {
+    //     throw new Error("filterOptions must not be empty");
+    //   }
 
     // For multi-select, ensure the value is always an array
-    const filterParam = entityParams?.f
-        ?.filter((f) => f.f === field)
-        ?.map((f) => f.v) || [defaultOption.value];
+    const filterParam =
+        entityParams?.f?.filter((f) => f.f === field)?.map((f) => f.v) || [];
 
     const filterOperator = entityParams?.f?.[0]?.o || 'eq';
 
@@ -71,7 +72,7 @@ export function EntityFilter({
     if (mode === 'multi') {
         return (
             <MultiSelectPills
-                placeholder="Filter By"
+                placeholder={placeholder || 'Filter By'}
                 item={item}
                 value={filterParam} // Pass the array of values
                 data={filterOptions}
@@ -86,7 +87,7 @@ export function EntityFilter({
         <>
             <Select
                 size="sm"
-                placeholder="Filter By"
+                placeholder={placeholder || 'Filter By'}
                 value={filterParam[0]} // Pass the first value for single select
                 data={filterOptions}
                 onChange={handleFilterChange}
