@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import type { Repository } from 'typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Repository } from 'typeorm';
 import { PER_PAGE, entityParamDeserializer } from './schema';
 
 @Injectable()
 export class QueryBuilderService {
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
     async buildQuery<T>(
         repository: Repository<T>,
         queryString: string,

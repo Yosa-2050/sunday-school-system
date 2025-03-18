@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';

@@ -1,8 +1,9 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddressService } from '@shega/location/address.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -14,6 +15,11 @@ import { Repository } from 'typeorm';
 import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
+import { Category } from './entities/category.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobCategory } from './entities/job-category.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 
 @Injectable()
@@ -21,8 +27,15 @@ export class JobPortalService {
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)
+        private jobSkillsRepo: Repository<JobSkills>,
+        @InjectRepository(Jobs)
+        private jobCategoryRepo: Repository<JobCategory>,
+        @InjectRepository(Jobs)
         private jobRepo: Repository<Jobs>,
+        @InjectRepository(Category)
+        private categoryRepo: Repository<Category>,
         private readonly queryBuilderService: QueryBuilderService,
+        private readonly addressService: AddressService,
     ) {}
 
     async create(
@@ -37,6 +50,28 @@ export class JobPortalService {
             (x) => x.id === employeeOrgId,
         );
         const job = this.jobRepo.create(dto);
+        const skills = dto.skills.map((skill) => {
+            const jobSkill = this.jobSkillsRepo.create();
+            jobSkill.skill = skill;
+            return jobSkill;
+        });
+
+        const categories = await this.categoryRepo.find();
+
+        const category = dto.catagories.map((category) => {
+            const jobSkill = this.jobCategoryRepo.create();
+            jobSkill.category = categories.find((x) => x.id === category);
+            return jobSkill;
+        });
+        job.country = await this.addressService.findDefaultCountry();
+        job.state = dto.stateId
+            ? await this.addressService.findLocationInfoById(dto.stateId)
+            : null;
+        job.city = dto.cityId
+            ? await this.addressService.findLocationInfoById(dto.cityId)
+            : null;
+        job.jobCategory = category;
+        job.jobSkills = skills;
         job.organization = organization;
         job.status = ApprovalType.New;
         job.postedBy = employeeOrg;

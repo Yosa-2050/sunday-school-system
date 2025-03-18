@@ -20,6 +20,7 @@ import { Location } from './entities/location.entity';
 import { ContactType } from './enums/contact-type.enums';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LocationType } from './enums/location-type.enums';
+import { DefaultCountry } from './enums/location.const';
 
 @Injectable()
 export class AddressService {
@@ -99,12 +100,19 @@ export class AddressService {
         return this.addressRepo.save(address);
     }
 
+    findDefaultCountry() {
+        return this.countryRepo.findOneBy({ code: DefaultCountry });
+    }
     findAllCountries() {
         return this.countryRepo.find();
     }
 
-    findLocationByParent(parentId: string) {
+    findLocationInfoByParent(parentId: string) {
         return this.locationInfoRepo.findBy({ parent: { id: parentId } });
+    }
+
+    findLocationInfoById(id: string) {
+        return this.locationInfoRepo.findOneBy({ id });
     }
 
     findLocationByCountry(countryCode: string, type: LocationType) {

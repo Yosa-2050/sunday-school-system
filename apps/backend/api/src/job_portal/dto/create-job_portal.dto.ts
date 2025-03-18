@@ -1,6 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+    IsArray,
+    IsBoolean,
+    IsDate,
+    IsEnum,
+    IsNumber,
+    IsOptional,
+    IsString,
+    IsUUID,
+} from 'class-validator';
+import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
 import { EmploymentType } from '../enums/employment-type.enum';
+import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
+import { SalaryFrequencyType } from '../enums/salary-frequency-type.enum';
+import { SalaryType } from '../enums/salary-type.enum';
+import { WorkPlaceType } from '../enums/work-place-type.enum';
 
 export class CreateJobPortalDto {
     @ApiProperty()
@@ -13,6 +28,8 @@ export class CreateJobPortalDto {
 
     @ApiProperty()
     @IsEnum(EmploymentType)
+    @IsOptional()
+    @Transform(({ value }) => (value === '' ? undefined : value))
     type: EmploymentType;
 
     @ApiProperty()
@@ -22,4 +39,68 @@ export class CreateJobPortalDto {
     @ApiProperty()
     @IsNumber()
     salaryTo: number;
+
+    @ApiProperty()
+    @IsEnum(SalaryType)
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    @IsOptional()
+    salaryType: SalaryType; //fixed, negotiable
+
+    @ApiProperty()
+    @IsEnum(SalaryFrequencyType)
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    @IsOptional()
+    salaryFrequency: SalaryFrequencyType;
+
+    @ApiProperty()
+    @IsEnum(WorkPlaceType)
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    @IsOptional()
+    workPlace: WorkPlaceType;
+
+    @ApiProperty()
+    @IsString()
+    @IsUUID()
+    @IsOptional()
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    stateId: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsUUID()
+    @IsOptional()
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    cityId: string;
+
+    @ApiProperty()
+    @IsEnum(ExperianceLevelType)
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    @IsOptional()
+    experianceLevel: ExperianceLevelType;
+
+    @ApiProperty()
+    @IsNumber()
+    experiance: number;
+
+    @ApiProperty()
+    @IsDate()
+    deadline: Date;
+
+    @ApiProperty()
+    @IsEnum(EducationalRequirmentType)
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    @IsOptional()
+    educationalRequirment: EducationalRequirmentType;
+
+    @ApiProperty()
+    @IsArray()
+    skills: string[];
+
+    @ApiProperty()
+    @IsArray()
+    catagories: string[];
+
+    @ApiProperty()
+    @IsBoolean()
+    isPublished: boolean;
 }

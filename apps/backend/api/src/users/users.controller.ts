@@ -15,7 +15,7 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import type { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { updatePasswordRequest } from './dto/update-password.request.dto';
