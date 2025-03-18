@@ -30,56 +30,53 @@ export class CreateJobPortalDto {
 
     @ApiProperty()
     @IsEnum(SalaryType)
-    salary: SalaryType; //fixed, negotiable 
-    
+    salary: SalaryType; //fixed, negotiable
+
     @ApiProperty()
     @IsEnum(SalaryFrequencyType)
-        salaryFrequency: SalaryFrequencyType;
-    
-    
-        @ApiProperty()
+    salaryFrequency: SalaryFrequencyType;
+
+    @ApiProperty()
     @IsEnum(WorkPlaceType)
-        workPlace: WorkPlaceType;
-    
-        @ApiProperty()
+    workPlace: WorkPlaceType;
+
+    @ApiProperty()
     @IsString()
-        country: string;
-    
-        @ApiProperty()
+    country: string;
+
+    @ApiProperty()
     @IsString()
-        state: string;
-    
-        @ApiProperty()
+    state: string;
+
+    @ApiProperty()
     @IsString()
-        city: string;
-    
-        @ApiProperty()
+    city: string;
+
+    @ApiProperty()
     @IsEnum(ExperianceLevelType)
-        experianceLevel: ExperianceLevelType;
-    
-        @ApiProperty()
-        @IsNumber()
-        experiance: number;
-    
-        @ApiProperty()
+    experianceLevel: ExperianceLevelType;
+
+    @ApiProperty()
+    @IsNumber()
+    experiance: number;
+
+    @ApiProperty()
     @IsString()
-        deadline: Date;
-    
-        @ApiProperty()
+    deadline: Date;
+
+    @ApiProperty()
     @IsEnum(EducationalRequirmentType)
-        educationalRequirment: EducationalRequirmentType;
-    
-        @ApiProperty()
+    educationalRequirment: EducationalRequirmentType;
+
+    @ApiProperty()
     @IsArray()
-        skills: string[];
-    
-        @ApiProperty()
+    skills: string[];
+
+    @ApiProperty()
     @IsArray()
-        catagory: string[];
-    
-    
-        @ApiProperty()
+    catagory: string[];
+
+    @ApiProperty()
     @IsString()
-        isPublished: boolean;
-    
+    isPublished: boolean;
 }

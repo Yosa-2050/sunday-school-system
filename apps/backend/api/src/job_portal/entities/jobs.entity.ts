@@ -30,16 +30,16 @@ export class Jobs extends BaseModel {
     @Column()
     type: EmploymentType;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     salaryFrom: number;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     salaryTo: number;
 
     @Column()
-    salary: SalaryType; //fixed, negotiable 
+    salary: SalaryType; //fixed, negotiable
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     salaryFrequency: SalaryFrequencyType;
 
     @Column()
@@ -69,12 +69,17 @@ export class Jobs extends BaseModel {
     @Column()
     educationalRequirment: EducationalRequirmentType;
 
-    @OneToMany(() => JobSkills, skill => skill.job)
+    @OneToMany(
+        () => JobSkills,
+        (skill) => skill.job,
+    )
     skills: JobSkills[];
 
-    @OneToMany(() => JobCategory, category => category.job)
+    @OneToMany(
+        () => JobCategory,
+        (category) => category.job,
+    )
     catagory: JobCategory[];
-
 
     @Column()
     isPublished: boolean;
@@ -87,6 +92,4 @@ export class Jobs extends BaseModel {
 
     @ManyToOne(() => EmployeeOrganization, { eager: true, nullable: true })
     postedBy: EmployeeOrganization;
-
-
 }

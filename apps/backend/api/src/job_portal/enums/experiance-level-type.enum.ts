@@ -1,5 +1,5 @@
-export enum ExperianceLevelType{
-    Entry = "ENTRY",
-    Mid = "MID",
-    Senior = "SENIOR"
+export enum ExperianceLevelType {
+    Entry = 'ENTRY',
+    Mid = 'MID',
+    Senior = 'SENIOR',
 }

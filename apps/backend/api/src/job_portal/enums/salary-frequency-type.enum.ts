@@ -1,4 +1,4 @@
-export enum SalaryFrequencyType{
-    Hourly = "HOURLY",
-    Monthly = "MONTHLY",
+export enum SalaryFrequencyType {
+    Hourly = 'HOURLY',
+    Monthly = 'MONTHLY',
 }
