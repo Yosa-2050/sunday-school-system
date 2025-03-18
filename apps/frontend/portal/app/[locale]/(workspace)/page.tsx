@@ -325,7 +325,6 @@ function JobList({ filters }: { filters: JobFilters }) {
 
     return (
         <div className="space-y-4">
-            {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
             {data?.data.map((job) => (
                 <Card
                     key={job.id}

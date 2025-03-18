@@ -41,7 +41,6 @@ type RichTextInputProps = {
     withOnUpdate?: boolean;
 };
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export function RichTextInput({
     field,
     label,
