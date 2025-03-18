@@ -1,5 +1,9 @@
 import { Document } from './document/entities/document.entity';
+import { Category } from './job_portal/entities/category.entity';
+import { JobCategory } from './job_portal/entities/job-category.entity';
+import { JobSkills } from './job_portal/entities/job-skills.entity';
 import { Jobs } from './job_portal/entities/jobs.entity';
+import { Skills } from './job_portal/entities/skills.entity';
 import { LocationInfo } from './location/entities/LocationInfo.entity';
 import { ContactDetails } from './location/entities/contact-details.entity';
 import { Country } from './location/entities/country.entity';
@@ -30,4 +34,8 @@ export const AppEntities = [
     LocationInfo,
     Notification,
     Jobs,
+    JobCategory,
+    JobSkills,
+    Category,
+    Skills
 ];

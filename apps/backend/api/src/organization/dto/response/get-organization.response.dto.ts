@@ -6,11 +6,13 @@ export class GetOrganizationListResponseDto {
     isActive: boolean;
     createdBy: string;
     createdDate: string;
+    id: string;
 
     constructor(org: Organization) {
         this.createdBy = org.createdBy;
         this.createdDate = org.createdAt?.toISOString();
         this.isActive = org.isActive;
         this.name = org.name;
+        this.id = org.id;
     }
 }

@@ -79,7 +79,7 @@ export class AddressController {
     GetLocationInfoByParent(
         @Param('parentId', new ParseUUIDPipe()) parentId: string,
     ) {
-        return this.addressService.findLocationByParent(parentId);
+        return this.addressService.findLocationInfoByParent(parentId);
     }
 
     @Delete(':id')

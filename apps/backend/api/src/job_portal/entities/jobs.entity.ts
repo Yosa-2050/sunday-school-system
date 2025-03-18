@@ -18,6 +18,8 @@ import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
 import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
 import { JobCategory } from './job-category.entity';
 import { JobSkills } from './job-skills.entity';
+import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
+import { Country } from '@shega/location/entities/country.entity';
 
 @Entity()
 export class Jobs extends BaseModel {
@@ -27,7 +29,7 @@ export class Jobs extends BaseModel {
     @Column()
     description: string;
 
-    @Column()
+    @Column({nullable: true})
     type: EmploymentType;
 
     @Column({ nullable: true })
@@ -36,55 +38,57 @@ export class Jobs extends BaseModel {
     @Column({ nullable: true })
     salaryTo: number;
 
-    @Column()
-    salary: SalaryType; //fixed, negotiable
+    @Column({nullable: true})
+    salaryType: SalaryType; //fixed, negotiable
 
     @Column({ nullable: true })
     salaryFrequency: SalaryFrequencyType;
 
-    @Column()
+    @Column({nullable: true})
     status: ApprovalType;
 
-    @Column()
+    @Column({nullable: true})
     workPlace: WorkPlaceType;
 
-    @Column()
-    country: string;
+    @ManyToOne(() => Country, { eager: true, nullable: true })
+    country: Country;
 
-    @Column()
-    state: string;
+    @ManyToOne(() => LocationInfo, { eager: true, nullable: true })
+    state: LocationInfo;
 
-    @Column()
-    city: string;
+    @ManyToOne(() => LocationInfo, { eager: true, nullable: true })
+    city: LocationInfo;
 
-    @Column()
+    @Column({nullable: true})
     experianceLevel: ExperianceLevelType;
 
-    @Column()
+    @Column({nullable: true})
     experiance: number;
 
-    @Column()
+    @Column({nullable: true})
     deadline: Date;
 
-    @Column()
+    @Column({nullable: true})
     educationalRequirment: EducationalRequirmentType;
 
     @OneToMany(
         () => JobSkills,
         (skill) => skill.job,
+        {cascade: true}
     )
-    skills: JobSkills[];
+    jobSkills: JobSkills[];
 
     @OneToMany(
         () => JobCategory,
         (category) => category.job,
+        {cascade: true}
     )
-    catagory: JobCategory[];
+    jobCategory: JobCategory[];
 
-    @Column()
+    @Column({default: false})
     isPublished: boolean;
 
-    @Column()
+    @Column({nullable: true})
     postedDate: Date;
 
     @ManyToOne(() => Organization, { eager: true, nullable: false })
