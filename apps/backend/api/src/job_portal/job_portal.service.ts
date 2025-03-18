@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
+import { AddressService } from '@shega/location/address.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
@@ -13,14 +15,12 @@ import { Repository } from 'typeorm';
 import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
-import { Jobs } from './entities/jobs.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { JobSkills } from './entities/job-skills.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { JobCategory } from './entities/job-category.entity';
 import { Category } from './entities/category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddressService } from '@shega/location/address.service';
+import { JobCategory } from './entities/job-category.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobSkills } from './entities/job-skills.entity';
+import { Jobs } from './entities/jobs.entity';
 
 @Injectable()
 export class JobPortalService {

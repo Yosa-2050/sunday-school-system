@@ -26,9 +26,7 @@ import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
-import { Public } from '@shega/auth/jwt-public';
 
-@Public()
 @Controller('organization')
 export class OrganizationController {
     constructor(

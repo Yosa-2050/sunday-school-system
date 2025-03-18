@@ -1,7 +1,7 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Entity, ManyToOne } from 'typeorm';
-import { Jobs } from './jobs.entity';
 import { Category } from './category.entity';
+import { Jobs } from './jobs.entity';
 
 @Entity()
 export class JobCategory extends BaseModel {
