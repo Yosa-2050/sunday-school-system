@@ -3,6 +3,7 @@ import { Transform } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
+    IsDate,
     IsEnum,
     IsNumber,
     IsOptional,
@@ -82,7 +83,7 @@ export class CreateJobPortalDto {
     experiance: number;
 
     @ApiProperty()
-    @IsString()
+    @IsDate()
     deadline: Date;
 
     @ApiProperty()
