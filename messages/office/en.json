@@ -102,7 +102,7 @@
     },
     "usersPage": {
         "title": "List of Users",
-        "searchPlaceholder": "Search by Name, Email address, or Status",
+        "searchPlaceholder": "Search by Name or Email address",
         "selectRole": "Select role",
         "sortBy": "Sort by",
         "exportCSV": "Export to CSV",
@@ -137,7 +137,7 @@
     },
     "organizationsPage": {
         "title": "List of Organizations",
-        "searchPlaceholder": "Search Organizations",
+        "searchPlaceholder": "Search By Organization Name",
         "selectRole": "Select role",
         "sortBy": "Sort by",
         "exportCSV": "Export to CSV",
@@ -161,7 +161,7 @@
             "actions": "Actions",
             "edit": "Edit",
             "delete": "Delete",
-            "name": "Name"
+            "name": "Organization Name"
         },
         "status": {
             "active": "Active",
