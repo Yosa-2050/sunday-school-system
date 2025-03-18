@@ -1,1 +1,1 @@
-export const DefaultCountry = "ETH";
+export const DefaultCountry = 'ETH';

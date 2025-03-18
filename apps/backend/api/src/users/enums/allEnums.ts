@@ -21,5 +21,5 @@ export const AllEnums = {
     EmploymentType,
     SalaryFrequencyType,
     SalaryType,
-    WorkPlaceType
+    WorkPlaceType,
 };

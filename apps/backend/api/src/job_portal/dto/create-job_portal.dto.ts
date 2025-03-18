@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+    IsArray,
+    IsBoolean,
+    IsEnum,
+    IsNumber,
+    IsOptional,
+    IsString,
+    IsUUID,
+} from 'class-validator';
 import { EmploymentType } from '../enums/employment-type.enum';
 import { SalaryType } from '../enums/salary-type.enum';
 import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';

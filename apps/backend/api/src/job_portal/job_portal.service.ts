@@ -35,7 +35,7 @@ export class JobPortalService {
         @InjectRepository(Category)
         private categoryRepo: Repository<Category>,
         private readonly queryBuilderService: QueryBuilderService,
-        private readonly addressService: AddressService
+        private readonly addressService: AddressService,
     ) {}
 
     async create(
@@ -60,12 +60,16 @@ export class JobPortalService {
 
         const category = dto.catagories.map((category) => {
             const jobSkill = this.jobCategoryRepo.create();
-            jobSkill.category = categories.find(x => x.id === category);
+            jobSkill.category = categories.find((x) => x.id === category);
             return jobSkill;
         });
         job.country = await this.addressService.findDefaultCountry();
-        job.state = dto.stateId ? await this.addressService.findLocationInfoById(dto.stateId) : null;
-        job.city = dto.cityId ? await this.addressService.findLocationInfoById(dto.cityId) : null;
+        job.state = dto.stateId
+            ? await this.addressService.findLocationInfoById(dto.stateId)
+            : null;
+        job.city = dto.cityId
+            ? await this.addressService.findLocationInfoById(dto.cityId)
+            : null;
         job.jobCategory = category;
         job.jobSkills = skills;
         job.organization = organization;

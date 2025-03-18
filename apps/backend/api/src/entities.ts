@@ -37,5 +37,5 @@ export const AppEntities = [
     JobCategory,
     JobSkills,
     Category,
-    Skills
+    Skills,
 ];

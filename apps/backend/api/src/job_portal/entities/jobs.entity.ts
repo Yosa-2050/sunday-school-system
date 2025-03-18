@@ -29,7 +29,7 @@ export class Jobs extends BaseModel {
     @Column()
     description: string;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     type: EmploymentType;
 
     @Column({ nullable: true })
@@ -38,16 +38,16 @@ export class Jobs extends BaseModel {
     @Column({ nullable: true })
     salaryTo: number;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     salaryType: SalaryType; //fixed, negotiable
 
     @Column({ nullable: true })
     salaryFrequency: SalaryFrequencyType;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     status: ApprovalType;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     workPlace: WorkPlaceType;
 
     @ManyToOne(() => Country, { eager: true, nullable: true })
@@ -59,36 +59,36 @@ export class Jobs extends BaseModel {
     @ManyToOne(() => LocationInfo, { eager: true, nullable: true })
     city: LocationInfo;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     experianceLevel: ExperianceLevelType;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     experiance: number;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     deadline: Date;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     educationalRequirment: EducationalRequirmentType;
 
     @OneToMany(
         () => JobSkills,
         (skill) => skill.job,
-        {cascade: true}
+        { cascade: true },
     )
     jobSkills: JobSkills[];
 
     @OneToMany(
         () => JobCategory,
         (category) => category.job,
-        {cascade: true}
+        { cascade: true },
     )
     jobCategory: JobCategory[];
 
-    @Column({default: false})
+    @Column({ default: false })
     isPublished: boolean;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     postedDate: Date;
 
     @ManyToOne(() => Organization, { eager: true, nullable: false })

@@ -18,7 +18,7 @@ import { AddressModule } from '@shega/location/address.module';
         TypeOrmModule.forFeature([Jobs, JobSkills, JobCategory, Category]),
         OrganizationModule,
         DocumentModule,
-        AddressModule
+        AddressModule,
     ],
 })
 export class JobPortalModule {}

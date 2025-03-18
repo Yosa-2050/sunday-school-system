@@ -100,8 +100,8 @@ export class AddressService {
         return this.addressRepo.save(address);
     }
 
-    findDefaultCountry(){
-        return this.countryRepo.findOneBy({code: DefaultCountry});
+    findDefaultCountry() {
+        return this.countryRepo.findOneBy({ code: DefaultCountry });
     }
     findAllCountries() {
         return this.countryRepo.find();
