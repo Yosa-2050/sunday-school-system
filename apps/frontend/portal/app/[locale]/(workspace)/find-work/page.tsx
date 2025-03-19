@@ -1,7 +1,7 @@
-import UnderConstruction from "@/components/UnderConstruction";
+import UnderConstruction from '@/components/UnderConstruction';
 
 const Page = () => {
-  return <UnderConstruction />;
+    return <UnderConstruction />;
 };
 
 export default Page;

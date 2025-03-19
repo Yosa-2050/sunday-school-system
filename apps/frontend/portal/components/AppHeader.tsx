@@ -9,8 +9,8 @@ import { useAuth } from '@shega/ui';
 import { IconLogout } from '@tabler/icons-react';
 import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
-import Logo from '../public/logo.svg';
 import Image from 'next/image';
+import Logo from '../public/logo.svg';
 
 function AppHeader() {
     const router = useRouter();
