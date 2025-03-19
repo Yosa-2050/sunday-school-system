@@ -21,7 +21,7 @@ export class EnumsController {
     }
 
     @Get()
-    getAllEnumTypes(){
+    getAllEnumTypes() {
         return AllEnums;
     }
 }
