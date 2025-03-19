@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotImplementedException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotImplementedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
@@ -171,12 +175,12 @@ export class JobPortalService {
     }
 
     async jobApproval(id: string, status: ApprovalType) {
-        const job = await this.jobRepo.findOneBy({id});
-        if(job && job.status === ApprovalType.Waiting_Approval){
-            throw new BadRequestException("Unable to update job");
+        const job = await this.jobRepo.findOneBy({ id });
+        if (job && job.status === ApprovalType.Waiting_Approval) {
+            throw new BadRequestException('Unable to update job');
         }
         const updatedJob = await this.jobRepo.update(id, { status });
-        if(updatedJob){
+        if (updatedJob) {
             return new ApiResponseDto(200);
         }
         return new ApiResponseDto(100);
