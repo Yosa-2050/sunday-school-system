@@ -50,7 +50,7 @@ export class JobPortalService {
             (x) => x.id === employeeOrgId,
         );
         const job = this.jobRepo.create(dto);
-        const skills = dto.skills.map((skill) => {
+        const skills = dto.skills?.map((skill) => {
             const jobSkill = this.jobSkillsRepo.create();
             jobSkill.skill = skill;
             return jobSkill;
@@ -58,7 +58,7 @@ export class JobPortalService {
 
         const categories = await this.categoryRepo.find();
 
-        const category = dto.catagories.map((category) => {
+        const category = dto.catagories?.map((category) => {
             const jobSkill = this.jobCategoryRepo.create();
             jobSkill.category = categories.find((x) => x.id === category);
             return jobSkill;

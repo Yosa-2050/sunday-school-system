@@ -7,10 +7,9 @@ import {
     ParseUUIDPipe,
     Post,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
-
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from './address.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -27,18 +26,15 @@ export class AddressController {
     constructor(private readonly addressService: AddressService) {}
 
     @Post()
-    @ApiExcludeEndpoint()
     create(@Body() createAddressDto: CreateAddressDto) {
         // return this.addressService.create(createAddressDto);
     }
 
-    @ApiExcludeEndpoint()
     @Post('location')
     createLocation(@Body() request: CreateLocationRequestDto) {
         // return this.addressService.createLocation(request);
     }
 
-    @ApiExcludeEndpoint()
     @Get('location/:referenceId/:referenceType')
     getLocationByReference(
         @Param('referenceId') referenceId: string,
@@ -50,7 +46,6 @@ export class AddressController {
         );
     }
 
-    @ApiExcludeEndpoint()
     @Get(':referenceId/:referenceType')
     getContanctsByReference(
         @Param('referenceId') referenceId: string,

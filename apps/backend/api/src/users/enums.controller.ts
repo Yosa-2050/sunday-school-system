@@ -19,4 +19,9 @@ export class EnumsController {
 
         return { data: selectedEnum };
     }
+
+    @Get()
+    getAllEnumTypes(){
+        return AllEnums;
+    }
 }

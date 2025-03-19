@@ -24,6 +24,7 @@ export class CreateJobPortalDto {
 
     @ApiProperty()
     @IsString()
+    @IsOptional()
     description: string;
 
     @ApiProperty()
@@ -34,10 +35,12 @@ export class CreateJobPortalDto {
 
     @ApiProperty()
     @IsNumber()
+    @IsOptional()
     salaryFrom: number;
 
     @ApiProperty()
     @IsNumber()
+    @IsOptional()
     salaryTo: number;
 
     @ApiProperty()
@@ -80,10 +83,12 @@ export class CreateJobPortalDto {
 
     @ApiProperty()
     @IsNumber()
+    @IsOptional()
     experiance: number;
 
     @ApiProperty()
     @IsDate()
+    @IsOptional()
     deadline: Date;
 
     @ApiProperty()
@@ -94,13 +99,16 @@ export class CreateJobPortalDto {
 
     @ApiProperty()
     @IsArray()
+    @IsOptional()
     skills: string[];
 
     @ApiProperty()
     @IsArray()
+    @IsOptional()
     catagories: string[];
 
     @ApiProperty()
     @IsBoolean()
+    @IsOptional()
     isPublished: boolean;
 }
