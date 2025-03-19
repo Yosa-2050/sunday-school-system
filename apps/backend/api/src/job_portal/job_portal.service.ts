@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
@@ -22,6 +22,7 @@ import { JobCategory } from './entities/job-category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
+import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 
 @Injectable()
 export class JobPortalService {
@@ -169,8 +170,16 @@ export class JobPortalService {
         return jobsList;
     }
 
-    approveJob(id: string) {
-        return this.jobRepo.update(id, { status: ApprovalType.Approved });
+    async jobApproval(id: string, status: ApprovalType) {
+        const job = await this.jobRepo.findOneBy({id});
+        if(job && job.status === ApprovalType.Waiting_Approval){
+            throw new BadRequestException("Unable to update job");
+        }
+        const updatedJob = await this.jobRepo.update(id, { status });
+        if(updatedJob){
+            return new ApiResponseDto(200);
+        }
+        return new ApiResponseDto(100);
     }
 
     findAll() {

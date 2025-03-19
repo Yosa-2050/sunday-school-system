@@ -27,6 +27,7 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 
 @ApiTags('job-portal')
 @Controller('job-portal')
@@ -95,7 +96,13 @@ export class JobPortalController {
     @Roles(UserRoleType.Administrator)
     @Patch('approve/:id')
     approveJob(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.jobPortalService.approveJob(id);
+        return this.jobPortalService.jobApproval(id, ApprovalType.Approved);
+    }
+
+    @Roles(UserRoleType.Administrator)
+    @Patch('decline/:id')
+    declineJob(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.jobPortalService.jobApproval(id, ApprovalType.Declined);
     }
 
     @Get(':id')
