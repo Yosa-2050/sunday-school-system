@@ -1,588 +1,364 @@
-'use client';
+"use client";
 
-import { redirect, useRouter } from '@/i18n/routing';
+import { redirect, useRouter } from "@/i18n/routing";
 import {
-    Avatar,
-    Button,
-    Card,
-    Container,
-    Divider,
-    Drawer,
-    Grid,
-    Group,
-    LoadingOverlay,
-    NumberFormatter,
-    Paper,
-    SimpleGrid,
-    Stack,
-    Text,
-    TextInput,
-    Title,
-    TypographyStylesProvider,
-} from '@mantine/core';
-import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
-import { logger } from '@shega/shared';
-import { useAuth } from '@shega/ui';
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Container,
+  Divider,
+  Drawer,
+  Flex,
+  Grid,
+  Group,
+  LoadingOverlay,
+  Paper,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+  TypographyStylesProvider,
+} from "@mantine/core";
+import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
+import { useAuth } from "@shega/ui";
 import {
-    IconBriefcase,
-    IconBuildingSkyscraper,
-    IconBulb,
-    IconChartBar,
-    IconClock,
-    IconCode,
-    IconCurrencyDollar,
-    IconDeviceMobile,
-    IconFilter,
-    IconMapPin,
-    IconPencil,
-    IconSearch,
-    IconTruck,
-    IconUsers,
-} from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
-import { jobTypes } from 'constants/job-type';
-import { useLocale, useTranslations } from 'next-intl';
-import { useQueryState } from 'nuqs';
-import { useEffect, useState } from 'react';
+  IconBriefcase,
+  IconCurrencyDollar,
+  IconFilter,
+  IconMapPin,
+  IconSearch,
+} from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchJobs } from "app/_api/jobs/fetch-jobs";
+import { useLocale, useTranslations } from "next-intl";
+import { useQueryState } from "nuqs";
+import { useEffect, useState } from "react";
 
-// Types for our filters
+// Types
 interface JobFilters {
-    location: string;
-    jobType: string;
-    salaryRange: string;
-    experienceLevel: string;
-    keyword: string;
+  location: string;
+  jobType: string;
+  salaryRange: string;
+  experienceLevel: string;
+  keyword: string;
 }
 
 interface Job {
-    id: number;
-    title: string;
-    company: string;
-    companyLogo: string;
-    location: string;
-    jobType: string;
-    salaryRange: string;
-    experienceLevel: string;
-    description: string;
-    postedDate: string;
-    skills: string[];
-    isBookmarked?: boolean;
-    isFavorite?: boolean;
+  id: number;
+  title: string;
+  organization: { name: string };
+  type: string;
+  salaryTo: string;
+  description: string;
+  createdAt: string;
 }
 
-interface Category {
-    title: string;
-    icon: React.ReactNode;
-    jobCount: number;
-    color: string;
-}
-
-// App Header Component
-
-const jobCategories: Category[] = [
-    {
-        title: 'Technology',
-        icon: <IconCode size={24} />,
-        jobCount: 1234,
-        color: 'blue',
-    },
-    {
-        title: 'Design',
-        icon: <IconPencil size={24} />,
-        jobCount: 856,
-        color: 'pink',
-    },
-    {
-        title: 'Business',
-        icon: <IconChartBar size={24} />,
-        jobCount: 943,
-        color: 'green',
-    },
-    {
-        title: 'Real Estate',
-        icon: <IconBuildingSkyscraper size={24} />,
-        jobCount: 432,
-        color: 'orange',
-    },
-    {
-        title: 'Mobile Dev',
-        icon: <IconDeviceMobile size={24} />,
-        jobCount: 654,
-        color: 'violet',
-    },
-    {
-        title: 'Innovation',
-        icon: <IconBulb size={24} />,
-        jobCount: 345,
-        color: 'yellow',
-    },
-    {
-        title: 'HR',
-        icon: <IconUsers size={24} />,
-        jobCount: 567,
-        color: 'red',
-    },
-    {
-        title: 'Logistics',
-        icon: <IconTruck size={24} />,
-        jobCount: 234,
-        color: 'cyan',
-    },
-];
-
-// Can component for auth checks
-interface CanProps {
-    children: React.ReactNode;
-    fallback?: React.ReactNode;
-    action: () => void;
-}
-
-function Can({ children, fallback, action }: CanProps) {
-    const router = useRouter();
-    const { user } = useAuth();
-    const isAuthenticated = !!user;
-
-    const handleAction = () => {
-        if (isAuthenticated) {
-            action();
-        } else {
-            router.push('/auth/login');
-        }
-    };
-
-    return (
-        <div
-            onClick={handleAction}
-            onKeyUp={(e) => e.key === 'Enter' && handleAction()}
-            onKeyDown={(e) => e.key === 'Enter' && handleAction()}
-            onKeyPress={(e) => e.key === 'Enter' && handleAction()}
-            style={{ cursor: 'pointer' }}
-        >
-            {isAuthenticated ? children : fallback || children}
-        </div>
-    );
-}
-
-// Category Card Component
-function CategoryCard({ category }: { category: Category }) {
-    return (
-        <Card
-            shadow="sm"
-            padding="lg"
-            radius="md"
-            className="hover:shadow-lg transition-all duration-200 cursor-pointer"
-        >
-            <Group>
-                <Avatar
-                    size="lg"
-                    radius="md"
-                    color={category.color}
-                    className="bg-opacity-20"
-                >
-                    {category.icon}
-                </Avatar>
-                <div>
-                    <Text size="lg" fw={600}>
-                        {category.title}
-                    </Text>
-                    <Text size="sm" c="dimmed">
-                        {category.jobCount} jobs available
-                    </Text>
-                </div>
-            </Group>
-        </Card>
-    );
-}
-
-// Filter Sidebar Component
-function JobFilterSidebar({
-    filters,
-    onFilterChange,
-}: {
-    filters: JobFilters;
-    onFilterChange: (filters: JobFilters) => void;
-}) {
-    const t = useTranslations('jobListing');
-
-    return (
-        <Paper className="p-4 md:p-6 rounded-lg sticky top-4" shadow="sm">
-            <Title order={4} className="mb-4 md:mb-6 font-semibold">
-                {t('filterLabel')}
-            </Title>
-            <div className="space-y-4 md:space-y-6">
-                <TextInput
-                    label={t('location')}
-                    value={filters.location}
-                    onChange={(e) =>
-                        onFilterChange({ ...filters, location: e.target.value })
-                    }
-                    placeholder="Enter location"
-                    leftSection={<IconMapPin size={16} />}
-                />
-                <TextInput
-                    label={t('jobType')}
-                    value={filters.jobType}
-                    onChange={(e) =>
-                        onFilterChange({ ...filters, jobType: e.target.value })
-                    }
-                    placeholder="Job type"
-                    leftSection={<IconBriefcase size={16} />}
-                />
-                <TextInput
-                    label={t('salaryRange')}
-                    value={filters.salaryRange}
-                    onChange={(e) =>
-                        onFilterChange({
-                            ...filters,
-                            salaryRange: e.target.value,
-                        })
-                    }
-                    placeholder="Salary range"
-                    leftSection={<IconCurrencyDollar size={16} />}
-                />
-                <TextInput
-                    label={t('experience')}
-                    value={filters.experienceLevel}
-                    onChange={(e) =>
-                        onFilterChange({
-                            ...filters,
-                            experienceLevel: e.target.value,
-                        })
-                    }
-                    placeholder="Experience level"
-                    leftSection={<IconClock size={16} />}
-                />
-                <Button
-                    variant="light"
-                    fullWidth
-                    onClick={() =>
-                        onFilterChange({
-                            location: '',
-                            jobType: '',
-                            salaryRange: '',
-                            experienceLevel: '',
-                            keyword: '',
-                        })
-                    }
-                >
-                    {t('resetFilters')}
-                </Button>
-            </div>
-        </Paper>
-    );
-}
-
-// Job List Component
-function JobList({ filters }: { filters: JobFilters }) {
-    const router = useRouter();
-    const t = useTranslations('jobListing');
-    const isMobile = useMediaQuery('(max-width: 768px)');
-
-    const [selection, setSelection] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useQueryState('search', {
-        defaultValue: '',
-    });
-    const [categoryFilter, setCategoryFilter] = useQueryState('category', {
-        defaultValue: '',
-    });
-    const [sortOrder, setSortOrder] = useQueryState('sort', {
-        defaultValue: 'asc',
-    });
-    const [page, setPage] = useQueryState('page', { defaultValue: '1' });
-    const [limit, setLimit] = useQueryState('limit', { defaultValue: '10' });
-
-    const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
-
-    const { data, isLoading, error } = useQuery({
-        queryKey: ['jobs', debouncedSearch, page, limit, categoryFilter],
-        queryFn: () =>
-            fetchJobs({
-                search: debouncedSearch,
-                page: +page,
-                limit: +limit,
-            }),
-    });
-
-    const jobs = data?.data || [];
-    const totalPages = data?.totalPages || 0;
-
-    if (isLoading) {
-        return <LoadingOverlay visible={true} h="100vh" />;
-    }
-
-    if (error) {
-        return <Text color="red">Error loading jobs</Text>;
-    }
-
-    const toggleBookmark = (jobId: string) => {
-        logger.log(jobId);
-    };
-
-    const toggleFavorite = (jobId: string) => {
-        logger.log(jobId);
-    };
-
-    return (
-        <div className="space-y-4">
-            {data?.data.map((job) => (
-                <Card
-                    key={job.id}
-                    className="hover:shadow-md transition-shadow duration-200"
-                    padding={isMobile ? 'sm' : 'lg'} // Reduce padding on mobile
-                >
-                    {/* Job Header */}
-                    <Group
-                        justify="space-between"
-                        align="flex-start"
-                        wrap="nowrap"
-                    >
-                        <Group gap="sm">
-                            <Avatar size={isMobile ? 'sm' : 'lg'} color="blue">
-                                {job.organization.name.slice(0, 2)}
-                            </Avatar>
-                            <div>
-                                <Title
-                                    order={isMobile ? 5 : 4}
-                                    className="font-semibold line-clamp-1"
-                                    onClick={() =>
-                                        router.push(`/jobs/${job.id}`)
-                                    }
-                                >
-                                    {job.title}
-                                </Title>
-                                <Text
-                                    size="sm"
-                                    c="dimmed"
-                                    className="line-clamp-1"
-                                >
-                                    {job.organization?.name}
-                                </Text>
-                            </div>
-                        </Group>
-                        {/* <Group gap="xs">
-              <Can
-                action={() => toggleBookmark(job.id)}
-                fallback={
-                  <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
-                    <IconBookmark size={16} />
-                  </ActionIcon>
-                }
-              >
-                <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
-                  biome-ignore lint/correctness/noConstantCondition: <explanation>
-                  {false ? (
-                    <IconBookmarkFilled size={16} color="#228be6" />
-                  ) : (
-                    <IconBookmark size={16} />
-                  )}
-                </ActionIcon>
-              </Can>
-              <Can
-                action={() => toggleFavorite(job.id)}
-                fallback={
-                  <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
-                    <IconHeart size={16} />
-                  </ActionIcon>
-                }
-              >
-                <ActionIcon variant="subtle" size={isMobile ? "sm" : "md"}>
-                  {/* biome-ignore lint/correctness/noConstantCondition: <explanation> */}
-                        {/* {false ? (
-                    <IconHeartFilled size={16} color="#ff6b6b" />
-                  ) : (
-                    <IconHeart size={16} />
-                  )}
-                </ActionIcon>
-              </Can>
-            </Group>  */}
-                    </Group>
-
-                    {/* Job Description */}
-                    <TypographyStylesProvider mt="sm">
-                        <div
-                            // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                            dangerouslySetInnerHTML={{
-                                __html: job.description,
-                            }}
-                            className="line-clamp-2 text-sm" // Truncate description
-                        />
-                    </TypographyStylesProvider>
-
-                    <Divider className="my-3" />
-
-                    {/* Job Details */}
-                    <Stack gap="xs">
-                        <Group gap="xs">
-                            <IconMapPin size={14} />
-                            <Text size="sm" className="line-clamp-1">
-                                {'job.location'}
-                            </Text>
-                        </Group>
-                        <Group gap="xs">
-                            <IconBriefcase size={14} />
-                            <Text size="sm" className="line-clamp-1">
-                                {jobTypes[job.type]}
-                            </Text>
-                        </Group>
-                        <Group gap="xs">
-                            <IconCurrencyDollar size={14} />
-                            <Text size="sm" className="line-clamp-1">
-                                <NumberFormatter
-                                    value={job.salaryFrom}
-                                    thousandSeparator=","
-                                />{' '}
-                                to{' '}
-                                <NumberFormatter
-                                    value={job.salaryTo}
-                                    thousandSeparator=","
-                                />
-                            </Text>
-                        </Group>
-                    </Stack>
-
-                    {/* Apply Button */}
-                    <Can
-                        action={() => router.push(`/jobs/${job.id}`)}
-                        fallback={
-                            <Button
-                                fullWidth
-                                size={isMobile ? 'sm' : 'md'}
-                                mt="sm"
-                            >
-                                Sign in to Apply
-                            </Button>
-                        }
-                    >
-                        <Button fullWidth size={isMobile ? 'sm' : 'md'} mt="md">
-                            Detail
-                        </Button>
-                    </Can>
-                </Card>
-            ))}
-        </div>
-    );
-}
-
-// Inside the HomePage component
 export default function HomePage() {
-    const { user } = useAuth();
-    const locale = useLocale();
-    const t = useTranslations('jobListing');
-    const [filters, setFilters] = useState<JobFilters>({
-        location: '',
-        jobType: '',
-        salaryRange: '',
-        experienceLevel: '',
-        keyword: '',
-    });
-    const [opened, setOpened] = useState(false); // State for Drawer
-    const isMobile = useMediaQuery('(max-width: 768px)'); // Detect mobile screens
+  const { user } = useAuth();
+  const locale = useLocale();
+  const t = useTranslations("jobListing");
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [filters, setFilters] = useState<JobFilters>({
+    location: "",
+    jobType: "",
+    salaryRange: "",
+    experienceLevel: "",
+    keyword: "",
+  });
+  const [opened, setOpened] = useState(false);
 
-    useEffect(() => {
-        if (!user) {
-            redirect({ href: '/auth/login', locale });
-        }
-    }, [user, locale]);
+  useEffect(() => {
+    if (!user) {
+      redirect({ href: "/auth/login", locale });
+    }
+  }, [user, locale]);
 
-    return (
-        <>
-            {/* Hero Section */}
-            <div
-                className="py-12 md:py-20 mb-12 bg-cover bg-center relative"
-                style={{
-                    backgroundImage:
-                        "url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80')",
+  return (
+    <>
+      <div className="relative">
+        <div
+          className="py-12 md:py-20 bg-cover bg-center relative h-[70vh]"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+          }}
+        >
+          <div className="absolute inset-0 bg-black/60" />
+          <Container size="xl" className="relative z-10">
+            <Stack gap="lg" className="max-w-xl mt-20">
+              <Title className="text-4xl md:text-6xl font-bold text-white">
+                Find The Job That Fits Your Life
+              </Title>
+              <Text size="lg" c="gray.2">
+                Shega Jobs makes finding your ideal career simple and fast.
+                Browse diverse job listings and kickstart your professional
+                journey today.
+              </Text>
+            </Stack>
+
+            <Group
+              gap="sm"
+              mt="lg"
+              className="max-w-5xl bg-white rounded-lg p-2 shadow-lg border-none"
+            >
+              <TextInput
+                size="lg"
+                placeholder="Job title, keywords or organization"
+                value={filters.keyword}
+                onChange={(e) =>
+                  setFilters({ ...filters, keyword: e.target.value })
+                }
+                leftSection={<IconSearch size={24} />}
+                className="flex-1 p-2"
+                styles={{
+                  input: {
+                    border: "none", // Target the input element directly
+                  },
                 }}
-            >
-                <div className="absolute inset-0 bg-black bg-opacity-50" />
-                <Container size="xl" className="relative">
-                    <div className="text-center mb-8 md:mb-12">
-                        <Title className="text-3xl md:text-5xl font-bold mb-4 text-white">
-                            Find Your Dream Job Today
-                        </Title>
-                        <Text size="lg" className="text-gray-200">
-                            Discover thousands of job opportunities with all the
-                            information you need
-                        </Text>
-                    </div>
+              />
+              <Select
+                size="lg"
+                placeholder="All Location"
+                data={[]}
+                value={filters.location}
+                onChange={(value) =>
+                  setFilters({ ...filters, location: value || "" })
+                }
+                leftSection={<IconMapPin size={24} />}
+                className="flex-1 p-2"
+                styles={{
+                  input: {
+                    border: "none", // Target the input element directly
+                  },
+                }}
+              />
+              <Button size="lg" className="border-none">
+                Find Jobs
+              </Button>
+            </Group>
 
-                    <TextInput
-                        size="lg"
-                        placeholder={t('searchPlaceholder')}
-                        value={filters.keyword}
-                        onChange={(e) =>
-                            setFilters({ ...filters, keyword: e.target.value })
-                        }
-                        leftSection={<IconSearch size={24} />}
-                        className="max-w-3xl mx-auto bg-white rounded-xl"
-                    />
-                </Container>
-            </div>
-
-            {/* Categories Section */}
-            <Container size="xl" className="mb-12 md:mb-20">
-                <Title className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">
-                    Browse by Category
-                </Title>
-                <SimpleGrid
-                    cols={{ base: 1, sm: 2, md: 3, lg: 4 }}
-                    spacing="lg"
+            {/* <Group gap="sm" mt="md">
+              {[
+                "Designer",
+                "Developer",
+                "Tester",
+                "Writing",
+                "Project Manager",
+              ].map((keyword) => (
+                <Anchor
+                  key={keyword}
+                  href="#"
+                  className="text-gray-200 hover:text-white text-sm"
                 >
-                    {jobCategories.map((category) => (
-                        <CategoryCard
-                            key={category.title}
-                            category={category}
-                        />
-                    ))}
-                </SimpleGrid>
-            </Container>
+                  {keyword}
+                </Anchor>
+              ))}
+            </Group> */}
+          </Container>
+        </div>
+      </div>
 
-            <Container size="xl">
-                <Grid>
-                    {/* Filters Sidebar */}
-                    {/* {!isMobile && ( // Show sidebar only on desktop
-                        <Grid.Col span={{ base: 12, md: 3 }}>
-                            <JobFilterSidebar
-                                filters={filters}
-                                onFilterChange={setFilters}
-                            />
-                        </Grid.Col>
-                    )} */}
+      <Container size="xl" mt="md">
+        <Title className="text-2xl font-bold my-4" c="dimmed">
+          Recent Jobs
+        </Title>
+        <Divider mb={"md"} />
+        <Grid className="mt-3">
+          <Grid.Col span={{ base: 12 }}>
+            {isMobile && (
+              <Button
+                fullWidth
+                leftSection={<IconFilter size={18} />}
+                onClick={() => setOpened(true)}
+                mb="md"
+              >
+                Filter Jobs
+              </Button>
+            )}
+            <JobList filters={filters} />
+          </Grid.Col>
+        </Grid>
+      </Container>
 
-                    {/* Job Listings */}
-                    <Grid.Col span={{ base: 12, md: isMobile ? 12 : 12 }}>
-                        {/* Filter Button for Mobile */}
-                        {isMobile && (
-                            <Button
-                                fullWidth
-                                leftSection={<IconFilter size={18} />}
-                                onClick={() => setOpened(true)}
-                                className="mb-4"
-                            >
-                                Filter Jobs
-                            </Button>
-                        )}
+      <Drawer
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Filter Jobs"
+        position="right"
+        size="sm"
+        padding="md"
+      >
+        <JobFilterSidebar filters={filters} onFilterChange={setFilters} />
+      </Drawer>
+    </>
+  );
+}
 
-                        <JobList filters={filters} />
-                    </Grid.Col>
-                </Grid>
-            </Container>
+// Components
+function JobList({ filters }: { filters: JobFilters }) {
+  const router = useRouter();
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [searchQuery, setSearchQuery] = useQueryState("search", {
+    defaultValue: "",
+  });
+  const [page, setPage] = useQueryState("page", { defaultValue: "1" });
+  const [limit] = useQueryState("limit", { defaultValue: "10" });
+  const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
 
-            {/* Drawer for Mobile Filters */}
-            <Drawer
-                opened={opened}
-                onClose={() => setOpened(false)}
-                title="Filter Jobs"
-                position="right"
-                size="sm"
-                padding="md"
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["jobs", debouncedSearch, page, limit],
+    queryFn: () =>
+      fetchJobs({ search: debouncedSearch, page: +page, limit: +limit }),
+  });
+
+  if (isLoading) {
+    return <LoadingOverlay visible={true} h="100vh" />;
+  }
+  if (error) {
+    return <Text color="red">Error loading jobs</Text>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {data?.data.map((job) => (
+        <Card
+          key={job.id.toString()}
+          withBorder
+          radius="md"
+          shadow="sm"
+          padding={isMobile ? "sm" : "lg"}
+          className="hover:shadow-md transition-shadow"
+        >
+          <Group justify="space-between" align="flex-start">
+            <Group gap="sm">
+              <Avatar size={isMobile ? "sm" : "lg"} color="blue" radius="xl">
+                {job.organization?.name.slice(0, 2)}
+              </Avatar>
+              <div>
+                <Title
+                  order={isMobile ? 5 : 4}
+                  className="font-semibold line-clamp-1 hover:text-blue-600 cursor-pointer"
+                  onClick={() => router.push(`/jobs/${job.id}`)}
+                >
+                  {job.title}
+                </Title>
+                <Text size="sm" c="dimmed" className="line-clamp-1">
+                  {job.organization?.name}
+                </Text>
+              </div>
+            </Group>
+          </Group>
+
+          <Group mt="sm" gap="xs">
+            <Badge
+              color="green"
+              variant="light"
+              leftSection={<IconBriefcase size={14} />}
             >
-                <JobFilterSidebar
-                    filters={filters}
-                    onFilterChange={setFilters}
-                />
-            </Drawer>
-        </>
-    );
+              {job.type}
+            </Badge>
+            <Badge
+              color="teal"
+              variant="light"
+              leftSection={<IconCurrencyDollar size={14} />}
+            >
+              {job.salaryTo ? `Up to ${job.salaryTo}` : "N/A"}
+            </Badge>
+          </Group>
+
+          <TypographyStylesProvider mt="md">
+            <div
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+              dangerouslySetInnerHTML={{ __html: job.description }}
+              className="line-clamp-2 text-sm"
+            />
+          </TypographyStylesProvider>
+
+          <Divider my="sm" />
+
+          <Flex
+            justify={job.createdAt ? "space-between" : "flex-end"}
+            align="center"
+          >
+            {job.createdAt && (
+              <Text size="xs" c="dimmed">
+                {job.createdAt}
+              </Text>
+            )}
+            <Button
+              variant="filled"
+              size={isMobile ? "sm" : "md"}
+              fullWidth={isMobile}
+              onClick={() => router.push(`/jobs/${job.id}`)}
+            >
+              Details
+            </Button>
+          </Flex>
+        </Card>
+      ))}
+    </div>
+  );
+}
+function JobFilterSidebar({
+  filters,
+  onFilterChange,
+}: {
+  filters: JobFilters;
+  onFilterChange: (filters: JobFilters) => void;
+}) {
+  const t = useTranslations("jobListing");
+
+  return (
+    <Paper p="md" radius="lg" shadow="sm" className="sticky top-4">
+      <Title order={4} mb="md" fw={600}>
+        {t("filterLabel")}
+      </Title>
+      <Stack gap="md">
+        <TextInput
+          label={t("location")}
+          value={filters.location}
+          onChange={(e) =>
+            onFilterChange({ ...filters, location: e.target.value })
+          }
+          placeholder="Enter location"
+          leftSection={<IconMapPin size={16} />}
+        />
+        <TextInput
+          label={t("jobType")}
+          value={filters.jobType}
+          onChange={(e) =>
+            onFilterChange({ ...filters, jobType: e.target.value })
+          }
+          placeholder="Job type"
+          leftSection={<IconBriefcase size={16} />}
+        />
+        <TextInput
+          label={t("salaryRange")}
+          value={filters.salaryRange}
+          onChange={(e) =>
+            onFilterChange({ ...filters, salaryRange: e.target.value })
+          }
+          placeholder="Salary range"
+          leftSection={<IconCurrencyDollar size={16} />}
+        />
+        <Button
+          variant="light"
+          fullWidth
+          onClick={() =>
+            onFilterChange({
+              location: "",
+              jobType: "",
+              salaryRange: "",
+              experienceLevel: "",
+              keyword: "",
+            })
+          }
+        >
+          {t("resetFilters")}
+        </Button>
+      </Stack>
+    </Paper>
+  );
 }
