@@ -68,10 +68,11 @@ export class JobPortalController {
 
     @Roles(UserRoleType.Administrator)
     @Post('jobsByStatus/exportSelected')
-    async exportSelected(@Res() res: Response, @Body() dto: ListStringRequestModel) {
-        const data = await this.jobPortalService.getJobsByList(
-            dto.list,
-        );
+    async exportSelected(
+        @Res() res: Response,
+        @Body() dto: ListStringRequestModel,
+    ) {
+        const data = await this.jobPortalService.getJobsByList(dto.list);
 
         this.documentService.generateCsv(data, res, 'jobList');
     }

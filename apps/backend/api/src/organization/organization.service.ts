@@ -43,7 +43,6 @@ import { EmployeeType } from './enums/employee-type.enum';
 
 @Injectable()
 export class OrganizationService {
-    
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -108,9 +107,13 @@ export class OrganizationService {
     }
 
     async getList(list: string[]) {
-        const organizations = await this.organizationRepo.find({where: {id: In(list)}});
+        const organizations = await this.organizationRepo.find({
+            where: { id: In(list) },
+        });
 
-        return organizations.map((org) => new GetOrganizationListResponseDto(org));
+        return organizations.map(
+            (org) => new GetOrganizationListResponseDto(org),
+        );
     }
 
     async findAllPaginated(dto: string) {

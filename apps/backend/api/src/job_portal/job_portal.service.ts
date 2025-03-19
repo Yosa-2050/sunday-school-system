@@ -25,7 +25,6 @@ import { JobResponseDto } from './dto/response/jobs.response.dto';
 
 @Injectable()
 export class JobPortalService {
-    
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)
@@ -106,8 +105,13 @@ export class JobPortalService {
             joinOptions,
             searchableColumns,
         );
-        const jobsList =  jobs.map((org) => new JobResponseDto(org));
-        return new PaginatedResponseDto<JobResponseDto[]>(jobsList, total, p, pp);
+        const jobsList = jobs.map((org) => new JobResponseDto(org));
+        return new PaginatedResponseDto<JobResponseDto[]>(
+            jobsList,
+            total,
+            p,
+            pp,
+        );
     }
 
     async getJobsByStatusAndByOrgPaginated(
@@ -124,7 +128,7 @@ export class JobPortalService {
         const queryString = entityParamSerializer({
             ...deserialized,
             f: [
-                 { f: "organization.id", v: organizationId, o: "eq" }, // Uncommented filter
+                { f: 'organization.id', v: organizationId, o: 'eq' }, // Uncommented filter
                 ...(deserialized.f ?? []),
             ],
         });
@@ -147,7 +151,7 @@ export class JobPortalService {
             searchableColumns,
         );
 
-        const jobsList =  jobs.map((org) => new JobResponseDto(org));
+        const jobsList = jobs.map((org) => new JobResponseDto(org));
 
         return new PaginatedResponseDto<JobResponseDto[]>(
             jobsList,
@@ -158,9 +162,9 @@ export class JobPortalService {
     }
 
     async getJobsByList(list: string[]) {
-        const jobs = await this.jobRepo.find({where: {id: In(list)}});
+        const jobs = await this.jobRepo.find({ where: { id: In(list) } });
 
-        const jobsList =  jobs.map((org) => new JobResponseDto(org));
+        const jobsList = jobs.map((org) => new JobResponseDto(org));
 
         return jobsList;
     }

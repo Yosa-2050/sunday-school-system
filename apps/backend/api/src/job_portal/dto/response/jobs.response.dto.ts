@@ -1,12 +1,12 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { Jobs } from "@shega/job_portal/entities/jobs.entity";
+import { Jobs } from '@shega/job_portal/entities/jobs.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EmploymentType } from "@shega/job_portal/enums/employment-type.enum";
+import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ApprovalType } from "@shega/Utilities/enums/approval-type.enum";
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 
-export class JobResponseDto{
-    constructor(job: Jobs){
+export class JobResponseDto {
+    constructor(job: Jobs) {
         this.salaryTo = job.salaryTo;
         this.createdDate = job.createdAt;
         this.postedDate = job.postedDate;
@@ -15,51 +15,49 @@ export class JobResponseDto{
         this.type = job.type;
         this.title = job.title;
     }
-        title: string;
-    
-        //description: string;
-    
-        type: EmploymentType;
-    
-        salaryFrom: number;
-    
-        salaryTo: number;
-    
-        //salaryType: SalaryType; //fixed, negotiable
-    
-        //salaryFrequency: SalaryFrequencyType;
-    
-        status: ApprovalType;
-    
-        //workPlace: WorkPlaceType;
-    
-        //country: Country;
-    
-        //state: LocationInfo;
-    
-        //city: LocationInfo;
-    
-        //experianceLevel: ExperianceLevelType;
-    
-        //experiance: number;
-    
-        //deadline: Date;
-    
-        //educationalRequirment: EducationalRequirmentType;
-    
+    title: string;
 
-        //jobSkills: JobSkills[];
-    
+    //description: string;
 
-        ///jobCategory: JobCategory[];
-    
-        //isPublished: boolean;
-    
-        postedDate: Date;
-    
-        //organization: Organization;
-    
-        //postedBy: EmployeeOrganization;
+    type: EmploymentType;
 
-        createdDate: Date;
+    salaryFrom: number;
+
+    salaryTo: number;
+
+    //salaryType: SalaryType; //fixed, negotiable
+
+    //salaryFrequency: SalaryFrequencyType;
+
+    status: ApprovalType;
+
+    //workPlace: WorkPlaceType;
+
+    //country: Country;
+
+    //state: LocationInfo;
+
+    //city: LocationInfo;
+
+    //experianceLevel: ExperianceLevelType;
+
+    //experiance: number;
+
+    //deadline: Date;
+
+    //educationalRequirment: EducationalRequirmentType;
+
+    //jobSkills: JobSkills[];
+
+    ///jobCategory: JobCategory[];
+
+    //isPublished: boolean;
+
+    postedDate: Date;
+
+    //organization: Organization;
+
+    //postedBy: EmployeeOrganization;
+
+    createdDate: Date;
 }

@@ -30,7 +30,6 @@ import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 
-
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
@@ -45,25 +44,22 @@ export class UsersController {
         return this.usersService.getUsersByUserType(dto.q);
     }
 
-      @Post("export")
-      async export(
-        @Body() dto: { q: string },
-        @Res() res: Response
-      ) {
+    @Post('export')
+    async export(@Body() dto: { q: string }, @Res() res: Response) {
         const data = await this.usersService.getUsersByUserType(dto.q);
 
-        this.documentService.generateCsv(data.data, res, "userList");
-      }
+        this.documentService.generateCsv(data.data, res, 'userList');
+    }
 
-      @Post("exportSelected")
-      async exportSelected(
+    @Post('exportSelected')
+    async exportSelected(
         @Body() dto: ListStringRequestModel,
-        @Res() res: Response
-      ) {
+        @Res() res: Response,
+    ) {
         const data = await this.usersService.getList(dto.list);
 
-        this.documentService.generateCsv(data, res, "userList");
-      }
+        this.documentService.generateCsv(data, res, 'userList');
+    }
 
     @Post()
     async create(@Body() dto: CreateUserDto) {

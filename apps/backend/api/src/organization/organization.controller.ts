@@ -72,13 +72,14 @@ export class OrganizationController {
     }
 
     @Post('exportSelected')
-        async exportSelected(@Res() res: Response, @Body() dto: ListStringRequestModel) {
-            const data = await this.organizationService.getList(
-                dto.list,
-            );
-    
-            this.documentService.generateCsv(data, res, 'organizationList');
-        }
+    async exportSelected(
+        @Res() res: Response,
+        @Body() dto: ListStringRequestModel,
+    ) {
+        const data = await this.organizationService.getList(dto.list);
+
+        this.documentService.generateCsv(data, res, 'organizationList');
+    }
 
     @Get('/listEmployee/:organizationId')
     findAllEmployee(@Param('organizationId') id: string) {
