@@ -13,6 +13,7 @@ import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/create-job_portal.dto';
+import { JobResponseDto } from './dto/response/jobs.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 import { Category } from './entities/category.entity';
@@ -21,7 +22,6 @@ import { JobCategory } from './entities/job-category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
-import { JobResponseDto } from './dto/response/jobs.response.dto';
 
 @Injectable()
 export class JobPortalService {

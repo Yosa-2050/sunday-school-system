@@ -11,10 +11,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -25,10 +29,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginBy } from './enums/login-by.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from './users.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { Response } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 
 @ApiTags('users')
 @Controller('users')

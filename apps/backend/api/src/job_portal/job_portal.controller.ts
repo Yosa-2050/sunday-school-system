@@ -12,6 +12,8 @@ import {
     Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
@@ -25,8 +27,6 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 
 @ApiTags('job-portal')
 @Controller('job-portal')

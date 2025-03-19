@@ -1,9 +1,9 @@
 // biome-ignore lint/style/useImportType: <explanation>
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Jobs } from '@shega/job_portal/entities/jobs.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 
 export class JobResponseDto {
     constructor(job: Jobs) {

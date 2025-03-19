@@ -9,6 +9,8 @@ import {
     Res,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 // import { DocumentService } from '@shega/document/document.service';
@@ -26,8 +28,6 @@ import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 
 @Controller('organization')
 export class OrganizationController {
