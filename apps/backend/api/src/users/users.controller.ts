@@ -7,13 +7,18 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -39,18 +44,22 @@ export class UsersController {
         return this.usersService.getUsersByUserType(dto.q);
     }
 
-    //   @Post("export")
-    //   async export(
-    //     @Body() dto: GetPaginatedProfileByTypeRequstDto,
-    //     @Res() res: Response
-    //   ) {
-    //     const data = await this.usersService.getUsersByUserType(
-    //       dto.status,
-    //       dto.pagination
-    //     );
+    @Post('export')
+    async export(@Body() dto: { q: string }, @Res() res: Response) {
+        const data = await this.usersService.getUsersByUserType(dto.q);
 
-    //     this.documentService.generateCsv(data.data, res, "userList");
-    //   }
+        this.documentService.generateCsv(data.data, res, 'userList');
+    }
+
+    @Post('exportSelected')
+    async exportSelected(
+        @Body() dto: ListStringRequestModel,
+        @Res() res: Response,
+    ) {
+        const data = await this.usersService.getList(dto.list);
+
+        this.documentService.generateCsv(data, res, 'userList');
+    }
 
     @Post()
     async create(@Body() dto: CreateUserDto) {

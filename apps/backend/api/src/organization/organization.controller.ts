@@ -9,6 +9,8 @@ import {
     Res,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 // import { DocumentService } from '@shega/document/document.service';
@@ -67,6 +69,16 @@ export class OrganizationController {
         const org = await this.organizationService.findAllPaginated(dto.q);
 
         this.documentService.generateCsv(org.data, res, 'organizationList');
+    }
+
+    @Post('exportSelected')
+    async exportSelected(
+        @Res() res: Response,
+        @Body() dto: ListStringRequestModel,
+    ) {
+        const data = await this.organizationService.getList(dto.list);
+
+        this.documentService.generateCsv(data, res, 'organizationList');
     }
 
     @Get('/listEmployee/:organizationId')

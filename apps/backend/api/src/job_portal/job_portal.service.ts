@@ -1,6 +1,11 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotImplementedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
@@ -10,9 +15,10 @@ import { OrganizationService } from '@shega/organization/organization.service';
 import { QueryBuilderService } from 'shared/query-builder.service';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/create-job_portal.dto';
+import { JobResponseDto } from './dto/response/jobs.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 import { Category } from './entities/category.entity';
@@ -73,7 +79,7 @@ export class JobPortalService {
         job.jobCategory = category;
         job.jobSkills = skills;
         job.organization = organization;
-        job.status = ApprovalType.New;
+        job.status = ApprovalType.Waiting_Approval;
         job.postedBy = employeeOrg;
         return this.jobRepo.save(job);
     }
@@ -104,8 +110,13 @@ export class JobPortalService {
             joinOptions,
             searchableColumns,
         );
-
-        return new PaginatedResponseDto<Jobs[]>(jobs, total, p, pp);
+        const jobsList = jobs.map((org) => new JobResponseDto(org));
+        return new PaginatedResponseDto<JobResponseDto[]>(
+            jobsList,
+            total,
+            p,
+            pp,
+        );
     }
 
     async getJobsByStatusAndByOrgPaginated(
@@ -122,7 +133,7 @@ export class JobPortalService {
         const queryString = entityParamSerializer({
             ...deserialized,
             f: [
-                // { f: "organization.id", v: organizationId, o: "eq" }, // Uncommented filter
+                { f: 'organization.id', v: organizationId, o: 'eq' }, // Uncommented filter
                 ...(deserialized.f ?? []),
             ],
         });
@@ -145,16 +156,34 @@ export class JobPortalService {
             searchableColumns,
         );
 
-        return new PaginatedResponseDto<Jobs[]>(
-            jobs,
+        const jobsList = jobs.map((org) => new JobResponseDto(org));
+
+        return new PaginatedResponseDto<JobResponseDto[]>(
+            jobsList,
             total,
             deserialized.p,
             deserialized.pp,
         );
     }
 
-    approveJob(id: string) {
-        return this.jobRepo.update(id, { status: ApprovalType.Approved });
+    async getJobsByList(list: string[]) {
+        const jobs = await this.jobRepo.find({ where: { id: In(list) } });
+
+        const jobsList = jobs.map((org) => new JobResponseDto(org));
+
+        return jobsList;
+    }
+
+    async jobApproval(id: string, status: ApprovalType) {
+        const job = await this.jobRepo.findOneBy({ id });
+        if (job && job.status === ApprovalType.Waiting_Approval) {
+            throw new BadRequestException('Unable to update job');
+        }
+        const updatedJob = await this.jobRepo.update(id, { status });
+        if (updatedJob) {
+            return new ApiResponseDto(200);
+        }
+        return new ApiResponseDto(100);
     }
 
     findAll() {

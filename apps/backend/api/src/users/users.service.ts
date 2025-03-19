@@ -10,7 +10,7 @@ import {
     entityParamSerializer,
 } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetPaginatedUsersResponseDto } from './dto/response/get-all-user.paginated.response.dto';
@@ -100,6 +100,12 @@ export class UsersService {
 
     findById(id: string) {
         return this.userRepo.findOneBy({ id });
+    }
+
+    async getList(list: string[]) {
+        const users = await this.userRepo.find({ where: { id: In(list) } });
+
+        return users.map((user) => new GetPaginatedUsersResponseDto(user));
     }
 
     async validateUser(login: string, password: string, type: LoginBy) {

@@ -1,5 +1,5 @@
 export enum ApprovalType {
     Approved = 'APPROVED',
-    New = 'NEW',
-    Rejected = 'REJECTED',
+    Waiting_Approval = 'WAITINGAPPROVAL',
+    Declined = 'DECLINED',
 }

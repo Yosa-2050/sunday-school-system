@@ -22,7 +22,7 @@ import {
     entityParamSerializer,
 } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -104,6 +104,16 @@ export class OrganizationService {
             isActive: true,
             deletedAt: null,
         });
+    }
+
+    async getList(list: string[]) {
+        const organizations = await this.organizationRepo.find({
+            where: { id: In(list) },
+        });
+
+        return organizations.map(
+            (org) => new GetOrganizationListResponseDto(org),
+        );
     }
 
     async findAllPaginated(dto: string) {
