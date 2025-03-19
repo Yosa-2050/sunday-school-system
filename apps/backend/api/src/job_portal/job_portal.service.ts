@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
@@ -26,7 +27,6 @@ import { JobCategory } from './entities/job-category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
-import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 
 @Injectable()
 export class JobPortalService {

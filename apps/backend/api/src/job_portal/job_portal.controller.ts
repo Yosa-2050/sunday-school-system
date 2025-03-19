@@ -12,6 +12,7 @@ import {
     Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
@@ -27,7 +28,6 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 
 @ApiTags('job-portal')
 @Controller('job-portal')
