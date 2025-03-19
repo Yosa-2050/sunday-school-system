@@ -74,7 +74,7 @@ export default function WrapperShell({
                                 href={
                                     role === 'administrator'
                                         ? '/admin/dashboard'
-                                        : '/work-provider/dashboard'
+                                        : '/work-provider/jobs'
                                 }
                                 className="ml-3 flex items-center gap-2"
                             >

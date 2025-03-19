@@ -25,7 +25,7 @@ const useIsAuthorized = ({ resourceRole, userRole }: UseIsAuthorizedProps) => {
     if (!isAuthorized) {
         const dashboardPaths: Record<string, string> = {
             administrator: '/admin/dashboard',
-            work_provider: '/work-provider/dashboard',
+            work_provider: '/work-provider/jobs',
         };
 
         return redirect({ href: dashboardPaths[userRole] || '/login', locale });

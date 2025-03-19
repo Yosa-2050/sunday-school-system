@@ -40,7 +40,7 @@ const schema = z.object({
             /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             'Invalid email format',
         ),
-    password: z.string().min(1, 'Password field is required'),
+    password: z.string().min(1, 'Password  is required'),
     rememberMe: z.boolean().optional(),
 });
 

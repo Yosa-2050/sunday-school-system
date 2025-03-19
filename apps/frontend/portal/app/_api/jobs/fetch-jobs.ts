@@ -17,6 +17,7 @@ export type Response = {
         salaryFrom: number;
         salaryTo: number;
         status: string;
+        createdAt: string;
         organization: {
             id: string;
             isActive: boolean;

@@ -1,27 +1,16 @@
 'use client';
 
-import { useRouter } from '@/i18n/routing';
-import {
-    ActionIcon,
-    Avatar,
-    Button,
-    Container,
-    Group,
-    Menu,
-    Text,
-} from '@mantine/core';
+import { Link, useRouter } from '@/i18n/routing';
+import { Avatar, Button, Container, Group, Menu, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
 import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 import { useAuth } from '@shega/ui';
-import {
-    IconBell,
-    IconLogout,
-    IconSettings,
-    IconUser,
-} from '@tabler/icons-react';
+import { IconLogout } from '@tabler/icons-react';
 import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
+import Logo from '../public/logo.svg';
 
 function AppHeader() {
     const router = useRouter();
@@ -41,7 +30,7 @@ function AppHeader() {
             ),
             labels: { cancel: 'Cancel', confirm: 'Logout' },
             centered: true,
-            confirmProps: { color: 'red' },
+            // confirmProps: { color: "red" },
             onCancel: () => console.log('Cancel'),
             onConfirm: () => {
                 deleteCookie(COOKIE_ACCESS_TOKEN);
@@ -58,21 +47,38 @@ function AppHeader() {
         >
             <Group h={80} justify="space-between">
                 <Group>
-                    <Text size="xl" fw={700} className="text-[#14a800]">
-                        Shega Jobs
-                    </Text>
+                    <Link href="/" className="ml-3 flex items-center gap-2">
+                        <Image
+                            src={Logo.src}
+                            alt="logo"
+                            width={150}
+                            height={120}
+                        />
+                    </Link>
                     {isAuthenticated && !isMobile && (
                         <Group ml={48} gap="xl" className="text-xs">
-                            <Text className="text-xs font-medium hover:text-[#14a800] cursor-pointer">
+                            <Text
+                                className="text-xs font-medium hover:text-[#14a800] cursor-pointer"
+                                onClick={() => router.push('/find-work')}
+                            >
                                 Find Work
                             </Text>
-                            <Text className="text-xs font-medium hover:text-[#14a800] cursor-pointer">
+                            <Text
+                                className="text-xs font-medium hover:text-[#14a800] cursor-pointer"
+                                onClick={() => router.push('/my-jobs')}
+                            >
                                 My Jobs
                             </Text>
-                            <Text className="text-xs font-medium hover:text-[#14a800] cursor-pointer">
+                            <Text
+                                className="text-xs font-medium hover:text-[#14a800] cursor-pointer"
+                                onClick={() => router.push('/reports')}
+                            >
                                 Reports
                             </Text>
-                            <Text className="text-xs font-medium hover:text-[#14a800] cursor-pointer">
+                            <Text
+                                className="text-xs font-medium hover:text-[#14a800] cursor-pointer"
+                                onClick={() => router.push('/messages')}
+                            >
                                 Messages
                             </Text>
                         </Group>
@@ -82,9 +88,9 @@ function AppHeader() {
                 <Group>
                     {isAuthenticated ? (
                         <Group>
-                            <ActionIcon variant="subtle" size="lg">
-                                <IconBell size={20} />
-                            </ActionIcon>
+                            {/* <ActionIcon variant="subtle" size="lg">
+                <IconBell size={20} />
+              </ActionIcon> */}
                             <Menu shadow="md" width={280}>
                                 <Menu.Target>
                                     <Group gap="xs" className="cursor-pointer">
@@ -111,7 +117,7 @@ function AppHeader() {
                                 </Menu.Target>
 
                                 <Menu.Dropdown>
-                                    <Menu.Item
+                                    {/* <Menu.Item
                                         leftSection={<IconUser size={14} />}
                                         onClick={() => router.push('/profile')}
                                     >
@@ -123,7 +129,7 @@ function AppHeader() {
                                     >
                                         {t('settings')}
                                     </Menu.Item>
-                                    <Menu.Divider />
+                                    <Menu.Divider /> */}
                                     <Menu.Item
                                         leftSection={<IconLogout size={14} />}
                                         color="red"

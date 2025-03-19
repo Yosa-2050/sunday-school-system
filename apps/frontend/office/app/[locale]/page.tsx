@@ -13,7 +13,7 @@ export default function HomePage() {
             redirect({ href: '/admin/dashboard', locale });
         }
         if (user.role === 'work_provider') {
-            redirect({ href: '/work-provider/dashboard', locale });
+            redirect({ href: '/work-provider/jobs', locale });
         }
     } else {
         redirect({ href: '/auth/login', locale });

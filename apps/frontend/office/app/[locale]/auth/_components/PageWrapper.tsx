@@ -27,7 +27,7 @@ export default function PageWrapper({
             window.location.href = '/admin/dashboard';
         }
         if (role === 'work_provider') {
-            window.location.href = '/work-provider/dashboard';
+            window.location.href = '/work-provider/jobs';
         }
     }
     return (

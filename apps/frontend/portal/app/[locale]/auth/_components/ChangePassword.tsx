@@ -148,7 +148,7 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                                     disabled={isButtonDisabled}
                                     className="w-full rounded-md bg-teal-600 px-4 py-2 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
                                 >
-                                    {t('proccedBtn')}
+                                    {t('proceedBtn')}
                                 </Button>
                             </Group>
                         </Stack>
