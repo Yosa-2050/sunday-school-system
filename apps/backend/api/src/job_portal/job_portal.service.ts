@@ -10,7 +10,7 @@ import { OrganizationService } from '@shega/organization/organization.service';
 import { QueryBuilderService } from 'shared/query-builder.service';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -21,9 +21,11 @@ import { JobCategory } from './entities/job-category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
+import { JobResponseDto } from './dto/response/jobs.response.dto';
 
 @Injectable()
 export class JobPortalService {
+    
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)
@@ -73,7 +75,7 @@ export class JobPortalService {
         job.jobCategory = category;
         job.jobSkills = skills;
         job.organization = organization;
-        job.status = ApprovalType.New;
+        job.status = ApprovalType.Waiting_Approval;
         job.postedBy = employeeOrg;
         return this.jobRepo.save(job);
     }
@@ -104,8 +106,8 @@ export class JobPortalService {
             joinOptions,
             searchableColumns,
         );
-
-        return new PaginatedResponseDto<Jobs[]>(jobs, total, p, pp);
+        const jobsList =  jobs.map((org) => new JobResponseDto(org));
+        return new PaginatedResponseDto<JobResponseDto[]>(jobsList, total, p, pp);
     }
 
     async getJobsByStatusAndByOrgPaginated(
@@ -122,7 +124,7 @@ export class JobPortalService {
         const queryString = entityParamSerializer({
             ...deserialized,
             f: [
-                // { f: "organization.id", v: organizationId, o: "eq" }, // Uncommented filter
+                 { f: "organization.id", v: organizationId, o: "eq" }, // Uncommented filter
                 ...(deserialized.f ?? []),
             ],
         });
@@ -145,12 +147,22 @@ export class JobPortalService {
             searchableColumns,
         );
 
-        return new PaginatedResponseDto<Jobs[]>(
-            jobs,
+        const jobsList =  jobs.map((org) => new JobResponseDto(org));
+
+        return new PaginatedResponseDto<JobResponseDto[]>(
+            jobsList,
             total,
             deserialized.p,
             deserialized.pp,
         );
+    }
+
+    async getJobsByList(list: string[]) {
+        const jobs = await this.jobRepo.find({where: {id: In(list)}});
+
+        const jobsList =  jobs.map((org) => new JobResponseDto(org));
+
+        return jobsList;
     }
 
     approveJob(id: string) {

@@ -25,6 +25,8 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 
 @ApiTags('job-portal')
 @Controller('job-portal')
@@ -62,6 +64,16 @@ export class JobPortalController {
         );
 
         this.documentService.generateCsv(data.data, res, 'jobList');
+    }
+
+    @Roles(UserRoleType.Administrator)
+    @Post('jobsByStatus/exportSelected')
+    async exportSelected(@Res() res: Response, @Body() dto: ListStringRequestModel) {
+        const data = await this.jobPortalService.getJobsByList(
+            dto.list,
+        );
+
+        this.documentService.generateCsv(data, res, 'jobList');
     }
 
     @Roles(UserRoleType.WorkProvider)

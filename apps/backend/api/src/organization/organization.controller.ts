@@ -26,6 +26,8 @@ import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 
 @Controller('organization')
 export class OrganizationController {
@@ -68,6 +70,15 @@ export class OrganizationController {
 
         this.documentService.generateCsv(org.data, res, 'organizationList');
     }
+
+    @Post('exportSelected')
+        async exportSelected(@Res() res: Response, @Body() dto: ListStringRequestModel) {
+            const data = await this.organizationService.getList(
+                dto.list,
+            );
+    
+            this.documentService.generateCsv(data, res, 'organizationList');
+        }
 
     @Get('/listEmployee/:organizationId')
     findAllEmployee(@Param('organizationId') id: string) {
