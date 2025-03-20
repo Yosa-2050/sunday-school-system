@@ -1,8 +1,4 @@
-import {
-    BadRequestException,
-    Inject,
-    Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';

@@ -31,8 +31,6 @@ import { Skills } from './entities/skills.entity';
 
 @Injectable()
 export class JobPortalService {
-    
-    
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)
@@ -208,15 +206,22 @@ export class JobPortalService {
     }
 
     async getCategoriesByParentId(id: string) {
-        const category = await this.categoryRepo.findOneBy({id});
-        if(!category) { throw new BadRequestException("Category not found"); }
+        const category = await this.categoryRepo.findOneBy({ id });
+        if (!category) {
+            throw new BadRequestException('Category not found');
+        }
 
         return category.childs;
     }
 
     async createSkills(name: string) {
-        const skillExisting = await this.skillRepo.findOneBy({name, isActive: true});
-        if(skillExisting) { throw new BadRequestException("Skill found with the name"); }
+        const skillExisting = await this.skillRepo.findOneBy({
+            name,
+            isActive: true,
+        });
+        if (skillExisting) {
+            throw new BadRequestException('Skill found with the name');
+        }
 
         const skill = this.skillRepo.create();
         skill.name = name;
@@ -224,8 +229,13 @@ export class JobPortalService {
         return this.skillRepo.save(skill);
     }
     async createCategories(name: string) {
-        const categoryExisting = await this.categoryRepo.findOneBy({name, isActive: true});
-        if(categoryExisting) { throw new BadRequestException("Category found with the name"); }
+        const categoryExisting = await this.categoryRepo.findOneBy({
+            name,
+            isActive: true,
+        });
+        if (categoryExisting) {
+            throw new BadRequestException('Category found with the name');
+        }
 
         const category = this.categoryRepo.create();
         category.name = name;
@@ -235,8 +245,10 @@ export class JobPortalService {
     }
 
     async addCategoriesByParentId(id: string, name: string) {
-        const category = await this.categoryRepo.findOneBy({id});
-        if(!category) { throw new BadRequestException("Category not found"); }
+        const category = await this.categoryRepo.findOneBy({ id });
+        if (!category) {
+            throw new BadRequestException('Category not found');
+        }
 
         const childCategory = this.categoryRepo.create();
         childCategory.name = name;
@@ -244,13 +256,12 @@ export class JobPortalService {
         childCategory.hasChild = false;
         childCategory.parent = category;
         return this.categoryRepo.save(childCategory);
-        
     }
 
     findSkills() {
         return this.skillRepo.find();
     }
     findCategories() {
-        return this.categoryRepo.findBy({isRoot: true});
+        return this.categoryRepo.findBy({ isRoot: true });
     }
 }
