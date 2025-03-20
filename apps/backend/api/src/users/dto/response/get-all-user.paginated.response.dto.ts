@@ -8,9 +8,11 @@ export class GetPaginatedUsersResponseDto {
     isActive: boolean;
     createdBy: string;
     createdDate: string;
+    id: string;
 
     constructor(user: User) {
         if (user?.profile) {
+            this.id = user.id;
             this.fullName = `${user.profile?.firstName ?? ''} ${user.profile?.middleName ?? ''} ${user.profile?.lastName}`;
             this.email = user.email;
             this.role = user.roles[0]?.role; //TODO: selecting only one role.

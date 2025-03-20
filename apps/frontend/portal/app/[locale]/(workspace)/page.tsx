@@ -21,8 +21,17 @@ import {
     Title,
     TypographyStylesProvider,
 } from '@mantine/core';
-import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
-import { useAuth } from '@shega/ui';
+import {
+    useDebouncedCallback,
+    useDebouncedValue,
+    useMediaQuery,
+} from '@mantine/hooks';
+import {
+    PER_PAGE,
+    entityParamSchema,
+    entityParamSerializer,
+} from '@shega/shared';
+import { EntityPagination, useAuth } from '@shega/ui';
 import {
     IconBriefcase,
     IconCurrencyDollar,
@@ -33,7 +42,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import { useLocale, useTranslations } from 'next-intl';
-import { useQueryState } from 'nuqs';
+import { parseAsJson, useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
 
 // Types
@@ -60,6 +69,21 @@ export default function HomePage() {
     const locale = useLocale();
     const t = useTranslations('jobListing');
     const isMobile = useMediaQuery('(max-width: 768px)');
+
+    const [entityParams, setEntityParams] = useQueryState(
+        'job-seeker-jbs',
+        parseAsJson(entityParamSchema.parse),
+    );
+
+    const handleSearch = useDebouncedCallback((term: string | null) => {
+        if (term) {
+            setEntityParams({ ...entityParams, p: 1, s: term });
+        } else {
+            const updatedParams = { ...entityParams };
+            updatedParams.s = undefined;
+            setEntityParams({ ...updatedParams, p: 1 });
+        }
+    }, 300);
     const [filters, setFilters] = useState<JobFilters>({
         location: '',
         jobType: '',
@@ -140,7 +164,11 @@ export default function HomePage() {
                                     },
                                 }}
                             />
-                            <Button size="lg" className="border-none">
+                            <Button
+                                size="lg"
+                                className="border-none"
+                                onClick={() => handleSearch(filters.keyword)}
+                            >
                                 Find Jobs
                             </Button>
                         </Group>
@@ -216,10 +244,17 @@ function JobList({ filters }: { filters: JobFilters }) {
     const [limit] = useQueryState('limit', { defaultValue: '10' });
     const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
 
+    const [entityParams, setEntityParams] = useQueryState(
+        'job-seeker-jbs',
+        parseAsJson(entityParamSchema.parse).withDefault({
+            p: 1,
+            pp: PER_PAGE,
+        }),
+    );
+
     const { data, isLoading, error } = useQuery({
-        queryKey: ['jobs', debouncedSearch, page, limit],
-        queryFn: () =>
-            fetchJobs({ search: debouncedSearch, page: +page, limit: +limit }),
+        queryKey: ['job-seeker-jbs', entityParamSerializer(entityParams)],
+        queryFn: () => fetchJobs(entityParamSerializer(entityParams)),
     });
 
     if (isLoading) {
@@ -233,7 +268,7 @@ function JobList({ filters }: { filters: JobFilters }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {data?.data.map((job) => (
                 <Card
-                    key={job.id.toString()}
+                    key={job.id}
                     withBorder
                     radius="md"
                     shadow="sm"
@@ -319,6 +354,10 @@ function JobList({ filters }: { filters: JobFilters }) {
                     </Flex>
                 </Card>
             ))}
+            <EntityPagination
+                entity="job-seeker-jbs"
+                total={data?.total ?? 0}
+            />
         </div>
     );
 }

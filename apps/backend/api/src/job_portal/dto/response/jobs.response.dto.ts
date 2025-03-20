@@ -7,6 +7,7 @@ import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 
 export class JobResponseDto {
     constructor(job: Jobs) {
+        this.id = job.id;
         this.salaryTo = job.salaryTo;
         this.createdDate = job.createdAt;
         this.postedDate = job.postedDate;
@@ -14,10 +15,13 @@ export class JobResponseDto {
         this.status = job.status;
         this.type = job.type;
         this.title = job.title;
+        this.orgName = job.organization.name;
+        this.description = job.description;
     }
+    id: string;
     title: string;
-
-    //description: string;
+    orgName: string;
+    description: string;
 
     type: EmploymentType;
 

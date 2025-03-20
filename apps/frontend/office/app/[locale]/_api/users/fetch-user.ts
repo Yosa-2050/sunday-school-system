@@ -29,6 +29,7 @@ export interface Response {
 }
 
 export interface Daum {
+    id: string;
     fullName?: string;
     email?: string;
     isActive?: boolean;

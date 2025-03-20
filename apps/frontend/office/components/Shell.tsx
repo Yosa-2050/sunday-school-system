@@ -45,7 +45,7 @@ export default function WrapperShell({
                 layout="alt"
                 header={{ height: 60 }}
                 navbar={{
-                    width: 340,
+                    width: 280,
                     breakpoint: 'md',
                     collapsed: { mobile: !opened, desktop: !sidebarOpen },
                 }}
@@ -122,7 +122,7 @@ export default function WrapperShell({
                 </AppShell.Header>
 
                 <AppShell.Navbar
-                    className=" border-r border-gray-200"
+                    className=" border-r border-gray-200 text-xs"
                     p={'md'}
                     hidden={!sidebarOpen}
                 >

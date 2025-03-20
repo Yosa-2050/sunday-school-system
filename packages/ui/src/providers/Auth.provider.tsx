@@ -21,11 +21,14 @@ const defaultAuthContext: AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
-export function AuthProvider({ user, children }: AuthProviderProps) {
-    const [userInfo, setUserInfo] = useState<User | undefined>(user);
+export function AuthProvider({
+    user: initialUser,
+    children,
+}: AuthProviderProps) {
+    const [user, setUser] = useState<User | undefined>(initialUser);
 
     return (
-        <AuthContext.Provider value={{ user: userInfo, setUser: setUserInfo }}>
+        <AuthContext.Provider value={{ user, setUser }}>
             {children}
         </AuthContext.Provider>
     );

@@ -59,11 +59,11 @@ export type Response = {
     totalPages: number;
 };
 
-export const fetchJobs = async (data: FetchJob) => {
+export const fetchJobs = async (data: string) => {
     const response = await fetcher('/job-seeker/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ q: data }),
     });
 
     return response as Response;

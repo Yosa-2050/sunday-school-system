@@ -49,7 +49,7 @@ interface Job {
     salaryFrom: number;
     salaryTo: number;
     status: string;
-    organization: Organization;
+    orgName: string;
     postedBy: PostedBy;
 }
 

@@ -3,8 +3,10 @@
 import { useRouter } from '@/i18n/routing';
 import {
     Badge,
+    Button,
     Card,
     Center,
+    Checkbox,
     Divider,
     Flex,
     Group,
@@ -18,18 +20,22 @@ import {
     Text,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import {
     PER_PAGE,
     entityParamSchema,
     entityParamSerializer,
+    logger,
 } from '@shega/shared';
 import { EntityFilter, EntityPagination, EntitySearch } from '@shega/ui';
-import { IconDotsVertical, IconEye } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
+import { IconDotsVertical, IconDownload, IconEye } from '@tabler/icons-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchJobsAdmin } from 'app/[locale]/_api/admin/fetch-jobs';
+import { exportSelectedJobs } from 'app/[locale]/_api/organizations/export-selected-jobs';
 import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
+import { useCallback, useState } from 'react';
 
 interface Organization {
     id: string;
@@ -45,7 +51,7 @@ interface Job {
     salaryFrom: number;
     salaryTo: number;
     status: string;
-    organization: Organization;
+    orgName: string;
     postedBy: {
         employee: {
             profile: {
@@ -60,6 +66,7 @@ const JobsList = () => {
     const router = useRouter();
     const t = useTranslations('jobsListPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const [selection, setSelection] = useState<string[]>([]);
 
     const [entityParams] = useQueryState(
         'jobs',
@@ -73,6 +80,51 @@ const JobsList = () => {
         queryKey: ['jobs', entityParamSerializer(entityParams)],
         queryFn: () => fetchJobsAdmin(entityParamSerializer(entityParams)),
     });
+    const exportToCsv = useCallback((list: string[]) => {
+        if (!list || list.length === 0) {
+            alert('No data available to export');
+            return;
+        }
+
+        // Convert rows to CSV with proper quoting
+        const csvContent = list
+            .map((row) =>
+                row
+                    .split(',')
+                    .map((v) => `"${v.replace(/"/g, '""')}"`)
+                    .join(','),
+            )
+            .join('\n');
+
+        const blob = new Blob([csvContent], {
+            type: 'text/csv;charset=utf-8;',
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'selected_users.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }, []);
+
+    const exportMutation = useMutation({
+        mutationKey: ['exports'],
+        mutationFn: exportSelectedJobs,
+        onSuccess: (list) => {
+            exportToCsv(list);
+        },
+        onError: (error) => {
+            logger.log(error);
+            notifications.show({
+                title: 'Export Users',
+                message:
+                    'Something went wrong while exporting selected Organization',
+                color: 'red',
+            });
+        },
+    });
 
     const jobs = data?.data || [];
 
@@ -84,13 +136,19 @@ const JobsList = () => {
         return <Text color="red">Error loading jobs</Text>;
     }
 
-    const handleEditJob = (jobId: string) => {
-        router.push(`/work-provider/jobs/edit/${jobId}`);
-    };
+    const toggleRow = (id: string) =>
+        setSelection((current) =>
+            current.includes(id)
+                ? current.filter((item) => item !== id)
+                : [...current, id],
+        );
 
-    const handleViewApplications = (jobId: string) => {
-        router.push(`/work-provider/jobs/${jobId}/applications`);
-    };
+    const toggleAll = () =>
+        setSelection((current) =>
+            current.length === jobs.length
+                ? []
+                : jobs.map((user: Job) => user.id ?? ''),
+        );
 
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
@@ -105,18 +163,29 @@ const JobsList = () => {
                     placeholder={t('searchPlaceholder')}
                     className="!w-[300px]"
                 />
-                <EntityFilter
-                    entity="jobs"
-                    filterOptions={[
-                        { value: '', label: t('allCategories') },
-                        { value: 'FULL_TIME', label: 'Full Time' },
-                        { value: 'PART_TIME', label: 'Part Time' },
-                        { value: 'CONTRACT', label: 'Contract' },
-                        { value: 'INTERNSHIP', label: 'Internship' },
-                    ]}
-                    mode="select"
-                    field="type"
-                />
+                <Group>
+                    <EntityFilter
+                        entity="jobs"
+                        filterOptions={[
+                            { value: '', label: t('allCategories') },
+                            { value: 'FULL_TIME', label: 'Full Time' },
+                            { value: 'PART_TIME', label: 'Part Time' },
+                            { value: 'CONTRACT', label: 'Contract' },
+                            { value: 'INTERNSHIP', label: 'Internship' },
+                        ]}
+                        mode="select"
+                        field="type"
+                    />
+                    <Button
+                        variant="light"
+                        leftSection={<IconDownload size={18} />}
+                        disabled={selection?.length === 0}
+                        onClick={() => exportMutation.mutate(selection)}
+                        loading={exportMutation.isPending}
+                    >
+                        {t('exportCSV')}
+                    </Button>
+                </Group>
             </Group>
 
             {jobs.length === 0 ? (
@@ -171,6 +240,18 @@ const JobsList = () => {
                     <Table striped verticalSpacing="md">
                         <Table.Thead>
                             <Table.Tr>
+                                <Table.Th>
+                                    <Checkbox
+                                        onChange={toggleAll}
+                                        checked={
+                                            selection.length === jobs.length
+                                        }
+                                        indeterminate={
+                                            selection.length > 0 &&
+                                            selection.length !== jobs.length
+                                        }
+                                    />
+                                </Table.Th>
                                 <Table.Th>Company Name</Table.Th>
                                 <Table.Th>Job Title</Table.Th>
                                 <Table.Th>Salary</Table.Th>
@@ -182,7 +263,17 @@ const JobsList = () => {
                         <Table.Tbody>
                             {jobs.map((job: Job) => (
                                 <Table.Tr key={job.id}>
-                                    <Table.Td>{job.organization.name}</Table.Td>
+                                    <Table.Td>
+                                        <Checkbox
+                                            checked={selection.includes(
+                                                job.id ?? '',
+                                            )}
+                                            onChange={() =>
+                                                toggleRow(job.id ?? '')
+                                            }
+                                        />
+                                    </Table.Td>
+                                    <Table.Td>{job?.orgName}</Table.Td>
                                     <Table.Td>{job.title}</Table.Td>
 
                                     <Table.Td>

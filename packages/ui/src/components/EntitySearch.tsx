@@ -4,7 +4,7 @@ import { CloseButton, TextInput } from '@mantine/core';
 import { entityParamSchema } from '@shega/shared';
 import { IconSearch } from '@tabler/icons-react';
 import { parseAsJson, useQueryState } from 'nuqs';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react'; // Import useEffect
 import { useDebouncedCallback } from 'use-debounce';
 import { cn } from '../utilities/cn';
 
@@ -25,6 +25,13 @@ export function EntitySearch({
         entity,
         parseAsJson(entityParamSchema.parse),
     );
+
+    // Add useEffect to focus the input on mount
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.focus();
+        }
+    }, []);
 
     const handleSearch = useDebouncedCallback((term: string | null) => {
         if (term) {

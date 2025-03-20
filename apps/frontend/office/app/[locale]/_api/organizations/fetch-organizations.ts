@@ -26,6 +26,7 @@ export interface Response {
 }
 
 export interface Daum {
+    id: string;
     createdBy: string;
     createdDate: string;
     isActive: boolean;

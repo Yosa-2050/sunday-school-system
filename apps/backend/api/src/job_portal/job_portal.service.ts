@@ -126,8 +126,8 @@ export class JobPortalService {
         const deserialized = entityParamDeserializer(paginationDto);
 
         const searchableColumns = [
-            'entity.title',
-            'entity.description',
+            'jobs.title',
+            'jobs.description',
             'organization.name',
         ];
         const queryString = entityParamSerializer({

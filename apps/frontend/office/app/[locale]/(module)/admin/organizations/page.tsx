@@ -17,14 +17,17 @@ import {
     Text,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import {
     PER_PAGE,
     entityParamSchema,
     entityParamSerializer,
+    logger,
 } from '@shega/shared';
 import { EntityColumn, EntityPagination, EntitySearch } from '@shega/ui';
 import { IconDotsVertical, IconDownload } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { exportSelectedOrganization } from 'app/[locale]/_api/organizations/export-selected-organizations';
 import {
     type Daum,
     fetchOrganizations,
@@ -32,7 +35,7 @@ import {
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CreateOrganization } from './_components/create-organization';
 
 const OrganizationsPage = () => {
@@ -54,6 +57,52 @@ const OrganizationsPage = () => {
         queryFn: () => fetchOrganizations(entityParamSerializer(entityParams)),
     });
 
+    const exportToCsv = useCallback((list: string[]) => {
+        if (!list || list.length === 0) {
+            alert('No data available to export');
+            return;
+        }
+
+        // Convert rows to CSV with proper quoting
+        const csvContent = list
+            .map((row) =>
+                row
+                    .split(',')
+                    .map((v) => `"${v.replace(/"/g, '""')}"`)
+                    .join(','),
+            )
+            .join('\n');
+
+        const blob = new Blob([csvContent], {
+            type: 'text/csv;charset=utf-8;',
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'selected_users.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }, []);
+
+    const exportMutation = useMutation({
+        mutationKey: ['exports'],
+        mutationFn: exportSelectedOrganization,
+        onSuccess: (list) => {
+            exportToCsv(list);
+        },
+        onError: (error) => {
+            logger.log(error);
+            notifications.show({
+                title: 'Export Users',
+                message:
+                    'Something went wrong while exporting selected Organization',
+                color: 'red',
+            });
+        },
+    });
+
     if (isLoading) {
         return <LoadingOverlay visible={true} h={'100%'} />;
     }
@@ -64,18 +113,18 @@ const OrganizationsPage = () => {
 
     const organizations = data?.data ?? [];
 
-    const toggleRow = (email: string) =>
+    const toggleRow = (id: string) =>
         setSelection((current) =>
-            current.includes(email)
-                ? current.filter((item) => item !== email)
-                : [...current, email],
+            current.includes(id)
+                ? current.filter((item) => item !== id)
+                : [...current, id],
         );
 
     const toggleAll = () =>
         setSelection((current) =>
             current.length === organizations.length
                 ? []
-                : organizations.map((user: Daum) => user.createdDate ?? ''),
+                : organizations.map((user: Daum) => user.id ?? ''),
         );
 
     return (
@@ -96,8 +145,11 @@ const OrganizationsPage = () => {
                 />
                 <Flex gap={'xs'} align={'center'}>
                     <Button
-                        variant="primary"
+                        variant="light"
                         leftSection={<IconDownload size={18} />}
+                        disabled={selection?.length === 0}
+                        onClick={() => exportMutation.mutate(selection)}
+                        loading={exportMutation.isPending}
                     >
                         {t('exportCSV')}
                     </Button>
@@ -177,16 +229,14 @@ const OrganizationsPage = () => {
                         </Table.Thead>
                         <Table.Tbody>
                             {organizations.map((user: Daum) => (
-                                <Table.Tr key={user.createdDate}>
+                                <Table.Tr key={user.id}>
                                     <Table.Td>
                                         <Checkbox
                                             checked={selection.includes(
-                                                user.createdDate ?? '',
+                                                user.id ?? '',
                                             )}
                                             onChange={() =>
-                                                toggleRow(
-                                                    user.createdDate ?? '',
-                                                )
+                                                toggleRow(user.id ?? '')
                                             }
                                         />
                                     </Table.Td>

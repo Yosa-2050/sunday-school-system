@@ -65,11 +65,6 @@ export class QueryBuilderService {
                     ? field.split('.')
                     : ['entity', field];
 
-                // Ensure that the alias is valid
-                if (!['entity', 'profile', 'roles'].includes(alias)) {
-                    throw new Error(`Invalid alias: ${alias}`);
-                }
-
                 // Parse boolean values
                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 let parsedValue: any = value;
