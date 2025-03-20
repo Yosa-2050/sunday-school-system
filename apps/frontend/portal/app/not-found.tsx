@@ -6,7 +6,7 @@ export default function NotFound() {
                     404
                 </div>
                 <h1 className="font-[Greycliff CF] text-4xl font-extrabold md:text-3xl">
-                    Nothing to see here
+                    Nothing to see here!
                 </h1>
                 <p className="mx-auto mb-12 mt-6 max-w-xl text-lg text-gray-500 dark:text-gray-400">
                     The page you are trying to open does not exist. You may have
