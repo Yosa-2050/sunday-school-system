@@ -8,9 +8,9 @@ variables:
 default:
   image: node:22
   before_script:
-    - corepack enable
-    - corepack prepare pnpm@9.0.0 --activate
-    - pnpm config set store-dir .pnpm-store
+    - "corepack enable"
+    - "corepack prepare pnpm@9.0.0 --activate"
+    - "pnpm config set store-dir .pnpm-store"
 
 stages:
   - build
@@ -21,13 +21,13 @@ stages:
 build_portal:
   stage: build
   script:
-    - echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" # Debugging
-    - pnpm install
-    - pnpm run format
-    - pnpm --filter portal build # Builds only portal
+    - "echo 'NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}'"  # Debugging
+    - "pnpm install"
+    - "pnpm run format"
+    - "pnpm --filter portal build"  # Builds only portal
   artifacts:
     paths:
-      - apps/frontend/portal/dist/ # Adjust if output differs
+      - apps/frontend/portal/dist/  # Adjust if output differs
     expire_in: 1 hour
   rules:
     - changes:
@@ -36,13 +36,13 @@ build_portal:
 build_office:
   stage: build
   script:
-    - echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" # Debugging
-    - pnpm install
-    - pnpm run format
-    - pnpm --filter office build # Builds only office
+    - "echo 'NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}'"  # Debugging
+    - "pnpm install"
+    - "pnpm run format"
+    - "pnpm --filter office build"  # Builds only office
   artifacts:
     paths:
-      - apps/frontend/office/dist/ # Adjust if output differs
+      - apps/frontend/office/dist/  # Adjust if output differs
     expire_in: 1 hour
   rules:
     - changes:
@@ -51,18 +51,18 @@ build_office:
 build_api:
   stage: build
   script:
-    - pnpm install
-    - pnpm run format
-    - pnpm --filter api build # Builds only api
+    - "pnpm install"
+    - "pnpm run format"
+    - "pnpm --filter api build"  # Builds only api
   artifacts:
     paths:
-      - apps/backend/api/dist/ # Adjust if output differs
+      - apps/backend/api/dist/  # Adjust if output differs
     expire_in: 1 hour
   rules:
     - changes:
         - apps/backend/api/**/*
 
-# Staging stage (for develop branch, unchanged)
+# Staging stage (for develop branch)
 staging:
   stage: staging
   only:
@@ -72,45 +72,47 @@ staging:
     - build_office
     - build_api
   services:
-    - postgres:16 # PostgreSQL container
+    - postgres:16  # PostgreSQL container
   script:
-    - pnpm install
-    - pnpm run format
-    # - export PG_URL="postgresql://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DB"
+    - "pnpm install"
+    - "pnpm run format"
+    # - "export PG_URL='postgresql://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DB'"
 
 # Deploy portal to Coolify
 deploy_portal:
   stage: deploy
   script:
-    - echo "Deploying portal to Coolify..."
-    - curl -X POST "$COOLIFY_WEBHOOK_PORTAL" -H "Authorization: Bearer $COOLIFY_API_TOKEN"
+    - "echo 'Deploying portal to Coolify...'"
+    - "curl -X POST \"$COOLIFY_WEBHOOK_PORTAL\" -H \"Authorization: Bearer $COOLIFY_API_TOKEN\""
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
         - apps/frontend/portal/**/*
         - packages/shared/**/*
-        - packages/ui/**/* # Include if shared code affects portal
+        - packages/ui/**/*  # Added per your update
 
 # Deploy office to Coolify
 deploy_office:
   stage: deploy
   script:
-    - echo "Deploying office to Coolify..."
-    - curl -X POST "$COOLIFY_WEBHOOK_OFFICE" -H "Authorization: Bearer $COOLIFY_API_TOKEN"
+    - "echo 'Deploying office to Coolify...'"
+    - "curl -X POST \"$COOLIFY_WEBHOOK_OFFICE\" -H \"Authorization: Bearer $COOLIFY_API_TOKEN\""
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
         - apps/frontend/office/**/*
         - packages/shared/**/*
-        - packages/ui/**/*
+        - packages/ui/**/*  # Added per your update
 
+# Deploy api to Coolify
 deploy_api:
   stage: deploy
   script:
-    - echo "Deploying api to Coolify..."
-    - curl -X POST "$COOLIFY_WEBHOOK_API" -H "Authorization: Bearer $COOLIFY_API_TOKEN"
+    - "echo 'Deploying api to Coolify...'"
+    - "curl -X POST \"$COOLIFY_WEBHOOK_API\" -H \"Authorization: Bearer $COOLIFY_API_TOKEN\""
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
         - apps/backend/api/**/*
         - packages/shared/**/*
+        - packages/ui/**/*  # Added for consistency, adjust if not needed
