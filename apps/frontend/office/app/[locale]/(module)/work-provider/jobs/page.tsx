@@ -10,8 +10,6 @@ import {
     Flex,
     Group,
     LoadingOverlay,
-    Menu,
-    MenuItem,
     Paper,
     Stack,
     Table,
@@ -25,14 +23,7 @@ import {
     entityParamSerializer,
 } from '@shega/shared';
 import { EntityFilter, EntityPagination, EntitySearch } from '@shega/ui';
-import {
-    IconDotsVertical,
-    IconEdit,
-    IconEye,
-    IconPlus,
-    IconRefresh,
-    IconTrash,
-} from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/[locale]/_api/organizations/fetch-jobs';
 import parse from 'html-react-parser';
@@ -189,7 +180,7 @@ const JobsList = () => {
                                 <Table.Th>Employment Type</Table.Th>
                                 <Table.Th>Salary Range</Table.Th>
                                 <Table.Th>Posting Date</Table.Th>
-                                <Table.Th>Location</Table.Th>
+                                {/* <Table.Th>Location</Table.Th> */}
                                 <Table.Th>Status</Table.Th>
                                 <Table.Th>Actions</Table.Th>
                             </Table.Tr>
@@ -215,7 +206,7 @@ const JobsList = () => {
                                     <Table.Td>
                                         {new Date().toDateString()}
                                     </Table.Td>
-                                    <Table.Td>Location</Table.Td>
+                                    {/* <Table.Td>Location</Table.Td> */}
                                     <Table.Td>
                                         <Badge
                                             color={
@@ -228,77 +219,66 @@ const JobsList = () => {
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Menu width={200}>
-                                            <Menu.Target>
-                                                <IconDotsVertical
-                                                    size={18}
-                                                    style={{
-                                                        cursor: 'pointer',
-                                                    }}
-                                                />
-                                            </Menu.Target>
-                                            <Menu.Dropdown>
-                                                <MenuItem
-                                                    leftSection={
-                                                        <IconEye size={14} />
-                                                    }
-                                                    onClick={() =>
-                                                        router.push(
-                                                            `/work-provider/jobs/${job.id}`,
-                                                        )
-                                                    }
-                                                >
-                                                    View
-                                                </MenuItem>
-                                                <MenuItem
-                                                    leftSection={
-                                                        <IconEdit size={14} />
-                                                    }
-                                                    onClick={() =>
-                                                        handleEditJob(job.id)
-                                                    }
-                                                >
-                                                    Edit
-                                                </MenuItem>
-                                                {job.status !== 'CLOSED' && (
-                                                    <MenuItem
-                                                        leftSection={
-                                                            <IconTrash
-                                                                size={14}
-                                                            />
-                                                        }
-                                                        color="red"
-                                                        // onClick={() => handleDeactivateJob(job.id)}
-                                                    >
-                                                        Close/Deactivate
-                                                    </MenuItem>
-                                                )}
-                                                {job.status === 'CLOSED' && (
-                                                    <MenuItem
-                                                        leftSection={
-                                                            <IconRefresh
-                                                                size={14}
-                                                            />
-                                                        }
-                                                        // onClick={() => handleReactivateJob(job.id)}
-                                                    >
-                                                        Reactivate
-                                                    </MenuItem>
-                                                )}
-                                                <MenuItem
-                                                    leftSection={
-                                                        <IconEye size={14} />
-                                                    }
-                                                    onClick={() =>
-                                                        handleViewApplications(
-                                                            job.id,
-                                                        )
-                                                    }
-                                                >
-                                                    View Applications
-                                                </MenuItem>
-                                            </Menu.Dropdown>
-                                        </Menu>
+                                        <Button
+                                            variant="default"
+                                            color="primary"
+                                            onClick={() =>
+                                                router.push(
+                                                    `/work-provider/jobs/${job.id}`,
+                                                )
+                                            }
+                                        >
+                                            Details
+                                        </Button>
+                                        {/* <Menu width={200}>
+                        <Menu.Target>
+                          <IconDotsVertical
+                            size={18}
+                            style={{
+                              cursor: "pointer",
+                            }}
+                          />
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                          <MenuItem
+                            leftSection={<IconEye size={14} />}
+                            onClick={() =>
+                              router.push(`/work-provider/jobs/${job.id}`)
+                            }
+                          >
+                            View
+                          </MenuItem>
+                          <MenuItem
+                            leftSection={<IconEdit size={14} />}
+                            onClick={() => handleEditJob(job.id)}
+                          >
+                            Edit
+                          </MenuItem>
+                          {job.status !== "CLOSED" && (
+                            <MenuItem
+                              leftSection={<IconTrash size={14} />}
+                              color="red"
+                              // onClick={() => handleDeactivateJob(job.id)}
+                            >
+                              Close/Deactivate
+                            </MenuItem>
+                          )}
+                          {job.status === "CLOSED" && (
+                            <MenuItem
+                              leftSection={<IconRefresh size={14} />}
+                              // onClick={() => handleReactivateJob(job.id)}
+                            >
+                              Reactivate
+                            </MenuItem>
+                          )}
+                          <MenuItem
+                            leftSection={<IconEye size={14} />}
+                            onClick={() => handleViewApplications(job.id)}
+                          >
+                            View Applications
+                          </MenuItem>
+                        </Menu.Dropdown>
+                      </Menu> */}
                                     </Table.Td>
                                 </Table.Tr>
                             ))}

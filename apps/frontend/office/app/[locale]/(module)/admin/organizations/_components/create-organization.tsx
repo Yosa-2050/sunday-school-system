@@ -25,7 +25,11 @@ export function CreateOrganization() {
         firstName: z.string().min(1, t('validation.firstNameRequired')),
         middleName: z.string().min(1, t('validation.middleNameRequired')),
         lastName: z.string().min(1, t('validation.lastNameRequired')),
-        email: z.string().email(t('validation.invalidEmail')),
+        email: z
+            .string()
+            .min(1, t('validation.emailRequired'))
+            .email(t('validation.invalidEmail'))
+            .nonempty(t('validation.emailRequired')),
         organizationName: z
             .string()
             .min(1, t('validation.companyNameRequired')),

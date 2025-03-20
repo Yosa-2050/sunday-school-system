@@ -11,8 +11,6 @@ import {
     Flex,
     Group,
     LoadingOverlay,
-    Menu,
-    MenuItem,
     Paper,
     Stack,
     Table,
@@ -28,7 +26,6 @@ import {
     logger,
 } from '@shega/shared';
 import { EntityFilter, EntityPagination, EntitySearch } from '@shega/ui';
-import { IconDotsVertical, IconDownload, IconEye } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchJobsAdmin } from 'app/[locale]/_api/admin/fetch-jobs';
 import { exportSelectedJobs } from 'app/[locale]/_api/organizations/export-selected-jobs';
@@ -157,35 +154,43 @@ const JobsList = () => {
             </Flex>
             <Divider my="md" />
 
+            {/* <Group justify="space-between" className="mb-4">
+        <EntitySearch
+          entity="jobs"
+          placeholder={t("searchPlaceholder")}
+          className="!w-[300px]"
+        />
+        <EntityFilter
+          entity="jobs"
+          filterOptions={[
+            { value: "", label: t("allCategories") },
+            { value: "FULL_TIME", label: "Full Time" },
+            { value: "PART_TIME", label: "Part Time" },
+            { value: "CONTRACT", label: "Contract" },
+            { value: "INTERNSHIP", label: "Internship" },
+          ]}
+          mode="select"
+          field="type"
+        />
+      </Group> */}
+
             <Group justify="space-between" className="mb-4">
                 <EntitySearch
                     entity="jobs"
                     placeholder={t('searchPlaceholder')}
                     className="!w-[300px]"
                 />
-                <Group>
-                    <EntityFilter
-                        entity="jobs"
-                        filterOptions={[
-                            { value: '', label: t('allCategories') },
-                            { value: 'FULL_TIME', label: 'Full Time' },
-                            { value: 'PART_TIME', label: 'Part Time' },
-                            { value: 'CONTRACT', label: 'Contract' },
-                            { value: 'INTERNSHIP', label: 'Internship' },
-                        ]}
-                        mode="select"
-                        field="type"
-                    />
-                    <Button
-                        variant="light"
-                        leftSection={<IconDownload size={18} />}
-                        disabled={selection?.length === 0}
-                        onClick={() => exportMutation.mutate(selection)}
-                        loading={exportMutation.isPending}
-                    >
-                        {t('exportCSV')}
-                    </Button>
-                </Group>
+                <EntityFilter
+                    entity="jobs"
+                    filterOptions={[
+                        { value: '', label: t('allCategories') },
+                        { value: 'APPROVED', label: 'Approve' },
+                        { value: 'NEW', label: 'Waiting Approval' },
+                        { value: 'REJECTED', label: 'Decline' },
+                    ]}
+                    mode="select"
+                    field="status"
+                />
             </Group>
 
             {jobs.length === 0 ? (
@@ -255,7 +260,7 @@ const JobsList = () => {
                                 <Table.Th>Company Name</Table.Th>
                                 <Table.Th>Job Title</Table.Th>
                                 <Table.Th>Salary</Table.Th>
-                                <Table.Th>Location</Table.Th>
+                                {/* <Table.Th>Location</Table.Th> */}
                                 <Table.Th>Status</Table.Th>
                                 <Table.Th>Actions</Table.Th>
                             </Table.Tr>
@@ -280,7 +285,7 @@ const JobsList = () => {
                                         ${job.salaryFrom.toLocaleString()} - $
                                         {job.salaryTo.toLocaleString()}
                                     </Table.Td>
-                                    <Table.Td>{'Location'}</Table.Td>
+                                    {/* <Table.Td>{"Location"}</Table.Td> */}
                                     <Table.Td>
                                         <Badge
                                             color={
@@ -293,30 +298,35 @@ const JobsList = () => {
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Menu width={200}>
-                                            <Menu.Target>
-                                                <IconDotsVertical
-                                                    size={18}
-                                                    style={{
-                                                        cursor: 'pointer',
-                                                    }}
-                                                />
-                                            </Menu.Target>
-                                            <Menu.Dropdown>
-                                                <MenuItem
-                                                    leftSection={
-                                                        <IconEye size={14} />
-                                                    }
-                                                    onClick={() =>
-                                                        router.push(
-                                                            `/admin/jobs/${job.id}`,
-                                                        )
-                                                    }
-                                                >
-                                                    Details
-                                                </MenuItem>
-                                            </Menu.Dropdown>
-                                        </Menu>
+                                        <Button
+                                            variant="default"
+                                            color="primary"
+                                            onClick={() =>
+                                                router.push(
+                                                    `/admin/jobs/${job.id}`,
+                                                )
+                                            }
+                                        >
+                                            Details
+                                        </Button>
+                                        {/* <Menu width={200}>
+                        <Menu.Target>
+                          <IconDotsVertical
+                            size={18}
+                            style={{
+                              cursor: "pointer",
+                            }}
+                          />
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                          <MenuItem
+                            leftSection={<IconEye size={14} />}
+                            onClick={() => router.push(`/admin/jobs/${job.id}`)}
+                          >
+                            Details
+                          </MenuItem>
+                        </Menu.Dropdown>
+                      </Menu> */}
                                     </Table.Td>
                                 </Table.Tr>
                             ))}

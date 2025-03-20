@@ -69,7 +69,13 @@ export default function UserProfile() {
                     <Menu.Item
                         leftSection={<IconLogout2 className="w-4 h-4" />}
                         color="red"
-                        onClick={openModal}
+                        //   onClick={openModal}
+                        onClick={() => {
+                            deleteCookie(COOKIE_ACCESS_TOKEN);
+                            deleteCookie('role');
+                            setUser(undefined);
+                            router.push('/auth/login');
+                        }}
                     >
                         {t('logout')}
                     </Menu.Item>
