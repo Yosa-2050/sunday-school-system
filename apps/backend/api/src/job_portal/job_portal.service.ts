@@ -27,9 +27,12 @@ import { JobCategory } from './entities/job-category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
+import { Skills } from './entities/skills.entity';
 
 @Injectable()
 export class JobPortalService {
+    
+    
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)
@@ -40,6 +43,8 @@ export class JobPortalService {
         private jobRepo: Repository<Jobs>,
         @InjectRepository(Category)
         private categoryRepo: Repository<Category>,
+        @InjectRepository(Skills)
+        private skillRepo: Repository<Skills>,
         private readonly queryBuilderService: QueryBuilderService,
         private readonly addressService: AddressService,
     ) {}
@@ -200,5 +205,52 @@ export class JobPortalService {
 
     remove(id: number) {
         throw new NotImplementedException();
+    }
+
+    async getCategoriesByParentId(id: string) {
+        const category = await this.categoryRepo.findOneBy({id});
+        if(!category) { throw new BadRequestException("Category not found"); }
+
+        return category.childs;
+    }
+
+    async createSkills(name: string) {
+        const skillExisting = await this.skillRepo.findOneBy({name, isActive: true});
+        if(skillExisting) { throw new BadRequestException("Skill found with the name"); }
+
+        const skill = this.skillRepo.create();
+        skill.name = name;
+
+        return this.skillRepo.save(skill);
+    }
+    async createCategories(name: string) {
+        const categoryExisting = await this.categoryRepo.findOneBy({name, isActive: true});
+        if(categoryExisting) { throw new BadRequestException("Category found with the name"); }
+
+        const category = this.categoryRepo.create();
+        category.name = name;
+        category.isRoot = true;
+        category.hasChild = true;
+        return this.categoryRepo.save(category);
+    }
+
+    async addCategoriesByParentId(id: string, name: string) {
+        const category = await this.categoryRepo.findOneBy({id});
+        if(!category) { throw new BadRequestException("Category not found"); }
+
+        const childCategory = this.categoryRepo.create();
+        childCategory.name = name;
+        childCategory.isRoot = false;
+        childCategory.hasChild = false;
+        childCategory.parent = category;
+        return this.categoryRepo.save(childCategory);
+        
+    }
+
+    findSkills() {
+        return this.skillRepo.find();
+    }
+    findCategories() {
+        return this.categoryRepo.findBy({isRoot: true});
     }
 }

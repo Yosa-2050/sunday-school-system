@@ -10,12 +10,14 @@ import { Jobs } from './entities/jobs.entity';
 import { JobPortalController } from './job_portal.controller';
 import { JobPortalService } from './job_portal.service';
 import { JobSeekerController } from './job_seeker.controller';
+import { JobDetailController } from './job_detail.controller';
+import { Skills } from './entities/skills.entity';
 
 @Module({
-    controllers: [JobPortalController, JobSeekerController],
+    controllers: [JobPortalController, JobSeekerController, JobDetailController],
     providers: [JobPortalService],
     imports: [
-        TypeOrmModule.forFeature([Jobs, JobSkills, JobCategory, Category]),
+        TypeOrmModule.forFeature([Jobs, JobSkills, JobCategory, Category, Skills]),
         OrganizationModule,
         DocumentModule,
         AddressModule,

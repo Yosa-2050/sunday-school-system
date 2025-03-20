@@ -1,7 +1,6 @@
 import {
     BadRequestException,
     Injectable,
-    NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -148,7 +147,7 @@ export class ProfileService {
         const profile = await this.findOne(id);
 
         if (!profile) {
-            throw new NotFoundException('profile not found');
+            throw new BadRequestException('profile not found');
         }
 
         Object.assign(profile, attrs);
@@ -159,7 +158,7 @@ export class ProfileService {
         const profile = await this.findOne(id);
 
         if (!profile) {
-            throw new NotFoundException('profile not found');
+            throw new BadRequestException('profile not found');
         }
 
         return this.repo.remove(profile);

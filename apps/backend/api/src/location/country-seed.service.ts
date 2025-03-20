@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
@@ -50,7 +50,7 @@ export class CountrySeedService {
                     code: seedData.countryCode,
                 });
                 if (!country) {
-                    throw new NotFoundException('County not found');
+                    throw new BadRequestException('County not found');
                 }
                 const allLocation = await this.locationInfoRepo.findBy({
                     country: { code: seedData.countryCode },
@@ -92,7 +92,7 @@ export class CountrySeedService {
                     code: mainData.countryCode,
                 });
                 if (!country) {
-                    throw new NotFoundException('County not found');
+                    throw new BadRequestException('County not found');
                 }
                 const seedDataArray = mainData.data;
                 for (let y = 0; y < seedDataArray.length; y++) {
