@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 
 export enum OriginEnums {
@@ -18,5 +18,5 @@ export function validateRole(role: UserRoleType, origin: OriginEnums): boolean {
     if (origin === OriginEnums.portal) {
         return portalRoles.includes(role);
     }
-    throw new NotFoundException('Origin not found');
+    throw new BadRequestException('Origin not found');
 }

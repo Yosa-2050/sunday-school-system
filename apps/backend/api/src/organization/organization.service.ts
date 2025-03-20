@@ -1,9 +1,4 @@
-import {
-    BadRequestException,
-    Inject,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
@@ -83,7 +78,7 @@ export class OrganizationService {
     async addBranch(request: AddOrganizationBranchDto, orgId: string) {
         const org = await this.organizationRepo.findOneBy({ id: orgId });
         if (!org) {
-            throw new NotFoundException('Organization not found');
+            throw new BadRequestException('Organization not found');
         }
         const branch = this.branchRepo.create();
         branch.name = request.branchName;
@@ -155,7 +150,7 @@ export class OrganizationService {
             id: organizationId,
         });
         if (!organization) {
-            throw new NotFoundException('Organization not found');
+            throw new BadRequestException('Organization not found');
         }
         return organization;
     }
@@ -163,7 +158,7 @@ export class OrganizationService {
     async findOne(id: string) {
         const organization = await this.organizationRepo.findOneBy({ id: id });
         if (!organization) {
-            throw new NotFoundException('Organization not found');
+            throw new BadRequestException('Organization not found');
         }
         const contactDetails = await this.addressService.getContanctByRefernce(
             organization.id,
@@ -268,7 +263,7 @@ export class OrganizationService {
             name: dto.organizationName,
         });
         if (organization) {
-            throw new NotFoundException(
+            throw new BadRequestException(
                 `Organization with name '${dto.organizationName}' exists`,
             );
         }

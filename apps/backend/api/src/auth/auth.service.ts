@@ -1,7 +1,6 @@
 import {
     BadRequestException,
     Injectable,
-    NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -132,7 +131,7 @@ export class AuthService {
                 success: 'true',
             };
         }
-        throw new NotFoundException('User not found');
+        throw new BadRequestException('User not found');
     }
     async validateResetPassword(req: ValidateResteRequestDto) {
         const user = await this.usersService.findOneUser(
