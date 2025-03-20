@@ -1,43 +1,44 @@
-import { fetcher } from '@shega/shared';
+import { fetcher } from "@shega/shared";
 
 export type Users = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    userType: string;
-    status: string;
-    email: string;
-    createdBy: string;
-    createdAt: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  userType: string;
+  status: string;
+  email: string;
+  createdBy: string;
+  createdAt: string;
 };
 
 export type FetchUsersPayload = {
-    search: string;
-    page: number;
-    limit: number;
+  search: string;
+  page: number;
+  limit: number;
 };
 
 export interface Response {
-    data: Daum[];
-    total: number;
-    limit: number;
-    page: number;
-    totalPages: number;
+  data: Daum[];
+  total: number;
+  limit: number;
+  page: number;
+  totalPages: number;
 }
 
 export interface Daum {
-    createdBy: string;
-    createdDate: string;
-    isActive: boolean;
-    name: string;
+  id: string;
+  createdBy: string;
+  createdDate: string;
+  isActive: boolean;
+  name: string;
 }
 
 export const fetchOrganizations = async (payload: string) => {
-    const response: Response = await fetcher('/organization/all', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: payload }),
-    });
+  const response: Response = await fetcher("/organization/all", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ q: payload }),
+  });
 
-    return response;
+  return response;
 };

@@ -1,28 +1,40 @@
-'use server';
+"use server";
 
-import { COOKIE_ACCESS_TOKEN, fetcher, logger } from '@shega/shared';
-import { cookies } from 'next/headers';
+import {
+  COOKIE_ACCESS_TOKEN,
+  fetcher,
+  isTokenExpired,
+  logger,
+} from "@shega/shared";
+import { cookies } from "next/headers";
 
 export const getUserAction = async (token?: string) => {
-    const cookieValue = await cookies();
-    const newToken = cookieValue.get(COOKIE_ACCESS_TOKEN)?.value;
+  const cookieValue = await cookies();
+  const newToken = cookieValue.get(COOKIE_ACCESS_TOKEN)?.value;
 
-    console.log;
+  const actualToken = token ?? newToken;
+  if (!actualToken) {
+    return null;
+  }
 
-    if (!(token || newToken)) {
-        return null;
-    }
+  if (isTokenExpired(actualToken)) {
+    return null;
+  }
 
-    const response = await fetcher('/profile/myprofile', {
-        headers: {
-            Authorization: `Bearer ${token ?? newToken}`,
-        },
+  try {
+    const response = await fetcher("/profile/myprofile", {
+      headers: {
+        Authorization: `Bearer ${token ?? newToken}`,
+      },
     });
 
-    logger.log('getUserAction', response);
+    logger.log("getUserAction", response);
 
     if (!response) {
-        return undefined;
+      return undefined;
     }
     return response;
+  } catch (error) {
+    return undefined;
+  }
 };
