@@ -8,9 +8,7 @@ import {
     Card,
     Container,
     Divider,
-    Drawer,
     Flex,
-    Grid,
     Group,
     LoadingOverlay,
     Paper,
@@ -35,7 +33,6 @@ import { EntityPagination, useAuth } from '@shega/ui';
 import {
     IconBriefcase,
     IconCurrencyDollar,
-    IconFilter,
     IconMapPin,
     IconSearch,
 } from '@tabler/icons-react';
@@ -199,7 +196,7 @@ export default function HomePage() {
                     Recent Jobs
                 </Title>
                 <Divider mb={'md'} />
-                <Grid className="mt-3">
+                {/* <Grid className="mt-3">
                     <Grid.Col span={{ base: 12 }}>
                         {isMobile && (
                             <Button
@@ -213,10 +210,10 @@ export default function HomePage() {
                         )}
                         <JobList filters={filters} />
                     </Grid.Col>
-                </Grid>
+                </Grid> */}
             </Container>
 
-            <Drawer
+            {/* <Drawer
                 opened={opened}
                 onClose={() => setOpened(false)}
                 title="Filter Jobs"
@@ -228,7 +225,7 @@ export default function HomePage() {
                     filters={filters}
                     onFilterChange={setFilters}
                 />
-            </Drawer>
+            </Drawer> */}
         </>
     );
 }
