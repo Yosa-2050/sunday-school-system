@@ -246,7 +246,7 @@
         "selectCategory": "Select a category",
         "allCategories": "All Categories",
         "noJobsMessage": "You haven’t any posted jobs yet.",
-        "exportCSV":"Export",
+        "exportCSV": "Export",
         "tableHeaders": {
             "title": "Title",
             "employmentType": "Employment Type",

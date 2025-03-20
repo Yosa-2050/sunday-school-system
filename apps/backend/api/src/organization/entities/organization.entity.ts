@@ -1,44 +1,48 @@
-import { BaseModel } from "@shega/Utilities/entities/base-model.entity";
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ContactDetails } from "@shega/location/entities/contact-details.entity";
+import { ContactDetails } from '@shega/location/entities/contact-details.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Location } from "@shega/location/entities/location.entity";
-import { Column, Entity, OneToMany } from "typeorm";
-import { Branch } from "./branch.entity";
-import { EmployeeOrganization } from "./employee-organization.entity";
+import { Location } from '@shega/location/entities/location.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { Branch } from './branch.entity';
+import { EmployeeOrganization } from './employee-organization.entity';
 
 @Entity()
 export class Organization extends BaseModel {
-  @Column()
-  name: string;
+    @Column()
+    name: string;
 
-  @Column({ nullable: true })
-  description: string;
+    @Column({ nullable: true })
+    description: string;
 
-  @Column({ nullable: true })
-  tinNumber: string;
+    @Column({ nullable: true })
+    tinNumber: string;
 
-  @Column({ nullable: true })
-  displayName: string;
+    @Column({ nullable: true })
+    displayName: string;
 
-  @OneToMany((type) => Branch, (branches) => branches.organization, {
-    cascade: true,
-    lazy: true,
-  })
-  branches: Branch[];
+    @OneToMany(
+        (type) => Branch,
+        (branches) => branches.organization,
+        {
+            cascade: true,
+            lazy: true,
+        },
+    )
+    branches: Branch[];
 
-  @Column({ default: false })
-  hasBranches: boolean;
+    @Column({ default: false })
+    hasBranches: boolean;
 
-  @OneToMany(
-    (type) => EmployeeOrganization,
-    (employee) => employee.organization,
-    {
-      lazy: true,
-    }
-  )
-  employee: EmployeeOrganization[];
+    @OneToMany(
+        (type) => EmployeeOrganization,
+        (employee) => employee.organization,
+        {
+            lazy: true,
+        },
+    )
+    employee: EmployeeOrganization[];
 
-  locations: Location[];
-  contacts: ContactDetails[];
+    locations: Location[];
+    contacts: ContactDetails[];
 }

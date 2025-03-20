@@ -1,67 +1,67 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { ApprovalType } from "@shega/Utilities/enums/approval-type.enum";
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Jobs } from "@shega/job_portal/entities/jobs.entity";
+import { Jobs } from '@shega/job_portal/entities/jobs.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EmploymentType } from "@shega/job_portal/enums/employment-type.enum";
+import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 
 export class JobResponseDto {
-  constructor(job: Jobs) {
-    this.id = job.id;
-    this.salaryTo = job.salaryTo;
-    this.createdDate = job.createdAt;
-    this.postedDate = job.postedDate;
-    this.salaryFrom = job.salaryFrom;
-    this.status = job.status;
-    this.type = job.type;
-    this.title = job.title;
-    this.orgName = job.organization.name;
-    this.description = job.description;
-  }
-  id: string;
-  title: string;
-  orgName: string;
-  description: string;
+    constructor(job: Jobs) {
+        this.id = job.id;
+        this.salaryTo = job.salaryTo;
+        this.createdDate = job.createdAt;
+        this.postedDate = job.postedDate;
+        this.salaryFrom = job.salaryFrom;
+        this.status = job.status;
+        this.type = job.type;
+        this.title = job.title;
+        this.orgName = job.organization.name;
+        this.description = job.description;
+    }
+    id: string;
+    title: string;
+    orgName: string;
+    description: string;
 
-  type: EmploymentType;
+    type: EmploymentType;
 
-  salaryFrom: number;
+    salaryFrom: number;
 
-  salaryTo: number;
+    salaryTo: number;
 
-  //salaryType: SalaryType; //fixed, negotiable
+    //salaryType: SalaryType; //fixed, negotiable
 
-  //salaryFrequency: SalaryFrequencyType;
+    //salaryFrequency: SalaryFrequencyType;
 
-  status: ApprovalType;
+    status: ApprovalType;
 
-  //workPlace: WorkPlaceType;
+    //workPlace: WorkPlaceType;
 
-  //country: Country;
+    //country: Country;
 
-  //state: LocationInfo;
+    //state: LocationInfo;
 
-  //city: LocationInfo;
+    //city: LocationInfo;
 
-  //experianceLevel: ExperianceLevelType;
+    //experianceLevel: ExperianceLevelType;
 
-  //experiance: number;
+    //experiance: number;
 
-  //deadline: Date;
+    //deadline: Date;
 
-  //educationalRequirment: EducationalRequirmentType;
+    //educationalRequirment: EducationalRequirmentType;
 
-  //jobSkills: JobSkills[];
+    //jobSkills: JobSkills[];
 
-  ///jobCategory: JobCategory[];
+    ///jobCategory: JobCategory[];
 
-  //isPublished: boolean;
+    //isPublished: boolean;
 
-  postedDate: Date;
+    postedDate: Date;
 
-  //organization: Organization;
+    //organization: Organization;
 
-  //postedBy: EmployeeOrganization;
+    //postedBy: EmployeeOrganization;
 
-  createdDate: Date;
+    createdDate: Date;
 }

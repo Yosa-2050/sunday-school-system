@@ -1,40 +1,40 @@
-"use server";
+'use server';
 
 import {
-  COOKIE_ACCESS_TOKEN,
-  fetcher,
-  isTokenExpired,
-  logger,
-} from "@shega/shared";
-import { cookies } from "next/headers";
+    COOKIE_ACCESS_TOKEN,
+    fetcher,
+    isTokenExpired,
+    logger,
+} from '@shega/shared';
+import { cookies } from 'next/headers';
 
 export const getUserAction = async (token?: string) => {
-  const cookieValue = await cookies();
-  const newToken = cookieValue.get(COOKIE_ACCESS_TOKEN)?.value;
+    const cookieValue = await cookies();
+    const newToken = cookieValue.get(COOKIE_ACCESS_TOKEN)?.value;
 
-  const actualToken = token ?? newToken;
-  if (!actualToken) {
-    return null;
-  }
-
-  if (isTokenExpired(actualToken)) {
-    return null;
-  }
-
-  try {
-    const response = await fetcher("/profile/myprofile", {
-      headers: {
-        Authorization: `Bearer ${token ?? newToken}`,
-      },
-    });
-
-    logger.log("getUserAction", response);
-
-    if (!response) {
-      return undefined;
+    const actualToken = token ?? newToken;
+    if (!actualToken) {
+        return null;
     }
-    return response;
-  } catch (error) {
-    return undefined;
-  }
+
+    if (isTokenExpired(actualToken)) {
+        return null;
+    }
+
+    try {
+        const response = await fetcher('/profile/myprofile', {
+            headers: {
+                Authorization: `Bearer ${token ?? newToken}`,
+            },
+        });
+
+        logger.log('getUserAction', response);
+
+        if (!response) {
+            return undefined;
+        }
+        return response;
+    } catch (error) {
+        return undefined;
+    }
 };
