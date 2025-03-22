@@ -1,10 +1,10 @@
-import { fetcher } from "@shega/shared";
+import { fetcher } from '@shega/shared';
 
 export const declineJob = async (id: string) => {
-  const response = await fetcher(`/job-portal/decline/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-  });
+    const response = await fetcher(`/job-portal/decline/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+    });
 
-  return response;
+    return response;
 };

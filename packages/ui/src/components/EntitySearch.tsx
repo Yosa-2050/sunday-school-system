@@ -1,11 +1,11 @@
 'use client';
 
 import { CloseButton, TextInput } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { entityParamSchema } from '@shega/shared';
 import { IconSearch } from '@tabler/icons-react';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useEffect, useRef, useState } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
 import { cn } from '../utilities/cn';
 
 type EntitySearchProps = {
@@ -50,6 +50,7 @@ export function EntitySearch({
     }, [debouncedSearch, entityParams, setEntityParams]);
 
     // Sync local state with URL params when they change externally
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         if (entityParams?.s !== searchTerm) {
             setSearchTerm(entityParams?.s || '');
