@@ -11,8 +11,6 @@ import {
   Flex,
   Group,
   LoadingOverlay,
-  Menu,
-  MenuItem,
   Paper,
   Stack,
   Table,
@@ -28,7 +26,7 @@ import {
   logger,
 } from "@shega/shared";
 import { EntityFilter, EntityPagination, EntitySearch } from "@shega/ui";
-import { IconDotsVertical, IconDownload, IconEye } from "@tabler/icons-react";
+import { IconDownload, IconEye } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchJobsAdmin } from "app/[locale]/_api/admin/fetch-jobs";
 import { exportSelectedJobs } from "app/[locale]/_api/organizations/export-selected-jobs";
@@ -271,30 +269,27 @@ const JobsList = () => {
                   <Table.Td>{"Location"}</Table.Td>
                   <Table.Td>
                     <Badge
-                      color={job.status === "APPROVED" ? "green" : "yellow"}
+                      color={
+                        job.status === "APPROVED"
+                          ? "green"
+                          : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                            job.status === "DECLINED"
+                            ? "orange"
+                            : "yellow"
+                      }
                     >
                       {job.status}
                     </Badge>
                   </Table.Td>
                   <Table.Td>
-                    <Menu width={200}>
-                      <Menu.Target>
-                        <IconDotsVertical
-                          size={18}
-                          style={{
-                            cursor: "pointer",
-                          }}
-                        />
-                      </Menu.Target>
-                      <Menu.Dropdown>
-                        <MenuItem
-                          leftSection={<IconEye size={14} />}
-                          onClick={() => router.push(`/admin/jobs/${job.id}`)}
-                        >
-                          Details
-                        </MenuItem>
-                      </Menu.Dropdown>
-                    </Menu>
+                    <Button
+                      variant="transparent"
+                      leftSection={<IconEye size={14} />}
+                      onClick={() => router.push(`/admin/jobs/${job.id}`)}
+                      className="py-0 my-0"
+                    >
+                      Details
+                    </Button>
                   </Table.Td>
                 </Table.Tr>
               ))}

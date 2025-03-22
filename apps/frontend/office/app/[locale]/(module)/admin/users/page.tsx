@@ -98,7 +98,10 @@ const UsersPage = () => {
 
   const [entityParams] = useQueryState(
     "users",
-    parseAsJson(entityParamSchema.parse)
+    parseAsJson(entityParamSchema.parse).withDefault({
+      p: 1,
+      pp: PER_PAGE,
+    })
   );
 
   const roles = [

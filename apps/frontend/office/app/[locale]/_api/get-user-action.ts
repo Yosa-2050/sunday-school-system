@@ -1,6 +1,6 @@
 "use server";
 
-import { COOKIE_ACCESS_TOKEN, fetcher, logger } from "@shega/shared";
+import { COOKIE_ACCESS_TOKEN, fetcher, logger, type User } from "@shega/shared";
 import { cookies } from "next/headers";
 
 // Define the expected shape of the user profile response
@@ -11,18 +11,9 @@ interface UserProfile {
   // Add other fields as per your API response
 }
 
-// Define a consistent return type
-interface UserActionResult {
-  data: UserProfile | null;
-  error?: {
-    message: string;
-    status?: number;
-  };
-}
-
 export const getUserAction = async (
   token?: string
-): Promise<UserActionResult | undefined> => {
+): Promise<User | undefined> => {
   const cookieStore = await cookies();
   const cookieToken = cookieStore.get(COOKIE_ACCESS_TOKEN)?.value;
 
@@ -36,14 +27,14 @@ export const getUserAction = async (
   }
 
   try {
-    const response = await fetcher<UserProfile>("/profile/myprofile", {
+    const response = await fetcher<User>("/profile/myprofile", {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     });
 
     logger.log("getUserAction: Successfully fetched user profile", response);
-    return { data: response };
+    return response;
   } catch (error) {
     logger.error(error);
     return undefined;
