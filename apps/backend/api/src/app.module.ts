@@ -8,6 +8,7 @@ import { DateService } from './Utilities/date.service';
 import { BaseModelSubscriber } from './Utilities/interceptor/base-model-subscriber';
 import { TransformInterceptor } from './Utilities/interceptor/transform-interceptor';
 import { RequestContextService } from './Utilities/request-context.service';
+import { AdminReportModule } from './admin-report/admin-report.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -53,6 +54,7 @@ import { OrganizationModule } from './organization/organization.module';
         OrganizationModule,
         JobPortalModule,
         SharedModule,
+        AdminReportModule,
     ],
     controllers: [AppController],
     providers: [
