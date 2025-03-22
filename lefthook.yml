@@ -1,7 +1,7 @@
 commit-msg:
   commands:
     commitlint:
-      run: pnpm commitlint --edit {1} || yarn commitlint --edit {1} || npx commitlint --edit {1}
+      run: pnpm commitlint --edit {1}
 
 pre-push:
   jobs:
@@ -9,25 +9,11 @@ pre-push:
       tags:
         - frontend
         - security
-      run: pnpm audit || yarn audit || npm audit
+      run: pnpm audit
 
 pre-commit:
   parallel: true
   jobs:
-    # - name: biome check
-    #   run: pnpm biome check {staged_files} || yarn biome check {staged_files} || npx biome check {staged_files}
-    #   glob: "*.{js,ts,jsx,tsx,json,md}"
-
     - name: biome format
-      run: pnpm biome format --write {staged_files} || yarn biome format --write {staged_files} || npx biome format --write {staged_files}
+      run: pnpm biome format --write {staged_files}
       glob: "*.{js,ts,jsx,tsx,json,md}"
-
-    # - name: typecheck
-    #   run: pnpm tsc --noEmit --skipLibCheck || yarn tsc --noEmit --skipLibCheck || npx tsc --noEmit --skipLibCheck
-    #   glob: "*.{ts,tsx}"
-    #   exclude: "**/node_modules/**"
-
-
-    # - name: test
-    #   run: pnpm vitest --run || yarn vitest --run || npx vitest --run
-    #   glob: "*.{js,ts,jsx,tsx}"
