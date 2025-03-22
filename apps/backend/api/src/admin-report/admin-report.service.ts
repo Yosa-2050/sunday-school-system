@@ -4,7 +4,8 @@ import { Jobs } from '@shega/job_portal/entities/jobs.entity';
 import { Organization } from '@shega/organization/entities/organization.entity';
 import { User } from '@shega/users/entities/user.entity';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-import type { Repository } from 'typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Repository } from 'typeorm';
 import { CountTotalsResponseDto } from './dtos/response/count-totals.response.dto';
 
 @Injectable()
