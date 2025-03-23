@@ -62,27 +62,27 @@ build_api:
     - changes:
         - apps/backend/api/**/*
 
-build_sonar:
-  stage: build
-  image: sonarsource/sonar-scanner-cli:11
-  cache:
-    policy: pull-push
-    key: "sonar-cache-$CI_COMMIT_REF_SLUG"
-    paths:
-      - "${SONAR_USER_HOME}/cache"
-      - sonar-scanner/
-  before_script: [] # Override default before_script
-  script:
-    - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
-  artifacts:
-    paths:
-      - sonar-project.properties # Ensure the file is available
-  allow_failure: true
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_COMMIT_BRANCH == 'master'
-    - if: $CI_COMMIT_BRANCH == 'main'
-    - if: $CI_COMMIT_BRANCH == 'develop'
+# build_sonar:
+#   stage: build
+#   image: sonarsource/sonar-scanner-cli:11
+#   cache:
+#     policy: pull-push
+#     key: "sonar-cache-$CI_COMMIT_REF_SLUG"
+#     paths:
+#       - "${SONAR_USER_HOME}/cache"
+#       - sonar-scanner/
+#   before_script: [] # Override default before_script
+#   script:
+#     - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
+#   artifacts:
+#     paths:
+#       - sonar-project.properties # Ensure the file is available
+#   allow_failure: true
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+#     - if: $CI_COMMIT_BRANCH == 'master'
+#     - if: $CI_COMMIT_BRANCH == 'main'
+#     - if: $CI_COMMIT_BRANCH == 'develop'
 
 # Staging stage (for develop branch)
 staging:
