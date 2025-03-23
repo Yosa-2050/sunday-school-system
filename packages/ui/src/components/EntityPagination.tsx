@@ -1,63 +1,67 @@
-'use client';
+"use client";
 
-import { Box, Pagination } from '@mantine/core';
-import { PER_PAGE, entityParamSchema } from '@shega/shared';
-import { parseAsJson, useQueryState } from 'nuqs';
-import { cn } from '../utilities/cn';
+import { Box, Pagination } from "@mantine/core";
+import { PER_PAGE, entityParamSchema } from "@shega/shared";
+import { parseAsJson, useQueryState } from "nuqs";
+import { cn } from "../utilities/cn";
 
 type EntityPaginationProps = {
-    total: number;
-    entity: string;
-    perPage?: number;
-    hideCounter?: boolean;
-    customParam?: string;
+  total: number;
+  entity: string;
+  perPage?: number;
+  hideCounter?: boolean;
+  customParam?: string;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  defaultSorting?: any;
 };
 
 export function EntityPagination({
-    total,
-    entity,
-    perPage = PER_PAGE,
-    hideCounter = false,
+  total,
+  entity,
+  perPage = PER_PAGE,
+  hideCounter = false,
+  defaultSorting,
 }: EntityPaginationProps) {
-    const [entityParams, setEntityParams] = useQueryState(
-        entity,
-        parseAsJson(entityParamSchema.parse).withDefault({}),
-    );
-    const currentPage = entityParams.p || 1;
-    const createPageURL = (pageNumber: number | string) => {
-        setEntityParams({
-            ...entityParams,
-            p: Number.parseInt(pageNumber.toString()),
-            pp: perPage,
-        });
-    };
+  const [entityParams, setEntityParams] = useQueryState(
+    entity,
+    parseAsJson(entityParamSchema.parse).withDefault({})
+  );
+  const currentPage = entityParams.p || 1;
+  const createPageURL = (pageNumber: number | string) => {
+    setEntityParams({
+      ...entityParams,
+      p: Number.parseInt(pageNumber.toString()),
+      pp: perPage,
+      ...(defaultSorting ?? {}),
+    });
+  };
 
-    const totalPages = Math.ceil(total / perPage);
-    const from = (currentPage - 1) * perPage + 1;
-    const to = Math.min(currentPage * perPage, total);
+  const totalPages = Math.ceil(total / perPage);
+  const from = (currentPage - 1) * perPage + 1;
+  const to = Math.min(currentPage * perPage, total);
 
-    if (totalPages <= 1) {
-        return null;
-    }
+  if (totalPages <= 1) {
+    return null;
+  }
 
-    return (
-        <Box
-            className={cn(
-                'flex items-center mt-6',
-                hideCounter ? 'justify-center' : 'justify-between',
-            )}
-        >
-            <Box className="px-2">
-                {from} to {to} of {total} results
-            </Box>
-            {total >= perPage ? (
-                <Pagination
-                    size="sm"
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={createPageURL}
-                />
-            ) : null}
-        </Box>
-    );
+  return (
+    <Box
+      className={cn(
+        "flex items-center mt-6",
+        hideCounter ? "justify-center" : "justify-between"
+      )}
+    >
+      <Box className="px-2">
+        {from} to {to} of {total} results
+      </Box>
+      {total >= perPage ? (
+        <Pagination
+          size="sm"
+          total={totalPages}
+          value={currentPage}
+          onChange={createPageURL}
+        />
+      ) : null}
+    </Box>
+  );
 }
