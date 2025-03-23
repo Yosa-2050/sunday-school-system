@@ -168,10 +168,12 @@ export class UsersService {
 
         const queryString = entityParamSerializer(queryParams);
 
+        // Instead of separate columns, use a concatenated full name
         const searchableColumns = [
             'entity.email',
-            'profile.firstName',
-            'profile.lastName',
+            // Use SQL concatenation for full name
+            // The exact syntax might vary depending on your database (PostgreSQL, MySQL, etc.)
+            `CONCAT(profile.firstName, ' ', COALESCE(profile.middleName, ''), ' ', profile.lastName)`,
         ];
 
         const joinOptions = [

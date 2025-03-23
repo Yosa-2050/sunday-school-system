@@ -26,6 +26,7 @@ import {
     logger,
 } from '@shega/shared';
 import { EntityFilter, EntityPagination, EntitySearch } from '@shega/ui';
+import { IconDownload, IconEye } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchJobsAdmin } from 'app/[locale]/_api/admin/fetch-jobs';
 import { exportSelectedJobs } from 'app/[locale]/_api/organizations/export-selected-jobs';
@@ -53,6 +54,7 @@ interface Job {
         employee: {
             profile: {
                 firstName: string;
+                middleName: string;
                 lastName: string;
             };
         };
@@ -154,43 +156,48 @@ const JobsList = () => {
             </Flex>
             <Divider my="md" />
 
-            {/* <Group justify="space-between" className="mb-4">
-        <EntitySearch
-          entity="jobs"
-          placeholder={t("searchPlaceholder")}
-          className="!w-[300px]"
-        />
-        <EntityFilter
-          entity="jobs"
-          filterOptions={[
-            { value: "", label: t("allCategories") },
-            { value: "FULL_TIME", label: "Full Time" },
-            { value: "PART_TIME", label: "Part Time" },
-            { value: "CONTRACT", label: "Contract" },
-            { value: "INTERNSHIP", label: "Internship" },
-          ]}
-          mode="select"
-          field="type"
-        />
-      </Group> */}
-
             <Group justify="space-between" className="mb-4">
                 <EntitySearch
                     entity="jobs"
                     placeholder={t('searchPlaceholder')}
                     className="!w-[300px]"
                 />
-                <EntityFilter
-                    entity="jobs"
-                    filterOptions={[
-                        { value: '', label: t('allCategories') },
-                        { value: 'APPROVED', label: 'Approve' },
-                        { value: 'NEW', label: 'Waiting Approval' },
-                        { value: 'REJECTED', label: 'Decline' },
-                    ]}
-                    mode="select"
-                    field="status"
-                />
+                <Group>
+                    <EntityFilter
+                        entity="jobs"
+                        filterOptions={[
+                            { value: '', label: t('allCategories') },
+                            { value: 'FULL_TIME', label: 'Full Time' },
+                            { value: 'PART_TIME', label: 'Part Time' },
+                            { value: 'CONTRACT', label: 'Contract' },
+                            { value: 'INTERNSHIP', label: 'Internship' },
+                        ]}
+                        mode="select"
+                        field="type"
+                    />
+                    <EntityFilter
+                        entity="jobs"
+                        filterOptions={[
+                            { value: '', label: 'All Status' },
+                            {
+                                value: 'WAITINGAPPROVAL',
+                                label: 'Waiting for Approval',
+                            },
+                            { value: 'APPROVED', label: 'Approved' },
+                            { value: 'DECLINED', label: 'Declined' },
+                        ]}
+                        mode="select"
+                        field="status"
+                    />
+                    <Button
+                        variant="light"
+                        leftSection={<IconDownload size={18} />}
+                        onClick={() => exportMutation.mutate(selection)}
+                        loading={exportMutation.isPending}
+                    >
+                        {t('exportCSV')}
+                    </Button>
+                </Group>
             </Group>
 
             {jobs.length === 0 ? (
@@ -260,7 +267,7 @@ const JobsList = () => {
                                 <Table.Th>Company Name</Table.Th>
                                 <Table.Th>Job Title</Table.Th>
                                 <Table.Th>Salary</Table.Th>
-                                {/* <Table.Th>Location</Table.Th> */}
+                                <Table.Th>Location</Table.Th>
                                 <Table.Th>Status</Table.Th>
                                 <Table.Th>Actions</Table.Th>
                             </Table.Tr>
@@ -285,13 +292,16 @@ const JobsList = () => {
                                         ${job.salaryFrom.toLocaleString()} - $
                                         {job.salaryTo.toLocaleString()}
                                     </Table.Td>
-                                    {/* <Table.Td>{"Location"}</Table.Td> */}
+                                    <Table.Td>{'Location'}</Table.Td>
                                     <Table.Td>
                                         <Badge
                                             color={
                                                 job.status === 'APPROVED'
                                                     ? 'green'
-                                                    : 'yellow'
+                                                    : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                                      job.status === 'DECLINED'
+                                                      ? 'orange'
+                                                      : 'yellow'
                                             }
                                         >
                                             {job.status}
@@ -299,34 +309,17 @@ const JobsList = () => {
                                     </Table.Td>
                                     <Table.Td>
                                         <Button
-                                            variant="default"
-                                            color="primary"
+                                            variant="transparent"
+                                            leftSection={<IconEye size={14} />}
                                             onClick={() =>
                                                 router.push(
                                                     `/admin/jobs/${job.id}`,
                                                 )
                                             }
+                                            className="py-0 my-0"
                                         >
                                             Details
                                         </Button>
-                                        {/* <Menu width={200}>
-                        <Menu.Target>
-                          <IconDotsVertical
-                            size={18}
-                            style={{
-                              cursor: "pointer",
-                            }}
-                          />
-                        </Menu.Target>
-                        <Menu.Dropdown>
-                          <MenuItem
-                            leftSection={<IconEye size={14} />}
-                            onClick={() => router.push(`/admin/jobs/${job.id}`)}
-                          >
-                            Details
-                          </MenuItem>
-                        </Menu.Dropdown>
-                      </Menu> */}
                                     </Table.Td>
                                 </Table.Tr>
                             ))}

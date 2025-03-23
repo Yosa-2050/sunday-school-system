@@ -20,23 +20,20 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         // biome-ignore lint/suspicious/useAwait: <explanation>
         const checkAuth = async () => {
             try {
-                // Get the token, it might be undefined
                 const token = getCookie(COOKIE_ACCESS_TOKEN);
 
-                // If token doesn't exist or is not a string, redirect to login
                 if (!token || typeof token !== 'string') {
                     router.push('/auth/login');
                     return;
                 }
 
-                // Check token expiration
+                logger.log(isTokenExpired(token));
                 if (isTokenExpired(token)) {
                     deleteCookie(COOKIE_ACCESS_TOKEN);
                     router.push('/auth/login');
                     return;
                 }
 
-                // If we get here, token is valid
                 setIsAuthenticated(true);
             } catch (error) {
                 logger.error('Authentication check failed:', error);

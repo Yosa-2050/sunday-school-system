@@ -73,7 +73,7 @@ export interface Pagination {
 }
 
 export const fetchJobs = async (payload: string): Promise<JobsResponse> => {
-    const response = await fetcher('/job-portal/byProvider', {
+    const response: JobsResponse = await fetcher('/job-portal/byProvider', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ q: payload }),

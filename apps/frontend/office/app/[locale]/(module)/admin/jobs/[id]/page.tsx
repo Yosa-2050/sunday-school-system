@@ -19,6 +19,7 @@ import { notifications } from '@mantine/notifications';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { approveJob } from 'app/[locale]/_api/admin/approve-job';
+import { declineJob } from 'app/[locale]/_api/admin/decline-jobs';
 import { fetchJobsAdminById } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
 import { useParams } from 'next/navigation';
 
@@ -81,6 +82,27 @@ const JobDetails = () => {
             },
         },
     );
+    const { mutate: declineJobMutate, isPending: isDeclinePending } =
+        useMutation({
+            mutationFn: async () => await declineJob(jobId),
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['job', jobId] });
+                router.push('/admin/jobs');
+                notifications.show({
+                    title: 'Job Decline',
+                    message: 'The job has been successfully declined',
+                    color: 'green',
+                });
+            },
+
+            onError: (error) => {
+                notifications.show({
+                    title: 'Error Declining Job',
+                    message: error.message,
+                    color: 'red',
+                });
+            },
+        });
 
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
@@ -176,7 +198,8 @@ const JobDetails = () => {
                             <Button
                                 color="red"
                                 size="md"
-                                loading={isApprovingJob}
+                                loading={isApprovingJob || isDeclinePending}
+                                onClick={() => declineJobMutate()}
                             >
                                 Decline
                             </Button>
@@ -184,7 +207,7 @@ const JobDetails = () => {
                                 color="primary"
                                 size="md"
                                 onClick={() => approveJobMutate()}
-                                loading={isApprovingJob}
+                                loading={isApprovingJob || isDeclinePending}
                             >
                                 Approve
                             </Button>

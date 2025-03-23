@@ -54,7 +54,7 @@ interface Job {
 }
 
 export const fetchJobsById = async (id: string): Promise<Job> => {
-    const response = await fetcher(`/job-portal/${id}`, {
+    const response: Job = await fetcher(`/job-portal/${id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });

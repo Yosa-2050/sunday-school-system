@@ -18,6 +18,7 @@ import { notifications } from '@mantine/notifications';
 import {
     COOKIE_ACCESS_TOKEN,
     COOKIE_REFRESH_TOKEN,
+    type User,
     logger,
 } from '@shega/shared';
 import { useAuth } from '@shega/ui';
@@ -82,8 +83,15 @@ const Login = () => {
                     logger.log(data);
 
                     const user = await getUserAction(data.access_token);
-                    // temporary the role will be removed once the endpoint returns role
-                    setUser({ ...user, role: data.role });
+                    if (user) {
+                        setUser({
+                            ...user,
+                            role: data.role as
+                                | 'administrator'
+                                | 'work_provider',
+                        } as User);
+                    }
+
                     router.push(redirectPath);
 
                     //   notifications.show({

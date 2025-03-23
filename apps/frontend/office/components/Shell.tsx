@@ -8,8 +8,6 @@ import {
     CloseButton,
     Flex,
     ScrollArea,
-    useComputedColorScheme,
-    useMantineColorScheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -34,10 +32,6 @@ export default function WrapperShell({
 }: ShellProps): React.ReactNode {
     const [opened, { toggle }] = useDisclosure(false);
     const [sidebarOpen, { toggle: toggleSidebar }] = useDisclosure(true);
-    const { setColorScheme } = useMantineColorScheme();
-    const computedColorScheme = useComputedColorScheme('light', {
-        getInitialValueInEffect: true,
-    });
 
     return (
         <>
@@ -45,7 +39,7 @@ export default function WrapperShell({
                 layout="alt"
                 header={{ height: 60 }}
                 navbar={{
-                    width: 280,
+                    width: 300,
                     breakpoint: 'md',
                     collapsed: { mobile: !opened, desktop: !sidebarOpen },
                 }}

@@ -4,9 +4,6 @@ import { getCookie } from 'cookies-next';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const exportSelectedOrganization = async (payload: string[]) => {
     const token = getCookie(COOKIE_ACCESS_TOKEN);
-    if (!payload || payload.length === 0) {
-        throw new Error('Payload cannot be empty');
-    }
 
     const response = await fetch(
         `${API_BASE_URL}/organization/exportSelected`,

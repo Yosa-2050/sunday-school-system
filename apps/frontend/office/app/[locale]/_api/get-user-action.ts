@@ -1,28 +1,45 @@
 'use server';
 
-import { COOKIE_ACCESS_TOKEN, fetcher, logger } from '@shega/shared';
+import { COOKIE_ACCESS_TOKEN, type User, fetcher, logger } from '@shega/shared';
 import { cookies } from 'next/headers';
 
-export const getUserAction = async (token?: string) => {
-    const cookieValue = await cookies();
-    const newToken = cookieValue.get(COOKIE_ACCESS_TOKEN)?.value;
+// Define the expected shape of the user profile response
+interface UserProfile {
+    id: string;
+    email: string;
+    name: string;
+    // Add other fields as per your API response
+}
 
-    console.log;
+export const getUserAction = async (
+    token?: string,
+): Promise<User | undefined> => {
+    const cookieStore = await cookies();
+    const cookieToken = cookieStore.get(COOKIE_ACCESS_TOKEN)?.value;
 
-    if (!(token || newToken)) {
-        return null;
-    }
+    // Use provided token or fall back to cookie token
+    const authToken = token || cookieToken;
 
-    const response = await fetcher('/profile/myprofile', {
-        headers: {
-            Authorization: `Bearer ${token ?? newToken}`,
-        },
-    });
-
-    logger.log('getUserAction', response);
-
-    if (!response) {
+    // If no token is available, return early with no data
+    if (!authToken) {
+        logger.info('getUserAction: No authentication token provided');
         return undefined;
     }
-    return response;
+
+    try {
+        const response = await fetcher<User>('/profile/myprofile', {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        });
+
+        logger.log(
+            'getUserAction: Successfully fetched user profile',
+            response,
+        );
+        return response;
+    } catch (error) {
+        logger.error(error);
+        return undefined;
+    }
 };

@@ -2,6 +2,30 @@ import { getCookie } from 'cookies-next';
 import { COOKIE_ACCESS_TOKEN } from '../constants/cookie.const';
 import logger from './logger';
 
+// Define the expected error response shape from your API
+interface ApiErrorResponse {
+    message?: string;
+    [key: string]: unknown;
+}
+
+// Define a generic type for the fetcher response
+interface FetcherResponse<T> {
+    data?: T;
+}
+
+// Custom error class to include status code
+class FetchError extends Error {
+    public status: number;
+    public info?: ApiErrorResponse;
+
+    constructor(message: string, status: number, info?: ApiErrorResponse) {
+        super(message);
+        this.status = status;
+        this.info = info;
+        Object.setPrototypeOf(this, FetchError.prototype);
+    }
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_BASE_URL) {
@@ -15,17 +39,20 @@ const headersToObject = (headers: HeadersInit): Record<string, string> => {
             result[key] = value;
         });
     } else if (Array.isArray(headers)) {
-        // biome-ignore lint/complexity/noForEach: <explanation>
-        headers.forEach(([key, value]) => {
+        for (const [key, value] of headers) {
             result[key] = value;
-        });
-    } else if (typeof headers === 'object') {
+        }
+    } else if (typeof headers === 'object' && headers !== null) {
         Object.assign(result, headers);
     }
     return result;
 };
 
-export const fetcher = async (endpoint: string, options?: RequestInit) => {
+// Generic fetcher function with type parameter T for the expected response data
+export const fetcher = async <T = unknown>(
+    endpoint: string,
+    options?: RequestInit,
+): Promise<T> => {
     const token = getCookie(COOKIE_ACCESS_TOKEN);
 
     const existingHeaders = options?.headers
@@ -48,19 +75,32 @@ export const fetcher = async (endpoint: string, options?: RequestInit) => {
         });
 
         if (!response.ok) {
-            const errorData = await response.json(); // Get error details from response
-            throw new Error(
-                errorData?.message || `Error: ${response.statusText}`,
+            let errorData: ApiErrorResponse;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                errorData = { message: response.statusText };
+            }
+            const errorMessage =
+                errorData.message || `Error: ${response.statusText}`;
+            throw new FetchError(errorMessage, response.status, errorData);
+        }
+
+        return (await response.json()) as T;
+    } catch (error) {
+        logger.error('Error during fetch:', error);
+
+        if (error instanceof FetchError) {
+            throw error;
+        }
+
+        if (error instanceof Error) {
+            throw new FetchError(
+                error.message || 'An unexpected error occurred.',
+                0,
             );
         }
 
-        return response.json();
-    } catch (error) {
-        logger.error('Error during fetch:', error);
-        // Throw a custom error object with additional info for TanStack Query
-        if (error instanceof Error) {
-            throw new Error(error.message || 'An unexpected error occurred.');
-        }
-        throw new Error('An unexpected error occurred.');
+        throw new FetchError('An unexpected error occurred.', 0);
     }
 };

@@ -2,6 +2,7 @@
 
 import {
     COOKIE_ACCESS_TOKEN,
+    type User,
     fetcher,
     isTokenExpired,
     logger,
@@ -33,7 +34,7 @@ export const getUserAction = async (token?: string) => {
         if (!response) {
             return undefined;
         }
-        return response;
+        return response as User;
     } catch (error) {
         return undefined;
     }

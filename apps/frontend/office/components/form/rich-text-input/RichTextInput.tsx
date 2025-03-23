@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Input, Menu } from '@mantine/core';
+import { Box, Button, Input, Menu } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Link, RichTextEditor } from '@mantine/tiptap';
 import HardBreak from '@tiptap/extension-hard-break';
@@ -39,6 +39,7 @@ type RichTextInputProps = {
     withAsterisk?: boolean;
     mode?: 'small' | 'large';
     withOnUpdate?: boolean;
+    placeholder?: string;
 };
 
 export function RichTextInput({
@@ -49,6 +50,7 @@ export function RichTextInput({
     withAsterisk,
     mode = 'large',
     withOnUpdate = false,
+    placeholder,
 }: RichTextInputProps) {
     const { value, onChange } = field;
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -67,7 +69,9 @@ export function RichTextInput({
             SubScript,
             Highlight,
             TextAlign.configure({ types: ['heading', 'paragraph'] }),
-            Placeholder.configure({ placeholder: 'This is placeholder' }),
+            Placeholder.configure({
+                placeholder: placeholder ?? 'This is placeholder',
+            }),
             Image.configure({
                 inline: true,
                 allowBase64: true,
@@ -110,7 +114,7 @@ export function RichTextInput({
 
     return (
         <Input.Wrapper
-            error={error?.message?.toString()}
+            error={<Box mt={'xs'}>{error?.message?.toString()}</Box>}
             label={label}
             withAsterisk={withAsterisk}
             className={cn(className)}

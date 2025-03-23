@@ -64,7 +64,8 @@ export function CreateOrganization() {
         onError: (error) => {
             notifications.show({
                 title: t('notifications.errorTitle'),
-                message: `${t('notifications.errorMessage')} ${error.message}`,
+                color: 'red',
+                message: 'Email already exists!',
             });
         },
     });

@@ -3,42 +3,19 @@
 import { Link, useRouter } from '@/i18n/routing';
 import { Avatar, Button, Container, Group, Menu, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { modals } from '@mantine/modals';
 import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 import { useAuth } from '@shega/ui';
-import { IconLogout } from '@tabler/icons-react';
+import { IconLogout2 } from '@tabler/icons-react';
 import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Logo from '../public/logo.svg';
-
 function AppHeader() {
     const router = useRouter();
     const { user, setUser } = useAuth();
     const isAuthenticated = !!user;
     const t = useTranslations('jobPortal');
     const isMobile = useMediaQuery('(max-width: 768px)');
-
-    const openModal = () =>
-        modals.openConfirmModal({
-            title: 'Are you sure you want to logout?',
-            children: (
-                <Text size="sm">
-                    You will be logged out of your account. Any unsaved changes
-                    will be lost
-                </Text>
-            ),
-            labels: { cancel: 'Cancel', confirm: 'Logout' },
-            centered: true,
-            // confirmProps: { color: "red" },
-            onCancel: () => console.log('Cancel'),
-            onConfirm: () => {
-                deleteCookie(COOKIE_ACCESS_TOKEN);
-                deleteCookie('role');
-                setUser(undefined);
-                router.push('/auth/login');
-            },
-        });
 
     return (
         <Container
@@ -100,13 +77,13 @@ function AppHeader() {
                                             color="green"
                                         >
                                             {user.firstName?.[0]}
-                                            {user.lastName?.[0]}
+                                            {user.middleName?.[0]}
                                         </Avatar>
                                         {!isMobile && (
                                             <div>
                                                 <Text size="sm" fw={500}>
                                                     {user.firstName}{' '}
-                                                    {user.lastName}
+                                                    {user.middleName}
                                                 </Text>
                                                 <Text size="xs" c="dimmed">
                                                     {user.phoneNumber}
@@ -131,9 +108,14 @@ function AppHeader() {
                                     </Menu.Item>
                                     <Menu.Divider /> */}
                                     <Menu.Item
-                                        leftSection={<IconLogout size={14} />}
+                                        leftSection={<IconLogout2 size={14} />}
                                         color="red"
-                                        onClick={openModal}
+                                        onClick={() => {
+                                            deleteCookie(COOKIE_ACCESS_TOKEN);
+                                            deleteCookie('role');
+                                            setUser(undefined);
+                                            router.push('/auth/login');
+                                        }}
                                     >
                                         {t('logout')}
                                     </Menu.Item>

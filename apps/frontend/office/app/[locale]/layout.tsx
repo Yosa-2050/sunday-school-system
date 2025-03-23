@@ -34,7 +34,9 @@ export default async function RootLayout({
     const messages = await getMessages();
     const user = await getUserAction();
 
-    const role = cookieValues.get('role')?.value;
+    const role = cookieValues.get('role')?.value as
+        | 'administrator'
+        | 'work_provider';
 
     logger.log({ user, role });
 

@@ -32,26 +32,35 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-const jobSchema = z
-    .object({
-        title: z.string().min(1, { message: 'Job title is required' }),
-        type: z.string().min(1, { message: 'Job type is required' }),
-        currency: z.string().min(1, { message: 'Currency is required' }),
-        salaryFrom: z
-            .number({ invalid_type_error: 'Salary From is required' })
-            .min(1, { message: 'Salary From must be at least 1' }),
-        salaryTo: z
-            .number({ invalid_type_error: 'Salary To is required' })
-            .min(1, { message: 'Salary To must be at least 1' }),
-        location: z.string().min(1, { message: 'Location is required' }),
-        description: z.string().min(20, {
-            message: 'Description must be at least 20 characters long',
-        }),
-    })
-    .refine((data) => data.salaryFrom < data.salaryTo, {
-        message: 'Salary From must be less than Salary To',
-        path: ['salaryFrom'],
-    });
+const jobSchema = z.object({
+    title: z.string().min(1, { message: 'Job title is required' }),
+    type: z.string().min(1, { message: 'Job type is required' }),
+    currency: z.string().min(1, { message: 'Currency is required' }),
+    salaryFrom: z
+        .number({ invalid_type_error: 'Salary from is Required' })
+        .min(1, { message: 'Salary from is required' }),
+    salaryTo: z
+        .number({ invalid_type_error: 'Salary to is Required' })
+        .min(1, { message: 'Salary to is required' }),
+    location: z.string().optional(),
+    description: z
+        .string({
+            required_error: 'Description is required',
+        })
+        .min(1, {
+            message: 'Description is required',
+        }) // Enforce non-empty
+        .refine(
+            (val) => {
+                const words = val.match(/\S+/g) || [];
+                return words.length >= 30;
+            },
+            {
+                message:
+                    'Description must be at least 30 words long if provided',
+            },
+        ),
+});
 
 export type JobFormData = z.infer<typeof jobSchema>;
 
@@ -150,11 +159,7 @@ const PostJobForm = () => {
             <Paper shadow="sm" radius="md" p="xl" className="mb-8">
                 <div className="flex justify-between items-center mb-8">
                     <Title order={2}>Post New Job</Title>
-                    <Button
-                        variant="light"
-                        color="gray"
-                        onClick={() => router.push('/work-provider/jobs')}
-                    >
+                    <Button variant="light" color="gray">
                         Back to List
                     </Button>
                 </div>
@@ -162,6 +167,7 @@ const PostJobForm = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <TextInput
                         label="Job Title"
+                        withAsterisk
                         placeholder="e.g. Senior Frontend Developer"
                         {...register('title')}
                         error={errors.title?.message}
@@ -172,6 +178,7 @@ const PostJobForm = () => {
                             <TextInput
                                 label="Salary From"
                                 placeholder="Minimum salary"
+                                withAsterisk
                                 type="number"
                                 {...register('salaryFrom', {
                                     valueAsNumber: true,
@@ -184,6 +191,7 @@ const PostJobForm = () => {
                             <TextInput
                                 label="Salary To"
                                 placeholder="Maximum salary"
+                                withAsterisk
                                 type="number"
                                 {...register('salaryTo', {
                                     valueAsNumber: true,
@@ -196,12 +204,13 @@ const PostJobForm = () => {
                             <Controller
                                 name="currency"
                                 control={control}
-                                defaultValue="ETB"
                                 render={({ field }) => (
                                     <Select
+                                        placeholder="Select Currency"
                                         label="Currency"
-                                        required
+                                        withAsterisk
                                         data={['ETB', 'USD', 'EUR', 'GBP']}
+                                        unselectable={'off'}
                                         {...field}
                                         error={errors.currency?.message}
                                     />
@@ -218,7 +227,7 @@ const PostJobForm = () => {
                                     <Select
                                         label="Employment Type"
                                         placeholder="Select Employment Type"
-                                        required
+                                        unselectable={'off'}
                                         data={[
                                             {
                                                 value: 'FULL_TIME',
@@ -252,7 +261,8 @@ const PostJobForm = () => {
                         render={({ field }) => (
                             <Select
                                 label="Location"
-                                required
+                                placeholder="Job Location"
+                                unselectable={'off'}
                                 data={[
                                     'Addis Ababa',
                                     'Bahir Dar',
@@ -266,30 +276,18 @@ const PostJobForm = () => {
                     />
 
                     <Controller
-                        name="description"
                         control={control}
-                        defaultValue=""
-                        rules={{
-                            validate: (value) =>
-                                (value?.length || 0) >= 20 ||
-                                'Description must be at least 20 characters long',
-                        }}
-                        render={({ field }) => (
-                            <div>
-                                <MemoizedRichTextEditor
-                                    editor={editor}
-                                    field={field}
-                                    error={errors.description?.message}
+                        name={'description'}
+                        render={({ field: inputField }) => (
+                            <div className="relative mt-3">
+                                <RichTextInput
+                                    withAsterisk
+                                    className="w-full"
+                                    label="Description"
+                                    placeholder="Job Description"
+                                    field={inputField}
+                                    error={errors?.description}
                                 />
-                                <p
-                                    style={{
-                                        marginTop: '5px',
-                                        fontSize: '12px',
-                                        color: 'gray',
-                                    }}
-                                >
-                                    {field.value?.length || 0} / 4000 characters
-                                </p>
                             </div>
                         )}
                     />

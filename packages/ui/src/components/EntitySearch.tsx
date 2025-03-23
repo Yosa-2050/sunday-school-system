@@ -1,11 +1,11 @@
 'use client';
 
 import { CloseButton, TextInput } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { entityParamSchema } from '@shega/shared';
 import { IconSearch } from '@tabler/icons-react';
 import { parseAsJson, useQueryState } from 'nuqs';
-import { useEffect, useRef } from 'react'; // Import useEffect
-import { useDebouncedCallback } from 'use-debounce';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '../utilities/cn';
 
 type EntitySearchProps = {
@@ -21,30 +21,46 @@ export function EntitySearch({
 }: EntitySearchProps) {
     const ref = useRef<HTMLInputElement>(null);
 
+    // Get search params from the URL
     const [entityParams, setEntityParams] = useQueryState(
         entity,
         parseAsJson(entityParamSchema.parse),
     );
 
-    // Add useEffect to focus the input on mount
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.focus();
-        }
-    }, []);
+    // Local state for search input
+    const [searchTerm, setSearchTerm] = useState<string>(entityParams?.s || '');
 
-    const handleSearch = useDebouncedCallback((term: string | null) => {
-        if (term) {
-            setEntityParams({ ...entityParams, p: 1, s: term });
-        } else {
-            const updatedParams = { ...entityParams };
-            updatedParams.s = undefined;
-            setEntityParams({ ...updatedParams, p: 1 });
-            if (ref?.current) {
-                ref.current.value = '';
-            }
+    // Debounced search term
+    const [debouncedSearch] = useDebouncedValue(searchTerm, 300);
+
+    // Store the previous search term to compare changes
+    const prevSearchTerm = useRef(entityParams?.s || '');
+
+    // Apply debounced search to URL params
+    useEffect(() => {
+        // Only update params if the search term actually changed
+        if (debouncedSearch !== prevSearchTerm.current) {
+            setEntityParams({
+                ...entityParams,
+                p: 1, // Only reset pagination when search term changes
+                s: debouncedSearch || undefined,
+            });
+            prevSearchTerm.current = debouncedSearch;
         }
-    }, 300);
+    }, [debouncedSearch, entityParams, setEntityParams]);
+
+    // Sync local state with URL params when they change externally
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+        if (entityParams?.s !== searchTerm) {
+            setSearchTerm(entityParams?.s || '');
+        }
+    }, [entityParams?.s]);
+
+    // Auto-focus input on mount
+    useEffect(() => {
+        ref.current?.focus();
+    }, []);
 
     return (
         <TextInput
@@ -55,19 +71,14 @@ export function EntitySearch({
             rightSection={
                 <CloseButton
                     aria-label="Clear input"
-                    onClick={() => handleSearch(null)}
-                    style={{
-                        display: entityParams?.s ? undefined : 'none',
-                    }}
+                    onClick={() => setSearchTerm('')}
+                    style={{ display: searchTerm ? undefined : 'none' }}
                 />
             }
             rightSectionPointerEvents="all"
-            onChange={(e) => {
-                handleSearch(e.target.value);
-            }}
-            defaultValue={entityParams?.s}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
             className={cn(className, 'w-1/3')}
-            min={'30%'}
         />
     );
 }

@@ -21,12 +21,8 @@ export function EntityPagination({
 }: EntityPaginationProps) {
     const [entityParams, setEntityParams] = useQueryState(
         entity,
-        parseAsJson(entityParamSchema.parse).withDefault({
-            p: 1,
-            pp: perPage,
-        }),
+        parseAsJson(entityParamSchema.parse).withDefault({}),
     );
-
     const currentPage = entityParams.p || 1;
     const createPageURL = (pageNumber: number | string) => {
         setEntityParams({

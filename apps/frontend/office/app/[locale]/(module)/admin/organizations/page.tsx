@@ -147,7 +147,6 @@ const OrganizationsPage = () => {
                     <Button
                         variant="light"
                         leftSection={<IconDownload size={18} />}
-                        disabled={selection?.length === 0}
                         onClick={() => exportMutation.mutate(selection)}
                         loading={exportMutation.isPending}
                     >

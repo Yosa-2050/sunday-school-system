@@ -73,29 +73,44 @@ const Login = () => {
                     logger.log(data);
 
                     const user = await getUserAction(data.access_token);
-                    // temporary the role will be removed once the endpoint returns role
-                    setUser({ ...user, role: data.role });
-                    if (data.role === 'administrator') {
-                        router.push('/admin/dashboard');
+                    logger.log(user);
+                    if (!user) {
+                        notifications.show({
+                            title: 'Error',
+                            message: t('loginFailed'),
+                            color: 'red',
+                        });
                     }
-                    if (data.role === 'work_provider') {
-                        router.push('/work-provider/jobs');
-                    }
+                    if (user) {
+                        setUser({
+                            ...user,
+                            role: data.role as
+                                | 'administrator'
+                                | 'work_provider',
+                            id: user.id ?? '',
+                            createdBy: user.createdBy ?? '',
+                        });
+                        if (data.role === 'administrator') {
+                            router.push('/admin/dashboard');
+                        } else if (data.role === 'work_provider') {
+                            router.push('/work-provider/jobs');
+                        }
 
-                    // notifications.show({
-                    //     title: 'Success',
-                    //     message: t('loginSuccess'),
-                    //     color: 'green',
-                    // });
-                    setCookie('role', data.role);
-                    setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
-                        maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
-                    });
-                    setCookie(COOKIE_REFRESH_TOKEN, data.access_token, {
-                        httpOnly: true,
-                        secure: true,
-                        maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
-                    });
+                        // notifications.show({
+                        //     title: 'Success',
+                        //     message: t('loginSuccess'),
+                        //     color: 'green',
+                        // });
+                        setCookie('role', data.role);
+                        setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
+                            maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
+                        });
+                        setCookie(COOKIE_REFRESH_TOKEN, data.access_token, {
+                            httpOnly: true,
+                            secure: true,
+                            maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
+                        });
+                    }
                 }
             } catch (error) {
                 logger.error('Error processing login success:', error);
