@@ -53,7 +53,7 @@ build_api:
   script:
     - "pnpm install"
     - "pnpm run format"
-    - "pnpm --filter api build"  # Builds only api
+    - "pnpm --filter api build"  # Builds only API
   artifacts:
     paths:
       - apps/backend/api/dist/  # Adjust if output differs
@@ -61,6 +61,24 @@ build_api:
   rules:
     - changes:
         - apps/backend/api/**/*
+
+build_sonar:
+  stage: build
+  image: sonarsource/sonar-scanner-cli:11  # SonarScanner-specific image
+  cache:
+    policy: pull-push
+    key: "sonar-cache-$CI_COMMIT_REF_SLUG"
+    paths:
+      - "${SONAR_USER_HOME}/cache"
+      - sonar-scanner/
+  script: 
+    - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == 'master'
+    - if: $CI_COMMIT_BRANCH == 'main'
+    - if: $CI_COMMIT_BRANCH == 'develop'
 
 # Staging stage (for develop branch)
 staging:
@@ -76,7 +94,6 @@ staging:
   script:
     - "pnpm install"
     - "pnpm run format"
-    # - "export PG_URL='postgresql://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DB'"
 
 # Deploy portal to Coolify
 deploy_portal:
@@ -104,11 +121,11 @@ deploy_office:
         - packages/shared/**/*
         - packages/ui/**/*  # Added per your update
 
-# Deploy api to Coolify
+# Deploy API to Coolify
 deploy_api:
   stage: deploy
   script:
-    - "echo 'Deploying api to Coolify...'"
+    - "echo 'Deploying API to Coolify...'"
     - "curl -X POST \"$COOLIFY_WEBHOOK_API\" -H \"Authorization: Bearer $COOLIFY_API_TOKEN\""
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
