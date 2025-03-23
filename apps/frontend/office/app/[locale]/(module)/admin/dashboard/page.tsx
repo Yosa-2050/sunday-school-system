@@ -8,6 +8,8 @@ import {
     IconUserPlus,
     IconUsersGroup,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchReportAdmin } from 'app/[locale]/_api/admin/fetch-count-totals';
 import { useState } from 'react';
 import ReportCard from './_components/charts/ReportCard';
 
@@ -16,6 +18,11 @@ export default function Dashboard() {
         null,
         null,
     ]);
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['report'],
+        queryFn: () => fetchReportAdmin(),
+    });
+
     return (
         <Flex w="100%" direction="column" align="start" gap={30}>
             <Flex w="100%" align="center" justify="space-between">
@@ -35,43 +42,43 @@ export default function Dashboard() {
           onChange={setValue}
         /> */}
             </Flex>
-            <Stack w="100%" align="stretch" justify="center">
-                <Grid gutter="md" justify="">
-                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+            <Stack w="100%" align="stretch" justify="center" p="md">
+                <Grid gutter="md" justify="flex-start">
+                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
                         <ReportCard
-                            count={44}
+                            count={data?.totalRegisteredUsers ?? 0}
                             color={'green'}
                             title={'Total Users'}
                             Icon={IconUsersGroup}
                         />
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
                         <ReportCard
-                            count={12}
+                            count={data?.totalPostedJobs ?? 0}
                             color={'gray'}
                             title={'Total Jobs'}
                             Icon={IconBriefcase}
                         />
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
                         <ReportCard
-                            count={20}
+                            count={data?.totalRegisteredAdmin ?? 0}
                             color={'orange'}
                             title={'Total Admin'}
                             Icon={IconUserPlus}
                         />
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
                         <ReportCard
-                            count={14}
+                            count={data?.totalRegisteredEmployer ?? 0}
                             color={'blue'}
                             title={'Total Employer'}
                             Icon={IconSitemapFilled}
                         />
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
                         <ReportCard
-                            count={14}
+                            count={data?.totalRegisteredJobSeekers ?? 0}
                             color={'purple'}
                             title={'Total Job Seeker'}
                             Icon={IconUserFilled}
@@ -79,6 +86,7 @@ export default function Dashboard() {
                     </Grid.Col>
                 </Grid>
             </Stack>
+
             <Stack w="100%" align="stretch" justify="center">
                 <Grid columns={10} w="100%">
                     {/* <Grid.Col h={400} span={{ base: 10, md: 7, lg: 7 }}>
