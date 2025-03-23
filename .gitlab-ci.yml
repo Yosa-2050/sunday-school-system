@@ -64,14 +64,15 @@ build_api:
 
 build_sonar:
   stage: build
-  image: sonarsource/sonar-scanner-cli:11  # SonarScanner-specific image
+  image: sonarsource/sonar-scanner-cli:11 # SonarScanner-specific image
   cache:
     policy: pull-push
     key: "sonar-cache-$CI_COMMIT_REF_SLUG"
     paths:
       - "${SONAR_USER_HOME}/cache"
       - sonar-scanner/
-  script: 
+  before_script: [] # Override the default before_script to remove corepack commands
+  script:
     - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
   allow_failure: true
   rules:
@@ -134,4 +135,4 @@ deploy_api:
       changes:
         - apps/backend/api/**/*
         - packages/shared/**/*
-        - packages/ui/**/*  # Added for consistency, adjust if not needed
+        - packages/ui/**/* # Added for consistency, adjust if not needed
