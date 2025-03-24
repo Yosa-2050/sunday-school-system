@@ -124,10 +124,10 @@ export class AuthService {
             await this.notificationService.send({
                 channel: NotificationChannel.Email,
                 content: getForgotPwdEmailTemplate({
-                                    userName: user.profile.firstName,
-                                    email: user.email,
-                                    verificationCode: otp
-                                }),
+                    userName: user.profile.firstName,
+                    email: user.email,
+                    verificationCode: otp,
+                }),
                 to: user.email,
                 subject: 'OTP',
                 reference: user.id,

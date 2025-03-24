@@ -3,7 +3,7 @@ export function getSignupEmailTemplate({
     role = '',
     email = '',
     tempPassword = '',
-    loginUrl = ''
+    loginUrl = '',
 } = {}) {
     return `
     <!DOCTYPE html>
@@ -52,7 +52,7 @@ export function getSignupEmailTemplate({
                 ${loginUrl}
               </a>
               <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 5px 0;">
-                Email : <span style="color:#2754C5;">${email}</span> 
+                Email : <span style="color:#2754C5;">${email.toLowerCase()}</span> 
               </p>
               <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 5px 0; ">
                 Password : Your one time password is <span style="font-weight: bold;"> ${tempPassword}</span>
