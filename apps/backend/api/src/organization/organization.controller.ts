@@ -28,6 +28,8 @@ import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 
 @Controller('organization')
 export class OrganizationController {
@@ -64,19 +66,25 @@ export class OrganizationController {
         return this.organizationService.findAllPaginated(dto.q);
     }
 
-    @Post('/export')
+    @Post('/exportSelected')
     async export(@Body() dto: { q: string }, @Res() res: Response) {
         const org = await this.organizationService.findAllPaginated(dto.q);
 
         this.documentService.generateCsv(org.data, res, 'organizationList');
     }
 
-    @Post('exportSelected')
+    @Post('/export')
     async exportSelected(
         @Res() res: Response,
         @Body() dto: ListStringRequestModel,
     ) {
-        const data = await this.organizationService.getList(dto.list);
+        let data : GetOrganizationListResponseDto[] = [];
+        if(dto.list?.length > 0){
+            data = await this.organizationService.getList(dto.list);
+        }
+        else{
+            data = (await this.organizationService.findAllPaginated(dto.q)).data;
+        }
 
         this.documentService.generateCsv(data, res, 'organizationList');
     }

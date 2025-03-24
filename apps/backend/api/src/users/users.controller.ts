@@ -44,19 +44,25 @@ export class UsersController {
         return this.usersService.getUsersByUserType(dto.q);
     }
 
-    @Post('export')
+    @Post('exportSelected')
     async export(@Body() dto: { q: string }, @Res() res: Response) {
         const data = await this.usersService.getUsersByUserType(dto.q);
 
         this.documentService.generateCsv(data.data, res, 'userList');
     }
 
-    @Post('exportSelected')
+    @Post('export')
     async exportSelected(
         @Body() dto: ListStringRequestModel,
         @Res() res: Response,
     ) {
-        const data = await this.usersService.getList(dto.list);
+        let data = [];
+        if(dto.list?.length > 0){
+            data = await this.usersService.getList(dto.list);
+        }
+        else{
+            data = (await this.usersService.getUsersByUserType(dto.q)).data;
+        }
 
         this.documentService.generateCsv(data, res, 'userList');
     }

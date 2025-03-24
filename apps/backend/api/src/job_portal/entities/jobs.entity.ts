@@ -71,6 +71,9 @@ export class Jobs extends BaseModel {
     @Column({ nullable: true })
     educationalRequirment: EducationalRequirmentType;
 
+    @Column({ nullable: true })
+    notes: string;
+
     @OneToMany(
         () => JobSkills,
         (skill) => skill.job,

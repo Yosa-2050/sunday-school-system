@@ -35,6 +35,7 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
+import { generateShegaJobsWelcomeEmail } from 'emails/welcome';
 
 @Injectable()
 export class OrganizationService {
@@ -292,9 +293,9 @@ export class OrganizationService {
 
         const saved = await this.employeeOrgRepo.save(empOrg);
         if (saved?.id) {
-            await this.notificationService.send({
+            this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: `please login to your account using your email ${dto.email} and password ${pwdGenerated}. Then reset your password.`,
+                content: generateShegaJobsWelcomeEmail(dto.firstName, UserRoleType.WorkProvider, dto.email, pwdGenerated, "https://office.shega.heranitech.com/", "https://office.shega.heranitech.com"),
                 to: dto.email,
                 subject: 'Shega jobs',
                 reference: saved.id,

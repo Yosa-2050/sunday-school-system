@@ -14,7 +14,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+import { ListStringRequestModel, StringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
@@ -58,7 +58,7 @@ export class JobPortalController {
     }
 
     @Roles(UserRoleType.Administrator)
-    @Post('jobsByStatus/export')
+    @Post('jobsByStatus/exportSelected')
     async exportByStatus(@Res() res: Response, @Body() dto: { q: string }) {
         const data = await this.jobPortalService.getJobsByStatusPaginated(
             dto.q,
@@ -68,12 +68,21 @@ export class JobPortalController {
     }
 
     @Roles(UserRoleType.Administrator)
-    @Post('jobsByStatus/exportSelected')
+    @Post('jobsByStatus/export')
     async exportSelected(
         @Res() res: Response,
         @Body() dto: ListStringRequestModel,
     ) {
-        const data = await this.jobPortalService.getJobsByList(dto.list);
+        let data = [];
+
+        if(dto.list?.length > 0){
+            data = await this.jobPortalService.getJobsByList(dto.list);
+        }
+        else{
+            data = (await this.jobPortalService.getJobsByStatusPaginated(
+                dto.q,
+            )).data;
+        }
 
         this.documentService.generateCsv(data, res, 'jobList');
     }
@@ -101,8 +110,8 @@ export class JobPortalController {
 
     @Roles(UserRoleType.Administrator)
     @Patch('decline/:id')
-    declineJob(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.jobPortalService.jobApproval(id, ApprovalType.Declined);
+    declineJob(@Param('id', new ParseUUIDPipe()) id: string, dto: StringRequestModel) {
+        return this.jobPortalService.jobApproval(id, ApprovalType.Declined, dto.note);
     }
 
     @Get(':id')

@@ -21,7 +21,7 @@ export class PasswordService {
         const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
         const numbers = '0123456789';
-        const specialChars = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+        const specialChars = '!@#$%&*[]{}|?';
 
         const allChars = upperCase + lowerCase + numbers + specialChars;
 
