@@ -66,7 +66,7 @@ export class UsersController {
         this.documentService.generateCsv(data, res, 'userList');
     }
 
-    @Post()
+    //@Post()
     async create(@Body() dto: CreateUserDto) {
         const user = await this.usersService.createFromProfile(
             dto.email,

@@ -35,7 +35,7 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
-import { generateShegaJobsWelcomeEmail } from 'emails/welcome';
+import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 
 @Injectable()
 export class OrganizationService {
@@ -295,14 +295,13 @@ export class OrganizationService {
         if (saved?.id) {
             this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: generateShegaJobsWelcomeEmail(
-                    dto.firstName,
-                    UserRoleType.WorkProvider,
-                    dto.email,
-                    pwdGenerated,
-                    'https://office.shega.heranitech.com/',
-                    'https://office.shega.heranitech.com',
-                ),
+                content: getSignupEmailTemplate({
+                    userName: dto.firstName,
+                    role: UserRoleType.WorkProvider,
+                    email: dto.email,
+                    tempPassword: pwdGenerated,
+                    loginUrl: 'https://office.shega.heranitech.com',
+                }),
                 to: dto.email,
                 subject: 'Shega jobs',
                 reference: saved.id,

@@ -1,10 +1,9 @@
-function getSignupEmailTemplate({
+export function getSignupEmailTemplate({
     userName = '',
     role = '',
     email = '',
     tempPassword = '',
-    loginUrl = '',
-    baseUrl = '',
+    loginUrl = ''
 } = {}) {
     return `
     <!DOCTYPE html>

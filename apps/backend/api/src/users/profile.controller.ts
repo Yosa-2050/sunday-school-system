@@ -36,6 +36,7 @@ import { NewProfileDto } from './dto/new-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
+import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 
 @ApiBearerAuth()
 @ApiTags('Profile')
@@ -63,9 +64,15 @@ export class ProfileController {
         );
 
         if (user?.id) {
-            await this.notificationService.send({
+            this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: `please login to your account using your email ${dto.email} and password '${pwdGenerated}'. Then reset your password.`,
+                content: getSignupEmailTemplate({
+                    userName: dto.firstName,
+                    role: dto.role,
+                    email: dto.email,
+                    tempPassword: pwdGenerated,
+                    loginUrl: 'https://office.shega.heranitech.com',
+                }),
                 to: dto.email,
                 subject: 'Shega jobs',
                 reference: user.id,

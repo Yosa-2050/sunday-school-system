@@ -31,6 +31,7 @@ import {
 } from './dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
+import { getForgotPwdEmailTemplate } from '@shega/notification/sendEmailTemplates/forgotPwdEmailTemplate';
 
 @Injectable()
 export class AuthService {
@@ -122,7 +123,11 @@ export class AuthService {
             const otp = await this.otpService.CreateOtp(user.id);
             await this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: `Your one time password is ${otp}`,
+                content: getForgotPwdEmailTemplate({
+                                    userName: user.profile.firstName,
+                                    email: user.email,
+                                    verificationCode: otp
+                                }),
                 to: user.email,
                 subject: 'OTP',
                 reference: user.id,
