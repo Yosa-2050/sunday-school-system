@@ -295,7 +295,14 @@ export class OrganizationService {
         if (saved?.id) {
             this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: generateShegaJobsWelcomeEmail(dto.firstName, UserRoleType.WorkProvider, dto.email, pwdGenerated, "https://office.shega.heranitech.com/", "https://office.shega.heranitech.com"),
+                content: generateShegaJobsWelcomeEmail(
+                    dto.firstName,
+                    UserRoleType.WorkProvider,
+                    dto.email,
+                    pwdGenerated,
+                    'https://office.shega.heranitech.com/',
+                    'https://office.shega.heranitech.com',
+                ),
                 to: dto.email,
                 subject: 'Shega jobs',
                 reference: saved.id,

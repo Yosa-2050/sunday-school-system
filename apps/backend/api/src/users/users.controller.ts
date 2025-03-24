@@ -57,10 +57,9 @@ export class UsersController {
         @Res() res: Response,
     ) {
         let data = [];
-        if(dto.list?.length > 0){
+        if (dto.list?.length > 0) {
             data = await this.usersService.getList(dto.list);
-        }
-        else{
+        } else {
             data = (await this.usersService.getUsersByUserType(dto.q)).data;
         }
 

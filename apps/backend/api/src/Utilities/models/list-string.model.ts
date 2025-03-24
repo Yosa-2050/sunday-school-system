@@ -10,7 +10,7 @@ export class ListStringRequestModel {
     q: string;
 }
 
-export class StringRequestModel{
+export class StringRequestModel {
     @ApiProperty()
     @IsString()
     note: string;
