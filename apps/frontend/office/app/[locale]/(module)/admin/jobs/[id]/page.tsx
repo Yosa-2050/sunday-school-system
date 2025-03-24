@@ -193,7 +193,7 @@ const JobDetails = () => {
                         />
                     </Stack>
 
-                    {job.status === 'NEW' && (
+                    {job.status === 'WAITINGAPPROVAL' && (
                         <Flex mt="xl" justify="flex-end" gap="md">
                             <Button
                                 color="red"

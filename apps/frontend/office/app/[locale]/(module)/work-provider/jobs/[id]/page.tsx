@@ -128,12 +128,6 @@ const JobDetails = () => {
                                 ? 'This job is currently active.'
                                 : 'This job is inactive.'}
                         </Text>
-                        <Text
-                            // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                            dangerouslySetInnerHTML={{
-                                __html: firstLineOfDescription ?? '',
-                            }}
-                        />
                     </Alert>
 
                     <Text
@@ -195,7 +189,19 @@ const JobDetails = () => {
                             >
                                 Job Type:
                             </Text>
-                            <Text style={{ color: '#4a5568' }}>{job.type}</Text>
+                            <Text style={{ color: '#4a5568' }}>
+                                {job.type.includes('_')
+                                    ? job.type
+                                          .split('_')
+                                          .map(
+                                              (word) =>
+                                                  word.charAt(0).toUpperCase() +
+                                                  word.slice(1).toLowerCase(),
+                                          )
+                                          .join(' ')
+                                    : job.type.charAt(0).toUpperCase() +
+                                      job.type.slice(1)}
+                            </Text>
                         </Group>
                         <Group gap="xs">
                             <Text
@@ -205,10 +211,11 @@ const JobDetails = () => {
                                 Salary:
                             </Text>
                             <Text style={{ color: '#4a5568' }}>
-                                Up to ${job.salaryTo.toLocaleString()} per year
+                                Up to {job.salaryTo.toLocaleString()}
+                                {job.currency} per year
                             </Text>
                         </Group>
-                        <Group gap="xs" align="flex-start">
+                        {/* <Group gap="xs" align="flex-start">
                             <Text
                                 fw={500}
                                 style={{ color: '#2d3748', minWidth: '200px' }}
@@ -226,7 +233,7 @@ const JobDetails = () => {
                                     - Python
                                 </Text>
                             </Stack>
-                        </Group>
+                        </Group> */}
                     </Stack>
 
                     <Divider my="lg" />

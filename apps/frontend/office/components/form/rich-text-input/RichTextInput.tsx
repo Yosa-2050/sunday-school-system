@@ -103,13 +103,10 @@ export function RichTextInput({
             Iframe,
         ],
         content: value || '',
-        ...(withOnUpdate && {
-            onUpdate: (props) =>
-                onChange(props?.editor?.getHTML() ?? '<p></p>'),
-        }),
-        ...(!withOnUpdate && {
-            onBlur: (props) => onChange(props?.editor?.getHTML() ?? '<p></p>'),
-        }),
+        onUpdate: ({ editor }) => {
+            return onChange(editor?.getHTML() ?? '<p></p>');
+        },
+        onBlur: (props) => onChange(props?.editor?.getHTML() ?? '<p></p>'),
     });
 
     return (

@@ -196,6 +196,7 @@ export default function HomePage() {
                     Recent Jobs
                 </Title>
                 <Divider mb={'md'} />
+                <JobList filters={filters} />
                 {/* <Grid className="mt-3">
                     <Grid.Col span={{ base: 12 }}>
                         {isMobile && (

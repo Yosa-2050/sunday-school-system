@@ -11,6 +11,8 @@ type EntityPaginationProps = {
     perPage?: number;
     hideCounter?: boolean;
     customParam?: string;
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    defaultSorting?: any;
 };
 
 export function EntityPagination({
@@ -18,6 +20,7 @@ export function EntityPagination({
     entity,
     perPage = PER_PAGE,
     hideCounter = false,
+    defaultSorting,
 }: EntityPaginationProps) {
     const [entityParams, setEntityParams] = useQueryState(
         entity,
@@ -29,6 +32,7 @@ export function EntityPagination({
             ...entityParams,
             p: Number.parseInt(pageNumber.toString()),
             pp: perPage,
+            ...(defaultSorting ?? {}),
         });
     };
 

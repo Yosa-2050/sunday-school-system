@@ -50,6 +50,7 @@ interface Job {
     salaryTo: number;
     status: string;
     orgName: string;
+    createdDate: string;
     postedBy: {
         employee: {
             profile: {
@@ -67,11 +68,27 @@ const JobsList = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
     const [selection, setSelection] = useState<string[]>([]);
 
+    const statusStyles = {
+        APPROVED: 'bg-green-500',
+        DECLINED: 'bg-red-500',
+        WAITINGAPPROVAL: 'bg-yellow-500',
+    };
+
+    const statusText = {
+        APPROVED: 'Approved',
+        DECLINED: 'Declined',
+        WAITINGAPPROVAL: 'Waiting Approval',
+    };
+
     const [entityParams] = useQueryState(
         'jobs',
         parseAsJson(entityParamSchema.parse).withDefault({
             p: 1,
             pp: PER_PAGE,
+            o: [
+                { f: 'status', d: 'desc' },
+                { f: 'createdAt', d: 'asc' },
+            ],
         }),
     );
 
@@ -209,7 +226,7 @@ const JobsList = () => {
             ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
             isMobile ? (
                 <Stack>
-                    {jobs.map((job: Job) => (
+                    {jobs.map((job) => (
                         <Card
                             key={job.id}
                             shadow="sm"
@@ -266,6 +283,7 @@ const JobsList = () => {
                                 </Table.Th>
                                 <Table.Th>Company Name</Table.Th>
                                 <Table.Th>Job Title</Table.Th>
+                                <Table.Th>Created Date</Table.Th>
                                 <Table.Th>Salary</Table.Th>
                                 <Table.Th>Location</Table.Th>
                                 <Table.Th>Status</Table.Th>
@@ -273,7 +291,7 @@ const JobsList = () => {
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {jobs.map((job: Job) => (
+                            {jobs.map((job) => (
                                 <Table.Tr key={job.id}>
                                     <Table.Td>
                                         <Checkbox
@@ -287,25 +305,29 @@ const JobsList = () => {
                                     </Table.Td>
                                     <Table.Td>{job?.orgName}</Table.Td>
                                     <Table.Td>{job.title}</Table.Td>
-
+                                    <Table.Td>
+                                        {new Date(
+                                            job.createdDate,
+                                        ).toDateString()}
+                                    </Table.Td>
                                     <Table.Td>
                                         ${job.salaryFrom.toLocaleString()} - $
                                         {job.salaryTo.toLocaleString()}
                                     </Table.Td>
                                     <Table.Td>{'Location'}</Table.Td>
                                     <Table.Td>
-                                        <Badge
-                                            color={
-                                                job.status === 'APPROVED'
-                                                    ? 'green'
-                                                    : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                                      job.status === 'DECLINED'
-                                                      ? 'orange'
-                                                      : 'yellow'
-                                            }
+                                        <span
+                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                statusStyles[
+                                                    job.status as keyof typeof statusStyles
+                                                ] || 'bg-yellow-300'
+                                            } text-white`}
+                                            autoCapitalize="none"
                                         >
-                                            {job.status}
-                                        </Badge>
+                                            {statusText[
+                                                job.status as keyof typeof statusText
+                                            ] || job.status}
+                                        </span>
                                     </Table.Td>
                                     <Table.Td>
                                         <Button
@@ -328,7 +350,16 @@ const JobsList = () => {
                 </TableScrollContainer>
             )}
 
-            <EntityPagination entity="jobs" total={data?.total ?? 0} />
+            <EntityPagination
+                entity="jobs"
+                total={data?.total ?? 0}
+                defaultSorting={{
+                    o: [
+                        { f: 'status', d: 'desc' },
+                        { f: 'createdAt', d: 'asc' },
+                    ],
+                }}
+            />
         </Paper>
     );
 };

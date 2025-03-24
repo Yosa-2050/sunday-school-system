@@ -119,7 +119,7 @@ export function CreateUser() {
                                         },
                                     ]}
                                     error={errors.role?.message}
-                                    unselectable="off"
+                                    allowDeselect={false}
                                     withAsterisk
                                 />
                             )}

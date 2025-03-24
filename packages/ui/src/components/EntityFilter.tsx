@@ -65,6 +65,7 @@ export function EntityFilter({
             setEntityParams({
                 ...entityParams,
                 f: [...existingFilters, ...newFilters],
+                p: 1,
             });
         }
     };

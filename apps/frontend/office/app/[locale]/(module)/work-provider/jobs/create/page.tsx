@@ -28,6 +28,7 @@ import { memo } from 'react';
 import {
     Controller,
     type ControllerRenderProps,
+    type FieldError,
     useForm,
 } from 'react-hook-form';
 import { z } from 'zod';
@@ -47,44 +48,32 @@ const jobSchema = z.object({
         .string({
             required_error: 'Description is required',
         })
-        .min(1, {
-            message: 'Description is required',
-        }) // Enforce non-empty
-        .refine(
-            (val) => {
-                const words = val.match(/\S+/g) || [];
-                return words.length >= 30;
-            },
-            {
-                message:
-                    'Description must be at least 30 words long if provided',
-            },
-        ),
+        .min(30, {
+            message: 'Description must be a minimum of 30 characters',
+        }),
 });
 
 export type JobFormData = z.infer<typeof jobSchema>;
 
 const MemoizedRichTextEditor = memo(
     ({
-        editor,
         field,
         error,
     }: {
-        editor: ReturnType<typeof useEditor>;
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         field: ControllerRenderProps<any, any>;
-        error?: string;
+        error: FieldError;
     }) => {
         return (
-            <div>
-                <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                    Description
-                </label>
-                <RichTextInput field={field} />
-                {error && <span className="text-red-500 text-sm">{error}</span>}
+            <div className="relative mt-3">
+                <RichTextInput
+                    withAsterisk
+                    className="w-full"
+                    label="Description"
+                    placeholder="Job Description"
+                    field={field}
+                    error={error}
+                />
             </div>
         );
     },
@@ -109,7 +98,7 @@ const PostJobForm = () => {
         resolver: zodResolver(jobSchema),
     });
 
-    logger.log(errors);
+    logger.log(getValues());
 
     const queryClient = useQueryClient();
 
@@ -150,7 +139,6 @@ const PostJobForm = () => {
         jobMutation.mutate({
             ...data,
             organizationId: user?.organizationId ?? '',
-            description: editor?.getHTML() ?? '',
         });
     };
 
@@ -159,7 +147,11 @@ const PostJobForm = () => {
             <Paper shadow="sm" radius="md" p="xl" className="mb-8">
                 <div className="flex justify-between items-center mb-8">
                     <Title order={2}>Post New Job</Title>
-                    <Button variant="light" color="gray">
+                    <Button
+                        variant="light"
+                        color="gray"
+                        onClick={() => router.back()}
+                    >
                         Back to List
                     </Button>
                 </div>
@@ -210,7 +202,7 @@ const PostJobForm = () => {
                                         label="Currency"
                                         withAsterisk
                                         data={['ETB', 'USD', 'EUR', 'GBP']}
-                                        unselectable={'off'}
+                                        allowDeselect={false}
                                         {...field}
                                         error={errors.currency?.message}
                                     />
@@ -227,7 +219,7 @@ const PostJobForm = () => {
                                     <Select
                                         label="Employment Type"
                                         placeholder="Select Employment Type"
-                                        unselectable={'off'}
+                                        allowDeselect={false}
                                         data={[
                                             {
                                                 value: 'FULL_TIME',
@@ -262,7 +254,7 @@ const PostJobForm = () => {
                             <Select
                                 label="Location"
                                 placeholder="Job Location"
-                                unselectable={'off'}
+                                allowDeselect={false}
                                 data={[
                                     'Addis Ababa',
                                     'Bahir Dar',
@@ -278,17 +270,16 @@ const PostJobForm = () => {
                     <Controller
                         control={control}
                         name={'description'}
-                        render={({ field: inputField }) => (
-                            <div className="relative mt-3">
-                                <RichTextInput
-                                    withAsterisk
-                                    className="w-full"
-                                    label="Description"
-                                    placeholder="Job Description"
-                                    field={inputField}
-                                    error={errors?.description}
-                                />
-                            </div>
+                        render={({ field }) => (
+                            <MemoizedRichTextEditor
+                                field={field}
+                                error={
+                                    errors.description ?? {
+                                        message: '',
+                                        type: 'error',
+                                    }
+                                }
+                            />
                         )}
                     />
 

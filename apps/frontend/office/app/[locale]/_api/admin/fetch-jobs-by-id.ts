@@ -51,6 +51,7 @@ interface Job {
     status: string;
     organization: Organization;
     postedBy: PostedBy;
+    currency: string;
 }
 
 export const fetchJobsAdminById = async (id: string): Promise<Job> => {

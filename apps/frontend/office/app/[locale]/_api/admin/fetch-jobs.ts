@@ -50,6 +50,7 @@ interface Job {
     salaryTo: number;
     status: string;
     orgName: string;
+    createdDate: string;
     postedBy: PostedBy;
 }
 
