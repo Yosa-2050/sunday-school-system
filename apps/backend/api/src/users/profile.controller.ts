@@ -35,9 +35,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { NewProfileDto } from './dto/new-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UserRoleValue } from './enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
-import { UserRoleValue } from './enums/user-role.enum';
 
 @ApiBearerAuth()
 @ApiTags('Profile')
