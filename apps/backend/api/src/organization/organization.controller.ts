@@ -66,14 +66,14 @@ export class OrganizationController {
         return this.organizationService.findAllPaginated(dto.q);
     }
 
-    @Post('/exportSelected')
+    @Post('/export')
     async export(@Body() dto: { q: string }, @Res() res: Response) {
         const org = await this.organizationService.findAllPaginated(dto.q);
 
         this.documentService.generateCsv(org.data, res, 'organizationList');
     }
 
-    @Post('/export')
+    @Post('/exportSelected')
     async exportSelected(
         @Res() res: Response,
         @Body() dto: ListStringRequestModel,

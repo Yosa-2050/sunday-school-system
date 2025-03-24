@@ -35,6 +35,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { NewProfileDto } from './dto/new-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UserRoleValue } from './enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
 
@@ -68,13 +69,13 @@ export class ProfileController {
                 channel: NotificationChannel.Email,
                 content: getSignupEmailTemplate({
                     userName: dto.firstName,
-                    role: dto.role,
+                    role: UserRoleValue(dto.role).url,
                     email: dto.email,
                     tempPassword: pwdGenerated,
-                    loginUrl: 'https://office.shega.heranitech.com',
+                    loginUrl: UserRoleValue(dto.role).value,
                 }),
                 to: dto.email,
-                subject: 'Shega jobs',
+                subject: 'Welcome to Shega Jobs! Your Account is Created',
                 reference: user.id,
             });
             return user;

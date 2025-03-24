@@ -44,14 +44,14 @@ export class UsersController {
         return this.usersService.getUsersByUserType(dto.q);
     }
 
-    @Post('exportSelected')
+    @Post('export')
     async export(@Body() dto: { q: string }, @Res() res: Response) {
         const data = await this.usersService.getUsersByUserType(dto.q);
 
         this.documentService.generateCsv(data.data, res, 'userList');
     }
 
-    @Post('export')
+    @Post('exportSelected')
     async exportSelected(
         @Body() dto: ListStringRequestModel,
         @Res() res: Response,

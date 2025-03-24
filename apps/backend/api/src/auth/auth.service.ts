@@ -129,7 +129,7 @@ export class AuthService {
                     verificationCode: otp,
                 }),
                 to: user.email,
-                subject: 'OTP',
+                subject: 'Password Reset Request',
                 reference: user.id,
             });
             return {
