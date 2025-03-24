@@ -112,7 +112,7 @@ export class OrganizationService {
         );
     }
 
-    async findAllPaginated(dto: string) {
+    async findAllPaginated(dto: string, exportList = false) {
         // Convert PaginationDto to the format expected by QueryBuilderService
         const { p, pp, s, f, o } = entityParamDeserializer(dto);
 
@@ -125,7 +125,10 @@ export class OrganizationService {
         };
         // Define searchable columns (if applicable)
         const searchableColumns = ['name']; // Add other searchable columns if needed
-
+        if (exportList) {
+            queryParams.p = 0;
+            queryParams.pp = 0;
+        }
         const queryString = entityParamSerializer(queryParams);
 
         // Use the QueryBuilderService to build and execute the query

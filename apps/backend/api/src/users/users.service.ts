@@ -155,7 +155,7 @@ export class UsersService {
         return this.userRoleRepo.findBy({ user: { id: userId } });
     }
 
-    async getUsersByUserType(payload: string) {
+    async getUsersByUserType(payload: string, exportList = false) {
         const { p, pp, s, f, o } = entityParamDeserializer(payload);
 
         const queryParams: EntityParam = {
@@ -165,6 +165,11 @@ export class UsersService {
             f,
             o: o || [{ f: 'createdAt', d: 'desc' }],
         };
+
+        if (exportList) {
+            queryParams.p = 0;
+            queryParams.pp = 0;
+        }
 
         const queryString = entityParamSerializer(queryParams);
 

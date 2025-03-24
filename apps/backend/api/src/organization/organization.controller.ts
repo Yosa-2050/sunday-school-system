@@ -82,8 +82,9 @@ export class OrganizationController {
         if (dto.list?.length > 0) {
             data = await this.organizationService.getList(dto.list);
         } else {
-            data = (await this.organizationService.findAllPaginated(dto.q))
-                .data;
+            data = (
+                await this.organizationService.findAllPaginated(dto.q, true)
+            ).data;
         }
 
         this.documentService.generateCsv(data, res, 'organizationList');
