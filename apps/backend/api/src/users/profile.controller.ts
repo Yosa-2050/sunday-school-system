@@ -26,6 +26,7 @@ import { PasswordService } from '@shega/Utilities/password.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -63,9 +64,15 @@ export class ProfileController {
         );
 
         if (user?.id) {
-            await this.notificationService.send({
+            this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: `please login to your account using your email ${dto.email} and password '${pwdGenerated}'. Then reset your password.`,
+                content: getSignupEmailTemplate({
+                    userName: dto.firstName,
+                    role: dto.role,
+                    email: dto.email,
+                    tempPassword: pwdGenerated,
+                    loginUrl: 'https://office.shega.heranitech.com',
+                }),
                 to: dto.email,
                 subject: 'Shega jobs',
                 reference: user.id,

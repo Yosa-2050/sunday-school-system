@@ -7,6 +7,7 @@ import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.rep
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationService } from '@shega/notification/notification.service';
+import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -292,9 +293,15 @@ export class OrganizationService {
 
         const saved = await this.employeeOrgRepo.save(empOrg);
         if (saved?.id) {
-            await this.notificationService.send({
+            this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: `please login to your account using your email ${dto.email} and password ${pwdGenerated}. Then reset your password.`,
+                content: getSignupEmailTemplate({
+                    userName: dto.firstName,
+                    role: UserRoleType.WorkProvider,
+                    email: dto.email,
+                    tempPassword: pwdGenerated,
+                    loginUrl: 'https://office.shega.heranitech.com',
+                }),
                 to: dto.email,
                 subject: 'Shega jobs',
                 reference: saved.id,

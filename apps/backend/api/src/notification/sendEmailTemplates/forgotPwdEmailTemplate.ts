@@ -1,8 +1,7 @@
-function getForgotPwdEmailTemplate({
+export function getForgotPwdEmailTemplate({
     userName = '',
     email = '',
     verificationCode = '',
-    baseUrl = '',
 } = {}) {
     return `
    <!DOCTYPE html>

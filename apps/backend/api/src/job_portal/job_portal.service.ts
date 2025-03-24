@@ -177,12 +177,17 @@ export class JobPortalService {
         return jobsList;
     }
 
-    async jobApproval(id: string, status: ApprovalType) {
+    async jobApproval(id: string, status: ApprovalType, note = '') {
         const job = await this.jobRepo.findOneBy({ id });
-        if (job && job.status === ApprovalType.Waiting_Approval) {
-            throw new BadRequestException('Unable to update job');
+        if (job?.status !== ApprovalType.Waiting_Approval) {
+            throw new BadRequestException(
+                'Job is not on waiting approval status',
+            );
         }
-        const updatedJob = await this.jobRepo.update(id, { status });
+        const updatedJob = await this.jobRepo.update(id, {
+            status,
+            notes: note,
+        });
         if (updatedJob) {
             return new ApiResponseDto(200);
         }

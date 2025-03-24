@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+import { getForgotPwdEmailTemplate } from '@shega/notification/sendEmailTemplates/forgotPwdEmailTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -122,7 +123,11 @@ export class AuthService {
             const otp = await this.otpService.CreateOtp(user.id);
             await this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: `Your one time password is ${otp}`,
+                content: getForgotPwdEmailTemplate({
+                    userName: user.profile.firstName,
+                    email: user.email,
+                    verificationCode: otp,
+                }),
                 to: user.email,
                 subject: 'OTP',
                 reference: user.id,
