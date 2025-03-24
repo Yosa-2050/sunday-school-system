@@ -17,6 +17,7 @@ export class JobResponseDto {
         this.title = job.title;
         this.orgName = job.organization.name;
         this.description = job.description;
+        this.note = job.notes;
     }
     id: string;
     title: string;
@@ -64,4 +65,5 @@ export class JobResponseDto {
     //postedBy: EmployeeOrganization;
 
     createdDate: Date;
+    note: string;
 }
