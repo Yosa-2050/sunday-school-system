@@ -60,7 +60,7 @@ export class UsersController {
         if (dto.list?.length > 0) {
             data = await this.usersService.getList(dto.list);
         } else {
-            data = (await this.usersService.getUsersByUserType(dto.q)).data;
+            data = (await this.usersService.getUsersByUserType(dto.q, true)).data;
         }
 
         this.documentService.generateCsv(data, res, 'userList');

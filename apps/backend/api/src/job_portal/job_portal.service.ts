@@ -87,8 +87,13 @@ export class JobPortalService {
         return this.jobRepo.save(job);
     }
 
-    async getJobsByStatusPaginated(paginationDto: string) {
-        const { p, pp } = entityParamDeserializer(paginationDto);
+    async getJobsByStatusPaginated(paginationDto: string, exportList = false) {
+        let { p, pp } = entityParamDeserializer(paginationDto);
+
+        if(exportList){
+            p = 0;
+            pp = 0;
+        }
 
         const joinOptions = [
             {

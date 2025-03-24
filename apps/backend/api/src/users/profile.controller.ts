@@ -69,10 +69,10 @@ export class ProfileController {
                 channel: NotificationChannel.Email,
                 content: getSignupEmailTemplate({
                     userName: dto.firstName,
-                    role: UserRoleValue(dto.role).url,
+                    role: UserRoleValue(dto.role).value,
                     email: dto.email,
                     tempPassword: pwdGenerated,
-                    loginUrl: UserRoleValue(dto.role).value,
+                    loginUrl: UserRoleValue(dto.role).url,
                 }),
                 to: dto.email,
                 subject: 'Welcome to Shega Jobs! Your Account is Created',
