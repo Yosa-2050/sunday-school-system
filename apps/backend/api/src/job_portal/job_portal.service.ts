@@ -180,7 +180,7 @@ export class JobPortalService {
     async jobApproval(id: string, status: ApprovalType, note = '') {
         const job = await this.jobRepo.findOneBy({ id });
         if (job?.status !== ApprovalType.Waiting_Approval) {
-            throw new BadRequestException('Unable to update job');
+            throw new BadRequestException('Job is not on waiting approval status');
         }
         const updatedJob = await this.jobRepo.update(id, {
             status,
