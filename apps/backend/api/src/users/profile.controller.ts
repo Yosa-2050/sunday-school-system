@@ -26,6 +26,7 @@ import { PasswordService } from '@shega/Utilities/password.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -36,7 +37,6 @@ import { NewProfileDto } from './dto/new-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
-import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 
 @ApiBearerAuth()
 @ApiTags('Profile')

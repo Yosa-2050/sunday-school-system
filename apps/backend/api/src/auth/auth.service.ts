@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+import { getForgotPwdEmailTemplate } from '@shega/notification/sendEmailTemplates/forgotPwdEmailTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -31,7 +32,6 @@ import {
 } from './dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
-import { getForgotPwdEmailTemplate } from '@shega/notification/sendEmailTemplates/forgotPwdEmailTemplate';
 
 @Injectable()
 export class AuthService {
