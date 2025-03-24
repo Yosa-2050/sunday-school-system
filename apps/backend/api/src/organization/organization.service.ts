@@ -125,7 +125,7 @@ export class OrganizationService {
         };
         // Define searchable columns (if applicable)
         const searchableColumns = ['name']; // Add other searchable columns if needed
-        if(exportList){
+        if (exportList) {
             queryParams.p = 0;
             queryParams.pp = 0;
         }

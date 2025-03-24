@@ -166,7 +166,7 @@ export class UsersService {
             o: o || [{ f: 'createdAt', d: 'desc' }],
         };
 
-        if(exportList){
+        if (exportList) {
             queryParams.p = 0;
             queryParams.pp = 0;
         }
