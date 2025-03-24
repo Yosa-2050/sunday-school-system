@@ -18,7 +18,7 @@ export class ResendImpl implements IEmailService {
         content: string,
     ) {
         const resp = await this.resend.emails.send({
-            from: 'noreplay@heranitech.com',
+            from: 'Noreply@heranitech.com',
             to,
             subject,
             html: content,

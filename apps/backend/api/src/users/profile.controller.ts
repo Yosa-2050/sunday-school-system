@@ -37,6 +37,7 @@ import { NewProfileDto } from './dto/new-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
+import { UserRoleValue } from './enums/user-role.enum';
 
 @ApiBearerAuth()
 @ApiTags('Profile')
@@ -68,13 +69,13 @@ export class ProfileController {
                 channel: NotificationChannel.Email,
                 content: getSignupEmailTemplate({
                     userName: dto.firstName,
-                    role: dto.role,
+                    role: UserRoleValue(dto.role).url,
                     email: dto.email,
                     tempPassword: pwdGenerated,
-                    loginUrl: 'https://office.shega.heranitech.com',
+                    loginUrl: UserRoleValue(dto.role).value,
                 }),
                 to: dto.email,
-                subject: 'Shega jobs',
+                subject: 'Welcome to Shega Jobs! Your Account is Created',
                 reference: user.id,
             });
             return user;

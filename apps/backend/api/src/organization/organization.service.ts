@@ -8,7 +8,7 @@ import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationService } from '@shega/notification/notification.service';
 import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
-import { UserRoleType } from '@shega/users/enums/user-role.enum';
+import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
@@ -297,13 +297,13 @@ export class OrganizationService {
                 channel: NotificationChannel.Email,
                 content: getSignupEmailTemplate({
                     userName: dto.firstName,
-                    role: UserRoleType.WorkProvider,
+                    role: UserRoleValue(UserRoleType.WorkProvider).value,
                     email: dto.email,
                     tempPassword: pwdGenerated,
-                    loginUrl: 'https://office.shega.heranitech.com',
+                    loginUrl: UserRoleValue(UserRoleType.WorkProvider).url,
                 }),
                 to: dto.email,
-                subject: 'Shega jobs',
+                subject: 'Welcome to Shega Jobs! Your Account is Created',
                 reference: saved.id,
             });
             return saved;

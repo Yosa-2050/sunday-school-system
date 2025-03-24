@@ -61,7 +61,7 @@ export class JobPortalController {
     }
 
     @Roles(UserRoleType.Administrator)
-    @Post('jobsByStatus/exportSelected')
+    @Post('jobsByStatus/export')
     async exportByStatus(@Res() res: Response, @Body() dto: { q: string }) {
         const data = await this.jobPortalService.getJobsByStatusPaginated(
             dto.q,
@@ -71,7 +71,7 @@ export class JobPortalController {
     }
 
     @Roles(UserRoleType.Administrator)
-    @Post('jobsByStatus/export')
+    @Post('jobsByStatus/exportSelected')
     async exportSelected(
         @Res() res: Response,
         @Body() dto: ListStringRequestModel,
@@ -113,12 +113,12 @@ export class JobPortalController {
     @Patch('decline/:id')
     declineJob(
         @Param('id', new ParseUUIDPipe()) id: string,
-        dto: StringRequestModel,
+        @Body() dto: StringRequestModel,
     ) {
         return this.jobPortalService.jobApproval(
             id,
             ApprovalType.Declined,
-            dto.note,
+            dto?.note,
         );
     }
 
