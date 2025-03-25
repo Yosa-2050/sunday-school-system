@@ -18,7 +18,7 @@ export type Response = {
 };
 
 export const resetPassword = async (data: LoginRequest) => {
-    data.origin = "portal";
+    data.origin = 'portal';
     const response: Response = await fetcher('/auth/resetPassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
