@@ -3,6 +3,8 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Jobs } from '@shega/job_portal/entities/jobs.entity';
 // biome-ignore lint/style/useImportType: <explanation>
+import { CurrencyType } from '@shega/job_portal/enums/currency-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 
 export class JobResponseDto {
@@ -18,6 +20,7 @@ export class JobResponseDto {
         this.orgName = job.organization.name;
         this.description = job.description;
         this.note = job.notes;
+        this.currency = job.currency;
     }
     id: string;
     title: string;
@@ -66,4 +69,5 @@ export class JobResponseDto {
 
     createdDate: Date;
     note: string;
+    currency: CurrencyType;
 }

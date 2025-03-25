@@ -20,6 +20,8 @@ import { SalaryType } from '../enums/salary-type.enum';
 import { WorkPlaceType } from '../enums/work-place-type.enum';
 import { JobCategory } from './job-category.entity';
 import { JobSkills } from './job-skills.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CurrencyType } from '../enums/currency-type.enum';
 
 @Entity()
 export class Jobs extends BaseModel {
@@ -49,6 +51,9 @@ export class Jobs extends BaseModel {
 
     @Column({ nullable: true })
     workPlace: WorkPlaceType;
+
+    @Column({ nullable: true })
+    currency: CurrencyType;
 
     @ManyToOne(() => Country, { eager: true, nullable: true })
     country: Country;
