@@ -10,6 +10,7 @@ import {
     IsString,
     IsUUID,
 } from 'class-validator';
+import { CurrencyType } from '../enums/currency-type.enum';
 import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
 import { EmploymentType } from '../enums/employment-type.enum';
 import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
@@ -32,6 +33,12 @@ export class CreateJobPortalDto {
     @IsOptional()
     @Transform(({ value }) => (value === '' ? undefined : value))
     type: EmploymentType;
+
+    @ApiProperty()
+    @IsEnum(CurrencyType)
+    @IsOptional()
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    currency: CurrencyType;
 
     @ApiProperty()
     @IsNumber()
