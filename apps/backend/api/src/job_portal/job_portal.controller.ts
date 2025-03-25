@@ -43,7 +43,11 @@ export class JobPortalController {
     @Roles(UserRoleType.WorkProvider)
     @Post()
     create(@Request() req, @Body() dto: CreateJobPortalDto) {
-        return this.jobPortalService.create(CurrentUser.getEmployeeOrgId(req), CurrentUser.getOrganizationId(req), dto);
+        return this.jobPortalService.create(
+            CurrentUser.getEmployeeOrgId(req),
+            CurrentUser.getOrganizationId(req),
+            dto,
+        );
     }
 
     @Roles(UserRoleType.Administrator)

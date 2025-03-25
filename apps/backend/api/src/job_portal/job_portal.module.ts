@@ -32,13 +32,13 @@ import { JobsService } from './jobs.service';
             Category,
             Skills,
             Applicants,
-            JobApplication
+            JobApplication,
         ]),
         OrganizationModule,
         DocumentModule,
         AddressModule,
-        UsersModule
+        UsersModule,
     ],
-    exports : [JobPortalService, JobsService]
+    exports: [JobPortalService, JobsService],
 })
 export class JobPortalModule {}

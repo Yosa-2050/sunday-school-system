@@ -1,13 +1,16 @@
-import { Profile } from "@shega/users/entities/profile.entity";
-import { BaseModel } from "@shega/Utilities/entities/base-model.entity";
-import { Entity, ManyToOne, OneToMany } from "typeorm";
-import { JobApplication } from "./job-application.entity";
+import { Profile } from '@shega/users/entities/profile.entity';
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { Entity, ManyToOne, OneToMany } from 'typeorm';
+import { JobApplication } from './job-application.entity';
 
 @Entity()
-export class Applicants extends BaseModel{
+export class Applicants extends BaseModel {
     @ManyToOne((type) => Profile, { eager: true, cascade: true })
-        profile: Profile;
+    profile: Profile;
 
-        @OneToMany(() => JobApplication, (application) => application.applicants)
-        applications: JobApplication[];
+    @OneToMany(
+        () => JobApplication,
+        (application) => application.applicants,
+    )
+    applications: JobApplication[];
 }

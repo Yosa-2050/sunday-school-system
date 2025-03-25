@@ -101,6 +101,9 @@ export class Jobs extends BaseModel {
     @ManyToOne(() => EmployeeOrganization, { eager: true, nullable: true })
     postedBy: EmployeeOrganization;
 
-    @OneToMany(() => JobApplication, (application) => application.job)
+    @OneToMany(
+        () => JobApplication,
+        (application) => application.job,
+    )
     applications: JobApplication[];
 }

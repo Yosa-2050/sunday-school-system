@@ -98,8 +98,8 @@ export class ProfileService {
         }
     }
 
-    findById(profileId: string){
-        return this.repo.findOneBy({id: profileId});
+    findById(profileId: string) {
+        return this.repo.findOneBy({ id: profileId });
     }
 
     async findByUserId(userId: string) {

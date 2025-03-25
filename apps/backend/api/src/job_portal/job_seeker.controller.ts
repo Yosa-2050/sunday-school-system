@@ -1,4 +1,11 @@
-import { Body, Controller, Param, ParseUUIDPipe, Post, Request } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Param,
+    ParseUUIDPipe,
+    Post,
+    Request,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
@@ -14,8 +21,10 @@ import { JobsService } from './jobs.service';
 @ApiTags('job-seeker')
 @Controller('job-seeker')
 export class JobSeekerController {
-    constructor(private readonly jobPortalService: JobPortalService,
-         private readonly jobsService: JobsService) {}
+    constructor(
+        private readonly jobPortalService: JobPortalService,
+        private readonly jobsService: JobsService,
+    ) {}
 
     @Roles(UserRoleType.JobSeeker)
     @Post('jobs')
@@ -36,7 +45,7 @@ export class JobSeekerController {
 
     @Roles(UserRoleType.JobSeeker)
     @Post('apply/:jobId')
-    apply(@Request() req, @Param('jobId', new ParseUUIDPipe()) jobId: string){
+    apply(@Request() req, @Param('jobId', new ParseUUIDPipe()) jobId: string) {
         return this.jobsService.apply(jobId, CurrentUser.getProfileId(req));
     }
 }

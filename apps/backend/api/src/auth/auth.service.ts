@@ -44,7 +44,7 @@ export class AuthService {
         private notificationService: NotificationService,
         private organizationService: OrganizationService,
         private clasService: ClsService,
-        private jobService: JobsService
+        private jobService: JobsService,
     ) {}
 
     async validateUser(
@@ -81,11 +81,13 @@ export class AuthService {
                     user.profile.id,
                 );
                 break;
-              case UserRoleType.JobSeeker:
-                details = await this.jobService.getApplicantDetail(user.profile.id);
+            case UserRoleType.JobSeeker:
+                details = await this.jobService.getApplicantDetail(
+                    user.profile.id,
+                );
                 break;
-              default:
-                throw new BadRequestException("Role is not found");
+            default:
+                throw new BadRequestException('Role is not found');
         }
         const payload: UserResponsePayload = {
             email: user.email,
