@@ -27,7 +27,7 @@ export class CurrentUser {
     static getApplicantnId(req: any): string {
         const organizationId = req?.user?.details?.applicantId;
         if (!organizationId) {
-            throw new BadRequestException('Unable to find linked applicant id');
+            throw new BadRequestException('No jobs applied');
         }
         return organizationId;
     }

@@ -8,14 +8,16 @@ import { Applicants } from './entities/applicants.entity';
 import { JobApplication } from './entities/job-application.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+import { BadRequestException } from '@nestjs/common';
 
 export class JobsService {
+   
     constructor(
         private readonly profileService: ProfileService,
         private readonly jobPortalService: JobPortalService,
         @InjectRepository(Applicants)
         private applicantRepo: Repository<Applicants>,
-        @InjectRepository(Applicants)
+        @InjectRepository(JobApplication)
         private jobApplicantRepo: Repository<JobApplication>,
         @InjectRepository(JobApplication)
         private readonly jobApplication: Repository<JobApplication>,
@@ -25,9 +27,11 @@ export class JobsService {
         const applicant = await this.applicantRepo.findOneBy({
             profile: { id },
         });
+
+        const profile = await this.profileService.findById(id);
         const userDetails = new UserDetails();
         userDetails.applicantId = applicant?.id;
-        userDetails.profileId = applicant?.profile?.id;
+        userDetails.profileId = profile?.id;
         return userDetails;
     }
 
@@ -37,6 +41,10 @@ export class JobsService {
         });
         if (!applicant) {
             applicant = await this.createApplicant(profileId);
+        }
+        const existingApp = await this.jobApplicantRepo.findOneBy({job: {id: jobId}, applicants: {id: applicant.id}})
+        if(existingApp){
+            throw new BadRequestException("Already applied for the job");
         }
 
         const job = await this.jobPortalService.findOne(jobId);
@@ -54,5 +62,23 @@ export class JobsService {
         applicant.profile = profile;
 
         return this.applicantRepo.save(applicant);
+    }
+
+    async jobsApplied(id: string) {
+        const existingApp = await this.jobApplicantRepo.findOneBy({applicants: {profile: {id}}})
+        if(!existingApp){
+            throw new BadRequestException("No applied jobs");
+        }
+
+        return existingApp;
+    }
+
+    async jobsAppliedByJobId(id: string) {
+        const existingApp = await this.jobApplicantRepo.findOneBy({job: {id}})
+        if(!existingApp){
+            throw new BadRequestException("No applied jobs");
+        }
+
+        return existingApp;
     }
 }

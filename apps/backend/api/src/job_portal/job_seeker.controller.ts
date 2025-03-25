@@ -48,4 +48,10 @@ export class JobSeekerController {
     apply(@Request() req, @Param('jobId', new ParseUUIDPipe()) jobId: string) {
         return this.jobsService.apply(jobId, CurrentUser.getProfileId(req));
     }
+
+    @Roles(UserRoleType.JobSeeker)
+    @Post('jobs/appliedByJobSeeker')
+    appliedJobs(@Request() req) {
+        return this.jobsService.jobsApplied(CurrentUser.getProfileId(req));
+    }
 }
