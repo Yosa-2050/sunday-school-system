@@ -23,8 +23,6 @@ import { WorkPlaceType } from '../enums/work-place-type.enum';
 import { JobApplication } from './job-application.entity';
 import { JobCategory } from './job-category.entity';
 import { JobSkills } from './job-skills.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CurrencyType } from '../enums/currency-type.enum';
 
 @Entity()
 export class Jobs extends BaseModel {
