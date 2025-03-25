@@ -1,75 +1,102 @@
 import { Button, Group, Textarea } from '@mantine/core';
-import { useState } from 'react';
+import { notifications } from '@mantine/notifications';
+import { QueryClient, useMutation } from '@tanstack/react-query';
+import { declineJob } from 'app/[locale]/_api/admin/decline-jobs';
+import { useParams, useRouter } from 'next/navigation';
+import { Controller, useForm } from 'react-hook-form';
 
 interface DeclineModalProps {
     close: () => void;
-    declineJobMutate: () => void;
 }
 
-function DeclineModal({ close, declineJobMutate }: DeclineModalProps) {
-    const [declineReason, setDeclineReason] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+interface FormData {
+    declineReason: string;
+}
 
-    const handleProceed = async () => {
-        if (!declineReason.trim()) {
-            setError('Decline Reason is required.');
-            return;
-        }
-        if (declineReason.length < 10) {
-            setError('Decline Reason must be at least 10 characters long.');
-            return;
-        }
-        setError('');
-        setLoading(true);
+function DeclineModal({ close }: DeclineModalProps) {
+    const params = useParams();
+    const jobId = params.id as string;
+    const router = useRouter();
+    const queryClient = new QueryClient();
 
-        try {
-            const response = await fetch(
-                '/api/job-portal/JobPortalController_declineJob',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        declineReason,
-                    }),
-                },
-            );
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormData>({
+        defaultValues: {
+            declineReason: '',
+        },
+        mode: 'onChange',
+    });
 
-            if (response.ok) {
-                declineJobMutate();
-                close();
-            } else {
-                setError('Failed to decline job. Please try again.');
-            }
-        } catch (error) {
-            setError('An error occurred. Please try again.');
-        } finally {
-            setLoading(false);
-        }
+    const { mutate: declineJobMutate, isPending: isDeclinePending } =
+        useMutation({
+            mutationFn: async (data: FormData) =>
+                await declineJob(jobId, data.declineReason),
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['job', jobId] });
+                router.push('/admin/jobs');
+                notifications.show({
+                    title: 'Job Decline',
+                    message: 'The job has been successfully declined',
+                    color: 'green',
+                });
+            },
+            onError: (error: Error) => {
+                notifications.show({
+                    title: 'Error Declining Job',
+                    message: error.message,
+                    color: 'red',
+                });
+            },
+        });
+
+    const onSubmit = (data: FormData) => {
+        declineJobMutate(data);
     };
 
     return (
-        <div>
-            <Textarea
-                placeholder="Enter reason for decline"
-                value={declineReason}
-                onChange={(event) =>
-                    setDeclineReason(event.currentTarget.value)
-                }
-                required
-                error={error}
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+                name="declineReason"
+                control={control}
+                rules={{
+                    required: 'Decline reason is required',
+                    minLength: {
+                        value: 10,
+                        message:
+                            'Decline reason must be at least 10 characters long',
+                    },
+                }}
+                render={({ field }) => (
+                    <Textarea
+                        {...field}
+                        placeholder="Enter reason for decline"
+                        required
+                        error={errors.declineReason?.message}
+                    />
+                )}
             />
             <Group mt="md" justify="end">
-                <Button variant="default" onClick={close} disabled={loading}>
+                <Button
+                    variant="default"
+                    onClick={close}
+                    loading={isDeclinePending}
+                    disabled={isDeclinePending}
+                >
                     Cancel
                 </Button>
-                <Button color="red" onClick={handleProceed} loading={loading}>
+                <Button
+                    color="red"
+                    type="submit"
+                    loading={isDeclinePending}
+                    disabled={isDeclinePending}
+                >
                     Decline
                 </Button>
             </Group>
-        </div>
+        </form>
     );
 }
 
