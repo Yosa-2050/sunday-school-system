@@ -16,6 +16,7 @@ import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
 import { SalaryFrequencyType } from '../enums/salary-frequency-type.enum';
 import { SalaryType } from '../enums/salary-type.enum';
 import { WorkPlaceType } from '../enums/work-place-type.enum';
+import { CurrencyType } from '../enums/currency-type.enum';
 
 export class CreateJobPortalDto {
     @ApiProperty()
@@ -32,6 +33,12 @@ export class CreateJobPortalDto {
     @IsOptional()
     @Transform(({ value }) => (value === '' ? undefined : value))
     type: EmploymentType;
+
+    @ApiProperty()
+    @IsEnum(CurrencyType)
+    @IsOptional()
+    @Transform(({ value }) => (value === '' ? undefined : value))
+    currency: CurrencyType;
 
     @ApiProperty()
     @IsNumber()
