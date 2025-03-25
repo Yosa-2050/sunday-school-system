@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -8,7 +9,6 @@ import { Applicants } from './entities/applicants.entity';
 import { JobApplication } from './entities/job-application.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-import { BadRequestException } from '@nestjs/common';
 
 export class JobsService {
     constructor(
