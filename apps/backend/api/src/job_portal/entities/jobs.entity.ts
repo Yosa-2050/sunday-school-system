@@ -7,6 +7,8 @@ import { EmployeeOrganization } from '@shega/organization/entities/employee-orga
 import { Organization } from '@shega/organization/entities/organization.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
+import { CurrencyType } from '../enums/currency-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '../enums/employment-type.enum';
@@ -21,8 +23,6 @@ import { WorkPlaceType } from '../enums/work-place-type.enum';
 import { JobApplication } from './job-application.entity';
 import { JobCategory } from './job-category.entity';
 import { JobSkills } from './job-skills.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CurrencyType } from '../enums/currency-type.enum';
 
 @Entity()
 export class Jobs extends BaseModel {
