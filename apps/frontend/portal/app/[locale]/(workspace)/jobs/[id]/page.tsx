@@ -1,6 +1,8 @@
 'use client';
 
+import { useRouter } from '@/i18n/routing';
 import {
+    ActionIcon,
     Avatar,
     Card,
     Container,
@@ -13,7 +15,7 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { IconMail, IconPhone } from '@tabler/icons-react';
+import { IconArrowLeft, IconMail, IconPhone } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobsById } from 'app/_api/jobs/fetch-job-id';
 import parse from 'html-react-parser';
@@ -47,11 +49,16 @@ interface JobDetailsResponse {
 const JobDetails = () => {
     const params = useParams();
     const jobId = params.id as string;
+    const router = useRouter();
 
     const { data: job, isLoading } = useQuery({
         queryKey: ['job', jobId],
         queryFn: () => fetchJobsById(jobId),
     });
+
+    const handleBack = () => {
+        router.back();
+    };
 
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
@@ -62,7 +69,7 @@ const JobDetails = () => {
     }
 
     return (
-        <Container size={'xl'}>
+        <Container size={'xl'} mt={'xl'}>
             <Flex
                 gap="xl"
                 align="start"
@@ -100,9 +107,22 @@ const JobDetails = () => {
 
                 {/* Job Details */}
                 <Paper shadow="md" radius="lg" p="xl" flex={1}>
-                    <Title order={2} mb={80}>
-                        Job Details
-                    </Title>
+                    <Flex justify="" align="center" mb="xl">
+                        <ActionIcon
+                            variant="subtle"
+                            color="gray"
+                            size="lg"
+                            onClick={handleBack}
+                            aria-label="Back to previous page"
+                        >
+                            <IconArrowLeft size={24} />
+                        </ActionIcon>
+
+                        <Title order={2} ml="md">
+                            Job Details
+                        </Title>
+                    </Flex>
+
                     <Flex align={'center'} justify={'space-between'} gap={'md'}>
                         <Flex direction={'column'} gap={'md'}>
                             <Group>
