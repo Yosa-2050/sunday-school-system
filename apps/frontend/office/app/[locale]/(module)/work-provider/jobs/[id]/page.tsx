@@ -211,8 +211,10 @@ const JobDetails = () => {
                                 Salary:
                             </Text>
                             <Text style={{ color: '#4a5568' }}>
-                                Up to {job.salaryTo.toLocaleString()}
-                                {job.currency} per year
+                                {/* Up to {job.salaryTo.toLocaleString()}
+                                {job.currency} per year */}
+                                {job.salaryFrom.toLocaleString()} -{' '}
+                                {job.salaryTo.toLocaleString()} $
                             </Text>
                         </Group>
                         {/* <Group gap="xs" align="flex-start">
