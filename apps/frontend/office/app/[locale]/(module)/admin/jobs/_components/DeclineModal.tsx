@@ -10,7 +10,7 @@ interface DeclineModalProps {
 }
 
 interface FormData {
-    declineReason: string;
+    note: string;
 }
 
 function DeclineModal({ close }: DeclineModalProps) {
@@ -25,7 +25,7 @@ function DeclineModal({ close }: DeclineModalProps) {
         formState: { errors },
     } = useForm<FormData>({
         defaultValues: {
-            declineReason: '',
+            note: '',
         },
         mode: 'onChange',
     });
@@ -33,7 +33,7 @@ function DeclineModal({ close }: DeclineModalProps) {
     const { mutate: declineJobMutate, isPending: isDeclinePending } =
         useMutation({
             mutationFn: async (data: FormData) =>
-                await declineJob(jobId, data.declineReason),
+                await declineJob(jobId, data.note),
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['job', jobId] });
                 router.push('/admin/jobs');
@@ -59,7 +59,7 @@ function DeclineModal({ close }: DeclineModalProps) {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
-                name="declineReason"
+                name="note"
                 control={control}
                 rules={{
                     required: 'Decline reason is required',
@@ -74,7 +74,7 @@ function DeclineModal({ close }: DeclineModalProps) {
                         {...field}
                         placeholder="Enter reason for decline"
                         required
-                        error={errors.declineReason?.message}
+                        error={errors.note?.message}
                     />
                 )}
             />
