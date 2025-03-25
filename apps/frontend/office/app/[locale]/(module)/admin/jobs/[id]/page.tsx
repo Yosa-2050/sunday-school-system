@@ -10,11 +10,13 @@ import {
     Flex,
     Group,
     LoadingOverlay,
+    Modal,
     Paper,
     Stack,
     Text,
     Title,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
@@ -22,6 +24,7 @@ import { approveJob } from 'app/[locale]/_api/admin/approve-job';
 import { declineJob } from 'app/[locale]/_api/admin/decline-jobs';
 import { fetchJobsAdminById } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
 import { useParams } from 'next/navigation';
+import DeclineModal from '../_components/DeclineModal';
 
 interface JobDetailsResponse {
     id: string;
@@ -52,6 +55,7 @@ const JobDetails = () => {
     const params = useParams();
     const router = useRouter();
     const jobId = params.id as string;
+    const [opened, { open, close }] = useDisclosure(false);
 
     const queryClient = new QueryClient();
 
@@ -111,7 +115,6 @@ const JobDetails = () => {
     if (!job) {
         return <Text>Job not found</Text>;
     }
-
     return (
         <Container fluid p="xl">
             <Flex
@@ -192,14 +195,25 @@ const JobDetails = () => {
                             }}
                         />
                     </Stack>
-
+                    <Modal
+                        opened={opened}
+                        onClose={close}
+                        title="Decline Reason"
+                        centered
+                    >
+                        <DeclineModal
+                            close={close}
+                            declineJobMutate={declineJobMutate}
+                        />
+                    </Modal>
                     {job.status === 'WAITINGAPPROVAL' && (
                         <Flex mt="xl" justify="flex-end" gap="md">
                             <Button
                                 color="red"
                                 size="md"
                                 loading={isApprovingJob || isDeclinePending}
-                                onClick={() => declineJobMutate()}
+                                onClick={open} //
+                                // onClick={() => declineJobMutate()}
                             >
                                 Decline
                             </Button>
