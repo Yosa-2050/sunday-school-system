@@ -32,6 +32,8 @@ import {
 } from './dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobsService } from '@shega/job_portal/jobs.service';
 
 @Injectable()
 export class AuthService {
@@ -42,6 +44,7 @@ export class AuthService {
         private notificationService: NotificationService,
         private organizationService: OrganizationService,
         private clasService: ClsService,
+        private jobService: JobsService
     ) {}
 
     async validateUser(
@@ -78,18 +81,11 @@ export class AuthService {
                     user.profile.id,
                 );
                 break;
-            //   case UserRoleType.PARENT:
-            //     break;
-            //   case UserRoleType.ADMINISTRATOR:
-            //     break;
-            //   case UserRoleType.SCHOOL_ADMINISTRATOR:
-            //     break;
-            //   case UserRoleType.SCHOOL_EMPLOYEE:
-            //   case UserRoleType.SCHOOL_FINANCE_OFFICER:
-            //   case UserRoleType.BRANCH_ADMINISTRATOR:
-            //     break;
-            //   default:
-            //     throw new BadRequestException("Role is not found");
+              case UserRoleType.JobSeeker:
+                details = await this.jobService.getApplicantDetail(user.profile.id);
+                break;
+              default:
+                throw new BadRequestException("Role is not found");
         }
         const payload: UserResponsePayload = {
             email: user.email,

@@ -12,6 +12,10 @@ import { JobDetailController } from './job_detail.controller';
 import { JobPortalController } from './job_portal.controller';
 import { JobPortalService } from './job_portal.service';
 import { JobSeekerController } from './job_seeker.controller';
+import { Applicants } from './entities/applicants.entity';
+import { JobApplication } from './entities/job-application.entity';
+import { UsersModule } from '@shega/users/users.module';
+import { JobsService } from './jobs.service';
 
 @Module({
     controllers: [
@@ -19,7 +23,7 @@ import { JobSeekerController } from './job_seeker.controller';
         JobSeekerController,
         JobDetailController,
     ],
-    providers: [JobPortalService],
+    providers: [JobPortalService, JobsService],
     imports: [
         TypeOrmModule.forFeature([
             Jobs,
@@ -27,10 +31,14 @@ import { JobSeekerController } from './job_seeker.controller';
             JobCategory,
             Category,
             Skills,
+            Applicants,
+            JobApplication
         ]),
         OrganizationModule,
         DocumentModule,
         AddressModule,
+        UsersModule
     ],
+    exports : [JobPortalService, JobsService]
 })
 export class JobPortalModule {}

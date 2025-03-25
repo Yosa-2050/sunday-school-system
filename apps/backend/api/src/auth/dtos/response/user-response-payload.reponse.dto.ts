@@ -5,6 +5,7 @@ export class UserDetails {
     organizationId?: string;
     employeeId?: string;
     employeeOrgId?: string;
+    applicantId?: string;
     profileId: string;
     userId: string;
     email: string;

@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     Body,
     Controller,
     Delete,
@@ -31,6 +30,7 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
 
 @ApiTags('job-portal')
 @Controller('job-portal')
@@ -43,15 +43,7 @@ export class JobPortalController {
     @Roles(UserRoleType.WorkProvider)
     @Post()
     create(@Request() req, @Body() dto: CreateJobPortalDto) {
-        const organizationId = req?.user?.details?.organizationId;
-        const employeeOrgId = req?.user?.details?.employeeOrgId;
-        if (!(organizationId && employeeOrgId)) {
-            throw new BadRequestException(
-                'Unable to find linked organiazation id',
-            );
-        }
-
-        return this.jobPortalService.create(employeeOrgId, organizationId, dto);
+        return this.jobPortalService.create(CurrentUser.getEmployeeOrgId(req), CurrentUser.getOrganizationId(req), dto);
     }
 
     @Roles(UserRoleType.Administrator)
@@ -66,7 +58,6 @@ export class JobPortalController {
         const data = await this.jobPortalService.getJobsByStatusPaginated(
             dto.q,
         );
-
         this.documentService.generateCsv(data.data, res, 'jobList');
     }
 
@@ -91,14 +82,8 @@ export class JobPortalController {
     @Roles(UserRoleType.WorkProvider)
     @Post('byProvider')
     getAllPostedJobsByPorvider(@Request() req, @Body() dto: { q: string }) {
-        const organizationId = req?.user?.details?.organizationId;
-        if (!organizationId) {
-            throw new BadRequestException(
-                'Unable to find linked organiazation id',
-            );
-        }
         return this.jobPortalService.getJobsByStatusAndByOrgPaginated(
-            organizationId,
+            CurrentUser.getOrganizationId(req),
             dto.q,
         );
     }

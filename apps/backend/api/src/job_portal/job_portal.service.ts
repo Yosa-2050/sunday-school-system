@@ -31,6 +31,7 @@ import { Skills } from './entities/skills.entity';
 
 @Injectable()
 export class JobPortalService {
+  
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)

@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
+import { JobPortalModule } from '@shega/job_portal/job_portal.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { LocalStrategy } from './local.strategy';
         PassportModule,
         NotificationModule,
         OrganizationModule,
+        JobPortalModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '1d' },

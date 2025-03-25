@@ -20,6 +20,7 @@ import { SalaryType } from '../enums/salary-type.enum';
 import { WorkPlaceType } from '../enums/work-place-type.enum';
 import { JobCategory } from './job-category.entity';
 import { JobSkills } from './job-skills.entity';
+import { JobApplication } from './job-application.entity';
 
 @Entity()
 export class Jobs extends BaseModel {
@@ -99,4 +100,7 @@ export class Jobs extends BaseModel {
 
     @ManyToOne(() => EmployeeOrganization, { eager: true, nullable: true })
     postedBy: EmployeeOrganization;
+
+    @OneToMany(() => JobApplication, (application) => application.job)
+    applications: JobApplication[];
 }

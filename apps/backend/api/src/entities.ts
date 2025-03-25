@@ -1,5 +1,7 @@
 import { Document } from './document/entities/document.entity';
+import { Applicants } from './job_portal/entities/applicants.entity';
 import { Category } from './job_portal/entities/category.entity';
+import { JobApplication } from './job_portal/entities/job-application.entity';
 import { JobCategory } from './job_portal/entities/job-category.entity';
 import { JobSkills } from './job_portal/entities/job-skills.entity';
 import { Jobs } from './job_portal/entities/jobs.entity';
@@ -38,4 +40,6 @@ export const AppEntities = [
     JobSkills,
     Category,
     Skills,
+    Applicants,
+    JobApplication
 ];
