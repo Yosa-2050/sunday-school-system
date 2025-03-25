@@ -119,7 +119,10 @@ export class AuthService {
             username,
             LoginBy.EMAIL,
         );
-        if (user && validateRole(user.roles?.find((x) => x.isDefault)?.role, origin)) {
+        if (
+            user &&
+            validateRole(user.roles?.find((x) => x.isDefault)?.role, origin)
+        ) {
             const otp = await this.otpService.CreateOtp(user.id);
             await this.notificationService.send({
                 channel: NotificationChannel.Email,
