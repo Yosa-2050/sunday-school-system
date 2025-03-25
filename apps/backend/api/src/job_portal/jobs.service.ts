@@ -11,7 +11,6 @@ import { JobPortalService } from './job_portal.service';
 import { BadRequestException } from '@nestjs/common';
 
 export class JobsService {
-   
     constructor(
         private readonly profileService: ProfileService,
         private readonly jobPortalService: JobPortalService,
@@ -42,9 +41,12 @@ export class JobsService {
         if (!applicant) {
             applicant = await this.createApplicant(profileId);
         }
-        const existingApp = await this.jobApplicantRepo.findOneBy({job: {id: jobId}, applicants: {id: applicant.id}})
-        if(existingApp){
-            throw new BadRequestException("Already applied for the job");
+        const existingApp = await this.jobApplicantRepo.findOneBy({
+            job: { id: jobId },
+            applicants: { id: applicant.id },
+        });
+        if (existingApp) {
+            throw new BadRequestException('Already applied for the job');
         }
 
         const job = await this.jobPortalService.findOne(jobId);
@@ -65,18 +67,22 @@ export class JobsService {
     }
 
     async jobsApplied(id: string) {
-        const existingApp = await this.jobApplicantRepo.findOneBy({applicants: {profile: {id}}})
-        if(!existingApp){
-            throw new BadRequestException("No applied jobs");
+        const existingApp = await this.jobApplicantRepo.findOneBy({
+            applicants: { profile: { id } },
+        });
+        if (!existingApp) {
+            throw new BadRequestException('No applied jobs');
         }
 
         return existingApp;
     }
 
     async jobsAppliedByJobId(id: string) {
-        const existingApp = await this.jobApplicantRepo.findOneBy({job: {id}})
-        if(!existingApp){
-            throw new BadRequestException("No applied jobs");
+        const existingApp = await this.jobApplicantRepo.findOneBy({
+            job: { id },
+        });
+        if (!existingApp) {
+            throw new BadRequestException('No applied jobs');
         }
 
         return existingApp;
