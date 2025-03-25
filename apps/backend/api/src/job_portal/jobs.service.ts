@@ -1,11 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Applicants } from './entities/applicants.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
-import { JobApplication } from './entities/job-application.entity';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Repository } from 'typeorm';
+import { Applicants } from './entities/applicants.entity';
+import { JobApplication } from './entities/job-application.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
 

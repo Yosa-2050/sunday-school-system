@@ -1,14 +1,14 @@
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import {
-    Entity,
     Column,
-    ManyToOne,
     CreateDateColumn,
+    Entity,
+    ManyToOne,
     UpdateDateColumn,
 } from 'typeorm';
 import { ApplicationStatus } from '../enums/job-application-status.enum';
 import { Applicants } from './applicants.entity';
 import { Jobs } from './jobs.entity';
-import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 
 @Entity()
 export class JobApplication extends BaseModel {

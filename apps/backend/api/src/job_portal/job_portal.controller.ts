@@ -11,6 +11,7 @@ import {
     Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
@@ -30,7 +31,6 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-import { CurrentUser } from '@shega/Utilities/current-user.utility';
 
 @ApiTags('job-portal')
 @Controller('job-portal')

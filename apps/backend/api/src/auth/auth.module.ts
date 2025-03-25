@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { PasswordService } from '@shega/Utilities/password.service';
+import { JobPortalModule } from '@shega/job_portal/job_portal.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { OrganizationModule } from '@shega/organization/organization.module';
 import { UsersModule } from '@shega/users/users.module';
@@ -11,7 +12,6 @@ import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
-import { JobPortalModule } from '@shega/job_portal/job_portal.module';
 
 @Module({
     imports: [

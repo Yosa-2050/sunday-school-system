@@ -18,9 +18,9 @@ import { SalaryFrequencyType } from '../enums/salary-frequency-type.enum';
 import { SalaryType } from '../enums/salary-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { WorkPlaceType } from '../enums/work-place-type.enum';
+import { JobApplication } from './job-application.entity';
 import { JobCategory } from './job-category.entity';
 import { JobSkills } from './job-skills.entity';
-import { JobApplication } from './job-application.entity';
 
 @Entity()
 export class Jobs extends BaseModel {

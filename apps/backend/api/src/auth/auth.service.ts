@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JwtService } from '@nestjs/jwt';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobsService } from '@shega/job_portal/jobs.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
@@ -32,8 +34,6 @@ import {
 } from './dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { JobsService } from '@shega/job_portal/jobs.service';
 
 @Injectable()
 export class AuthService {

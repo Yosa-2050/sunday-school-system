@@ -1,5 +1,5 @@
-import { Profile } from '@shega/users/entities/profile.entity';
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { Profile } from '@shega/users/entities/profile.entity';
 import { Entity, ManyToOne, OneToMany } from 'typeorm';
 import { JobApplication } from './job-application.entity';
 
