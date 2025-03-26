@@ -1,31 +1,39 @@
-import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
-import { getCookie } from 'cookies-next';
+import { COOKIE_ACCESS_TOKEN } from "@shega/shared";
+import { getCookie } from "cookies-next";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-export const exportSelectedJobs = async (payload: string[]) => {
-    const token = getCookie(COOKIE_ACCESS_TOKEN);
+export const exportSelectedJobs = async ({
+  payload,
+  type,
+}: {
+  payload: string[] | string;
+  type: "filter" | "selected";
+}) => {
+  const token = getCookie(COOKIE_ACCESS_TOKEN);
 
-    const response = await fetch(
-        `${API_BASE_URL}/job-portal/jobsByStatus/exportSelected`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'text/csv',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ list: payload }),
-        },
-    );
-
-    if (!response.ok) {
-        throw new Error(
-            `Failed to fetch data: ${response.status} ${response.statusText}`,
-        );
+  const response = await fetch(
+    `${API_BASE_URL}/job-portal/jobsByStatus/exportSelected`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/csv",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(
+        type === "selected" ? { list: payload } : { list: [], q: payload }
+      ),
     }
+  );
 
-    const csvText: string = await response.text();
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch data: ${response.status} ${response.statusText}`
+    );
+  }
 
-    const rows = csvText.trim().split('\n');
-    return rows;
+  const csvText: string = await response.text();
+
+  const rows = csvText.trim().split("\n");
+  return rows;
 };

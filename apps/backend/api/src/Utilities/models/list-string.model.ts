@@ -1,17 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsArray, IsOptional, IsString } from "class-validator";
 
 export class ListStringRequestModel {
-    @ApiProperty()
-    @IsArray()
-    list: string[];
+  @ApiProperty()
+  @IsArray()
+  list: string[];
 
-    @ApiProperty()
-    q: string;
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  q: string;
 }
 
 export class StringRequestModel {
-    @ApiProperty()
-    @IsString()
-    note: string;
+  @ApiProperty()
+  @IsString()
+  note: string;
 }
