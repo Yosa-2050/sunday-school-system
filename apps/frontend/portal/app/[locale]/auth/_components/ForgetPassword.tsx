@@ -63,7 +63,7 @@ export default function ForgetPassword() {
             notifications.show({
                 title: 'Reset Password Request',
                 color: 'red',
-                message: 'Failed to process Password reset request ',
+                message: 'The email address you entered is not registered.',
             });
         },
     });

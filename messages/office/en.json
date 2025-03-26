@@ -245,7 +245,7 @@
     "jobsListPage": {
         "title": "Job Listings",
         "postJob": "Post a Job",
-        "searchPlaceholder": "Search jobs...",
+        "searchPlaceholder": "Search Jobs by Org Name or Job Title",
         "selectCategory": "Select a category",
         "allCategories": "All Categories",
         "noJobsMessage": "You haven’t any posted jobs yet.",

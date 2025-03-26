@@ -112,7 +112,14 @@ const JobDetails = () => {
                                     fontWeight: 700,
                                 }}
                             >
-                                {job.title.toUpperCase()}
+                                {job.title
+                                    .split(' ')
+                                    .map(
+                                        (word) =>
+                                            word.charAt(0).toUpperCase() +
+                                            word.slice(1),
+                                    )
+                                    .join(' ')}
                             </Title>
                         </Flex>
                     </Flex>

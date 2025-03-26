@@ -203,13 +203,28 @@ const JobsList = () => {
                             { value: 'APPROVED', label: 'Approved' },
                             { value: 'DECLINED', label: 'Declined' },
                         ]}
+                        defaultOrder={[
+                            { f: 'status', d: 'desc' },
+                            { f: 'createdAt', d: 'asc' },
+                        ]}
                         mode="select"
                         field="status"
                     />
                     <Button
                         variant="light"
                         leftSection={<IconDownload size={18} />}
-                        onClick={() => exportMutation.mutate(selection)}
+                        onClick={() => {
+                            const payload =
+                                selection.length === 0
+                                    ? entityParamSerializer({
+                                          ...entityParams,
+                                          pp: data?.total,
+                                      })
+                                    : selection;
+                            const type: 'filter' | 'selected' =
+                                selection.length === 0 ? 'filter' : 'selected';
+                            exportMutation.mutate({ payload, type });
+                        }}
                         loading={exportMutation.isPending}
                     >
                         {t('exportCSV')}
@@ -281,7 +296,7 @@ const JobsList = () => {
                                         }
                                     />
                                 </Table.Th>
-                                <Table.Th>Company Name</Table.Th>
+                                <Table.Th>Organization Name</Table.Th>
                                 <Table.Th>Job Title</Table.Th>
                                 <Table.Th>Created Date</Table.Th>
                                 <Table.Th>Salary</Table.Th>

@@ -147,7 +147,18 @@ const OrganizationsPage = () => {
                     <Button
                         variant="light"
                         leftSection={<IconDownload size={18} />}
-                        onClick={() => exportMutation.mutate(selection)}
+                        onClick={() => {
+                            const payload =
+                                selection.length === 0
+                                    ? entityParamSerializer({
+                                          ...entityParams,
+                                          pp: data?.total,
+                                      })
+                                    : selection;
+                            const type: 'filter' | 'selected' =
+                                selection.length === 0 ? 'filter' : 'selected';
+                            exportMutation.mutate({ payload, type });
+                        }}
                         loading={exportMutation.isPending}
                     >
                         {t('exportCSV')}

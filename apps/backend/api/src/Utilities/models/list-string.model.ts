@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
 export class ListStringRequestModel {
     @ApiProperty()
@@ -7,6 +7,8 @@ export class ListStringRequestModel {
     list: string[];
 
     @ApiProperty()
+    @IsString()
+    @IsOptional()
     q: string;
 }
 

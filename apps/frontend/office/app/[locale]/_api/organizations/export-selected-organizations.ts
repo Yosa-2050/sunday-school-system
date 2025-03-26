@@ -2,7 +2,13 @@ import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 import { getCookie } from 'cookies-next';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-export const exportSelectedOrganization = async (payload: string[]) => {
+export const exportSelectedOrganization = async ({
+    payload,
+    type,
+}: {
+    payload: string[] | string;
+    type: 'filter' | 'selected';
+}) => {
     const token = getCookie(COOKIE_ACCESS_TOKEN);
 
     const response = await fetch(
@@ -14,7 +20,11 @@ export const exportSelectedOrganization = async (payload: string[]) => {
                 Accept: 'text/csv',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ list: payload }),
+            body: JSON.stringify(
+                type === 'selected'
+                    ? { list: payload }
+                    : { list: [], q: payload },
+            ),
         },
     );
 

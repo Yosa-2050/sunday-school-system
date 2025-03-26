@@ -49,9 +49,21 @@ interface Job {
     salaryFrom: number;
     salaryTo: number;
     status: string;
-    organization: Organization;
-    postedBy: PostedBy;
-    currency: string;
+    country: {
+        name: string;
+    };
+    organization: {
+        id: string;
+        name: string;
+    };
+    postedBy: {
+        employee: {
+            profile: {
+                firstName: string;
+                lastName: string;
+            };
+        };
+    };
 }
 
 export const fetchJobsAdminById = async (id: string): Promise<Job> => {
