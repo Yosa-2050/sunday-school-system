@@ -58,14 +58,15 @@ export default function ForgetPassword() {
                 title: 'Reset Password Request',
                 color: 'green',
                 message:
-                    'Your password reset request is successful. Check your email for the one time password(OTP)',
+                    'Your password reset request is successful. Check your email for the Verification Code(OTP)',
             });
         },
         onError: () => {
             notifications.show({
                 title: 'Reset Password Request',
                 color: 'red',
-                message: 'Failed to process Password reset request ',
+                //   message: "Failed to process Password reset request ",
+                message: 'The email address you entered is not registered.',
             });
         },
     });

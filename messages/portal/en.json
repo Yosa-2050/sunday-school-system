@@ -8,15 +8,15 @@
     },
     "auth": {
         "OTP": {
-            "title": "Enter OTP",
-            "otpLabel": "One Time Password",
+            "title": "Change Password",
+            "otpLabel": "Verification Code",
             "otpPlaceholder": "Enter your OTP",
             "verifyButton": "Verify",
             "newPassword": "New Password",
             "confirmPassword": "Confirm New Password",
             "confirmPasswordLable": "Confirm Password",
             "passwordPlaceholder": "Enter your password",
-            "confirmPasswordPlaceholder": "Conform Your New Password"
+            "confirmPasswordPlaceholder": "Confirm Your New Password"
         },
         "pageWrapper": {
             "shegaobs": "Shega Jobs",
@@ -44,7 +44,7 @@
             "emailLabel": "Email",
             "emailPlaceholder": "you@example.com",
             "backToLogin": "Back to login",
-            "sendResetLink": "Send Reset Link"
+            "sendResetLink": "Reset Password"
         },
         "changePassword": {
             "title": "Change Password",

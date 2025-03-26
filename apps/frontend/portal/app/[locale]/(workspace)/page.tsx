@@ -316,7 +316,9 @@ function JobList({ filters }: { filters: JobFilters }) {
                             variant="light"
                             leftSection={<IconCurrencyDollar size={14} />}
                         >
-                            {job.salaryTo ? `Up to ${job.salaryTo}` : 'N/A'}
+                            {job.salaryFrom.toLocaleString()} -{' '}
+                            {job.salaryTo.toLocaleString()}
+                            {/* {job.salaryTo ? `Up to ${job.salaryTo}` : "N/A"} */}
                         </Badge>
                     </Group>
 

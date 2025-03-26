@@ -1,8 +1,8 @@
 {
     "auth": {
         "OTP": {
-            "title": "Enter OTP",
-            "otpLabel": "One Time Password",
+            "title": "Change Password",
+            "otpLabel": "Verification Code",
             "otpPlaceholder": "Enter your OTP",
             "verifyButton": "Verify"
         },
@@ -28,7 +28,7 @@
             "emailLabel": "Email",
             "emailPlaceholder": "you@example.com",
             "backToLogin": "Back to login",
-            "sendResetLink": "Send Reset Link"
+            "sendResetLink": "Reset Password"
         }
     },
     "header": {
