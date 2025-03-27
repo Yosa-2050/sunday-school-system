@@ -139,7 +139,8 @@ const JobDetails = () => {
                                 <Text fw={500}>Salary Range:</Text>
                                 <Text>
                                     {job.salaryFrom.toLocaleString()} -{' '}
-                                    {job.salaryTo.toLocaleString()} ETB
+                                    {job.salaryTo.toLocaleString()}{' '}
+                                    {job.currency}
                                 </Text>
                             </Group>
                             <Group>

@@ -52,6 +52,7 @@ interface Job {
     orgName: string;
     createdDate: string;
     postedBy: PostedBy;
+    currency: string;
 }
 
 interface JobsResponse {

@@ -3,6 +3,7 @@
 @import "@mantine/tiptap/styles.css" layer(base);
 
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
     --background: #ffffff;

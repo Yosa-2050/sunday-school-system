@@ -5,6 +5,7 @@ import {
     ActionIcon,
     Alert,
     Badge,
+    Box,
     Container,
     Divider,
     Flex,
@@ -221,7 +222,7 @@ const JobDetails = () => {
                                 {/* Up to {job.salaryTo.toLocaleString()}
                                 {job.currency} per year */}
                                 {job.salaryFrom.toLocaleString()} -{' '}
-                                {job.salaryTo.toLocaleString()} $
+                                {job.salaryTo.toLocaleString()} {job.currency}
                             </Text>
                         </Group>
                         {/* <Group gap="xs" align="flex-start">
@@ -247,15 +248,9 @@ const JobDetails = () => {
 
                     <Divider my="lg" />
 
-                    <Text
-                        style={{
-                            lineHeight: 1.6,
-                            color: '#4a5568',
-                            fontSize: '0.95rem',
-                        }}
-                    >
+                    <Box className="prose prose-stone max-w-none px-2.5">
                         {parse(job.description)}
-                    </Text>
+                    </Box>
                 </Paper>
             </Flex>
         </Container>

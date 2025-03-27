@@ -49,6 +49,7 @@ interface Job {
     salaryFrom: number;
     salaryTo: number;
     status: string;
+    currency: string;
     country: {
         name: string;
     };

@@ -5,6 +5,7 @@ import {
     ActionIcon,
     Avatar,
     Badge,
+    Box,
     Button,
     Card,
     Container,
@@ -24,16 +25,18 @@ import { notifications } from '@mantine/notifications';
 import {
     IconArrowLeft,
     IconBuilding,
-    IconCalendar,
     IconCash,
+    IconCheck,
     IconMail,
     IconMapPin,
     IconPhone,
     IconUser,
+    IconX,
 } from '@tabler/icons-react';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { approveJob } from 'app/[locale]/_api/admin/approve-job';
 import { fetchJobsAdminById } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
+import parse from 'html-react-parser';
 import { useParams } from 'next/navigation';
 import DeclineModal from '../_components/DeclineModal';
 
@@ -213,7 +216,7 @@ const JobDetails = () => {
                                                 {job.salaryFrom.toLocaleString()}{' '}
                                                 -{' '}
                                                 {job.salaryTo.toLocaleString()}{' '}
-                                                ETB
+                                                {job.currency}
                                             </Text>
                                         </Group>
                                         <Group gap="sm">
@@ -238,13 +241,9 @@ const JobDetails = () => {
                                 </Title>
                                 <Paper p="md" withBorder>
                                     {job.description ? (
-                                        <div
-                                            className="prose max-w-none px-2.5"
-                                            // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                                            dangerouslySetInnerHTML={{
-                                                __html: job.description,
-                                            }}
-                                        />
+                                        <Box className="prose prose-stone max-w-none px-2.5">
+                                            {parse(job.description)}
+                                        </Box>
                                     ) : (
                                         <Text className="text-gray-500">
                                             No description provided
@@ -258,10 +257,10 @@ const JobDetails = () => {
                                     <Button
                                         color="red"
                                         size="md"
-                                        loading={isApprovingJob}
                                         onClick={open}
-                                        leftSection={<IconCalendar size={18} />}
+                                        leftSection={<IconX size={18} />}
                                         className="hover:bg-red-600"
+                                        disabled={isApprovingJob}
                                     >
                                         Decline
                                     </Button>
@@ -270,7 +269,7 @@ const JobDetails = () => {
                                         size="md"
                                         onClick={() => approveJobMutate()}
                                         loading={isApprovingJob}
-                                        leftSection={<IconCalendar size={18} />}
+                                        leftSection={<IconCheck size={18} />}
                                         className="hover:bg-green-600"
                                     >
                                         Approve
