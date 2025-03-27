@@ -45,7 +45,7 @@ export class BaseModelSubscriber
         const entity = event.entity;
         if (entity) {
             entity.createdAt = this.dateService?.getCurrentDate() ?? new Date();
-            entity.updatedAt = this.dateService?.getCurrentDate()  ?? new Date();
+            entity.updatedAt = this.dateService?.getCurrentDate() ?? new Date();
 
             const currentUser = this.authService?.CurrentUser();
             entity.createdBy = currentUser?.email || 'System';
