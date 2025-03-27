@@ -16,15 +16,15 @@ export function UserRoleValue(value: string) {
     switch (value) {
         case UserRoleType.JobSeeker.toString():
             retVal.value = 'Job Seeker';
-            retVal.url = 'https://portal.shega.heranitech.com';
+            retVal.url = process.env.PORTAL_URL;
             break;
         case UserRoleType.Administrator.toString():
             retVal.value = 'Administrator';
-            retVal.url = 'https://office.shega.heranitech.com';
+            retVal.url = process.env.OFFICE_URL;
             break;
         case UserRoleType.WorkProvider.toString():
             retVal.value = 'Work provider';
-            retVal.url = 'https://office.shega.heranitech.com';
+            retVal.url = process.env.OFFICE_URL;
             break;
     }
     return retVal;
