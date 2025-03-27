@@ -46,6 +46,7 @@ interface Job {
     status: string;
     organization: Organization;
     createdDate: string;
+    currency: string;
     postedBy: {
         employee: {
             profile: {
@@ -216,8 +217,9 @@ const JobsList = () => {
                                             .join(' ')}
                                     </Table.Td>
                                     <Table.Td>
-                                        ${job.salaryFrom.toLocaleString()} - $
-                                        {job.salaryTo.toLocaleString()}
+                                        {job.salaryFrom.toLocaleString()} -
+                                        {job.salaryTo.toLocaleString()}{' '}
+                                        {job.currency}
                                     </Table.Td>
                                     <Table.Td>
                                         {new Date(

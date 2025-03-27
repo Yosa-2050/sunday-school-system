@@ -326,8 +326,9 @@ const JobsList = () => {
                                         ).toDateString()}
                                     </Table.Td>
                                     <Table.Td>
-                                        ${job.salaryFrom.toLocaleString()} - $
-                                        {job.salaryTo.toLocaleString()}
+                                        {job.salaryFrom.toLocaleString()} -
+                                        {job.salaryTo.toLocaleString()}{' '}
+                                        {job.currency}
                                     </Table.Td>
                                     <Table.Td>{'Location'}</Table.Td>
                                     <Table.Td>

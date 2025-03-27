@@ -58,9 +58,17 @@ export default function WrapperShell({
                             visibleFrom="md"
                         >
                             {sidebarOpen ? (
-                                <IconLayoutSidebarRightExpand size={30} />
+                                <IconLayoutSidebarRightExpand
+                                    size={30}
+                                    stroke={1.5}
+                                    className="text-gray-600"
+                                />
                             ) : (
-                                <IconLayoutSidebarLeftExpand size={30} />
+                                <IconLayoutSidebarLeftExpand
+                                    size={30}
+                                    stroke={1.5}
+                                    className="text-gray-600"
+                                />
                             )}
                         </Flex>
                         <Flex hiddenFrom="md">

@@ -263,7 +263,7 @@ function JobList({ filters }: { filters: JobFilters }) {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             {data?.data.map((job) => (
                 <Card
                     key={job.id}
@@ -314,10 +314,10 @@ function JobList({ filters }: { filters: JobFilters }) {
                         <Badge
                             color="teal"
                             variant="light"
-                            leftSection={<IconCurrencyDollar size={14} />}
+                            //   leftSection={<IconCurrencyDollar size={14} />}
                         >
                             {job.salaryFrom.toLocaleString()} -{' '}
-                            {job.salaryTo.toLocaleString()}
+                            {job.salaryTo.toLocaleString()} {job.currency}
                             {/* {job.salaryTo ? `Up to ${job.salaryTo}` : "N/A"} */}
                         </Badge>
                     </Group>
