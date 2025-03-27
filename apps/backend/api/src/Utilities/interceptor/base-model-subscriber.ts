@@ -44,10 +44,10 @@ export class BaseModelSubscriber
     beforeInsert(event: InsertEvent<BaseModel>) {
         const entity = event.entity;
         if (entity) {
-            entity.createdAt = this.dateService.getCurrentDate();
-            entity.updatedAt = this.dateService.getCurrentDate();
+            entity.createdAt = this.dateService?.getCurrentDate() ?? new Date();
+            entity.updatedAt = this.dateService?.getCurrentDate() ?? new Date();
 
-            const currentUser = this.authService.CurrentUser();
+            const currentUser = this.authService?.CurrentUser();
             entity.createdBy = currentUser?.email || 'System';
             entity.updatedBy = currentUser?.email || 'System';
         }
