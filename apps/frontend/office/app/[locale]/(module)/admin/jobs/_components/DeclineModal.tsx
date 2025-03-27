@@ -82,7 +82,7 @@ function DeclineModal({ close }: DeclineModalProps) {
                 <Button
                     variant="default"
                     onClick={close}
-                    loading={isDeclinePending}
+                    // loading={isDeclinePending}
                     disabled={isDeclinePending}
                 >
                     Cancel
