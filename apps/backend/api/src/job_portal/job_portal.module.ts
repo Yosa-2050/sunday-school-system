@@ -39,7 +39,7 @@ import { NotificationModule } from '@shega/notification/notification.module';
         DocumentModule,
         AddressModule,
         UsersModule,
-        NotificationModule
+        NotificationModule,
     ],
     exports: [JobPortalService, JobsService],
 })

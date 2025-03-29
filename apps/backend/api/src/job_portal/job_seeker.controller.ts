@@ -23,7 +23,7 @@ import { JobsService } from './jobs.service';
 export class JobSeekerController {
     constructor(
         private readonly jobPortalService: JobPortalService,
-        private readonly jobsService: JobsService
+        private readonly jobsService: JobsService,
     ) {}
 
     @Roles(UserRoleType.JobSeeker)

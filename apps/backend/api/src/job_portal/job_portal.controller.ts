@@ -45,8 +45,8 @@ export class JobPortalController {
     @Roles(UserRoleType.Administrator)
     @Post('newUser')
     createNewUser(@Body() dto: CreateBasicUserDto) {
-            return this.jobPortalService.createJobSeeker(dto);
-        }
+        return this.jobPortalService.createJobSeeker(dto);
+    }
 
     @Roles(UserRoleType.WorkProvider)
     @Post()

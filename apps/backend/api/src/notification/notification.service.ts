@@ -42,6 +42,5 @@ export class NotificationService {
                 req.content,
             );
         }
-
     }
 }

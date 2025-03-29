@@ -36,10 +36,10 @@ export class JobsService {
 
     async apply(jobId: string, applicantId: string) {
         const applicant = await this.applicantRepo.findOneBy({
-           id: applicantId
+            id: applicantId,
         });
         if (!applicant) {
-            throw new BadRequestException("Applicant not found");
+            throw new BadRequestException('Applicant not found');
         }
         const existingApp = await this.jobApplicantRepo.findOneBy({
             job: { id: jobId },

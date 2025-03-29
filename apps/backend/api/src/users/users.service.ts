@@ -201,7 +201,7 @@ export class UsersService {
             );
 
         return new PaginatedResponseDto(
-            users.map((user) => new GetPaginatedUsersResponseDto(user)),
+            users.filter(user => user.profile).map((user) => new GetPaginatedUsersResponseDto(user)),
             total,
             p,
             pp,

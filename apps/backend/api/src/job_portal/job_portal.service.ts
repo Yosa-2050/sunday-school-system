@@ -43,7 +43,6 @@ import { Applicants } from './entities/applicants.entity';
 
 @Injectable()
 export class JobPortalService {
-    
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)
@@ -62,48 +61,48 @@ export class JobPortalService {
         private readonly addressService: AddressService,
         private readonly passwordService: PasswordService,
         private readonly profileService: ProfileService,
-        private readonly notificationService : NotificationService
+        private readonly notificationService: NotificationService,
     ) {}
 
     async createJobSeeker(dto: CreateBasicUserDto) {
         const pwdGenerated = this.passwordService.generatePassword();
-        
+
         const role = UserRoleType.WorkProvider;
 
-            const user = await this.profileService.createNewUserProfileQDE(
-                dto.email,
-                role,
-                dto.firstName,
-                dto.middleName,
-                dto.lastName,
-                false,
-                pwdGenerated,
-                true,
-            );
+        const user = await this.profileService.createNewUserProfileQDE(
+            dto.email,
+            role,
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            false,
+            pwdGenerated,
+            true,
+        );
 
-            let applicants = this.applicationRepo.create();
-            applicants.profile = user;
-            
-            applicants = await this.applicationRepo.save(applicants);
-    
-            if (applicants?.id) {
-                this.notificationService.send({
-                    channel: NotificationChannel.Email,
-                    content: getSignupEmailTemplate({
-                        userName: dto.firstName,
-                        role: UserRoleValue(role).value,
-                        email: dto.email,
-                        tempPassword: pwdGenerated,
-                        loginUrl: UserRoleValue(role).url,
-                    }),
-                    to: dto.email,
-                    subject: 'Welcome to Shega Jobs! Your Account is Created',
-                    reference: user.id,
-                });
-                return user;
-            }
-    
-            throw new BadRequestException('Unable to create user');
+        let applicants = this.applicationRepo.create();
+        applicants.profile = user;
+
+        applicants = await this.applicationRepo.save(applicants);
+
+        if (applicants?.id) {
+            this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: getSignupEmailTemplate({
+                    userName: dto.firstName,
+                    role: UserRoleValue(role).value,
+                    email: dto.email,
+                    tempPassword: pwdGenerated,
+                    loginUrl: UserRoleValue(role).url,
+                }),
+                to: dto.email,
+                subject: 'Welcome to Shega Jobs! Your Account is Created',
+                reference: user.id,
+            });
+            return user;
+        }
+
+        throw new BadRequestException('Unable to create user');
     }
 
     async create(
