@@ -34,12 +34,12 @@ export class JobsService {
         return userDetails;
     }
 
-    async apply(jobId: string, profileId: string) {
-        let applicant = await this.applicantRepo.findOneBy({
-            profile: { id: profileId },
+    async apply(jobId: string, applicantId: string) {
+        const applicant = await this.applicantRepo.findOneBy({
+           id: applicantId
         });
         if (!applicant) {
-            applicant = await this.createApplicant(profileId);
+            throw new BadRequestException("Applicant not found");
         }
         const existingApp = await this.jobApplicantRepo.findOneBy({
             job: { id: jobId },
@@ -68,7 +68,7 @@ export class JobsService {
 
     async jobsApplied(id: string) {
         const existingApp = await this.jobApplicantRepo.findOneBy({
-            applicants: { profile: { id } },
+            applicants: { id },
         });
         if (!existingApp) {
             throw new BadRequestException('No applied jobs');

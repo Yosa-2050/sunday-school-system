@@ -16,6 +16,7 @@ import { JobPortalController } from './job_portal.controller';
 import { JobPortalService } from './job_portal.service';
 import { JobSeekerController } from './job_seeker.controller';
 import { JobsService } from './jobs.service';
+import { NotificationModule } from '@shega/notification/notification.module';
 
 @Module({
     controllers: [
@@ -38,6 +39,7 @@ import { JobsService } from './jobs.service';
         DocumentModule,
         AddressModule,
         UsersModule,
+        NotificationModule
     ],
     exports: [JobPortalService, JobsService],
 })

@@ -24,7 +24,7 @@ export class CurrentUser {
     }
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    static getApplicantnId(req: any): string {
+    static getApplicantId(req: any): string {
         const organizationId = req?.user?.details?.applicantId;
         if (!organizationId) {
             throw new BadRequestException('No jobs applied');

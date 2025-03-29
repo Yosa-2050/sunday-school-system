@@ -23,7 +23,7 @@ import { JobsService } from './jobs.service';
 export class JobSeekerController {
     constructor(
         private readonly jobPortalService: JobPortalService,
-        private readonly jobsService: JobsService,
+        private readonly jobsService: JobsService
     ) {}
 
     @Roles(UserRoleType.JobSeeker)
@@ -46,12 +46,12 @@ export class JobSeekerController {
     @Roles(UserRoleType.JobSeeker)
     @Post('apply/:jobId')
     apply(@Request() req, @Param('jobId', new ParseUUIDPipe()) jobId: string) {
-        return this.jobsService.apply(jobId, CurrentUser.getProfileId(req));
+        return this.jobsService.apply(jobId, CurrentUser.getApplicantId(req));
     }
 
     @Roles(UserRoleType.JobSeeker)
     @Post('jobs/appliedByJobSeeker')
     appliedJobs(@Request() req) {
-        return this.jobsService.jobsApplied(CurrentUser.getProfileId(req));
+        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
     }
 }

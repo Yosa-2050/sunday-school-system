@@ -23,6 +23,17 @@ export class NotificationService {
     ) {}
 
     send(req: CreateNotificationDto) {
+        const notification = this.notificationRepo.create({
+            channel: req.channel,
+            numberOfAttempts: 1,
+            reference: req.reference,
+            to: req.to,
+            content: req.content,
+            subject: req.subject,
+            status: NotificationStatus.Pending,
+        });
+
+        this.notificationRepo.save(notification);
         if (req.channel === NotificationChannel.Email) {
             this.emailService.sendEmail(
                 this.fromEmail,
@@ -32,16 +43,5 @@ export class NotificationService {
             );
         }
 
-        const notification = this.notificationRepo.create({
-            channel: req.channel,
-            numberOfAttempts: 1,
-            reference: req.reference,
-            to: req.to,
-            content: req.content,
-            subject: req.subject,
-            status: NotificationStatus.Sent,
-        });
-
-        this.notificationRepo.save(notification);
     }
 }

@@ -31,6 +31,8 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
 
 @ApiTags('job-portal')
 @Controller('job-portal')
@@ -39,6 +41,12 @@ export class JobPortalController {
         private readonly jobPortalService: JobPortalService,
         private readonly documentService: DocumentService,
     ) {}
+
+    @Roles(UserRoleType.Administrator)
+    @Post('newUser')
+    createNewUser(@Body() dto: CreateBasicUserDto) {
+            return this.jobPortalService.createJobSeeker(dto);
+        }
 
     @Roles(UserRoleType.WorkProvider)
     @Post()
