@@ -8,9 +8,20 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
+import { PasswordService } from '@shega/Utilities/password.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationService } from '@shega/notification/notification.service';
+import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
+import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
@@ -21,6 +32,7 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { JobResponseDto } from './dto/response/jobs.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
+import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobCategory } from './entities/job-category.entity';
@@ -28,18 +40,6 @@ import { JobCategory } from './entities/job-category.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { PasswordService } from '@shega/Utilities/password.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ProfileService } from '@shega/users/profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { NotificationService } from '@shega/notification/notification.service';
-import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
-import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
-import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
-import { Applicants } from './entities/applicants.entity';
 
 @Injectable()
 export class JobPortalService {
