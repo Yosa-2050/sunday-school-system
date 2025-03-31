@@ -155,9 +155,9 @@ export class AuthService {
                     success: 'true',
                 };
             }
-            return new BadRequestException('Invalid Otp');
+            throw new BadRequestException('Invalid Otp');
         }
-        return new UnauthorizedException();
+        throw new UnauthorizedException();
     }
 
     async ChangePassword(req: PasswordResetDto) {
