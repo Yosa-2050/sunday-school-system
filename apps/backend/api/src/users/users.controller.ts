@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+import { ExportWithQuesryRequestModel } from '@shega/Utilities/models/list-string.model';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -53,7 +53,7 @@ export class UsersController {
 
     @Post('exportSelected')
     async exportSelected(
-        @Body() dto: ListStringRequestModel,
+        @Body() dto: ExportWithQuesryRequestModel,
         @Res() res: Response,
     ) {
         let data = [];

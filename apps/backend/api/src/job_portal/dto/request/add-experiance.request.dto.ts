@@ -1,3 +1,1 @@
-export class AddExperianceRequestDto{
-    
-}
+export class AddExperianceRequestDto {}

@@ -5,6 +5,9 @@ export class ListStringRequestModel {
     @ApiProperty()
     @IsArray()
     list: string[];
+}
+
+export class ExportWithQuesryRequestModel extends ListStringRequestModel {
 
     @ApiProperty()
     @IsString()

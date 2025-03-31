@@ -1,20 +1,20 @@
-import { BaseModel } from "@shega/Utilities/entities/base-model.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
-import { Applicants } from "./applicants.entity";
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { Applicants } from './applicants.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EmploymentType } from "../enums/employment-type.enum";
-import { Country } from "@shega/location/entities/country.entity";
-import { LocationInfo } from "@shega/location/entities/LocationInfo.entity";
+import { EmploymentType } from '../enums/employment-type.enum';
+import { Country } from '@shega/location/entities/country.entity';
+import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { WorkPlaceType } from "../enums/work-place-type.enum";
+import { WorkPlaceType } from '../enums/work-place-type.enum';
 
 @Entity()
-export class Experiance extends BaseModel{
+export class Experiance extends BaseModel {
     @ManyToOne(() => Applicants, {
-               eager: true,
-               nullable: false,
-           })
-        applicant: Applicants;
+        eager: true,
+        nullable: false,
+    })
+    applicant: Applicants;
 
     @Column()
     title: string;
@@ -24,8 +24,8 @@ export class Experiance extends BaseModel{
 
     @Column()
     startDate: Date;
-    
-    @Column({nullable: true})
+
+    @Column({ nullable: true })
     endDate: Date;
 
     @Column({ nullable: true })
@@ -41,6 +41,5 @@ export class Experiance extends BaseModel{
     city: LocationInfo;
 
     @Column({ nullable: true })
-        workPlace: WorkPlaceType;
-
+    workPlace: WorkPlaceType;
 }

@@ -10,13 +10,13 @@ export class Applicants extends BaseModel {
     @ManyToOne((type) => Profile, { eager: true, cascade: true })
     profile: Profile;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     bio: string;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     cv: string;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     coverLetter: string;
 
     @OneToMany(
@@ -25,17 +25,17 @@ export class Applicants extends BaseModel {
     )
     applications: JobApplication[];
 
-     @OneToMany(
-            () => EducationHistory,
-            (history) => history.applicant,
-            { cascade: true },
-        )
-        educationalHistory: EducationHistory;
+    @OneToMany(
+        () => EducationHistory,
+        (history) => history.applicant,
+        { cascade: true },
+    )
+    educationalHistory: EducationHistory;
 
-        @OneToMany(
-            () => Experiance,
-            (experiance) => experiance.applicant,
-            { cascade: true },
-        )
-        experiance: Experiance;
+    @OneToMany(
+        () => Experiance,
+        (experiance) => experiance.applicant,
+        { cascade: true },
+    )
+    experiance: Experiance;
 }

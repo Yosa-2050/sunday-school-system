@@ -1,3 +1,1 @@
-export class UpdateApplicantRequestDto{
-    
-}
+export class UpdateApplicantRequestDto {}

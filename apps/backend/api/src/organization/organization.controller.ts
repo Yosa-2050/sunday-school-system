@@ -9,7 +9,7 @@ import {
     Res,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+import { ExportWithQuesryRequestModel } from '@shega/Utilities/models/list-string.model';
 // biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
@@ -76,7 +76,7 @@ export class OrganizationController {
     @Post('/exportSelected')
     async exportSelected(
         @Res() res: Response,
-        @Body() dto: ListStringRequestModel,
+        @Body() dto: ExportWithQuesryRequestModel,
     ) {
         let data: GetOrganizationListResponseDto[] = [];
         if (dto.list?.length > 0) {

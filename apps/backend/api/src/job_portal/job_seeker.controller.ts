@@ -66,7 +66,10 @@ export class JobSeekerController {
 
     @Roles(UserRoleType.JobSeeker)
     @Post('addEducationalHistory')
-    addEducationalHistory(@Request() req, @Body() dto: AddEducationalHistoryRequestDto) {
+    addEducationalHistory(
+        @Request() req,
+        @Body() dto: AddEducationalHistoryRequestDto,
+    ) {
         return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
     }
 

@@ -1,3 +1,1 @@
-export class AddEducationalHistoryRequestDto{
-    
-}
+export class AddEducationalHistoryRequestDto {}
