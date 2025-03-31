@@ -4,6 +4,7 @@ import {
     Param,
     ParseUUIDPipe,
     Post,
+    Put,
     Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -16,6 +17,14 @@ import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 import { JobPortalService } from './job_portal.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobsService } from './jobs.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddEducationalHistoryRequestDto } from './dto/request/add-education-history.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddExperianceRequestDto } from './dto/request/add-experiance.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 
 @Roles(UserRoleType.JobSeeker)
 @ApiTags('job-seeker')
@@ -52,6 +61,30 @@ export class JobSeekerController {
     @Roles(UserRoleType.JobSeeker)
     @Post('jobs/appliedByJobSeeker')
     appliedJobs(@Request() req) {
+        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+    }
+
+    @Roles(UserRoleType.JobSeeker)
+    @Post('addEducationalHistory')
+    addEducationalHistory(@Request() req, @Body() dto: AddEducationalHistoryRequestDto) {
+        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+    }
+
+    @Roles(UserRoleType.JobSeeker)
+    @Post('addEducationalHistory')
+    addExperiance(@Request() req, @Body() dto: AddExperianceRequestDto) {
+        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+    }
+
+    @Roles(UserRoleType.JobSeeker)
+    @Post('addEducationalHistory')
+    addSkills(@Request() req, @Body() dto: ListStringRequestModel) {
+        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+    }
+
+    @Roles(UserRoleType.JobSeeker)
+    @Put('updatedDetail')
+    updateDetail(@Request() req, @Body() dto: UpdateApplicantRequestDto) {
         return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
     }
 }

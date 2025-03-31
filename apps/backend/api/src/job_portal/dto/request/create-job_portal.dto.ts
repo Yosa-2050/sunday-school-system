@@ -10,13 +10,13 @@ import {
     IsString,
     IsUUID,
 } from 'class-validator';
-import { CurrencyType } from '../enums/currency-type.enum';
-import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
-import { EmploymentType } from '../enums/employment-type.enum';
-import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
-import { SalaryFrequencyType } from '../enums/salary-frequency-type.enum';
-import { SalaryType } from '../enums/salary-type.enum';
-import { WorkPlaceType } from '../enums/work-place-type.enum';
+import { CurrencyType } from '../../enums/currency-type.enum';
+import { EducationalRequirmentType } from '../../enums/education-requirment-type.enum';
+import { EmploymentType } from '../../enums/employment-type.enum';
+import { ExperianceLevelType } from '../../enums/experiance-level-type.enum';
+import { SalaryFrequencyType } from '../../enums/salary-frequency-type.enum';
+import { SalaryType } from '../../enums/salary-type.enum';
+import { WorkPlaceType } from '../../enums/work-place-type.enum';
 
 export class CreateJobPortalDto {
     @ApiProperty()
