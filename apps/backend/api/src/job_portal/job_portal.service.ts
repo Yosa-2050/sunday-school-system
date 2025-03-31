@@ -8,9 +8,20 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
+import { PasswordService } from '@shega/Utilities/password.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationService } from '@shega/notification/notification.service';
+import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
+import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
@@ -21,6 +32,7 @@ import { CreateJobPortalDto } from './dto/create-job_portal.dto';
 import { JobResponseDto } from './dto/response/jobs.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
+import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobCategory } from './entities/job-category.entity';
@@ -43,9 +55,55 @@ export class JobPortalService {
         private categoryRepo: Repository<Category>,
         @InjectRepository(Skills)
         private skillRepo: Repository<Skills>,
+        @InjectRepository(Applicants)
+        private applicationRepo: Repository<Applicants>,
         private readonly queryBuilderService: QueryBuilderService,
         private readonly addressService: AddressService,
+        private readonly passwordService: PasswordService,
+        private readonly profileService: ProfileService,
+        private readonly notificationService: NotificationService,
     ) {}
+
+    async createJobSeeker(dto: CreateBasicUserDto) {
+        const pwdGenerated = this.passwordService.generatePassword();
+
+        const role = UserRoleType.WorkProvider;
+
+        const user = await this.profileService.createNewUserProfileQDE(
+            dto.email,
+            role,
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            false,
+            pwdGenerated,
+            true,
+        );
+
+        let applicants = this.applicationRepo.create();
+        applicants.profile = user;
+
+        applicants = await this.applicationRepo.save(applicants);
+
+        if (applicants?.id) {
+            this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: getSignupEmailTemplate({
+                    userName: dto.firstName,
+                    role: UserRoleValue(role).value,
+                    email: dto.email,
+                    tempPassword: pwdGenerated,
+                    loginUrl: UserRoleValue(role).url,
+                }),
+                to: dto.email,
+                subject: 'Welcome to Shega Jobs! Your Account is Created',
+                reference: user.id,
+            });
+            return user;
+        }
+
+        throw new BadRequestException('Unable to create user');
+    }
 
     async create(
         employeeOrgId: string,

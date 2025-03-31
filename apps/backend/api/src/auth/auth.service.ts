@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JwtService } from '@nestjs/jwt';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobsService } from '@shega/job_portal/jobs.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
@@ -42,6 +44,7 @@ export class AuthService {
         private notificationService: NotificationService,
         private organizationService: OrganizationService,
         private clasService: ClsService,
+        private jobService: JobsService,
     ) {}
 
     async validateUser(
@@ -78,18 +81,13 @@ export class AuthService {
                     user.profile.id,
                 );
                 break;
-            //   case UserRoleType.PARENT:
-            //     break;
-            //   case UserRoleType.ADMINISTRATOR:
-            //     break;
-            //   case UserRoleType.SCHOOL_ADMINISTRATOR:
-            //     break;
-            //   case UserRoleType.SCHOOL_EMPLOYEE:
-            //   case UserRoleType.SCHOOL_FINANCE_OFFICER:
-            //   case UserRoleType.BRANCH_ADMINISTRATOR:
-            //     break;
-            //   default:
-            //     throw new BadRequestException("Role is not found");
+            case UserRoleType.JobSeeker:
+                details = await this.jobService.getApplicantDetail(
+                    user.profile.id,
+                );
+                break;
+            default:
+                throw new BadRequestException('Role is not found');
         }
         const payload: UserResponsePayload = {
             email: user.email,
@@ -157,9 +155,9 @@ export class AuthService {
                     success: 'true',
                 };
             }
-            return new BadRequestException('Invalid Otp');
+            throw new BadRequestException('Invalid Otp');
         }
-        return new UnauthorizedException();
+        throw new UnauthorizedException();
     }
 
     async ChangePassword(req: PasswordResetDto) {

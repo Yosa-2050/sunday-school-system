@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     Body,
     Controller,
     Delete,
@@ -12,6 +11,7 @@ import {
     Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
@@ -21,6 +21,8 @@ import {
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Response } from 'express';
@@ -40,18 +42,20 @@ export class JobPortalController {
         private readonly documentService: DocumentService,
     ) {}
 
+    @Roles(UserRoleType.Administrator)
+    @Post('newUser')
+    createNewUser(@Body() dto: CreateBasicUserDto) {
+        return this.jobPortalService.createJobSeeker(dto);
+    }
+
     @Roles(UserRoleType.WorkProvider)
     @Post()
     create(@Request() req, @Body() dto: CreateJobPortalDto) {
-        const organizationId = req?.user?.details?.organizationId;
-        const employeeOrgId = req?.user?.details?.employeeOrgId;
-        if (!(organizationId && employeeOrgId)) {
-            throw new BadRequestException(
-                'Unable to find linked organiazation id',
-            );
-        }
-
-        return this.jobPortalService.create(employeeOrgId, organizationId, dto);
+        return this.jobPortalService.create(
+            CurrentUser.getEmployeeOrgId(req),
+            CurrentUser.getOrganizationId(req),
+            dto,
+        );
     }
 
     @Roles(UserRoleType.Administrator)
@@ -66,7 +70,6 @@ export class JobPortalController {
         const data = await this.jobPortalService.getJobsByStatusPaginated(
             dto.q,
         );
-
         this.documentService.generateCsv(data.data, res, 'jobList');
     }
 
@@ -91,14 +94,8 @@ export class JobPortalController {
     @Roles(UserRoleType.WorkProvider)
     @Post('byProvider')
     getAllPostedJobsByPorvider(@Request() req, @Body() dto: { q: string }) {
-        const organizationId = req?.user?.details?.organizationId;
-        if (!organizationId) {
-            throw new BadRequestException(
-                'Unable to find linked organiazation id',
-            );
-        }
         return this.jobPortalService.getJobsByStatusAndByOrgPaginated(
-            organizationId,
+            CurrentUser.getOrganizationId(req),
             dto.q,
         );
     }
