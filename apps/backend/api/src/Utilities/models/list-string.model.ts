@@ -8,7 +8,6 @@ export class ListStringRequestModel {
 }
 
 export class ExportWithQuesryRequestModel extends ListStringRequestModel {
-
     @ApiProperty()
     @IsString()
     @IsOptional()
