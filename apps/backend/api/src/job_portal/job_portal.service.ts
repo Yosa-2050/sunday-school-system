@@ -29,9 +29,9 @@ import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/request/create-job_portal.dto';
-import { JobResponseDto } from './dto/response/jobs.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
+import { JobResponseDto } from './dto/response/jobs.response.dto';
 import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
 // biome-ignore lint/style/useImportType: <explanation>

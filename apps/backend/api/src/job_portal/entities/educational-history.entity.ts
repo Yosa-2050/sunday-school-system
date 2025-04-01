@@ -2,8 +2,8 @@ import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
-import { Category } from './category.entity';
 import { Applicants } from './applicants.entity';
+import { Category } from './category.entity';
 
 @Entity()
 export class EducationHistory extends BaseModel {

@@ -1,10 +1,10 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Profile } from '@shega/users/entities/profile.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { JobApplication } from './job-application.entity';
+import { ApplicantSkills } from './applicants-skills.entity';
 import { EducationHistory } from './educational-history.entity';
 import { Experiance } from './experiance.entity';
-import { ApplicantSkills } from './applicants-skills.entity';
+import { JobApplication } from './job-application.entity';
 
 @Entity()
 export class Applicants extends BaseModel {

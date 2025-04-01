@@ -1,26 +1,26 @@
 import { BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import { Applicants } from './entities/applicants.entity';
-import { JobApplication } from './entities/job-application.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { JobPortalService } from './job_portal.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddEducationalHistoryRequestDto } from './dto/request/add-education-history.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddExperianceRequestDto } from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
-import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { ApplicantSkills } from './entities/applicants-skills.entity';
-import { Experiance } from './entities/experiance.entity';
+import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
+import { Experiance } from './entities/experiance.entity';
+import { JobApplication } from './entities/job-application.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobPortalService } from './job_portal.service';
 
 export class JobsService {
     constructor(

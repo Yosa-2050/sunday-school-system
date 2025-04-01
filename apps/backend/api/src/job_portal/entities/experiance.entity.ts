@@ -1,12 +1,12 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
+import { Country } from '@shega/location/entities/country.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { Applicants } from './applicants.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '../enums/employment-type.enum';
-import { Country } from '@shega/location/entities/country.entity';
-import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { WorkPlaceType } from '../enums/work-place-type.enum';
+import { Applicants } from './applicants.entity';
 
 @Entity()
 export class Experiance extends BaseModel {
