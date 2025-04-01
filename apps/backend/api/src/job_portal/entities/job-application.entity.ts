@@ -26,12 +26,6 @@ export class JobApplication extends BaseModel {
     )
     applicants: Applicants;
 
-    @Column({ nullable: true })
-    coverLetter?: string;
-
-    @Column({ nullable: true })
-    resumeUrl?: string; // Store URL if using cloud storage
-
     @Column({
         type: 'enum',
         enum: ApplicationStatus,

@@ -1,6 +1,9 @@
 import { Document } from './document/entities/document.entity';
+import { ApplicantSkills } from './job_portal/entities/applicants-skills.entity';
 import { Applicants } from './job_portal/entities/applicants.entity';
 import { Category } from './job_portal/entities/category.entity';
+import { EducationHistory } from './job_portal/entities/educational-history.entity';
+import { Experiance } from './job_portal/entities/experiance.entity';
 import { JobApplication } from './job_portal/entities/job-application.entity';
 import { JobCategory } from './job_portal/entities/job-category.entity';
 import { JobSkills } from './job_portal/entities/job-skills.entity';
@@ -42,4 +45,7 @@ export const AppEntities = [
     Skills,
     Applicants,
     JobApplication,
+    ApplicantSkills,
+    EducationHistory,
+    Experiance,
 ];

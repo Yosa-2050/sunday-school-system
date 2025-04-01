@@ -2,6 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import {
@@ -61,11 +62,12 @@ export class UsersService {
         const pass = await this.passwordService.hashPassword(
             updatePwdDto.password,
         );
-        this.userRepo.update(
+        const updatedUser = await this.userRepo.update(
             { id: user.id },
             { pwd_change_required: false, password: pass },
         );
-        return user;
+
+        return UtilityServices.EnsureUpdated(updatedUser, updatePwdDto.id);
     }
 
     async createFromProfile(
