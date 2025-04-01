@@ -153,7 +153,9 @@ export class JobsService {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
         const history = this.educationalHistoryRepo.create(dto);
-        history.fieldOfStudy = await this.jobPortalService.findCategoryById(dto.fieldOfStudyId);
+        history.fieldOfStudy = await this.jobPortalService.findCategoryById(
+            dto.fieldOfStudyId,
+        );
         history.applicant = applicant;
 
         return this.educationalHistoryRepo.save(history);
@@ -167,7 +169,10 @@ export class JobsService {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
         const experiance = this.experianceRepo.create(dto);
-        const updated = await this.experianceRepo.update({id: experianceId}, experiance);
+        const updated = await this.experianceRepo.update(
+            { id: experianceId },
+            experiance,
+        );
         return UtilityServices.EnsureUpdated(updated, experianceId);
     }
     async updateEducationalHistory(
@@ -178,11 +183,15 @@ export class JobsService {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
         const history = this.educationalHistoryRepo.create(dto);
-        history.fieldOfStudy = await this.jobPortalService.findCategoryById(dto.fieldOfStudyId);
+        history.fieldOfStudy = await this.jobPortalService.findCategoryById(
+            dto.fieldOfStudyId,
+        );
 
-        const updated = await this.educationalHistoryRepo.update({id: historyId}, history);
+        const updated = await this.educationalHistoryRepo.update(
+            { id: historyId },
+            history,
+        );
         return UtilityServices.EnsureUpdated(updated, historyId);
-
     }
 
     async deleteExperiance(applicantId: string, experianceId: string) {
