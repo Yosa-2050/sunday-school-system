@@ -4,6 +4,7 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { JobApplication } from './job-application.entity';
 import { EducationHistory } from './educational-history.entity';
 import { Experiance } from './experiance.entity';
+import { ApplicantSkills } from './applicants-skills.entity';
 
 @Entity()
 export class Applicants extends BaseModel {
@@ -30,12 +31,19 @@ export class Applicants extends BaseModel {
         (history) => history.applicant,
         { cascade: true },
     )
-    educationalHistory: EducationHistory;
+    educationalHistory: EducationHistory[];
 
     @OneToMany(
         () => Experiance,
         (experiance) => experiance.applicant,
         { cascade: true },
     )
-    experiance: Experiance;
+    experiance: Experiance[];
+
+    @OneToMany(
+        () => ApplicantSkills,
+        (skill) => skill.applicant,
+        { cascade: true },
+    )
+    skills: ApplicantSkills[];
 }

@@ -28,10 +28,10 @@ import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateJobPortalDto } from './dto/create-job_portal.dto';
+import { CreateJobPortalDto } from './dto/request/create-job_portal.dto';
 import { JobResponseDto } from './dto/response/jobs.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateJobPortalDto } from './dto/update-job_portal.dto';
+import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
 import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
 // biome-ignore lint/style/useImportType: <explanation>

@@ -20,7 +20,7 @@ export class EducationHistory extends BaseModel {
     @Column()
     level: EducationalRequirmentType;
 
-    @Column()
+    @ManyToOne(() => Category, { eager: true, nullable: false })
     fieldOfStudy: Category;
 
     @Column()

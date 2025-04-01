@@ -147,13 +147,10 @@ export class AuthService {
         if (user) {
             const otp = await this.otpService.validateOtp(user.id, req.otp);
             if (otp) {
-                await this.usersService.UpdatePassword({
+                return await this.usersService.UpdatePassword({
                     id: user.id,
                     password: req.password,
                 });
-                return {
-                    success: 'true',
-                };
             }
             throw new BadRequestException('Invalid Otp');
         }
@@ -167,14 +164,10 @@ export class AuthService {
             LoginBy.ID,
         );
         if (user) {
-            await this.usersService.UpdatePassword({
+            return this.usersService.UpdatePassword({
                 id: user.id,
                 password: req.newPassword,
             });
-
-            return {
-                success: 'true',
-            };
         }
         throw new UnauthorizedException();
     }

@@ -70,24 +70,24 @@ export class JobSeekerController {
         @Request() req,
         @Body() dto: AddEducationalHistoryRequestDto,
     ) {
-        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+        return this.jobsService.addEducationalHistory(CurrentUser.getApplicantId(req), dto);
     }
 
     @Roles(UserRoleType.JobSeeker)
-    @Post('addEducationalHistory')
+    @Post('addExperiance')
     addExperiance(@Request() req, @Body() dto: AddExperianceRequestDto) {
-        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+        return this.jobsService.addExperiance(CurrentUser.getApplicantId(req), dto);
     }
 
     @Roles(UserRoleType.JobSeeker)
-    @Post('addEducationalHistory')
+    @Post('addSkills')
     addSkills(@Request() req, @Body() dto: ListStringRequestModel) {
-        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+        return this.jobsService.addSkills(CurrentUser.getApplicantId(req), dto);
     }
 
     @Roles(UserRoleType.JobSeeker)
     @Put('updatedDetail')
     updateDetail(@Request() req, @Body() dto: UpdateApplicantRequestDto) {
-        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+        return this.jobsService.updateApplicantDetail(CurrentUser.getApplicantId(req), dto);
     }
 }

@@ -22,6 +22,7 @@ import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { LoginBy } from './enums/login-by.enum';
 import { UserRoleType } from './enums/user-role.enum';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 
 @Injectable()
 export class UsersService {
@@ -61,11 +62,12 @@ export class UsersService {
         const pass = await this.passwordService.hashPassword(
             updatePwdDto.password,
         );
-        this.userRepo.update(
+        const updatedUser = await this.userRepo.update(
             { id: user.id },
             { pwd_change_required: false, password: pass },
         );
-        return user;
+
+        return UtilityServices.EnsureUpdated(updatedUser, updatePwdDto.id);
     }
 
     async createFromProfile(

@@ -9,8 +9,21 @@ import { Applicants } from './entities/applicants.entity';
 import { JobApplication } from './entities/job-application.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddEducationalHistoryRequestDto } from './dto/request/add-education-history.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddExperianceRequestDto } from './dto/request/add-experiance.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
+import { ApplicantSkills } from './entities/applicants-skills.entity';
+import { Experiance } from './entities/experiance.entity';
+import { EducationHistory } from './entities/educational-history.entity';
 
 export class JobsService {
+    
     constructor(
         private readonly profileService: ProfileService,
         private readonly jobPortalService: JobPortalService,
@@ -18,8 +31,13 @@ export class JobsService {
         private applicantRepo: Repository<Applicants>,
         @InjectRepository(JobApplication)
         private jobApplicantRepo: Repository<JobApplication>,
-        @InjectRepository(JobApplication)
-        private readonly jobApplication: Repository<JobApplication>,
+        @InjectRepository(ApplicantSkills)
+        private readonly applicantSkillRepo: Repository<ApplicantSkills>,
+        @InjectRepository(Experiance)
+        private readonly experianceRepo: Repository<Experiance>,
+        @InjectRepository(EducationHistory)
+        private readonly educationalHistoryRepo: Repository<EducationHistory>
+
     ) {}
 
     async getApplicantDetail(id: string) {
@@ -35,12 +53,7 @@ export class JobsService {
     }
 
     async apply(jobId: string, applicantId: string) {
-        const applicant = await this.applicantRepo.findOneBy({
-            id: applicantId,
-        });
-        if (!applicant) {
-            throw new BadRequestException('Applicant not found');
-        }
+        const applicant = await this.FindApplicantOrThrow(applicantId);
         const existingApp = await this.jobApplicantRepo.findOneBy({
             job: { id: jobId },
             applicants: { id: applicant.id },
@@ -57,6 +70,16 @@ export class JobsService {
 
         return this.jobApplicantRepo.save(application);
     }
+    private async FindApplicantOrThrow(applicantId: string) {
+        const applicant = await this.applicantRepo.findOneBy({
+            id: applicantId,
+        });
+        if (!applicant) {
+            throw new BadRequestException('Applicant not found');
+        }
+        return applicant;
+    }
+
     async createApplicant(profileId: string) {
         const profile = await this.profileService.findById(profileId);
 
@@ -86,5 +109,61 @@ export class JobsService {
         }
 
         return existingApp;
+    }
+
+    async updateApplicantDetail(applicantId: string, dto: UpdateApplicantRequestDto) {
+        await this.FindApplicantOrThrow(applicantId);
+
+        const updated = await this.applicantRepo.update(
+            { id: applicantId },
+            { bio: dto.bio, coverLetter: dto.coverLetter, cv: dto.cv },//CV from file upload
+        );
+
+        return UtilityServices.EnsureUpdated(updated, applicantId);
+
+    }
+    async addSkills(applicantId: string, dto: ListStringRequestModel) {
+        const applicant = await this.FindApplicantOrThrow(applicantId);
+
+        const skills = dto.list?.map((skill) => {
+            const newskill = this.applicantSkillRepo.create();
+            newskill.skill = skill;
+            newskill.applicant = applicant;
+            return newskill;
+        });
+
+        const updated = await this.applicantRepo.update({id: applicantId}, {skills: skills});
+        return UtilityServices.EnsureUpdated(updated, applicantId);
+        
+    }
+    async addExperiance(applicantId: string, dto: AddExperianceRequestDto) {
+        const applicant = await this.FindApplicantOrThrow(applicantId);
+    }
+    async addEducationalHistory(applicantId: string, dto: AddEducationalHistoryRequestDto) {
+        const applicant = await this.FindApplicantOrThrow(applicantId);
+    }
+
+    async updateExperiance(applicantId: string, experianceId: string, dto: AddExperianceRequestDto) {
+        const applicant = await this.FindApplicantOrThrow(applicantId);
+    }
+    async updateEducationalHistory(applicantId: string, historyId: string, dto: AddEducationalHistoryRequestDto) {
+        const applicant = await this.FindApplicantOrThrow(applicantId);
+    }
+
+    async deleteExperiance(applicantId: string, experianceId: string) {
+        const applicant = await this.FindApplicantOrThrow(applicantId);
+
+        const experiance = applicant.experiance.find(x => x.id === experianceId);
+
+        const deleted = await this.experianceRepo.delete(experiance.id);
+
+        return UtilityServices.EnsureDeleted(deleted, experianceId);
+    }
+    async deleteEducationalHistory(applicantId: string, historyId: string) {
+        const applicant = await this.FindApplicantOrThrow(applicantId);
+
+        const history = applicant.educationalHistory.find(x => x.id === historyId);
+
+        const deleted = await this.experianceRepo.delete(history.id);
     }
 }
