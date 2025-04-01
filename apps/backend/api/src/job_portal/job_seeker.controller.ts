@@ -1,8 +1,11 @@
 import {
     Body,
     Controller,
+    Delete,
+    Get,
     Param,
     ParseUUIDPipe,
+    Patch,
     Post,
     Put,
     Request,
@@ -16,9 +19,9 @@ import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddEducationalHistoryRequestDto } from './dto/request/add-education-history.request.dto';
+import { AddEducationalHistoryRequestDto, updateEducationalHistoryRequestDto } from './dto/request/add-education-history.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddExperianceRequestDto } from './dto/request/add-experiance.request.dto';
+import { AddExperianceRequestDto, UpdateExperianceRequestDto } from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -35,7 +38,6 @@ export class JobSeekerController {
         private readonly jobsService: JobsService,
     ) {}
 
-    @Roles(UserRoleType.JobSeeker)
     @Post('jobs')
     getAllPending(@Body() dto: { q: string }) {
         const deserialized = entityParamDeserializer(dto.q);
@@ -52,20 +54,17 @@ export class JobSeekerController {
         return this.jobPortalService.getJobsByStatusPaginated(queryString);
     }
 
-    @Roles(UserRoleType.JobSeeker)
     @Post('apply/:jobId')
     apply(@Request() req, @Param('jobId', new ParseUUIDPipe()) jobId: string) {
         return this.jobsService.apply(jobId, CurrentUser.getApplicantId(req));
     }
 
-    @Roles(UserRoleType.JobSeeker)
     @Post('jobs/appliedByJobSeeker')
     appliedJobs(@Request() req) {
         return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
     }
 
-    @Roles(UserRoleType.JobSeeker)
-    @Post('addEducationalHistory')
+    @Post('educationalHistory')
     addEducationalHistory(
         @Request() req,
         @Body() dto: AddEducationalHistoryRequestDto,
@@ -76,8 +75,7 @@ export class JobSeekerController {
         );
     }
 
-    @Roles(UserRoleType.JobSeeker)
-    @Post('addExperiance')
+    @Post('experiance')
     addExperiance(@Request() req, @Body() dto: AddExperianceRequestDto) {
         return this.jobsService.addExperiance(
             CurrentUser.getApplicantId(req),
@@ -85,18 +83,64 @@ export class JobSeekerController {
         );
     }
 
-    @Roles(UserRoleType.JobSeeker)
-    @Post('addSkills')
+    @Post('skills')
     addSkills(@Request() req, @Body() dto: ListStringRequestModel) {
         return this.jobsService.addSkills(CurrentUser.getApplicantId(req), dto);
     }
 
-    @Roles(UserRoleType.JobSeeker)
-    @Put('updatedDetail')
+    @Patch('educationalHistory/:id')
+    updateEducationalHistory(
+        @Request() req,
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: updateEducationalHistoryRequestDto,
+    ) {
+        return this.jobsService.updateEducationalHistory(
+            CurrentUser.getApplicantId(req),
+            id,
+            dto,
+        );
+    }
+
+    @Patch('experiance/:id')
+    updateExperiance(@Request() req, @Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateExperianceRequestDto) {
+        return this.jobsService.updateExperiance(
+            CurrentUser.getApplicantId(req),
+            id,
+            dto,
+        );
+    }
+
+    @Delete('educationalHistory/:historyId')
+    deleteEducationalHistory(
+        @Request() req,
+        @Param('historyId', new ParseUUIDPipe()) historyId: string
+    ) {
+        return this.jobsService.deleteEducationalHistory(
+            CurrentUser.getApplicantId(req),
+            historyId,
+        );
+    }
+
+    @Delete('experiance/:experianceId')
+    deleteExperiance(@Request() req, 
+    @Param('experianceId', new ParseUUIDPipe()) experianceId: string) {
+        return this.jobsService.deleteExperiance(
+            CurrentUser.getApplicantId(req),
+            experianceId,
+        );
+    }
+
+    @Put('detail')
     updateDetail(@Request() req, @Body() dto: UpdateApplicantRequestDto) {
         return this.jobsService.updateApplicantDetail(
             CurrentUser.getApplicantId(req),
             dto,
         );
     }
+
+    @Get('details')
+    getDetails(@Request() req){
+        return this.jobsService.getDetails(CurrentUser.getApplicantId(req));
+    }
+
 }

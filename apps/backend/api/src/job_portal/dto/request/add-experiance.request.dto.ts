@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 import { WorkPlaceType } from '@shega/job_portal/enums/work-place-type.enum';
 import { Transform } from 'class-transformer';
@@ -14,9 +14,11 @@ export class AddExperianceRequestDto {
     company: string;
 
     @ApiProperty()
+    @IsString()
     startDate: Date;
 
     @ApiProperty()
+    @IsString()
     endDate: Date;
 
     @ApiProperty()
@@ -48,3 +50,5 @@ export class AddExperianceRequestDto {
     @IsEnum(WorkPlaceType)
     workPlace: WorkPlaceType;
 }
+
+export class UpdateExperianceRequestDto extends PartialType(AddExperianceRequestDto){}

@@ -67,7 +67,7 @@ export class JobPortalService {
     async createJobSeeker(dto: CreateBasicUserDto) {
         const pwdGenerated = this.passwordService.generatePassword();
 
-        const role = UserRoleType.WorkProvider;
+        const role = UserRoleType.JobSeeker;
 
         const user = await this.profileService.createNewUserProfileQDE(
             dto.email,

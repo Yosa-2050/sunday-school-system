@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { EducationalRequirmentType } from '@shega/job_portal/enums/education-requirment-type.enum';
 import {
     IsEnum,
@@ -39,3 +39,5 @@ export class AddEducationalHistoryRequestDto {
     @IsString()
     description: string;
 }
+
+export class updateEducationalHistoryRequestDto extends PartialType(AddEducationalHistoryRequestDto){}
