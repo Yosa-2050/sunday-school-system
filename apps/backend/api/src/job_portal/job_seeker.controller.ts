@@ -70,13 +70,19 @@ export class JobSeekerController {
         @Request() req,
         @Body() dto: AddEducationalHistoryRequestDto,
     ) {
-        return this.jobsService.addEducationalHistory(CurrentUser.getApplicantId(req), dto);
+        return this.jobsService.addEducationalHistory(
+            CurrentUser.getApplicantId(req),
+            dto,
+        );
     }
 
     @Roles(UserRoleType.JobSeeker)
     @Post('addExperiance')
     addExperiance(@Request() req, @Body() dto: AddExperianceRequestDto) {
-        return this.jobsService.addExperiance(CurrentUser.getApplicantId(req), dto);
+        return this.jobsService.addExperiance(
+            CurrentUser.getApplicantId(req),
+            dto,
+        );
     }
 
     @Roles(UserRoleType.JobSeeker)
@@ -88,6 +94,9 @@ export class JobSeekerController {
     @Roles(UserRoleType.JobSeeker)
     @Put('updatedDetail')
     updateDetail(@Request() req, @Body() dto: UpdateApplicantRequestDto) {
-        return this.jobsService.updateApplicantDetail(CurrentUser.getApplicantId(req), dto);
+        return this.jobsService.updateApplicantDetail(
+            CurrentUser.getApplicantId(req),
+            dto,
+        );
     }
 }

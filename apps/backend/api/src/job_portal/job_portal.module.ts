@@ -39,7 +39,7 @@ import { Experiance } from './entities/experiance.entity';
             JobApplication,
             ApplicantSkills,
             EducationHistory,
-            Experiance
+            Experiance,
         ]),
         OrganizationModule,
         DocumentModule,

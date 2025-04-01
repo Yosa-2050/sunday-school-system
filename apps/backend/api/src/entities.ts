@@ -46,6 +46,6 @@ export const AppEntities = [
     Applicants,
     JobApplication,
     ApplicantSkills,
-                EducationHistory,
-                Experiance
+    EducationHistory,
+    Experiance,
 ];
