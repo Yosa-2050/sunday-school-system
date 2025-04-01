@@ -46,7 +46,7 @@ export class AddressController {
         );
     }
 
-    @Get(':referenceId/:referenceType')
+    @Get('contactsByReference/:referenceId/:referenceType')
     getContanctsByReference(
         @Param('referenceId') referenceId: string,
         @Param('referenceType') referenceType: ReferenceType,
