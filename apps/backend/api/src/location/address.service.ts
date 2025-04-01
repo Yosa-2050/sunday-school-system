@@ -24,6 +24,7 @@ import { DefaultCountry } from './enums/location.const';
 
 @Injectable()
 export class AddressService {
+   
     constructor(
         @InjectRepository(Location) private locationRepo: Repository<Location>,
         @InjectRepository(ContactDetails)

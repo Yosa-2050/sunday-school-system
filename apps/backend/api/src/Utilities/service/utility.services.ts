@@ -10,9 +10,7 @@ export class UtilityServices {
                 `Update with ID ${id} failed, please contact your administrator`,
             );
         }
-        return {
-            sucess: 'true',
-        };
+        return UtilityServices.SuccessResponse();
     }
 
     static EnsureDeleted(result: DeleteResult, id: string) {
@@ -21,6 +19,10 @@ export class UtilityServices {
                 `Delete with ID ${id} failed, please contact your administartor`,
             );
         }
+        return UtilityServices.SuccessResponse();
+    }
+
+    static SuccessResponse(){
         return {
             sucess: 'true',
         };
