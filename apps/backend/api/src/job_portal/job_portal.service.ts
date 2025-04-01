@@ -332,4 +332,8 @@ export class JobPortalService {
     findCategories() {
         return this.categoryRepo.findBy({ isRoot: true });
     }
+
+    findCategoryById(id: string) {
+        return this.categoryRepo.findOneBy({ id });
+    }
 }
