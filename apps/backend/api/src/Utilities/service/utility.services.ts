@@ -22,7 +22,7 @@ export class UtilityServices {
         return UtilityServices.SuccessResponse();
     }
 
-    static SuccessResponse(){
+    static SuccessResponse() {
         return {
             sucess: 'true',
         };
