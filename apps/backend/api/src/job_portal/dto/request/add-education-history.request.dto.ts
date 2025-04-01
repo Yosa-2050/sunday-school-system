@@ -40,4 +40,6 @@ export class AddEducationalHistoryRequestDto {
     description: string;
 }
 
-export class updateEducationalHistoryRequestDto extends PartialType(AddEducationalHistoryRequestDto){}
+export class updateEducationalHistoryRequestDto extends PartialType(
+    AddEducationalHistoryRequestDto,
+) {}

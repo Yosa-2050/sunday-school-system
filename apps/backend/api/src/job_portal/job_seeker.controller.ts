@@ -19,9 +19,15 @@ import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddEducationalHistoryRequestDto, updateEducationalHistoryRequestDto } from './dto/request/add-education-history.request.dto';
+import {
+    AddEducationalHistoryRequestDto,
+    updateEducationalHistoryRequestDto,
+} from './dto/request/add-education-history.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddExperianceRequestDto, UpdateExperianceRequestDto } from './dto/request/add-experiance.request.dto';
+import {
+    AddExperianceRequestDto,
+    UpdateExperianceRequestDto,
+} from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -102,7 +108,11 @@ export class JobSeekerController {
     }
 
     @Patch('experiance/:id')
-    updateExperiance(@Request() req, @Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateExperianceRequestDto) {
+    updateExperiance(
+        @Request() req,
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: UpdateExperianceRequestDto,
+    ) {
         return this.jobsService.updateExperiance(
             CurrentUser.getApplicantId(req),
             id,
@@ -113,7 +123,7 @@ export class JobSeekerController {
     @Delete('educationalHistory/:historyId')
     deleteEducationalHistory(
         @Request() req,
-        @Param('historyId', new ParseUUIDPipe()) historyId: string
+        @Param('historyId', new ParseUUIDPipe()) historyId: string,
     ) {
         return this.jobsService.deleteEducationalHistory(
             CurrentUser.getApplicantId(req),
@@ -122,8 +132,10 @@ export class JobSeekerController {
     }
 
     @Delete('experiance/:experianceId')
-    deleteExperiance(@Request() req, 
-    @Param('experianceId', new ParseUUIDPipe()) experianceId: string) {
+    deleteExperiance(
+        @Request() req,
+        @Param('experianceId', new ParseUUIDPipe()) experianceId: string,
+    ) {
         return this.jobsService.deleteExperiance(
             CurrentUser.getApplicantId(req),
             experianceId,
@@ -139,8 +151,7 @@ export class JobSeekerController {
     }
 
     @Get('details')
-    getDetails(@Request() req){
+    getDetails(@Request() req) {
         return this.jobsService.getDetails(CurrentUser.getApplicantId(req));
     }
-
 }

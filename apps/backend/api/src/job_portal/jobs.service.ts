@@ -9,9 +9,15 @@ import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddEducationalHistoryRequestDto, updateEducationalHistoryRequestDto } from './dto/request/add-education-history.request.dto';
+import {
+    AddEducationalHistoryRequestDto,
+    updateEducationalHistoryRequestDto,
+} from './dto/request/add-education-history.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddExperianceRequestDto, UpdateExperianceRequestDto } from './dto/request/add-experiance.request.dto';
+import {
+    AddExperianceRequestDto,
+    UpdateExperianceRequestDto,
+} from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 import { ApplicantSkills } from './entities/applicants-skills.entity';
@@ -23,7 +29,6 @@ import { JobApplication } from './entities/job-application.entity';
 import { JobPortalService } from './job_portal.service';
 
 export class JobsService {
-    
     constructor(
         private readonly profileService: ProfileService,
         private readonly jobPortalService: JobPortalService,
@@ -126,23 +131,36 @@ export class JobsService {
     async addSkills(applicantId: string, dto: ListStringRequestModel) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        const allSkills = await this.applicantSkillRepo.findBy({applicant: {id: applicantId}});
+        const allSkills = await this.applicantSkillRepo.findBy({
+            applicant: { id: applicantId },
+        });
 
-        const existingSkills = new Set(allSkills?.map(s => s.skill));
+        const existingSkills = new Set(allSkills?.map((s) => s.skill));
         const newSkills = new Set(dto.list || []);
 
         // Compute differences
-        const skillsToRemove = [...existingSkills].filter(s => !newSkills.has(s));
-        const skillsToAdd = [...newSkills].filter(s => !existingSkills.has(s));
+        const skillsToRemove = [...existingSkills].filter(
+            (s) => !newSkills.has(s),
+        );
+        const skillsToAdd = [...newSkills].filter(
+            (s) => !existingSkills.has(s),
+        );
 
         // Perform updates
         await Promise.all([
-            skillsToRemove.length && this.applicantSkillRepo.delete({ applicant: { id: applicantId }, skill: In(skillsToRemove) }),
-            skillsToAdd.length && this.applicantSkillRepo.insert(skillsToAdd.map(skill => ({ skill, applicant }))),
-        ]); 
+            skillsToRemove.length &&
+                this.applicantSkillRepo.delete({
+                    applicant: { id: applicantId },
+                    skill: In(skillsToRemove),
+                }),
+            skillsToAdd.length &&
+                this.applicantSkillRepo.insert(
+                    skillsToAdd.map((skill) => ({ skill, applicant })),
+                ),
+        ]);
         return UtilityServices.SuccessResponse();
     }
-    
+
     async addExperiance(applicantId: string, dto: AddExperianceRequestDto) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
@@ -173,10 +191,13 @@ export class JobsService {
     ) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        if(applicant.experiance.find(x => x.id === experianceId)){
-            throw new BadRequestException("Experiance not found");
+        if (applicant.experiance.find((x) => x.id === experianceId)) {
+            throw new BadRequestException('Experiance not found');
         }
-        const experiance = await this.experianceRepo.preload({id: experianceId, ...dto});
+        const experiance = await this.experianceRepo.preload({
+            id: experianceId,
+            ...dto,
+        });
 
         return this.experianceRepo.save(experiance);
     }
@@ -187,17 +208,21 @@ export class JobsService {
     ) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        if(applicant.educationalHistory.find(x => x.id === historyId)){
-            throw new BadRequestException("Educational history not found");
+        if (applicant.educationalHistory.find((x) => x.id === historyId)) {
+            throw new BadRequestException('Educational history not found');
         }
 
         const fieldOfStudy = await this.jobPortalService.findCategoryById(
             dto.fieldOfStudyId,
         );
-        if(!fieldOfStudy){
-            throw new BadRequestException("Category doestnt exists");
+        if (!fieldOfStudy) {
+            throw new BadRequestException('Category doestnt exists');
         }
-        const history = await this.educationalHistoryRepo.preload({id: historyId, ...dto, fieldOfStudy: dto.fieldOfStudyId ? fieldOfStudy: undefined});
+        const history = await this.educationalHistoryRepo.preload({
+            id: historyId,
+            ...dto,
+            fieldOfStudy: dto.fieldOfStudyId ? fieldOfStudy : undefined,
+        });
         return this.educationalHistoryRepo.save(history);
     }
 
@@ -227,11 +252,13 @@ export class JobsService {
             where: { id: applicantId },
             relations: ['experiance', 'educationalHistory', 'skills'],
         });
-    
+
         if (!applicant) {
-            throw new BadRequestException(`Applicant with ID ${applicantId} not found`);
+            throw new BadRequestException(
+                `Applicant with ID ${applicantId} not found`,
+            );
         }
-    
+
         return applicant;
     }
 }

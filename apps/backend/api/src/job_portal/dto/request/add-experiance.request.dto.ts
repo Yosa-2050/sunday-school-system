@@ -51,4 +51,6 @@ export class AddExperianceRequestDto {
     workPlace: WorkPlaceType;
 }
 
-export class UpdateExperianceRequestDto extends PartialType(AddExperianceRequestDto){}
+export class UpdateExperianceRequestDto extends PartialType(
+    AddExperianceRequestDto,
+) {}
