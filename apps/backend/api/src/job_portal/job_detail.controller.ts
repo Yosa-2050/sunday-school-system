@@ -39,12 +39,18 @@ export class JobDetailController {
     }
 
     @Patch('categories/:id')
-    editCategories(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CreateUsingNameRequestDto) {
+    editCategories(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: CreateUsingNameRequestDto,
+    ) {
         return this.jobPortalService.updateCategories(id, dto.name);
     }
 
     @Patch('skills/:id')
-    editSkills(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CreateUsingNameRequestDto) {
+    editSkills(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: CreateUsingNameRequestDto,
+    ) {
         return this.jobPortalService.updateSkills(id, dto.name);
     }
 
