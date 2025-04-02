@@ -245,6 +245,8 @@ export class JobsService {
         );
 
         const deleted = await this.experianceRepo.delete(history.id);
+
+        return UtilityServices.EnsureDeleted(deleted, historyId);
     }
 
     async getDetails(applicantId: string) {

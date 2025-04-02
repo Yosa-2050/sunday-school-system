@@ -9,6 +9,7 @@ import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -335,5 +336,36 @@ export class JobPortalService {
 
     findCategoryById(id: string) {
         return this.categoryRepo.findOneBy({ id });
+    }
+
+    async deleteSkills(id: string) {
+        const deleted = await this.skillRepo.delete(id);
+
+        return UtilityServices.EnsureDeleted(deleted, id);
+    }
+    async deleteCategories(id: string) {
+        const deleted = await this.skillRepo.delete(id);
+
+        return UtilityServices.EnsureDeleted(deleted, id);
+    }
+    async updateSkills(id: string, name: string) {
+        const update = await this.skillRepo.preload({
+            id,
+            name,
+        });
+        if (!update) {
+            throw new BadRequestException('Skill not found');
+        }
+        return this.skillRepo.save(update);
+    }
+    async updateCategories(id: string, name: string) {
+        const update = await this.categoryRepo.preload({
+            id,
+            name,
+        });
+        if (!update) {
+            throw new BadRequestException('Category not found');
+        }
+        return this.categoryRepo.save(update);
     }
 }
