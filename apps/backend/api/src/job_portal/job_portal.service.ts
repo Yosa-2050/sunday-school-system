@@ -40,9 +40,11 @@ import { JobCategory } from './entities/job-category.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 
 @Injectable()
 export class JobPortalService {
+    
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(Jobs)
@@ -335,5 +337,37 @@ export class JobPortalService {
 
     findCategoryById(id: string) {
         return this.categoryRepo.findOneBy({ id });
+    }
+
+    async deleteSkills(id: string) {
+        const deleted = await this.skillRepo.delete(id);
+        
+        return UtilityServices.EnsureDeleted(deleted, id);
+                
+    }
+    async deleteCategories(id: string) {
+        const deleted = await this.skillRepo.delete(id);
+        
+        return UtilityServices.EnsureDeleted(deleted, id);
+    }
+    async updateSkills(id: string, name: string) {
+        const update = await this.skillRepo.preload({
+            id,
+            name
+        });
+        if(!update){
+            throw new BadRequestException("Skill not found");
+        }
+        return this.skillRepo.save(update);
+    }
+    async updateCategories(id: string, name: string) {
+        const update = await this.categoryRepo.preload({
+            id,
+            name
+        });
+        if(!update){
+            throw new BadRequestException("Category not found");
+        }
+        return this.categoryRepo.save(update);
     }
 }

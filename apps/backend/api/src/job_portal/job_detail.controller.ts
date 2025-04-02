@@ -1,9 +1,11 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     ParseUUIDPipe,
+    Patch,
     Post,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -34,6 +36,26 @@ export class JobDetailController {
     @Post('skills')
     postSkills(@Body() dto: CreateUsingNameRequestDto) {
         return this.jobPortalService.createSkills(dto.name);
+    }
+
+    @Patch('categories/:id')
+    editCategories(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CreateUsingNameRequestDto) {
+        return this.jobPortalService.updateCategories(id, dto.name);
+    }
+
+    @Patch('skills/:id')
+    editSkills(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CreateUsingNameRequestDto) {
+        return this.jobPortalService.updateSkills(id, dto.name);
+    }
+
+    @Delete('categories/:id')
+    deleteCategories(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.jobPortalService.deleteCategories(id);
+    }
+
+    @Delete('skills/:id')
+    deleteSkills(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.jobPortalService.deleteSkills(id);
     }
 
     @Get('categories')
