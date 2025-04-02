@@ -71,7 +71,7 @@ export class Jobs extends BaseModel {
     @Column({ nullable: true })
     experiance: number;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true , type: 'timestamp with time zone' })
     deadline: Date;
 
     @Column({ nullable: true })
@@ -97,7 +97,7 @@ export class Jobs extends BaseModel {
     @Column({ default: false })
     isPublished: boolean;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'timestamp with time zone' })
     postedDate: Date;
 
     @ManyToOne(() => Organization, { eager: true, nullable: false })
