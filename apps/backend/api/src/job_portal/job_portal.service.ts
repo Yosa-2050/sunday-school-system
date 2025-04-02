@@ -9,6 +9,7 @@ import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -40,7 +41,6 @@ import { JobCategory } from './entities/job-category.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
-import { UtilityServices } from '@shega/Utilities/service/utility.services';
 
 @Injectable()
 export class JobPortalService {
