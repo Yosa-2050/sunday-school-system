@@ -37,7 +37,10 @@
         "analytics": "Analytics",
         "settings": "Settings",
         "logout": "Logout",
-        "profile": "Profile"
+        "profile": "Profile",
+        "locations": "Locations",
+        "skills": "Skills",
+        "categories": "Categories"
     },
     "header": {
         "title": "Admin Dashboard"
@@ -245,7 +248,7 @@
     "jobsListPage": {
         "title": "Job Listings",
         "postJob": "Post a Job",
-        "searchPlaceholder": "Search Jobs by Org Name or Job Title",
+        "searchPlaceholder": "Search by Org Name or Job Title",
         "selectCategory": "Select a category",
         "allCategories": "All Categories",
         "noJobsMessage": "You haven’t any posted jobs yet.",
@@ -290,5 +293,34 @@
                 "postedAt": "2024-01-20T09:30:00Z"
             }
         ]
+    },
+    "locationsPage": {
+        "title": "Locations List",
+        "addRegion": "Add Region",
+        "regionName": "Region Name",
+        "submit": "Submit",
+        "isActive": "Is Active",
+        "actions": "Actions",
+        "addCity": "Add City",
+        "cityName": "City Name",
+        "selectedRegion": "Selected Region",
+        "noCities": "No cities found"
+    },
+    "skillsPage": {
+        "title": "Skills List",
+        "addSkill": "Add Skill",
+        "skillName": "Skill Name",
+        "submit": "Submit",
+        "isActive": "Is Active",
+        "actions": "Actions"
+    },
+    "categoriesPage": {
+        "title": "Categories List",
+        "addCategory": "Add Category",
+        "categoryName": "Category Name",
+        "submit": "Submit",
+        "isActive": "Is Active",
+        "actions": "Actions"
+        
     }
 }
