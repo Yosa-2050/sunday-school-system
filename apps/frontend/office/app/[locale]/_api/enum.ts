@@ -1,4 +1,4 @@
-import { fetcher } from "@shega/shared";
+import { fetcher } from '@shega/shared';
 
 /**
  * 
@@ -19,27 +19,27 @@ import { fetcher } from "@shega/shared";
  */
 
 type EnumType =
-  | "LoginBy"
-  | "UserRoleType"
-  | "Gender"
-  | "MarriageStatus"
-  | "Title"
-  | "EducationalRequirmentType"
-  | "EmployeeType"
-  | "EmploymentType"
-  | "SalaryFrequencyType"
-  | "SalaryType"
-  | "WorkPlaceType";
+    | 'LoginBy'
+    | 'UserRoleType'
+    | 'Gender'
+    | 'MarriageStatus'
+    | 'Title'
+    | 'EducationalRequirmentType'
+    | 'EmployeeType'
+    | 'EmploymentType'
+    | 'SalaryFrequencyType'
+    | 'SalaryType'
+    | 'WorkPlaceType';
 
 export const fetchEnum = async (
-  enumType: EnumType
+    enumType: EnumType,
 ): Promise<{ data: Record<string, string> }> => {
-  if (!enumType) {
-    throw new Error("Enum type cannot be empty");
-  }
-  const response = await fetcher(`/enums/${enumType}`, {
-    method: "GET",
-    headers: { accept: "*/*" },
-  });
-  return response as { data: Record<string, string> };
+    if (!enumType) {
+        throw new Error('Enum type cannot be empty');
+    }
+    const response = await fetcher(`/enums/${enumType}`, {
+        method: 'GET',
+        headers: { accept: '*/*' },
+    });
+    return response as { data: Record<string, string> };
 };

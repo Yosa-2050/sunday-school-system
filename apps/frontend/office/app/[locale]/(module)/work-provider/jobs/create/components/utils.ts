@@ -4,8 +4,8 @@
  * @returns Array of options with value and label properties
  */
 export const mapEnumToOptions = (enumData: Record<string, string>) => {
-  return Object.entries(enumData).map(([key, value]) => ({
-    value,
-    label: key.replace(/_/g, " "),
-  }));
+    return Object.entries(enumData).map(([key, value]) => ({
+        value,
+        label: key.replace(/_/g, ' '),
+    }));
 };
