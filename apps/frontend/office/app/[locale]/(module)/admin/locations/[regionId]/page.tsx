@@ -47,7 +47,7 @@ const CitiesPage = () => {
     });
 
     const handleAddCity = () => {
-        mutation.mutate({ name: newCityName, isActive: true });
+        mutation.mutate();
     };
 
     if (loadingCities) {

@@ -5,7 +5,7 @@ export const fetchSkills = async () => {
         method: 'GET',
         headers: { accept: '*/*' },
     });
-    return response as { id: string; name: string }[];
+    return response as { id: string; name: string; isActive: boolean }[];
 };
 
 export const fetchCategories = async () => {
@@ -96,7 +96,9 @@ export const fetchCities = async (regionId: string) => {
         method: 'GET',
         headers: { accept: '*/*' },
     });
-    return response as { id: string; name: string }[] | undefined;
+    return response as
+        | { id: string; name: string; isActive: boolean }[]
+        | undefined;
 };
 
 export const fetchCountries = async () => {

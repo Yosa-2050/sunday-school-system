@@ -46,17 +46,17 @@ const SkillsPage = () => {
         mutationFn: () => addSkills({ name: newSkillName, isActive: true }),
         mutationKey: ['skills'],
         onSuccess: () => {
-            queryClient.invalidateQueries(['skills']);
+            queryClient.invalidateQueries({ queryKey: ['skills'] });
             setModalOpened(false);
             setNewSkillName('');
         },
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id: string) => deleteCategory(id),
+        mutationFn: (id: string) => deleteCategory(),
         mutationKey: ['deleteSkill'],
         onSuccess: () => {
-            queryClient.invalidateQueries(['skills']);
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
             setSkillToDelete(null);
         },
     });

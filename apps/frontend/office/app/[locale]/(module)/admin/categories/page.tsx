@@ -52,17 +52,18 @@ const CategoriesPage = () => {
         mutationFn: () => addRegion({ name: newRegionName, isActive: true }),
         mutationKey: ['regions'],
         onSuccess: () => {
-            queryClient.invalidateQueries('categories');
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
             setModalOpened(false);
             setNewRegionName('');
         },
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id: string) => deleteCategory(id),
+        mutationFn: (id: string) => deleteCategory(),
         mutationKey: ['deleteCategory'],
         onSuccess: () => {
-            queryClient.invalidateQueries('categories');
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+
             setCategoryToDelete(null);
         },
     });
