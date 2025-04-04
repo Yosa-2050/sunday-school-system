@@ -319,7 +319,14 @@ const JobsList = () => {
                                         />
                                     </Table.Td>
                                     <Table.Td>{job?.orgName}</Table.Td>
-                                    <Table.Td>{job.title}</Table.Td>
+                                    <Table.Td
+                                        style={{ maxWidth: '200px' }}
+                                        title={job.title}
+                                    >
+                                        {job.title.length > 15
+                                            ? `${job.title.substring(0, 15)}...`
+                                            : job.title}
+                                    </Table.Td>
                                     <Table.Td>
                                         {new Date(
                                             job.createdDate,

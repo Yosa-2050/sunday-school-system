@@ -173,7 +173,7 @@ const MenuItem = ({ data, level = 0, role }: MenuItemProps) => {
                     </button>
                 ))}
 
-            {/* {showChildren && (
+            {showChildren && (
                 <ul className={cn('relative', isGroup ? 'mt-1' : '')}>
                     <div
                         className={cn(open ? classes.menuItemContainer : '')}
@@ -184,10 +184,11 @@ const MenuItem = ({ data, level = 0, role }: MenuItemProps) => {
                             data={child}
                             level={level + 1}
                             key={`${child.label}-${child.link}`}
+                            role={role} // Added role prop
                         />
                     ))}
                 </ul>
-            )} */}
+            )}
         </li>
     );
 };

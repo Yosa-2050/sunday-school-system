@@ -116,7 +116,7 @@ export function RichTextInput({
             withAsterisk={withAsterisk}
             className={cn(className)}
         >
-            <RichTextEditor editor={editor}>
+            <RichTextEditor editor={editor} style={{ height: '400px' }}>
                 <RichTextEditor.Toolbar
                     sticky
                     stickyOffset={60}

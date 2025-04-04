@@ -3,14 +3,6 @@
 import { COOKIE_ACCESS_TOKEN, type User, fetcher, logger } from '@shega/shared';
 import { cookies } from 'next/headers';
 
-// Define the expected shape of the user profile response
-interface UserProfile {
-    id: string;
-    email: string;
-    name: string;
-    // Add other fields as per your API response
-}
-
 export const getUserAction = async (
     token?: string,
 ): Promise<User | undefined> => {

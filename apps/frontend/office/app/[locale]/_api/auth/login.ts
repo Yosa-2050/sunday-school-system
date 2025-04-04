@@ -12,6 +12,9 @@ export type Data = {
     access_token: string;
     pwdChangeRequired: boolean;
     id: string;
+    details: {
+        organizationId: string;
+    };
 };
 
 export type Response = {

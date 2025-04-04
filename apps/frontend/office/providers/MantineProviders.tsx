@@ -120,6 +120,11 @@ const baseTheme = ({
                     minRows: 3,
                 },
             },
+            LoadingOverlay: {
+                defaultProps: {
+                    blur: 2,
+                },
+            },
             NumberInput: {
                 defaultProps: {
                     size: 'sm',

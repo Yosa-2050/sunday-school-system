@@ -27,7 +27,6 @@ import {
     IconBuilding,
     IconCash,
     IconCheck,
-    IconMail,
     IconMapPin,
     IconPhone,
     IconUser,
@@ -36,6 +35,7 @@ import {
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { approveJob } from 'app/[locale]/_api/admin/approve-job';
 import { fetchJobsAdminById } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
+import type { JobDetailsViewProps } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
 import parse from 'html-react-parser';
 import { useParams } from 'next/navigation';
 import DeclineModal from '../_components/DeclineModal';
@@ -47,7 +47,7 @@ const JobDetails = () => {
     const jobId = params.id as string;
     const [opened, { open, close }] = useDisclosure(false);
 
-    const { data: job, isLoading } = useQuery({
+    const { data: job, isLoading } = useQuery<JobDetailsViewProps>({
         queryKey: ['job', jobId],
         queryFn: async () => await fetchJobsAdminById(jobId),
     });
@@ -153,14 +153,10 @@ const JobDetails = () => {
                                         size={18}
                                         className="text-gray-500"
                                     />
-                                    <Text size="sm">+251 9 123 456 78</Text>
-                                </Group>
-                                <Group gap="sm">
-                                    <IconMail
-                                        size={18}
-                                        className="text-gray-500"
-                                    />
-                                    <Text size="sm">employer@mail.com</Text>
+                                    <Text size="sm">
+                                        {job.postedBy.employee.profile
+                                            .phoneNumber || 'N/A'}
+                                    </Text>
                                 </Group>
                             </Stack>
                         </Stack>
@@ -200,6 +196,26 @@ const JobDetails = () => {
                                                 {job.type.replace('_', ' ')}
                                             </Badge>
                                         </Group>
+                                        {job.workPlace && (
+                                            <Group gap="sm">
+                                                <IconMapPin
+                                                    size={20}
+                                                    className="text-gray-500"
+                                                />
+                                                <Text className="font-medium">
+                                                    Workplace Type:
+                                                </Text>
+                                                <Badge
+                                                    color="blue"
+                                                    variant="light"
+                                                >
+                                                    {job.workPlace.replace(
+                                                        '_',
+                                                        ' ',
+                                                    )}
+                                                </Badge>
+                                            </Group>
+                                        )}
                                     </Stack>
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, md: 6 }}>
@@ -217,6 +233,8 @@ const JobDetails = () => {
                                                 -{' '}
                                                 {job.salaryTo.toLocaleString()}{' '}
                                                 {job.currency}
+                                                {job.salaryFrequency &&
+                                                    ` (${job.salaryFrequency.replace('_', ' ')})`}
                                             </Text>
                                         </Group>
                                         <Group gap="sm">
@@ -227,7 +245,58 @@ const JobDetails = () => {
                                             <Text className="font-medium">
                                                 Location:
                                             </Text>
-                                            <Text>{job.country.name}</Text>
+                                            <Text>
+                                                {job.city?.name &&
+                                                    `${job.city.name}, `}
+                                                {job.state?.name &&
+                                                    `${job.state.name}, `}
+                                                {job.country.name}
+                                            </Text>
+                                        </Group>
+                                        <Group gap="sm">
+                                            <IconUser
+                                                size={20}
+                                                className="text-gray-500"
+                                            />
+                                            <Text className="font-medium">
+                                                Experience:
+                                            </Text>
+                                            <Text>
+                                                {job.experianceLevel.replace(
+                                                    '_',
+                                                    ' ',
+                                                )}{' '}
+                                                ({job.experiance} years)
+                                            </Text>
+                                        </Group>
+                                        <Group gap="sm">
+                                            <IconBuilding
+                                                size={20}
+                                                className="text-gray-500"
+                                            />
+                                            <Text className="font-medium">
+                                                Education:
+                                            </Text>
+                                            <Text>
+                                                {job.educationalRequirment.replace(
+                                                    '_',
+                                                    ' ',
+                                                )}
+                                            </Text>
+                                        </Group>
+                                        <Group gap="sm">
+                                            <IconCash
+                                                size={20}
+                                                className="text-gray-500"
+                                            />
+                                            <Text className="font-medium">
+                                                Deadline:
+                                            </Text>
+                                            <Text>
+                                                {new Date(
+                                                    job.deadline,
+                                                ).toLocaleDateString()}
+                                            </Text>
                                         </Group>
                                     </Stack>
                                 </Grid.Col>

@@ -205,7 +205,14 @@ const JobsList = () => {
                         <Table.Tbody>
                             {jobs.map((job, index) => (
                                 <Table.Tr key={job.id}>
-                                    <Table.Td>{job.title}</Table.Td>
+                                    <Table.Td
+                                        style={{ maxWidth: '200px' }}
+                                        title={job.title}
+                                    >
+                                        {job.title.length > 15
+                                            ? `${job.title.substring(0, 15)}...`
+                                            : job.title}
+                                    </Table.Td>
                                     <Table.Td>
                                         {job.type
                                             .split('_')

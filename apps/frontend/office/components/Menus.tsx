@@ -1,7 +1,10 @@
 import {
+    IconBriefcase, // Added for jobs
     IconBuilding,
+    IconCategory,
     IconHome,
-    IconSearch,
+    IconMapPin, // Added for locations
+    IconStar, // Added for skills
     IconUser,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
@@ -23,7 +26,6 @@ export const Menus = (): MenuTree[] => {
             link: '/admin/users',
             role: 'administrator',
         },
-
         {
             label: t('organizations'),
             icon: <IconBuilding stroke={1.4} size={20} />,
@@ -32,19 +34,38 @@ export const Menus = (): MenuTree[] => {
         },
         {
             label: t('job-explorer'),
-            icon: <IconSearch stroke={1.4} size={20} />,
+            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
             link: '/admin/jobs',
             role: 'administrator',
         },
-        // {
-        //     label: t('dashboard'),
-        //     icon: <IconHome stroke={1.4} size={20} />,
-        //     link: '/work-provider/dashboard',
-        //     role: 'work_provider',
-        // },
+        {
+            isGroup: true,
+            label: 'Lookup',
+            role: 'administrator',
+            children: [
+                {
+                    label: t('locations'),
+                    icon: <IconMapPin stroke={1.4} size={20} />, // Updated icon for locations
+                    link: '/admin/locations',
+                    role: 'administrator',
+                },
+                {
+                    label: t('skills'),
+                    icon: <IconStar stroke={1.4} size={20} />, // Updated icon for skills
+                    link: '/admin/skills',
+                    role: 'administrator',
+                },
+                {
+                    label: t('categories'),
+                    icon: <IconCategory stroke={1.4} size={20} />, // Updated icon for categories
+                    link: '/admin/categories',
+                    role: 'administrator',
+                },
+            ],
+        },
         {
             label: t('job-explorer'),
-            icon: <IconSearch stroke={1.4} size={20} />,
+            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
             link: '/work-provider/jobs',
             role: 'work_provider',
         },

@@ -72,8 +72,8 @@ const Login = () => {
                 } else {
                     logger.log(data);
 
+                    setCookie('organization_id', data?.details?.organizationId);
                     const user = await getUserAction(data.access_token);
-                    logger.log(user);
                     if (!user) {
                         notifications.show({
                             title: 'Error',
@@ -95,12 +95,6 @@ const Login = () => {
                         } else if (data.role === 'work_provider') {
                             router.push('/work-provider/jobs');
                         }
-
-                        // notifications.show({
-                        //     title: 'Success',
-                        //     message: t('loginSuccess'),
-                        //     color: 'green',
-                        // });
                         setCookie('role', data.role);
                         setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
                             maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
