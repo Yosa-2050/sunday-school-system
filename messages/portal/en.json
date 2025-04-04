@@ -61,7 +61,11 @@
         "salaryRange": "Salary Range",
         "experience": "Experience Level",
         "searchPlaceholder": "Search for jobs...",
-        "resetFilters": "Reset Filters"
+        "resetFilters": "Reset Filters",
+        "jobListings": "Job Listings",
+        "applyNow": "Apply",
+        "keyword": "Keyword",
+        "experienceLevel": "Experience Level"
     },
     "header": {
         "title": "Job Portal",
