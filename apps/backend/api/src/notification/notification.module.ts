@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
+import { NotificationTemplate } from './entities/notificationTemplate.entity';
 import { IEmailServiceInterface } from './interface/email-service.interface';
 import { ResendImpl } from './interface/implementations/resend.impl';
+import { NotificationTemplateSeedService } from './notification-template-seed.service';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Notification])],
+    imports: [TypeOrmModule.forFeature([Notification, NotificationTemplate])],
     controllers: [NotificationController],
     providers: [
         NotificationService,
@@ -15,7 +17,16 @@ import { NotificationService } from './notification.service';
             provide: IEmailServiceInterface,
             useClass: ResendImpl,
         },
+        NotificationTemplateSeedService,
     ],
-    exports: [NotificationService],
+    exports: [NotificationService, NotificationTemplateSeedService],
 })
-export class NotificationModule {}
+export class NotificationModule {
+    constructor(
+        private readonly notificationTemplateSeedService: NotificationTemplateSeedService,
+    ) {}
+
+    async onModuleInit(): Promise<void> {
+        await this.notificationTemplateSeedService.seedNotiificationTemplateData();
+    }
+}

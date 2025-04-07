@@ -1,7 +1,8 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ModuleRef } from '@nestjs/core';
+// biome-ignore lint/style/useImportType: <explanation>
 import { AuthService } from '@shega/auth/auth.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
@@ -11,6 +12,7 @@ import {
     InsertEvent,
     UpdateEvent,
 } from 'typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
 import { DateService } from '../date.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { BaseModel } from '../entities/base-model.entity';
@@ -18,27 +20,20 @@ import { BaseModel } from '../entities/base-model.entity';
 @Injectable()
 @EventSubscriber()
 export class BaseModelSubscriber
-    implements EntitySubscriberInterface<BaseModel>, OnModuleInit
+    implements EntitySubscriberInterface<BaseModel>
 {
     // constructor(
     //     private readonly dateService: DateService,
     //     private readonly clsService: ClsService, // To get current user
     // ) {}
 
-    private dateService: DateService;
-    private authService: AuthService;
-
     constructor(
         private readonly dataSource: DataSource,
         private readonly moduleRef: ModuleRef,
+        private readonly dateService: DateService,
+        private readonly authService: AuthService,
     ) {
         this.dataSource.subscribers.push(this);
-    }
-
-    onModuleInit() {
-        // Retrieve DateService manually
-        this.dateService = this.moduleRef.get(DateService, { strict: false });
-        this.authService = this.moduleRef.get(AuthService, { strict: false });
     }
 
     beforeInsert(event: InsertEvent<BaseModel>) {

@@ -14,6 +14,7 @@ import { ContactDetails } from './location/entities/contact-details.entity';
 import { Country } from './location/entities/country.entity';
 import { Location } from './location/entities/location.entity';
 import { Notification } from './notification/entities/notification.entity';
+import { NotificationTemplate } from './notification/entities/notificationTemplate.entity';
 import { Branch } from './organization/entities/branch.entity';
 import { EmployeeOrganization } from './organization/entities/employee-organization.entity';
 import { Employee } from './organization/entities/employee.entity';
@@ -45,6 +46,7 @@ export const AppEntities = [
     Skills,
     Applicants,
     JobApplication,
+    NotificationTemplate,
     ApplicantSkills,
     EducationHistory,
     Experiance,
