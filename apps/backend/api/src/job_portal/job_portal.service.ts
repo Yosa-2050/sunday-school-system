@@ -15,7 +15,6 @@ import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
-import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -86,18 +85,24 @@ export class JobPortalService {
 
         applicants = await this.applicationRepo.save(applicants);
 
+        const signupEmailTemplate = await this.notificationService.getTemplate(
+            'signupEmailTemplate',
+            {
+                userName: dto.firstName,
+                role: UserRoleValue(role).value,
+                email: dto.email,
+                tempPassword: pwdGenerated,
+                loginUrl: UserRoleValue(role).url,
+            },
+            null,
+        );
+
         if (applicants?.id) {
             this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: getSignupEmailTemplate({
-                    userName: dto.firstName,
-                    role: UserRoleValue(role).value,
-                    email: dto.email,
-                    tempPassword: pwdGenerated,
-                    loginUrl: UserRoleValue(role).url,
-                }),
+                content: signupEmailTemplate.content,
                 to: dto.email,
-                subject: 'Welcome to Shega Jobs! Your Account is Created',
+                subject: signupEmailTemplate.subject,
                 reference: user.id,
             });
             return user;

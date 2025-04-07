@@ -10,7 +10,6 @@ import { JobsService } from '@shega/job_portal/jobs.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
-import { getForgotPwdEmailTemplate } from '@shega/notification/sendEmailTemplates/forgotPwdEmailTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -122,15 +121,22 @@ export class AuthService {
             validateRole(user.roles?.find((x) => x.isDefault)?.role, origin)
         ) {
             const otp = await this.otpService.CreateOtp(user.id);
-            await this.notificationService.send({
+            const forgotPwdEmailTemplate =
+                await this.notificationService.getTemplate(
+                    'forgotPwdEmailTemplate',
+                    {
+                        userName: user.profile.firstName,
+                        email: user.email,
+                        verificationCode: otp,
+                    },
+                    null,
+                );
+
+            this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: getForgotPwdEmailTemplate({
-                    userName: user.profile.firstName,
-                    email: user.email,
-                    verificationCode: otp,
-                }),
+                content: forgotPwdEmailTemplate.content,
                 to: user.email,
-                subject: 'Password Reset Request',
+                subject: forgotPwdEmailTemplate.subject,
                 reference: user.id,
             });
             return {

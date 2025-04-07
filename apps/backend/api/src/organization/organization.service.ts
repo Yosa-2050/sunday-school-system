@@ -7,7 +7,6 @@ import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.rep
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationService } from '@shega/notification/notification.service';
-import { getSignupEmailTemplate } from '@shega/notification/sendEmailTemplates/signupEmailTemplate';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -295,18 +294,23 @@ export class OrganizationService {
         });
 
         const saved = await this.employeeOrgRepo.save(empOrg);
+        const signupEmailTemplate = await this.notificationService.getTemplate(
+            'signupEmailTemplate',
+            {
+                userName: dto.firstName,
+                role: UserRoleValue(UserRoleType.WorkProvider).value,
+                email: dto.email,
+                tempPassword: pwdGenerated,
+                loginUrl: UserRoleValue(UserRoleType.WorkProvider).url,
+            },
+            null,
+        );
         if (saved?.id) {
             this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: getSignupEmailTemplate({
-                    userName: dto.firstName,
-                    role: UserRoleValue(UserRoleType.WorkProvider).value,
-                    email: dto.email,
-                    tempPassword: pwdGenerated,
-                    loginUrl: UserRoleValue(UserRoleType.WorkProvider).url,
-                }),
+                content: signupEmailTemplate.content,
                 to: dto.email,
-                subject: 'Welcome to Shega Jobs! Your Account is Created',
+                subject: signupEmailTemplate.subject,
                 reference: saved.id,
             });
             return saved;

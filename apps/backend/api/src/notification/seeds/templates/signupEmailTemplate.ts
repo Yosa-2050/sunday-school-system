@@ -1,10 +1,4 @@
-export function getSignupEmailTemplate({
-    userName = '',
-    role = '',
-    email = '',
-    tempPassword = '',
-    loginUrl = '',
-} = {}) {
+export function getSignupEmailTemplate() {
     return `
     <!DOCTYPE html>
     <html>
@@ -31,10 +25,10 @@ export function getSignupEmailTemplate({
               Welcome to Shega Jobs
             </h1>
             <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 0 0 14px;">
-              Dear ${userName},
+              Dear {{userName}},
             </p>
             <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 0 0 14px;">
-              We are thrilled to have you join our community of ${role}. Your account has been successfully created.
+              We are thrilled to have you join our community of {{role}}. Your account has been successfully created.
             </p>
             
             <div>
@@ -45,17 +39,17 @@ export function getSignupEmailTemplate({
                 Login page link :
               </p>
               <a 
-                href="${loginUrl}" 
+                href="{{loginUrl}}" 
                 target="_blank" 
                 style="color: #2754C5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; text-decoration: underline; display: inline;"
               >
-                ${loginUrl}
+                {{loginUrl}}
               </a>
               <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 5px 0;">
-                Email : <span style="color:#2754C5;">${email.toLowerCase()}</span> 
+                Email : <span style="color:#2754C5;">{{email}}</span> 
               </p>
               <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 5px 0; ">
-                Password : Your one time password is <span style="font-weight: bold;"> ${tempPassword}</span>
+                Password : Your one time password is <span style="font-weight: bold;"> {{tempPassword}}</span>
               </p>
     
             <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 10px 0; ">
