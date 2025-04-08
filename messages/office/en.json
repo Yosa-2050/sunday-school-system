@@ -32,6 +32,7 @@
         "shortlisted-candidates": "Shortlisted Candidates",
         "reports": "Reports",
         "job-explorer": "Posted Jobs",
+        "job-explorer-draft-jobs": "Draft Jobs",
         "organizations": "Organization Management",
         "messages": "Messages",
         "analytics": "Analytics",
@@ -244,6 +245,10 @@
             "invalidEmail": "Invalid Email address",
             "companyNameRequired": "Organization name is required"
         }
+    },
+    "draftListPage":{
+        "title": "Draft Job Listings",
+        "searchPlaceholder": "Search by Org Name or Job Title"
     },
     "jobsListPage": {
         "title": "Job Listings",
