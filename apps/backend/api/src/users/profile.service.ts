@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -120,9 +121,9 @@ export class ProfileService {
     async findOne(id: string) {
         const profile = await this.repo.findOneBy({ id });
         if (profile.profile_picture_id) {
-            profile.profile_picture_id = await this.documentService.findOne(
-                profile.profile_picture_id,
-            );
+            // profile.profile_picture_id = await this.documentService.findOne(
+            //     profile.profile_picture_id,
+            // );
         }
         await profile.user;
         return profile;
@@ -163,5 +164,16 @@ export class ProfileService {
         }
 
         return this.repo.remove(profile);
+    }
+
+    async uploadProfilePicture(profileId: string, file: Express.Multer.File) {
+        const documentId = await this.documentService.create(file, profileId);
+
+        const updated = await this.repo.update(
+            { id: profileId },
+            { profile_picture_id: documentId }, //CV from file upload
+        );
+
+        return UtilityServices.EnsureUpdated(updated, profileId);
     }
 }

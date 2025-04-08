@@ -5,7 +5,11 @@ import { ListStringRequestModel } from '@shega/Utilities/models/list-string.mode
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -30,6 +34,7 @@ import { JobPortalService } from './job_portal.service';
 
 export class JobsService {
     constructor(
+        private readonly documentService: DocumentService,
         private readonly profileService: ProfileService,
         private readonly jobPortalService: JobPortalService,
         @InjectRepository(Applicants)
@@ -262,5 +267,17 @@ export class JobsService {
         }
 
         return applicant;
+    }
+
+    async uploadCv(applicantId: string, file: Express.Multer.File) {
+        await this.FindApplicantOrThrow(applicantId);
+        const documentId = await this.documentService.create(file, applicantId);
+
+        const updated = await this.applicantRepo.update(
+            { id: applicantId },
+            { cv: documentId }, //CV from file upload
+        );
+
+        return UtilityServices.EnsureUpdated(updated, applicantId);
     }
 }

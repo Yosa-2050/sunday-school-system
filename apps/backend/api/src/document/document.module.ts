@@ -4,7 +4,8 @@ import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
 import { Document } from './entities/document.entity';
 import { IDocumentInterface } from './interface/document-service.interface';
-import { CloudinaryImpl } from './interface/implementations/cloudinary.impl';
+import { SeaweedFsService } from './interface/implementations/seaweed-s3-service.imp';
+// import { CloudinaryImpl } from './interface/implementations/cloudinary.impl';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Document])],
@@ -13,7 +14,7 @@ import { CloudinaryImpl } from './interface/implementations/cloudinary.impl';
         DocumentService,
         {
             provide: IDocumentInterface,
-            useClass: CloudinaryImpl,
+            useClass: SeaweedFsService,
         },
     ],
     exports: [DocumentService],

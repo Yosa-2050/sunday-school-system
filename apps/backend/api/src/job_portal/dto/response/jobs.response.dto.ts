@@ -21,6 +21,7 @@ export class JobResponseDto {
         this.description = job.description;
         this.note = job.notes;
         this.currency = job.currency;
+        this.isPublished = job.isPublished;
     }
     id: string;
     title: string;
@@ -59,7 +60,7 @@ export class JobResponseDto {
 
     ///jobCategory: JobCategory[];
 
-    //isPublished: boolean;
+    isPublished: boolean;
 
     postedDate: Date;
 

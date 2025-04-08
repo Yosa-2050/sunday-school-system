@@ -12,6 +12,14 @@ export class TransformInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler) {
         return next.handle().pipe(
             map((data) => {
+                if (
+                    typeof data === 'string' ||
+                    Buffer.isBuffer(data) ||
+                    typeof data?.pipe === 'function' // detects stream-like objects
+                ) {
+                    return data;
+                }
+
                 if (Array.isArray(data)) {
                     return data.map((item) => instanceToPlain(item));
                 }

@@ -41,8 +41,8 @@ async function bootstrap() {
     const userService = app.get(UsersService);
 
     const seedUser = new CreateUserDto();
-    seedUser.email = 'heraniadmin@yopmail.com';
-    seedUser.password = 'P@ssw0rd';
+    seedUser.email = process.env.default_user || 'heraniadmin@yopmail.com';
+    seedUser.password = process.env.default_password || 'P@ssw0rd';
 
     try {
         await userService.createMainAdministrator(seedUser);
