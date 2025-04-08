@@ -29,7 +29,7 @@ export class Jobs extends BaseModel {
     @Column()
     title: string;
 
-    @Column()
+    @Column({ nullable: true })
     description: string;
 
     @Column({ nullable: true })

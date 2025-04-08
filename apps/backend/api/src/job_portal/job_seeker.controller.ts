@@ -9,14 +9,19 @@ import {
     Post,
     Put,
     Request,
+    UploadedFile,
+    UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Express } from 'express';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
@@ -43,6 +48,24 @@ export class JobSeekerController {
         private readonly jobPortalService: JobPortalService,
         private readonly jobsService: JobsService,
     ) {}
+
+    @Post('upload/cv')
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
+    @UseInterceptors(FileInterceptor('file'))
+    uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
+        return this.jobsService.uploadCv(CurrentUser.getApplicantId(req), file);
+    }
 
     @Post('jobs')
     getAllPending(@Body() dto: { q: string }) {

@@ -97,6 +97,18 @@ export class JobPortalController {
         return this.jobPortalService.getJobsByStatusAndByOrgPaginated(
             CurrentUser.getOrganizationId(req),
             dto.q,
+            null,
+            true,
+        );
+    }
+
+    @Roles(UserRoleType.WorkProvider)
+    @Post('byProvider/draft')
+    getAllDraftJobsByPorvider(@Request() req, @Body() dto: { q: string }) {
+        return this.jobPortalService.getJobsByStatusAndByOrgPaginated(
+            CurrentUser.getOrganizationId(req),
+            dto.q,
+            true,
         );
     }
 

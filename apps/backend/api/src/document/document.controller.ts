@@ -7,13 +7,14 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Res,
     UploadedFile,
     UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Express } from 'express';
+import { Express, Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from './document.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -35,8 +36,18 @@ export class DocumentController {
     }
 
     @Get(':id')
-    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.documentService.findOne(id);
+    async findOne(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Res() res: Response,
+    ) {
+        const response = await this.documentService.findOne(id);
+        const byteArray = await response.file;
+        res.set({
+            'Content-Type': `${response.doc.fileType}`, // Change this based on your file type
+            'Content-Disposition': `attachment; filename=${response.doc.fileName}`,
+            'Content-Length': byteArray.length,
+        });
+        res.end(byteArray);
     }
 
     @Patch(':id')

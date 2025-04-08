@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
-import { ApiResponseDto } from '@shega/Utilities/models/api-response.model';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
@@ -153,11 +152,18 @@ export class JobPortalService {
 
     async getJobsByStatusPaginated(paginationDto: string, exportList = false) {
         let { p, pp } = entityParamDeserializer(paginationDto);
-
         if (exportList) {
             p = 0;
             pp = 0;
         }
+        const deserialized = entityParamDeserializer(paginationDto);
+        const queryString = entityParamSerializer({
+            ...deserialized,
+            f: [
+                { f: 'isPublished', v: 'true', o: 'eq' },
+                ...(deserialized.f ?? []),
+            ],
+        });
 
         const joinOptions = [
             {
@@ -178,7 +184,7 @@ export class JobPortalService {
 
         const { data: jobs, total } = await this.queryBuilderService.buildQuery(
             this.jobRepo,
-            paginationDto,
+            queryString,
             joinOptions,
             searchableColumns,
         );
@@ -194,6 +200,8 @@ export class JobPortalService {
     async getJobsByStatusAndByOrgPaginated(
         organizationId: string,
         paginationDto: string,
+        isOnlyDraft?: boolean,
+        isOnlyPublished?: boolean,
     ) {
         const deserialized = entityParamDeserializer(paginationDto);
 
@@ -202,10 +210,19 @@ export class JobPortalService {
             'jobs.description',
             'organization.name',
         ];
+
         const queryString = entityParamSerializer({
             ...deserialized,
             f: [
                 { f: 'organization.id', v: organizationId, o: 'eq' }, // Uncommented filter
+                isOnlyDraft ? { f: 'isPublished', v: 'false', o: 'eq' } : {},
+                isOnlyPublished
+                    ? {
+                          f: 'isPublished',
+                          v: isOnlyPublished.toString(),
+                          o: 'eq',
+                      }
+                    : {},
                 ...(deserialized.f ?? []),
             ],
         });
@@ -248,6 +265,9 @@ export class JobPortalService {
 
     async jobApproval(id: string, status: ApprovalType, note = '') {
         const job = await this.jobRepo.findOneBy({ id });
+        if (!job?.isPublished) {
+            throw new BadRequestException('Job is not published');
+        }
         if (job?.status !== ApprovalType.Waiting_Approval) {
             throw new BadRequestException(
                 'Job is not on waiting approval status',
@@ -257,10 +277,8 @@ export class JobPortalService {
             status,
             notes: note,
         });
-        if (updatedJob) {
-            return new ApiResponseDto(200);
-        }
-        return new ApiResponseDto(100);
+
+        return UtilityServices.EnsureUpdated(updatedJob, id);
     }
 
     findAll() {

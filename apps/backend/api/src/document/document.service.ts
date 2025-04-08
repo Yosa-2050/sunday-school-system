@@ -1,6 +1,11 @@
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import { Readable } from 'stream';
-import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Inject,
+    Injectable,
+    NotImplementedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { stringify } from 'csv-stringify';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -25,9 +30,7 @@ export class DocumentService {
     ) {}
 
     async create(file: Express.Multer.File, referenceId: string) {
-        const file_location = await this.documentService.upload(
-            await this.convertFileToBase64(file),
-        );
+        const file_location = await this.documentService.upload(file);
 
         const document = this.repo.create({
             fileName: file.originalname,
@@ -48,9 +51,11 @@ export class DocumentService {
     async findOne(id: string) {
         const doc = await this.repo.findOneBy({ id });
         if (doc) {
-            return doc.filePath;
+            //return doc.filePath;
+            const file = await this.documentService.download(doc.filePath);
+            return { doc, file };
         }
-        return '';
+        throw new BadRequestException('File not found');
     }
 
     findDocumentsByReferenceId(referenceId: string): Promise<Document[]> {

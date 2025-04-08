@@ -21,6 +21,7 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -47,6 +48,27 @@ export class ProfileController {
         private notificationService: NotificationService,
         private passwordService: PasswordService,
     ) {}
+
+    @Post('upload/profilePicture')
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
+    @UseInterceptors(FileInterceptor('file'))
+    uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
+        return this.profileService.uploadProfilePicture(
+            CurrentUser.getProfileId(req),
+            file,
+        );
+    }
 
     @Post('/new')
     async create(@Body() dto: CreateUserDto) {

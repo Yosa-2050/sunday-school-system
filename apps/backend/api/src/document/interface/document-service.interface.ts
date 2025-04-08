@@ -1,6 +1,9 @@
+// biome-ignore lint/style/useImportType: <explanation>
+import { Express } from 'express';
+
 export const IDocumentInterface = Symbol('IDocumentService');
 
 export interface IDocumentService {
-    upload(content: string): Promise<string>;
-    download(reference: string): string;
+    upload(file: Express.Multer.File): Promise<string>;
+    download(reference: string): Promise<Uint8Array>;
 }
