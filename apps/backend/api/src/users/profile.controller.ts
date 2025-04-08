@@ -3,6 +3,7 @@ import {
     Body,
     Controller,
     Delete,
+    ForbiddenException,
     Get,
     Param,
     ParseUUIDPipe,
@@ -24,6 +25,7 @@ import {
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
+import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
@@ -35,7 +37,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { NewProfileDto } from './dto/new-profile.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { UserRoleValue } from './enums/user-role.enum';
+import { UserRoleType, UserRoleValue } from './enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
 
@@ -70,8 +72,16 @@ export class ProfileController {
         );
     }
 
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Post('/new')
-    async create(@Body() dto: CreateUserDto) {
+    async create(@Request() req, @Body() dto: CreateUserDto) {
+        if (
+            (dto.role === UserRoleType.Administrator ||
+                dto.role === UserRoleType.SuperAdmin) &&
+            CurrentUser.getRole(req) !== UserRoleType.SuperAdmin
+        ) {
+            throw new ForbiddenException('Unable to create an administrator');
+        }
         const pwdGenerated = this.passwordService.generatePassword();
 
         const user = await this.profileService.createNewUserProfileQDE(

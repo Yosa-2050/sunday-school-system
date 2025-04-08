@@ -25,9 +25,9 @@ export class AdminReportService {
         response.totalRegisteredJobSeekers = await this.getCountUserByRole(
             UserRoleType.JobSeeker,
         );
-        response.totalRegisteredAdmin = await this.getCountUserByRole(
-            UserRoleType.Administrator,
-        );
+        response.totalRegisteredAdmin =
+            (await this.getCountUserByRole(UserRoleType.Administrator)) +
+            (await this.getCountUserByRole(UserRoleType.SuperAdmin));
 
         return response;
     }

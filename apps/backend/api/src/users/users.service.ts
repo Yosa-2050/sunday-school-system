@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    ForbiddenException,
+    Inject,
+    Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
@@ -47,7 +52,7 @@ export class UsersService {
         const user = this.userRepo.create(createUserDto);
         user.email = user.email.toLowerCase();
         const roles = this.userRoleRepo.create();
-        roles.role = UserRoleType.Administrator;
+        roles.role = UserRoleType.SuperAdmin;
         user.roles = [roles];
         roles.isDefault = true;
         user.password = await this.passwordService.hashPassword(user.password);
@@ -119,6 +124,9 @@ export class UsersService {
                 user.password,
             ))
         ) {
+            if (!user.isActive) {
+                throw new ForbiddenException('Your account is in active');
+            }
             return user;
         }
         return null;
@@ -147,6 +155,17 @@ export class UsersService {
 
     update(id: string, updateUserDto: UpdateUserDto) {
         return `This action updates a #${id} user`;
+    }
+
+    async deactiveUser(id: string) {
+        const update = await this.userRepo.preload({
+            id,
+            isActive: false,
+        });
+        if (!update) {
+            throw new BadRequestException('User not found');
+        }
+        return this.userRepo.save(update);
     }
 
     remove(id: string) {

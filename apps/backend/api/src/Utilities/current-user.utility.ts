@@ -3,6 +3,10 @@ import { BadRequestException } from '@nestjs/common';
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CurrentUser {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static getRole(req: any): string {
+        return req?.user?.role;
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     static getEmployeeOrgId(req: any): string {
         const employeeOrgId = req?.user?.details?.employeeOrgId;
         if (!employeeOrgId) {

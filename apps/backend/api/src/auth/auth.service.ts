@@ -75,6 +75,8 @@ export class AuthService {
         switch (defaultRole) {
             case UserRoleType.Administrator:
                 break;
+            case UserRoleType.SuperAdmin:
+                break;
             case UserRoleType.WorkProvider:
                 details = await this.organizationService.getOrganizationDetail(
                     user.profile.id,

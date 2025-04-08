@@ -1,4 +1,5 @@
 export enum UserRoleType {
+    SuperAdmin = 'SUPER_ADMIN',
     JobSeeker = 'JOB_SEEKER',
     Administrator = 'ADMINISTRATOR',
     WorkProvider = 'WORK_PROVIDER',
@@ -19,6 +20,10 @@ export function UserRoleValue(value: string) {
             retVal.url = process.env.PORTAL_URL;
             break;
         case UserRoleType.Administrator.toString():
+            retVal.value = 'Administrator';
+            retVal.url = process.env.OFFICE_URL;
+            break;
+        case UserRoleType.SuperAdmin.toString():
             retVal.value = 'Administrator';
             retVal.url = process.env.OFFICE_URL;
             break;
