@@ -7,11 +7,13 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Put,
     Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ExportWithQuesryRequestModel } from '@shega/Utilities/models/list-string.model';
+import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -27,6 +29,7 @@ import { updatePasswordRequest } from './dto/update-password.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginBy } from './enums/login-by.enum';
+import { UserRoleType } from './enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from './users.service';
 
@@ -107,5 +110,11 @@ export class UsersController {
     @Delete(':id')
     remove(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.usersService.remove(id);
+    }
+
+    @Roles(UserRoleType.SuperAdmin)
+    @Put('deactivate/:userId')
+    deactivateUser(@Param('userId') userId: string) {
+        return this.usersService.deactiveUser(userId);
     }
 }

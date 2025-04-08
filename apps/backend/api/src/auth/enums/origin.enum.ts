@@ -10,6 +10,7 @@ export function validateRole(role: UserRoleType, origin: OriginEnums): boolean {
     const portalRoles: UserRoleType[] = [UserRoleType.JobSeeker];
     const officeRoles: UserRoleType[] = [
         UserRoleType.Administrator,
+        UserRoleType.SuperAdmin,
         UserRoleType.WorkProvider,
     ];
     if (origin === OriginEnums.office) {

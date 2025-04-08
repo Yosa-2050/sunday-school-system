@@ -42,7 +42,7 @@ export class JobPortalController {
         private readonly documentService: DocumentService,
     ) {}
 
-    @Roles(UserRoleType.Administrator)
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Post('newUser')
     createNewUser(@Body() dto: CreateBasicUserDto) {
         return this.jobPortalService.createJobSeeker(dto);
@@ -58,13 +58,13 @@ export class JobPortalController {
         );
     }
 
-    @Roles(UserRoleType.Administrator)
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Post('jobsByStatus')
     getAllByStatus(@Body() dto: { q: string }) {
         return this.jobPortalService.getJobsByStatusPaginated(dto.q);
     }
 
-    @Roles(UserRoleType.Administrator)
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Post('jobsByStatus/export')
     async exportByStatus(@Res() res: Response, @Body() dto: { q: string }) {
         const data = await this.jobPortalService.getJobsByStatusPaginated(
@@ -73,7 +73,7 @@ export class JobPortalController {
         this.documentService.generateCsv(data.data, res, 'jobList');
     }
 
-    @Roles(UserRoleType.Administrator)
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Post('jobsByStatus/exportSelected')
     async exportSelected(
         @Res() res: Response,
@@ -112,13 +112,13 @@ export class JobPortalController {
         );
     }
 
-    @Roles(UserRoleType.Administrator)
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Patch('approve/:id')
     approveJob(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.jobPortalService.jobApproval(id, ApprovalType.Approved);
     }
 
-    @Roles(UserRoleType.Administrator)
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Patch('decline/:id')
     declineJob(
         @Param('id', new ParseUUIDPipe()) id: string,

@@ -10,7 +10,7 @@ import { AdminReportService } from './admin-report.service';
 export class AdminReportController {
     constructor(private readonly adminReportService: AdminReportService) {}
 
-    @Roles(UserRoleType.Administrator)
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Get('getCountTotals')
     async getCountTotals() {
         return await this.adminReportService.getCountTotals();
