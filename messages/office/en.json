@@ -246,7 +246,7 @@
             "companyNameRequired": "Organization name is required"
         }
     },
-    "draftListPage":{
+    "draftListPage": {
         "title": "Draft Job Listings",
         "searchPlaceholder": "Search by Org Name or Job Title"
     },
