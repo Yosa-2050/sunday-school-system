@@ -51,7 +51,7 @@ export class AddressController {
         @Param('referenceId') referenceId: string,
         @Param('referenceType') referenceType: ReferenceType,
     ) {
-        return this.addressService.getContanctByRefernce(
+        return this.addressService.getContactByRefernce(
             referenceId,
             referenceType,
         );

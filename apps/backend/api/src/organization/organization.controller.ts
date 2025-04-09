@@ -106,11 +106,14 @@ export class OrganizationController {
     }
 
     @Patch(':id')
-    update(
+    updateOrganization(
         @Param('id') id: string,
         @Body() updateOrganizationDto: UpdateOrganizationDto,
     ) {
-        return this.organizationService.update(+id, updateOrganizationDto);
+        return this.organizationService.updateOrganization(
+            id,
+            updateOrganizationDto,
+        );
     }
 
     @Delete(':id')

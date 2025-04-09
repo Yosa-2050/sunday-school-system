@@ -163,7 +163,7 @@ export class OrganizationService {
         if (!organization) {
             throw new BadRequestException('Organization not found');
         }
-        const contactDetails = await this.addressService.getContanctByRefernce(
+        const contactDetails = await this.addressService.getContactByRefernce(
             organization.id,
             ReferenceType.Organization,
         );
@@ -176,8 +176,13 @@ export class OrganizationService {
         return organization;
     }
 
-    update(id: number, updateOrganizationDto: UpdateOrganizationDto) {
-        return `This action updates a #${id} organization`;
+    async updateOrganization(
+        id: string,
+        updateOrganizationDto: Partial<UpdateOrganizationDto>,
+    ) {
+        const organization = await this.findOne(id);
+        Object.assign(organization, updateOrganizationDto);
+        return this.organizationRepo.save(organization);
     }
 
     remove(id: number) {
