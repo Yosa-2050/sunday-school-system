@@ -130,7 +130,7 @@ export class AddressService {
         });
     }
 
-    getContanctByRefernce(referenceId: string, referenceType: ReferenceType) {
+    getContactByRefernce(referenceId: string, referenceType: ReferenceType) {
         return this.addressRepo.findBy({
             reference: referenceId,
             referenceType: referenceType,
