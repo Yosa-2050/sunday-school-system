@@ -1,141 +1,45 @@
 variables:
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-  GIT_DEPTH: "0"
-  COOLIFY_WEBHOOK_PORTAL: "https://coo.heranitech.com/api/v1/deploy?uuid=fwkws8sss4kko048o4gw0wco&force=false"
-  COOLIFY_WEBHOOK_OFFICE: "https://coo.heranitech.com/api/v1/deploy?uuid=l4cwggcgo44cog08oksgk04w&force=false"
-  COOLIFY_WEBHOOK_API: "https://coo.heranitech.com/api/v1/deploy?uuid=t80kscwwcwgo40k0gw0ggwc0&force=false"
+  GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis taskk
 
 default:
   image: node:22
-  before_script:
-    - "corepack enable"
-    - "corepack prepare pnpm@9.0.0 --activate"
-    - "pnpm config set store-dir .pnpm-store"
 
 stages:
   - build
   - staging
-  - deploy
 
-# Build stage (split for each app)
-build_portal:
+build:
   stage: build
+  image: node:22
+  only:
+    - merge_requests
+  before_script:
+    - npm install --global corepack@latest
+    - corepack enable
+    - corepack prepare pnpm@9.0.0 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
-    - "echo 'NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}'" # Debugging
-    - "pnpm install"
-    - "pnpm run format"
-    - "pnpm --filter portal build" # Builds only portal
-  artifacts:
-    paths:
-      - apps/frontend/portal/dist/ # Adjust if output differs
-    expire_in: 1 hour
-  rules:
-    - changes:
-        - apps/frontend/portal/**/*
+    - pnpm install
+    - pnpm run format:error
+    - pnpm run build
 
-build_office:
-  stage: build
-  script:
-    - "echo 'NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}'" # Debugging
-    - "pnpm install"
-    - "pnpm run format"
-    - "pnpm --filter office build" # Builds only office
-  artifacts:
-    paths:
-      - apps/frontend/office/dist/ # Adjust if output differs
-    expire_in: 1 hour
-  rules:
-    - changes:
-        - apps/frontend/office/**/*
-
-build_api:
-  stage: build
-  script:
-    - "pnpm install"
-    - "pnpm run format"
-    - "pnpm --filter api build" # Builds only api
-  artifacts:
-    paths:
-      - apps/backend/api/dist/ # Adjust if output differs
-    expire_in: 1 hour
-  rules:
-    - changes:
-        - apps/backend/api/**/*
-
-# build_sonar:
-#   stage: build
-#   image: sonarsource/sonar-scanner-cli:11
-#   cache:
-#     policy: pull-push
-#     key: "sonar-cache-$CI_COMMIT_REF_SLUG"
-#     paths:
-#       - "${SONAR_USER_HOME}/cache"
-#       - sonar-scanner/
-#   before_script: [] # Override default before_script
-#   script:
-#     - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
-#   artifacts:
-#     paths:
-#       - sonar-project.properties # Ensure the file is available
-#   allow_failure: true
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-#     - if: $CI_COMMIT_BRANCH == 'master'
-#     - if: $CI_COMMIT_BRANCH == 'main'
-#     - if: $CI_COMMIT_BRANCH == 'develop'
-
-# Staging stage (for develop branch)
 staging:
   stage: staging
+  image: node:22
   only:
     - develop
-  dependencies:
-    - build_portal
-    - build_office
-    - build_api
-  services:
-    - postgres:16 # PostgreSQL container
+  before_script:
+    - npm install --global corepack@latest
+    - corepack enable
+    - corepack prepare pnpm@latest-10 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
-    - "pnpm install"
-    - "pnpm run format"
-
-deploy_portal:
-  stage: deploy
-  script:
-    - "echo 'Deploying portal to Coolify...'"
-    - "echo 'Branch: $CI_COMMIT_BRANCH'"
-    - "echo 'API Token: $COOLIFY_API_TOKEN'"
-    - "echo 'Webhook: $COOLIFY_WEBHOOK_PORTAL'"
-    - 'curl -X POST "$COOLIFY_WEBHOOK_PORTAL" -H "Authorization: Bearer $COOLIFY_API_TOKEN" -w '' HTTP Status: %{http_code}'''
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-      changes:
-        - apps/frontend/portal/**/*
-        - packages/shared/**/*
-        - packages/ui/**/*
-
-# Deploy office to Coolify
-deploy_office:
-  stage: deploy
-  script:
-    - "echo 'Deploying office to Coolify...'"
-    - 'curl -X POST "$COOLIFY_WEBHOOK_OFFICE" -H "Authorization: Bearer $COOLIFY_API_TOKEN"'
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-      changes:
-        - apps/frontend/office/**/*
-        - packages/shared/**/*
-        - packages/ui/**/* # Added per your update
-
-# Deploy API to Coolify
-deploy_api:
-  stage: deploy
-  script:
-    - "echo 'Deploying api to Coolify...'"
-    - 'curl -X POST "$COOLIFY_WEBHOOK_API" -H "Authorization: Bearer $COOLIFY_API_TOKEN"'
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-      changes:
-        - apps/backend/api/**/*
-        - packages/shared/**/*
-        - packages/ui/**/* # Added for consistency, adjust if not needed
+    - pnpm install
+    - pnpm run format
+    - pnpm run build
+  cache:
+    key:
+      files:
+        - pnpm-lock.yaml
+    paths:
+      - .pnpm-store
