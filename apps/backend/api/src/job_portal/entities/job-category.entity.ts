@@ -6,7 +6,6 @@ import { Jobs } from './jobs.entity';
 @Entity()
 export class JobCategory extends BaseModel {
     @ManyToOne(() => Jobs, {
-        eager: true,
         nullable: false,
     })
     job: Jobs;
