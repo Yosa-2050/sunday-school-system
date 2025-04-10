@@ -25,95 +25,94 @@ export class CreateJobPortalDto {
     @ApiProperty()
     @IsString()
     @IsOptional()
-    description: string;
+    description?: string;
 
     @ApiProperty()
     @IsEnum(EmploymentType)
     @IsOptional()
     @Transform(({ value }) => (value === '' ? undefined : value))
-    type: EmploymentType;
+    type?: EmploymentType;
 
     @ApiProperty()
     @IsEnum(CurrencyType)
     @IsOptional()
     @Transform(({ value }) => (value === '' ? undefined : value))
-    currency: CurrencyType;
+    currency?: CurrencyType;
 
     @ApiProperty()
     @IsNumber()
     @IsOptional()
-    salaryFrom: number;
+    salaryFrom?: number;
 
     @ApiProperty()
     @IsNumber()
     @IsOptional()
-    salaryTo: number;
+    salaryTo?: number;
 
     @ApiProperty()
     @IsEnum(SalaryType)
     @Transform(({ value }) => (value === '' ? undefined : value))
     @IsOptional()
-    salaryType: SalaryType; //fixed, negotiable
+    salaryType?: SalaryType; //fixed, negotiable
 
     @ApiProperty()
     @IsEnum(SalaryFrequencyType)
     @Transform(({ value }) => (value === '' ? undefined : value))
     @IsOptional()
-    salaryFrequency: SalaryFrequencyType;
+    salaryFrequency?: SalaryFrequencyType;
 
     @ApiProperty()
     @IsEnum(WorkPlaceType)
     @Transform(({ value }) => (value === '' ? undefined : value))
     @IsOptional()
-    workPlace: WorkPlaceType;
+    workPlace?: WorkPlaceType;
 
     @ApiProperty()
     @IsString()
     @IsUUID()
     @IsOptional()
     @Transform(({ value }) => (value === '' ? undefined : value))
-    stateId: string;
+    stateId?: string;
 
     @ApiProperty()
     @IsString()
     @IsUUID()
     @IsOptional()
     @Transform(({ value }) => (value === '' ? undefined : value))
-    cityId: string;
+    cityId?: string;
 
     @ApiProperty()
     @IsEnum(ExperianceLevelType)
     @Transform(({ value }) => (value === '' ? undefined : value))
     @IsOptional()
-    experianceLevel: ExperianceLevelType;
+    experianceLevel?: ExperianceLevelType;
 
     @ApiProperty()
     @IsNumber()
     @IsOptional()
-    experiance: number;
+    experiance?: number;
 
     @ApiProperty()
     @IsOptional()
-    deadline: Date;
+    deadline?: Date;
 
     @ApiProperty()
     @IsEnum(EducationalRequirmentType)
     @Transform(({ value }) => (value === '' ? undefined : value))
     @IsOptional()
-    educationalRequirment: EducationalRequirmentType;
+    educationalRequirment?: EducationalRequirmentType;
 
     @ApiProperty()
     @IsArray()
     @IsOptional()
-    skills: string[];
+    skills?: string[];
 
     @ApiProperty()
     @IsArray()
     @IsOptional()
-    catagories: string[];
+    catagories?: string[];
 
     @ApiProperty()
     @IsBoolean()
-    @IsOptional()
     isPublished: boolean;
 }
