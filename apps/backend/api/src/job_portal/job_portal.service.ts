@@ -123,8 +123,12 @@ export class JobPortalService {
         const skills = this.GetSkills(dto);
 
         const category = await this.GetCategories(dto);
-        if(category?.length > 0) {job.jobCategory = category;}
-        if(skills?.length > 0) {job.jobSkills = skills;}
+        if (category?.length > 0) {
+            job.jobCategory = category;
+        }
+        if (skills?.length > 0) {
+            job.jobSkills = skills;
+        }
         job.postedBy = employeeOrg;
         job.organization = organization;
         job.status = ApprovalType.Waiting_Approval;
@@ -133,7 +137,7 @@ export class JobPortalService {
 
     private async GetJob(dto: CreateJobPortalDto) {
         const job = this.jobRepo.create(dto);
-       
+
         job.country = await this.addressService.findDefaultCountry();
         job.state = dto.stateId
             ? await this.addressService.findLocationInfoById(dto.stateId)
@@ -141,30 +145,40 @@ export class JobPortalService {
         job.city = dto.cityId
             ? await this.addressService.findLocationInfoById(dto.cityId)
             : null;
-       
+
         return job;
     }
 
-    private GetSkills(dto: CreateJobPortalDto,job: Jobs = null) {
-        return dto.skills?.map((skill) => {
-            const jobSkill = this.jobSkillsRepo.create();
-            jobSkill.skill = skill;
-            if(job) {jobSkill.job = job}; 
-            return jobSkill;
-        }).filter(x => x);
+    private GetSkills(dto: CreateJobPortalDto, job: Jobs = null) {
+        return dto.skills
+            ?.map((skill) => {
+                const jobSkill = this.jobSkillsRepo.create();
+                jobSkill.skill = skill;
+                if (job) {
+                    jobSkill.job = job;
+                }
+                return jobSkill;
+            })
+            .filter((x) => x);
     }
 
-    private async GetCategories(dto: CreateJobPortalDto,job: Jobs = null) {
+    private async GetCategories(dto: CreateJobPortalDto, job: Jobs = null) {
         const categories = await this.categoryRepo.find();
 
-        const category = dto.catagories?.map((category) => {
-            const newCatagory = categories.find((x) => x.id === category);
-            if (!newCatagory) { return null; }
-            const jobCategory = this.jobCategoryRepo.create();
-            jobCategory.category = newCatagory;
-            if(job) {jobCategory.job = job}; 
-            return jobCategory;
-        }).filter(x => x);
+        const category = dto.catagories
+            ?.map((category) => {
+                const newCatagory = categories.find((x) => x.id === category);
+                if (!newCatagory) {
+                    return null;
+                }
+                const jobCategory = this.jobCategoryRepo.create();
+                jobCategory.category = newCatagory;
+                if (job) {
+                    jobCategory.job = job;
+                }
+                return jobCategory;
+            })
+            .filter((x) => x);
         return category;
     }
 
@@ -304,33 +318,39 @@ export class JobPortalService {
     }
 
     findOne(id: string) {
-        return this.jobRepo.findOne({ where: {id}, relations: ["jobCategory", "jobSkills"] });   
+        return this.jobRepo.findOne({
+            where: { id },
+            relations: ['jobCategory', 'jobSkills'],
+        });
     }
 
-    async update(id: string, dto: UpdateJobPortalDto,
-        organizationId: string) {
-        const job = await this.jobRepo.findOneBy({id, organization: {id: organizationId}});
+    async update(id: string, dto: UpdateJobPortalDto, organizationId: string) {
+        const job = await this.jobRepo.findOneBy({
+            id,
+            organization: { id: organizationId },
+        });
 
-        if(!job){
-            throw new BadRequestException("Job not found");
+        if (!job) {
+            throw new BadRequestException('Job not found');
         }
 
         const createDto: CreateJobPortalDto = {
             ...dto,
             title: dto.title ?? job.title,
-            isPublished: dto.isPublished ?? job.isPublished
-          };
+            isPublished: dto.isPublished ?? job.isPublished,
+        };
         const updateJob = await this.GetJob(createDto);
         await this.jobSkillsRepo.delete({ job: { id: id } });
         await this.jobSkillsRepo.save(await this.GetSkills(createDto, job));
 
         await this.jobCategoryRepo.delete({ job: { id: id } });
-        await this.jobCategoryRepo.save(await this.GetCategories(createDto, job));
-        
+        await this.jobCategoryRepo.save(
+            await this.GetCategories(createDto, job),
+        );
+
         const updated = await this.jobRepo.update(id, updateJob);
 
         return UtilityServices.EnsureUpdated(updated, id);
-
     }
 
     remove(id: number) {

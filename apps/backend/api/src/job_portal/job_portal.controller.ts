@@ -142,8 +142,11 @@ export class JobPortalController {
         @Body() updateJobPortalDto: UpdateJobPortalDto,
         @Request() req,
     ) {
-        return this.jobPortalService.update(id, updateJobPortalDto,
-        CurrentUser.getOrganizationId(req));
+        return this.jobPortalService.update(
+            id,
+            updateJobPortalDto,
+            CurrentUser.getOrganizationId(req),
+        );
     }
 
     @Delete(':id')

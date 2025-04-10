@@ -83,14 +83,14 @@ export class Jobs extends BaseModel {
     @OneToMany(
         () => JobSkills,
         (skill) => skill.job,
-        { cascade: true, onUpdate: "CASCADE" },
+        { cascade: true, onUpdate: 'CASCADE' },
     )
     jobSkills: JobSkills[];
 
     @OneToMany(
         () => JobCategory,
         (category) => category.job,
-        { cascade: true, onUpdate: "CASCADE" },
+        { cascade: true, onUpdate: 'CASCADE' },
     )
     jobCategory: JobCategory[];
 
