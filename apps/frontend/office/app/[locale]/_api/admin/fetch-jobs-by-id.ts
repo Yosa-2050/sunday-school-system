@@ -1,5 +1,24 @@
 import { fetcher } from '@shega/shared';
 
+export interface JobCategory {
+    id: string;
+    isActive: boolean;
+    category: Category;
+}
+
+export interface Category {
+    id: string;
+    isActive: boolean;
+    name: string;
+    isRoot: boolean;
+    hasChild: boolean;
+}
+
+export interface JobSkill {
+    id: string;
+    isActive: boolean;
+    skill: string;
+}
 export interface JobDetailsViewProps {
     id: string;
     isActive: boolean;
@@ -20,6 +39,8 @@ export interface JobDetailsViewProps {
     notes: string | null;
     isPublished: boolean;
     postedDate: string | null;
+    jobCategory: JobCategory[];
+    jobSkills: JobSkill[];
     country: {
         id: string;
         isActive: boolean;

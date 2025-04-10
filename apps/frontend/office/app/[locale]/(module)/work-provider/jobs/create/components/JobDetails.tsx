@@ -83,7 +83,7 @@ export const JobDetails = ({
 
                 <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
-                        name="workPlaceType"
+                        name="workPlace"
                         control={control}
                         render={({ field }) => (
                             <Select
@@ -92,7 +92,7 @@ export const JobDetails = ({
                                 data={mapEnumToOptions(workPlaceTypes.data)}
                                 value={field.value}
                                 onChange={field.onChange}
-                                error={errors.workPlaceType?.message}
+                                error={errors.workPlace?.message}
                                 required
                             />
                         )}

@@ -25,7 +25,6 @@ import {
 } from 'app/[locale]/_api/job-details';
 import {
     type CreateJob,
-    createJob,
     updateJob,
 } from 'app/[locale]/_api/organizations/create-jobs';
 import { getCookie } from 'cookies-next';
@@ -48,7 +47,7 @@ const getDefaultValues = (job: JobDetailsViewProps | undefined) => {
         title: job.title,
         description: job.description,
         type: job.type as 'FULL_TIME' | 'PART_TIME' | 'Contract' | 'Internship',
-        workPlaceType: job.workPlace || '',
+        workPlace: job.workPlace || '',
         salaryType: job.salaryType || '',
         currency: job.currency,
         salaryFrom: job.salaryFrom,
@@ -97,7 +96,7 @@ const DraftJobEdit = () => {
                       | 'PART_TIME'
                       | 'Contract'
                       | 'Internship',
-                  workPlaceType: job.workPlace || '',
+                  workPlace: job.workPlace || '',
                   salaryType: job.salaryType || '',
                   currency: job.currency,
                   salaryFrom: job.salaryFrom,
@@ -115,8 +114,8 @@ const DraftJobEdit = () => {
                       ? new Date(job.deadline)
                       : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
                   educationalRequirment: job.educationalRequirment,
-                  skills: [],
-                  catagories: [],
+                  skills: job.jobSkills.map((skill) => skill.skill),
+                  catagories: job.jobCategory.map((cat) => cat.category.id),
                   isPublished: false,
                   contactEmail: '',
                   applicationUrl: '',
@@ -141,7 +140,7 @@ const DraftJobEdit = () => {
         0: [
             'title',
             'type',
-            'workPlaceType',
+            'workPlace',
             'deadline',
             'countryId',
             'stateId',
@@ -234,7 +233,7 @@ const DraftJobEdit = () => {
         enabled: !!selectedState,
     });
     const jobMutation = useMutation({
-        mutationFn: createJob,
+        mutationFn: (data: CreateJob) => updateJob(data, jobId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobs'] });
             notifications.show({
@@ -243,7 +242,7 @@ const DraftJobEdit = () => {
                 color: 'green',
                 icon: <IconCheck size="1.1rem" />,
             });
-            router.push('/jobs');
+            router.push('/work-provider/jobs');
         },
         onError: (error) => {
             notifications.show({

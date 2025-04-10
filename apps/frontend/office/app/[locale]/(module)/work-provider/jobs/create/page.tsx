@@ -62,7 +62,7 @@ export default function PostJobPage() {
         0: [
             'title',
             'type',
-            'workPlaceType',
+            'workPlace',
             'deadline',
             'countryId',
             'stateId',

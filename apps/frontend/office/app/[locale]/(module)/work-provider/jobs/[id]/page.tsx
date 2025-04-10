@@ -109,6 +109,18 @@ export default function JobDetailsPage() {
         },
     };
 
+    const statusStyles = {
+        APPROVED: 'bg-green-500',
+        DECLINED: 'bg-red-500',
+        WAITINGAPPROVAL: 'bg-yellow-500',
+    };
+
+    const statusText = {
+        APPROVED: 'Approved',
+        DECLINED: 'Declined',
+        WAITINGAPPROVAL: 'Waiting Approval',
+    };
+
     return (
         <Container size="xl" py="xl" px="md">
             <Group mb="xl">
@@ -185,16 +197,18 @@ export default function JobDetailsPage() {
                             </div>
                         </Group>
                         <Stack gap="sm">
-                            <Badge
-                                size="lg"
-                                color={
-                                    jobData.status === 'Active'
-                                        ? 'teal'
-                                        : 'orange'
-                                }
+                            <span
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                    statusStyles[
+                                        job?.status as keyof typeof statusStyles
+                                    ] || 'bg-yellow-300'
+                                } text-white`}
+                                autoCapitalize="none"
                             >
-                                {jobData.status}
-                            </Badge>
+                                {statusText[
+                                    job?.status as keyof typeof statusText
+                                ] || job?.status}
+                            </span>
                             <Group gap="xs">
                                 <Button
                                     variant="outline"

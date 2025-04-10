@@ -15,7 +15,6 @@ import {
     IconCalendar,
     IconCapRounded,
     IconCurrencyDollar,
-    IconMapPin,
 } from '@tabler/icons-react';
 import parse from 'html-react-parser';
 import type { JobFormData } from './types';
@@ -50,7 +49,7 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                             {formData.type}
                         </Badge>
                         <Badge size="lg" variant="light">
-                            {formData.workPlaceType}
+                            {formData.workPlace}
                         </Badge>
                     </Group>
                 </div>
@@ -68,15 +67,14 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                         </Group>
                     </Grid.Col>
 
-                    <Grid.Col span={{ base: 12, sm: 6 }}>
-                        <Group gap="xs" mb="md">
-                            <IconMapPin size={20} className="text-gray-500" />
-                            <Text size="sm" c="dimmed">
-                                {formData.cityId} • {formData.stateId} •{' '}
-                                {formData.countryId}
-                            </Text>
-                        </Group>
-                    </Grid.Col>
+                    {/* <Grid.Col span={{ base: 12, sm: 6 }}>
+            <Group gap="xs" mb="md">
+              <IconMapPin size={20} className="text-gray-500" />
+              <Text size="sm" c="dimmed">
+                {formData.cityId} • {formData.stateId} • {formData.countryId}
+              </Text>
+            </Group>
+          </Grid.Col> */}
 
                     <Grid.Col span={{ base: 12, sm: 6 }}>
                         <Group gap="xs" mb="md">
@@ -151,7 +149,7 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                         </Group>
                     </div>
 
-                    <div>
+                    {/* <div>
                         <Text fw={500} size="sm" mb="xs">
                             Job Categories
                         </Text>
@@ -161,8 +159,8 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                     {category}
                                 </Badge>
                             ))}
-                        </Group>
-                    </div>
+                        </Group> */}
+                    {/* </div> */}
                 </div>
 
                 <Divider />
