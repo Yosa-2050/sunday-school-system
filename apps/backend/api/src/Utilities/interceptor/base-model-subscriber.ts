@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { Injectable } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ModuleRef } from '@nestjs/core';
