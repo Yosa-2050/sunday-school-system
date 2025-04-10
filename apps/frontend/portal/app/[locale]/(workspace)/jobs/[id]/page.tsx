@@ -367,8 +367,8 @@ export default function JobDetailsPage() {
                                                             req: string,
                                                             index: number,
                                                         ) => (
-                                                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                                             <List.Item
+                                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                                                 key={index}
                                                             >
                                                                 {req}
@@ -388,8 +388,8 @@ export default function JobDetailsPage() {
                                                             req: string,
                                                             index: number,
                                                         ) => (
-                                                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                                             <List.Item
+                                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                                                 key={index}
                                                             >
                                                                 {req}
