@@ -10,11 +10,14 @@ export type CreateUsers = {
 };
 
 export const createUsers = async (data: CreateUsers) => {
-    const response: CreateUsers[] = await fetcher('/profile/new', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-    });
+    const response: CreateUsers[] = await fetcher(
+        data.role === 'JOB_SEEKER' ? '/job-portal/newUser' : '/profile/new',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        },
+    );
 
     return response;
 };

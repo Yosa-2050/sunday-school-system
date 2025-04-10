@@ -1,4 +1,4 @@
-import { Divider, Grid, Text, TextInput } from '@mantine/core';
+import { Grid } from '@mantine/core';
 import { type Control, Controller, type FieldErrors } from 'react-hook-form';
 import { MemoizedRichTextEditor } from './MemoizedRichTextEditor';
 import type { JobFormData } from './types';
@@ -14,52 +14,6 @@ export const ApplicationDetails = ({
 }: ApplicationDetailsProps) => {
     return (
         <Grid>
-            <Grid.Col span={12}>
-                <Text fw={500} size="lg" mb="xs">
-                    Application Details
-                </Text>
-                <Divider mb="md" />
-            </Grid.Col>
-
-            <Grid.Col span={{ base: 12 }}>
-                <Controller
-                    name="contactEmail"
-                    control={control}
-                    render={({ field }) => (
-                        <TextInput
-                            label="Contact Email"
-                            placeholder="Email for applications"
-                            {...field}
-                            error={errors.contactEmail?.message}
-                            description="Optional: Provide an email for applicants to contact you directly"
-                        />
-                    )}
-                />
-            </Grid.Col>
-
-            <Grid.Col span={{ base: 12 }}>
-                <Controller
-                    name="applicationUrl"
-                    control={control}
-                    render={({ field }) => (
-                        <TextInput
-                            label="Application URL"
-                            placeholder="URL for applications"
-                            {...field}
-                            error={errors.applicationUrl?.message}
-                            description="Optional: External URL where candidates can apply"
-                        />
-                    )}
-                />
-            </Grid.Col>
-
-            <Grid.Col span={12} mt="md">
-                <Text fw={500} size="lg" mb="xs">
-                    Job Description
-                </Text>
-                <Divider mb="md" />
-            </Grid.Col>
-
             <Grid.Col span={{ base: 12 }}>
                 <Controller
                     control={control}

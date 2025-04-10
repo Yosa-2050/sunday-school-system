@@ -1,9 +1,9 @@
 'use client';
 
-import useIsAuthorized from '@/hooks/useIsAuthorized';
 import { Link, useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Container, Group, Paper, Stepper, Title } from '@mantine/core';
+import { Container } from '@mantine/core';
+import { Button, Group, Paper, Stepper, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
     IconArrowLeft,
@@ -11,7 +11,10 @@ import {
     IconCheck,
     IconCircleX,
 } from '@tabler/icons-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchJobsAdminById } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
+import type { JobDetailsViewProps } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
 import { fetchEnum } from 'app/[locale]/_api/enum';
 import {
     fetchCategories,
@@ -21,38 +24,113 @@ import {
     fetchSkills,
 } from 'app/[locale]/_api/job-details';
 import {
-    createJob,
-    saveJobDraft,
+    type CreateJob,
+    updateJob,
 } from 'app/[locale]/_api/organizations/create-jobs';
 import { getCookie } from 'cookies-next';
-import { useState } from 'react';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { ApplicationDetails } from './components/ApplicationDetails';
-import { JobDetails } from './components/JobDetails';
-import { JobPreview } from './components/JobPreview';
-import { JobRequirements } from './components/JobRequirements';
-import { jobSchema } from './components/shcema/job-schema';
-import type { JobFormData } from './components/types';
+import { ApplicationDetails } from '../../jobs/create/components/ApplicationDetails';
+import { JobDetails } from '../../jobs/create/components/JobDetails';
+import { JobPreview } from '../../jobs/create/components/JobPreview';
+import { JobRequirements } from '../../jobs/create/components/JobRequirements';
+import { jobSchema } from '../../jobs/create/components/shcema/job-schema';
+import type { JobFormData } from '../../jobs/create/components/types';
 
-export default function PostJobPage() {
-    const router = useRouter();
+const getDefaultValues = (job: JobDetailsViewProps | undefined) => {
+    if (!job) {
+        return { isPublished: false };
+    }
+
+    return {
+        title: job.title,
+        description: job.description,
+        type: job.type as 'FULL_TIME' | 'PART_TIME' | 'Contract' | 'Internship',
+        workPlace: job.workPlace || '',
+        salaryType: job.salaryType || '',
+        currency: job.currency,
+        salaryFrom: job.salaryFrom,
+        salaryTo: job.salaryTo,
+        salaryFrequency: job.salaryFrequency,
+        countryId: job.country?.id || '',
+        stateId: job.state?.id || '',
+        cityId: job.city?.id || '',
+        experianceLevel: job.experianceLevel as 'ENTRY' | 'MID' | 'SENIOR',
+        experiance: job.experiance,
+        deadline: job.deadline
+            ? new Date(job.deadline)
+            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        educationalRequirment: job.educationalRequirment,
+        skills: [],
+        catagories: [],
+        isPublished: false,
+        contactEmail: '',
+        applicationUrl: '',
+        additionalInfo: job.notes || '',
+    };
+};
+
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+const DraftJobEdit = () => {
+    const params = useParams();
+    const jobId = params.id as string;
     const queryClient = useQueryClient();
-    const { user } = useIsAuthorized({
-        resourceRole: 'work_provider',
-        userRole: 'work_provider',
-    });
-
     const [active, setActive] = useState(0);
+    const router = useRouter();
     const [formSubmitted, setFormSubmitted] = useState(false);
+
+    const { data: job, isLoading } = useQuery({
+        queryKey: ['job', jobId],
+        queryFn: () => fetchJobsAdminById(jobId),
+    });
 
     const methods = useForm<JobFormData>({
         resolver: zodResolver(jobSchema),
-        defaultValues: {
-            isPublished: false,
-        },
+        values: job
+            ? {
+                  title: job.title,
+                  description: job.description,
+                  type: job.type as
+                      | 'FULL_TIME'
+                      | 'PART_TIME'
+                      | 'Contract'
+                      | 'Internship',
+                  workPlace: job.workPlace || '',
+                  salaryType: job.salaryType || '',
+                  currency: job.currency,
+                  salaryFrom: job.salaryFrom,
+                  salaryTo: job.salaryTo,
+                  salaryFrequency: job.salaryFrequency,
+                  countryId: job.country?.id || '',
+                  stateId: job.state?.id || '',
+                  cityId: job.city?.id || '',
+                  experianceLevel: job.experianceLevel as
+                      | 'ENTRY'
+                      | 'MID'
+                      | 'SENIOR',
+                  experiance: job.experiance,
+                  deadline: job.deadline
+                      ? new Date(job.deadline)
+                      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                  educationalRequirment: job.educationalRequirment,
+                  skills: job.jobSkills.map((skill) => skill.skill),
+                  catagories: job.jobCategory.map((cat) => cat.category.id),
+                  isPublished: false,
+                  contactEmail: '',
+                  applicationUrl: '',
+                  additionalInfo: job.notes || '',
+              }
+            : undefined,
         mode: 'onChange',
-        reValidateMode: 'onChange', // Revalidate on every change
+        reValidateMode: 'onChange',
     });
+
+    useEffect(() => {
+        if (job) {
+            methods.reset(getDefaultValues(job));
+        }
+    }, [job, methods]);
 
     const { watch, trigger, control, formState } = methods;
     const { errors } = formState;
@@ -154,18 +232,17 @@ export default function PostJobPage() {
         },
         enabled: !!selectedState,
     });
-
     const jobMutation = useMutation({
-        mutationFn: createJob,
+        mutationFn: (data: CreateJob) => updateJob(data, jobId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobs'] });
-            router.push('work-provider/jobs');
             notifications.show({
                 title: 'Success',
                 message: 'Job posted successfully',
                 color: 'green',
                 icon: <IconCheck size="1.1rem" />,
             });
+            router.push('/work-provider/jobs');
         },
         onError: (error) => {
             notifications.show({
@@ -177,7 +254,7 @@ export default function PostJobPage() {
     });
 
     const draftMutation = useMutation({
-        mutationFn: saveJobDraft,
+        mutationFn: (data: CreateJob) => updateJob(data, jobId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobDrafts'] });
             notifications.show({
@@ -210,6 +287,8 @@ export default function PostJobPage() {
         jobMutation.mutate({
             ...data,
             organizationId: organizationId ?? '',
+            isPublished: true,
+            id: jobId,
         });
     };
 
@@ -272,7 +351,8 @@ export default function PostJobPage() {
                             Job Posted Successfully!
                         </Title>
                         <Button
-                            onClick={() => router.push('/work-provider/jobs')}
+                            component={Link}
+                            href="/work-provider/jobs"
                             leftSection={<IconArrowLeft size="1.1rem" />}
                         >
                             Back to Jobs
@@ -293,7 +373,7 @@ export default function PostJobPage() {
             >
                 <Group justify="space-between" align="center" py={'lg'}>
                     <Group>
-                        <Link href="/work-provider/jobs" passHref>
+                        <Link href="/work-provider/draft-jobs" passHref>
                             <Button
                                 variant="subtle"
                                 leftSection={<IconArrowLeft size={16} />}
@@ -301,7 +381,7 @@ export default function PostJobPage() {
                                 color="gray"
                             />
                         </Link>
-                        <Title order={2}>Post a New Job</Title>
+                        <Title order={2}>Edit Draft Job</Title>
                     </Group>
                 </Group>
 
@@ -434,4 +514,6 @@ export default function PostJobPage() {
             </Container>
         </FormProvider>
     );
-}
+};
+
+export default DraftJobEdit;

@@ -19,7 +19,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <ProtectedRoute>
             <Box>
                 <AppHeader />
-                {children}
+                <Box className="py-4">{children}</Box>
             </Box>
         </ProtectedRoute>
     );

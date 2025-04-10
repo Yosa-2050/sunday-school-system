@@ -13,9 +13,12 @@ export const jobSchema = z
             message:
                 'Type must be one of the following values: FULL_TIME, PART_TIME, Contract, Internship',
         }),
-        workPlaceType: z
+        workPlace: z
             .string({ required_error: 'Work place type is required' })
             .min(1, { message: 'Please select a work place type' }),
+        salaryType: z
+            .string({ required_error: 'Salary Type is required' })
+            .min(1, { message: 'Please select a Salary type' }),
         currency: z
             .string({ required_error: 'Currency is required' })
             .min(1, { message: 'Please select a currency' }),

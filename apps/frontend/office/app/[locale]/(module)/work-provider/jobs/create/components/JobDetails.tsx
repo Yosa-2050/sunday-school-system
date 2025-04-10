@@ -1,4 +1,12 @@
-import { Grid, Select, Stack, TextInput, Title } from '@mantine/core';
+import {
+    Divider,
+    Grid,
+    NumberInput,
+    Select,
+    Stack,
+    TextInput,
+    Title,
+} from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { Controller, useFormContext } from 'react-hook-form';
 import type { JobFormData } from './types';
@@ -10,6 +18,8 @@ interface JobDetailsProps {
     countries: { id: string; name: string }[];
     regions: { id: string; name: string }[];
     cities: { id: string; name: string }[];
+    salaryFrequencyTypes: { data: Record<string, string> };
+    salaryTypes: { data: Record<string, string> };
 }
 
 export const JobDetails = ({
@@ -18,6 +28,8 @@ export const JobDetails = ({
     countries,
     regions,
     cities,
+    salaryFrequencyTypes,
+    salaryTypes,
 }: JobDetailsProps) => {
     const {
         register,
@@ -32,8 +44,6 @@ export const JobDetails = ({
 
     return (
         <Stack gap="xl">
-            <Title order={3}>Job Details</Title>
-
             <Grid>
                 <Grid.Col span={{ base: 12, sm: 6 }}>
                     <TextInput
@@ -73,7 +83,7 @@ export const JobDetails = ({
 
                 <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
-                        name="workPlaceType"
+                        name="workPlace"
                         control={control}
                         render={({ field }) => (
                             <Select
@@ -82,7 +92,7 @@ export const JobDetails = ({
                                 data={mapEnumToOptions(workPlaceTypes.data)}
                                 value={field.value}
                                 onChange={field.onChange}
-                                error={errors.workPlaceType?.message}
+                                error={errors.workPlace?.message}
                                 required
                             />
                         )}
@@ -98,9 +108,10 @@ export const JobDetails = ({
                                 label="Application Deadline"
                                 placeholder="Select deadline"
                                 minDate={new Date()}
-                                valueFormat="YYYY-MM-DD"
-                                value={field.value}
-                                onChange={field.onChange}
+                                value={
+                                    field.value ? new Date(field.value) : null
+                                }
+                                onChange={(date) => field.onChange(date)}
                                 error={errors.deadline?.message}
                                 required
                             />
@@ -108,7 +119,7 @@ export const JobDetails = ({
                     />
                 </Grid.Col>
 
-                <Grid.Col span={{ base: 12, sm: 4 }}>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
                         name="countryId"
                         control={control}
@@ -133,14 +144,14 @@ export const JobDetails = ({
                     />
                 </Grid.Col>
 
-                <Grid.Col span={{ base: 12, sm: 4 }}>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
                         name="stateId"
                         control={control}
                         render={({ field }) => (
                             <Select
-                                label="State/Region"
-                                placeholder="Select state/region"
+                                label="Region/State"
+                                placeholder="Select region/state"
                                 data={regions.map((region) => ({
                                     value: region.id,
                                     label: region.name,
@@ -158,7 +169,7 @@ export const JobDetails = ({
                     />
                 </Grid.Col>
 
-                <Grid.Col span={{ base: 12, sm: 4 }}>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
                         name="cityId"
                         control={control}
@@ -175,6 +186,116 @@ export const JobDetails = ({
                                 error={errors.cityId?.message}
                                 required
                                 disabled={!selectedState}
+                            />
+                        )}
+                    />
+                </Grid.Col>
+            </Grid>
+
+            <Divider my="md" />
+
+            <Title order={3}>Salary and Compensation</Title>
+
+            <Grid>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                    <Controller
+                        name="salaryType"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                label="Salary Type"
+                                placeholder="Select Salary Type"
+                                data={mapEnumToOptions(salaryTypes.data)}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={errors.currency?.message}
+                                required
+                            />
+                        )}
+                    />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                    <Controller
+                        name="salaryFrom"
+                        control={control}
+                        render={({ field }) => (
+                            <NumberInput
+                                label="Minimum Salary"
+                                placeholder="Enter minimum salary"
+                                min={0}
+                                value={Number(field.value) || 0}
+                                onChange={(value) =>
+                                    field.onChange(Number(value))
+                                }
+                                error={errors.salaryFrom?.message}
+                                required
+                                hideControls
+                            />
+                        )}
+                    />
+                </Grid.Col>
+
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                    <Controller
+                        name="salaryTo"
+                        control={control}
+                        render={({ field }) => (
+                            <NumberInput
+                                label="Maximum Salary"
+                                placeholder="Enter maximum salary"
+                                min={0}
+                                value={Number(field.value) || 0}
+                                onChange={(value) =>
+                                    field.onChange(Number(value))
+                                }
+                                error={errors.salaryTo?.message}
+                                required
+                                hideControls
+                            />
+                        )}
+                    />
+                </Grid.Col>
+
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                    <Controller
+                        name="salaryFrequency"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                label="Salary Frequency"
+                                placeholder="Select salary frequency"
+                                data={mapEnumToOptions(
+                                    salaryFrequencyTypes.data,
+                                )}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={errors.salaryFrequency?.message}
+                                required
+                            />
+                        )}
+                    />
+                </Grid.Col>
+
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                    <Controller
+                        name="currency"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                label="Currency"
+                                placeholder="Select currency"
+                                data={[
+                                    {
+                                        value: 'ETB',
+                                        label: 'Ethiopian Birr (ETB)',
+                                    },
+                                    { value: 'USD', label: 'US Dollar (USD)' },
+                                    { value: 'EUR', label: 'Euro (EUR)' },
+                                ]}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={errors.currency?.message}
+                                required
                             />
                         )}
                     />

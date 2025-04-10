@@ -27,7 +27,6 @@ export const MemoizedRichTextEditor = memo(
                 <RichTextInput
                     withAsterisk
                     className="w-full"
-                    label="Description"
                     field={field}
                     error={error}
                 />

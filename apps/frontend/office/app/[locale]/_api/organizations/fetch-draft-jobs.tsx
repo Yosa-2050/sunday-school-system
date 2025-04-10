@@ -41,11 +41,6 @@ interface Organization {
 }
 
 interface Job {
-    workPlace: string;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    responsibilities: any;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    requirements: any;
     id: string;
     isActive: boolean;
     title: string;
@@ -54,16 +49,42 @@ interface Job {
     salaryFrom: number;
     salaryTo: number;
     status: string;
-    organization: Organization;
-    currency: string;
+    orgName: string;
+    createdDate: string;
     postedBy: PostedBy;
+    currency: string;
 }
 
-export const fetchJobsById = async (id: string): Promise<Job> => {
-    const response: Job = await fetcher(`/job-portal/${id}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    });
+interface JobsResponse {
+    data: Job[];
+    total: number;
+    limit: number;
+    page: number;
+    totalPages: number;
+}
+
+type FetchJobsPayload = {
+    status?: string;
+    pagination: Pagination;
+};
+
+export interface Pagination {
+    search: string;
+    page: number;
+    limit: number;
+}
+
+export const fetchDraftJobs = async (
+    payload: string,
+): Promise<JobsResponse> => {
+    const response: JobsResponse = await fetcher(
+        '/job-portal/byProvider/draft',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ q: payload }),
+        },
+    );
 
     return response;
 };

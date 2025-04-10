@@ -69,5 +69,11 @@ export const Menus = (): MenuTree[] => {
             link: '/work-provider/jobs',
             role: 'work_provider',
         },
+        {
+            label: t('job-explorer-draft-jobs'),
+            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            link: '/work-provider/draft-jobs',
+            role: 'work_provider',
+        },
     ];
 };

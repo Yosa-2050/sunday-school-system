@@ -17,7 +17,7 @@ import { modals } from '@mantine/modals';
 import { IconEdit, IconTrash } from '@tabler/icons-react'; // Importing icons
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-    addRegion,
+    addCategory,
     deleteCategory,
     fetchCategories,
 } from 'app/[locale]/_api/job-details';
@@ -49,7 +49,7 @@ const CategoriesPage = () => {
     });
 
     const addMutation = useMutation({
-        mutationFn: () => addRegion({ name: newRegionName, isActive: true }),
+        mutationFn: () => addCategory({ name: newRegionName, isActive: true }),
         mutationKey: ['regions'],
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });

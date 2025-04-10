@@ -1,5 +1,6 @@
 'use client';
 
+import { Footer } from '@/components/Footer';
 import { redirect, useRouter } from '@/i18n/routing';
 import {
     Avatar,
@@ -29,7 +30,7 @@ import {
     entityParamSchema,
     entityParamSerializer,
 } from '@shega/shared';
-import { EntityPagination, useAuth } from '@shega/ui';
+import { useAuth } from '@shega/ui';
 import {
     IconBriefcase,
     IconCurrencyDollar,
@@ -66,6 +67,7 @@ export default function HomePage() {
     const locale = useLocale();
     const t = useTranslations('jobListing');
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const router = useRouter();
 
     const [entityParams, setEntityParams] = useQueryState(
         'job-seeker-jbs',
@@ -74,11 +76,9 @@ export default function HomePage() {
 
     const handleSearch = useDebouncedCallback((term: string | null) => {
         if (term) {
-            setEntityParams({ ...entityParams, p: 1, s: term });
+            router.push(`/jobs?search=${encodeURIComponent(term)}`);
         } else {
-            const updatedParams = { ...entityParams };
-            updatedParams.s = undefined;
-            setEntityParams({ ...updatedParams, p: 1 });
+            router.push('/jobs');
         }
     }, 300);
     const [filters, setFilters] = useState<JobFilters>({
@@ -214,6 +214,8 @@ export default function HomePage() {
                 </Grid> */}
             </Container>
 
+            <Footer />
+
             {/* <Drawer
                 opened={opened}
                 onClose={() => setOpened(false)}
@@ -264,14 +266,14 @@ function JobList({ filters }: { filters: JobFilters }) {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-            {data?.data.map((job) => (
+            {data?.data.slice(0, 4).map((job) => (
                 <Card
                     key={job.id}
                     withBorder
                     radius="md"
                     shadow="sm"
                     padding={isMobile ? 'sm' : 'lg'}
-                    className="hover:shadow-md transition-shadow"
+                    className="hover:shadow-lg transition-shadow duration-300 border border-gray-200"
                 >
                     <Group justify="space-between" align="flex-start">
                         <Group gap="sm">
@@ -285,7 +287,7 @@ function JobList({ filters }: { filters: JobFilters }) {
                             <div>
                                 <Title
                                     order={isMobile ? 5 : 4}
-                                    className="font-semibold line-clamp-1 hover:text-blue-600 cursor-pointer"
+                                    className="font-semibold line-clamp-1 cursor-pointer transition-colors"
                                     onClick={() =>
                                         router.push(`/jobs/${job.id}`)
                                     }
@@ -311,14 +313,9 @@ function JobList({ filters }: { filters: JobFilters }) {
                         >
                             {job.type}
                         </Badge>
-                        <Badge
-                            color="teal"
-                            variant="light"
-                            //   leftSection={<IconCurrencyDollar size={14} />}
-                        >
+                        <Badge color="teal" variant="light">
                             {job.salaryFrom.toLocaleString()} -{' '}
                             {job.salaryTo.toLocaleString()} {job.currency}
-                            {/* {job.salaryTo ? `Up to ${job.salaryTo}` : "N/A"} */}
                         </Badge>
                     </Group>
 
@@ -328,7 +325,7 @@ function JobList({ filters }: { filters: JobFilters }) {
                             dangerouslySetInnerHTML={{
                                 __html: job.description,
                             }}
-                            className="line-clamp-2 text-sm"
+                            className="line-clamp-2 text-sm text-gray-600"
                         />
                     </TypographyStylesProvider>
 
@@ -348,16 +345,24 @@ function JobList({ filters }: { filters: JobFilters }) {
                             size={isMobile ? 'sm' : 'md'}
                             fullWidth={isMobile}
                             onClick={() => router.push(`/jobs/${job.id}`)}
+                            className="transition-colors"
                         >
-                            Details
+                            Apply
                         </Button>
                     </Flex>
                 </Card>
             ))}
-            <EntityPagination
-                entity="job-seeker-jbs"
-                total={data?.total ?? 0}
-            />
+
+            <div className="col-span-full flex justify-center mt-4">
+                <Button
+                    variant="light"
+                    size="lg"
+                    onClick={() => router.push('/jobs')}
+                    className="transition-colors"
+                >
+                    View More Jobs
+                </Button>
+            </div>
         </div>
     );
 }

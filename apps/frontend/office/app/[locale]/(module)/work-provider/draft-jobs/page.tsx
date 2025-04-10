@@ -23,9 +23,9 @@ import {
     entityParamSerializer,
 } from '@shega/shared';
 import { EntityFilter, EntityPagination, EntitySearch } from '@shega/ui';
-import { IconEye, IconPlus } from '@tabler/icons-react';
+import { IconPencil } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchJobs } from 'app/[locale]/_api/organizations/fetch-jobs';
+import { fetchDraftJobs } from 'app/[locale]/_api/organizations/fetch-draft-jobs';
 import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
@@ -59,7 +59,7 @@ interface Job {
 
 const JobsList = () => {
     const router = useRouter();
-    const t = useTranslations('jobsListPage');
+    const t = useTranslations('draftListPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     const [entityParams] = useQueryState(
@@ -68,24 +68,13 @@ const JobsList = () => {
             p: 1,
             pp: PER_PAGE,
             o: [{ f: 'createdAt', d: 'desc' }],
+            f: [{ f: 'isPublished', v: 'false', o: 'eq' }],
         }),
     );
 
-    const statusStyles = {
-        APPROVED: 'bg-green-500',
-        DECLINED: 'bg-red-500',
-        WAITINGAPPROVAL: 'bg-yellow-500',
-    };
-
-    const statusText = {
-        APPROVED: 'Approved',
-        DECLINED: 'Declined',
-        WAITINGAPPROVAL: 'Waiting Approval',
-    };
-
     const { data, isLoading, error } = useQuery({
         queryKey: ['jobs', entityParamSerializer(entityParams)],
-        queryFn: () => fetchJobs(entityParamSerializer(entityParams)),
+        queryFn: () => fetchDraftJobs(entityParamSerializer(entityParams)),
     });
 
     const jobs = data?.data || [];
@@ -98,26 +87,10 @@ const JobsList = () => {
         return <Text color="red">Error loading jobs</Text>;
     }
 
-    const handleEditJob = (jobId: string) => {
-        router.push(`/work-provider/jobs/edit/${jobId}`);
-    };
-
-    const handleViewApplications = (jobId: string) => {
-        router.push(`/work-provider/jobs/${jobId}/applications`);
-    };
-
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align="center" justify="space-between" className="p-4">
                 <Text className="font-bold text-xl">{t('title')}</Text>
-                <Button
-                    leftSection={<IconPlus size={18} />}
-                    variant="filled"
-                    color="primary"
-                    onClick={() => router.push('/work-provider/jobs/create')}
-                >
-                    {t('postJob')}
-                </Button>
             </Flex>
             <Divider my="md" />
 
@@ -198,7 +171,6 @@ const JobsList = () => {
                                 <Table.Th>Salary Range</Table.Th>
                                 <Table.Th>Created Date</Table.Th>
                                 <Table.Th>Location</Table.Th>
-                                <Table.Th>Status</Table.Th>
                                 <Table.Th>Actions</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
@@ -235,81 +207,20 @@ const JobsList = () => {
                                     </Table.Td>
                                     <Table.Td>Location</Table.Td>
                                     <Table.Td>
-                                        <span
-                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                statusStyles[
-                                                    job.status as keyof typeof statusStyles
-                                                ] || 'bg-yellow-300'
-                                            } text-white`}
-                                            autoCapitalize="none"
-                                        >
-                                            {statusText[
-                                                job.status as keyof typeof statusText
-                                            ] || job.status}
-                                        </span>
-                                    </Table.Td>
-                                    <Table.Td>
                                         <Button
                                             variant="transparent"
                                             className="py-0 my-0"
-                                            leftSection={<IconEye size={14} />}
+                                            leftSection={
+                                                <IconPencil size={14} />
+                                            }
                                             onClick={() =>
                                                 router.push(
-                                                    `/work-provider/jobs/${job.id}`,
+                                                    `/work-provider/draft-jobs/${job.id}`,
                                                 )
                                             }
                                         >
-                                            View
+                                            edit
                                         </Button>
-                                        {/* <Menu width={200}>
-                      <Menu.Target>
-                        <IconDotsVertical
-                          size={18}
-                          style={{
-                            cursor: "pointer",
-                          }}
-                        />
-                      </Menu.Target>
-                      <Menu.Dropdown>
-                        <MenuItem
-                          leftSection={<IconEye size={14} />}
-                          onClick={() =>
-                            router.push(`/work-provider/jobs/${job.id}`)
-                          }
-                        >
-                          View
-                        </MenuItem>
-                        <MenuItem
-                          leftSection={<IconEdit size={14} />}
-                          onClick={() => handleEditJob(job.id)}
-                        >
-                          Edit
-                        </MenuItem>
-                        {job.status !== "CLOSED" && (
-                          <MenuItem
-                            leftSection={<IconTrash size={14} />}
-                            color="red"
-                            // onClick={() => handleDeactivateJob(job.id)}
-                          >
-                            Close/Deactivate
-                          </MenuItem>
-                        )}
-                        {job.status === "CLOSED" && (
-                          <MenuItem
-                            leftSection={<IconRefresh size={14} />}
-                            // onClick={() => handleReactivateJob(job.id)}
-                          >
-                            Reactivate
-                          </MenuItem>
-                        )}
-                        <MenuItem
-                          leftSection={<IconEye size={14} />}
-                          onClick={() => handleViewApplications(job.id)}
-                        >
-                          View Applications
-                        </MenuItem>
-                      </Menu.Dropdown>
-                    </Menu> */}
                                     </Table.Td>
                                 </Table.Tr>
                             ))}

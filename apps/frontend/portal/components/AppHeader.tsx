@@ -36,7 +36,7 @@ function AppHeader() {
                         <Group ml={48} gap="xl" className="text-xs">
                             <Text
                                 className="text-xs font-medium hover:text-[#14a800] cursor-pointer"
-                                onClick={() => router.push('/find-work')}
+                                onClick={() => router.push('/jobs')}
                             >
                                 Find Work
                             </Text>

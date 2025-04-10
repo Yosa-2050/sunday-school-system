@@ -1,11 +1,4 @@
-import {
-    Grid,
-    MultiSelect,
-    NumberInput,
-    Select,
-    Stack,
-    Title,
-} from '@mantine/core';
+import { Grid, MultiSelect, NumberInput, Select, Stack } from '@mantine/core';
 import { Controller, useFormContext } from 'react-hook-form';
 import type { JobFormData } from './types';
 import { mapEnumToOptions } from './utils';
@@ -28,8 +21,6 @@ export const JobRequirements = ({
 
     return (
         <Stack gap="xl">
-            <Title order={3}>Job Requirements</Title>
-
             <Grid>
                 <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
