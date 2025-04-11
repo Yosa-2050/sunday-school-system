@@ -99,7 +99,7 @@ export class JobsService {
     }
 
     async jobsApplied(id: string) {
-        const existingApp = await this.jobApplicantRepo.findOneBy({
+        const existingApp = await this.jobApplicantRepo.findBy({
             applicants: { id },
         });
         if (!existingApp) {

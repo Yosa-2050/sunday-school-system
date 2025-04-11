@@ -95,7 +95,6 @@ export default function JobApplicationDetail() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     // const handleFileUpload = (files: string | any[]) => {
     //   if (files && files.length > 0) {
     //     const file = files[0];

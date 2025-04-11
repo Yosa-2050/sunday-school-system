@@ -69,6 +69,8 @@ export class JobPortalController {
     async exportByStatus(@Res() res: Response, @Body() dto: { q: string }) {
         const data = await this.jobPortalService.getJobsByStatusPaginated(
             dto.q,
+            null,
+            true,
         );
         this.documentService.generateCsv(data.data, res, 'jobList');
     }
@@ -84,8 +86,13 @@ export class JobPortalController {
         if (dto.list?.length > 0) {
             data = await this.jobPortalService.getJobsByList(dto.list);
         } else {
-            data = (await this.jobPortalService.getJobsByStatusPaginated(dto.q))
-                .data;
+            data = (
+                await this.jobPortalService.getJobsByStatusPaginated(
+                    dto.q,
+                    null,
+                    true,
+                )
+            ).data;
         }
 
         this.documentService.generateCsv(data, res, 'jobList');

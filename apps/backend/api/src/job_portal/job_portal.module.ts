@@ -12,6 +12,7 @@ import { EducationHistory } from './entities/educational-history.entity';
 import { Experiance } from './entities/experiance.entity';
 import { JobApplication } from './entities/job-application.entity';
 import { JobCategory } from './entities/job-category.entity';
+import { JobDescription } from './entities/job-description.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
@@ -40,6 +41,7 @@ import { JobsService } from './jobs.service';
             ApplicantSkills,
             EducationHistory,
             Experiance,
+            JobDescription,
         ]),
         OrganizationModule,
         DocumentModule,
