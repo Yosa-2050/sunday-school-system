@@ -179,6 +179,7 @@ export class JobPortalService {
             ?.map((desc) => {
                 const jobDescription = this.jobDescriptionRepo.create();
                 jobDescription.descripiton = desc.descripiton;
+                jobDescription.type = desc.type;
                 if (job) {
                     jobDescription.job = job;
                 }

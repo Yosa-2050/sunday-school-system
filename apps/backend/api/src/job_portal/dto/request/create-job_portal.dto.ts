@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { JobDescriptionType } from '@shega/job_portal/enums/job-description-type.enum';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
@@ -9,6 +9,7 @@ import {
     IsOptional,
     IsString,
     IsUUID,
+    ValidateNested,
 } from 'class-validator';
 import { CurrencyType } from '../../enums/currency-type.enum';
 import { EducationalRequirmentType } from '../../enums/education-requirment-type.enum';
@@ -123,9 +124,11 @@ export class CreateJobPortalDto {
     @IsOptional()
     catagories?: string[];
 
-    @ApiProperty()
-    @IsArray()
     @IsOptional()
+    @IsArray()
+    @ApiProperty({ type: [JobDescriptionDto] })
+    @ValidateNested({})
+    @Type(() => JobDescriptionDto)
     jobDescriptions?: JobDescriptionDto[];
 
     @ApiProperty()
