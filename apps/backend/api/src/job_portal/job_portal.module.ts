@@ -20,6 +20,7 @@ import { JobPortalController } from './job_portal.controller';
 import { JobPortalService } from './job_portal.service';
 import { JobSeekerController } from './job_seeker.controller';
 import { JobsService } from './jobs.service';
+import { JobDescription } from './entities/job-description.entity';
 
 @Module({
     controllers: [
@@ -40,6 +41,7 @@ import { JobsService } from './jobs.service';
             ApplicantSkills,
             EducationHistory,
             Experiance,
+            JobDescription
         ]),
         OrganizationModule,
         DocumentModule,

@@ -37,6 +37,8 @@ import { JobCategory } from './entities/job-category.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
+import { JobDescription } from './entities/job-description.entity';
+import { JobApplication } from './entities/job-application.entity';
 
 @Injectable()
 export class JobPortalService {
@@ -46,6 +48,8 @@ export class JobPortalService {
         private jobSkillsRepo: Repository<JobSkills>,
         @InjectRepository(JobCategory)
         private jobCategoryRepo: Repository<JobCategory>,
+        @InjectRepository(JobDescription)
+        private jobDescriptionRepo: Repository<JobDescription>,
         @InjectRepository(Jobs)
         private jobRepo: Repository<Jobs>,
         @InjectRepository(Category)
@@ -54,6 +58,8 @@ export class JobPortalService {
         private skillRepo: Repository<Skills>,
         @InjectRepository(Applicants)
         private applicationRepo: Repository<Applicants>,
+        @InjectRepository(JobApplication)
+        private jobApplicationRepo: Repository<JobApplication>,
         private readonly queryBuilderService: QueryBuilderService,
         private readonly addressService: AddressService,
         private readonly passwordService: PasswordService,
@@ -121,6 +127,7 @@ export class JobPortalService {
         );
         const job = await this.GetJob(dto);
         const skills = this.GetSkills(dto);
+        const descripitons = this.GetDescriptions(dto);
 
         const category = await this.GetCategories(dto);
         if (category?.length > 0) {
@@ -129,6 +136,11 @@ export class JobPortalService {
         if (skills?.length > 0) {
             job.jobSkills = skills;
         }
+
+        if (descripitons?.length > 0) {
+            job.jobDescriptions = descripitons;
+        }
+
         job.postedBy = employeeOrg;
         job.organization = organization;
         job.status = ApprovalType.Waiting_Approval;
@@ -162,6 +174,19 @@ export class JobPortalService {
             .filter((x) => x);
     }
 
+    private GetDescriptions(dto: CreateJobPortalDto, job: Jobs = null) {
+        return dto.jobDescriptions
+            ?.map((desc) => {
+                const jobDescription = this.jobDescriptionRepo.create();
+                jobDescription.descripiton = desc.descripiton;
+                if (job) {
+                    jobDescription.job = job;
+                }
+                return jobDescription;
+            })
+            .filter((x) => x);
+    }
+
     private async GetCategories(dto: CreateJobPortalDto, job: Jobs = null) {
         const categories = await this.categoryRepo.find();
 
@@ -182,7 +207,7 @@ export class JobPortalService {
         return category;
     }
 
-    async getJobsByStatusPaginated(paginationDto: string, exportList = false) {
+    async getJobsByStatusPaginated(paginationDto: string, applicantId = null, exportList = false) {
         let { p, pp } = entityParamDeserializer(paginationDto);
         if (exportList) {
             p = 0;
@@ -220,13 +245,29 @@ export class JobPortalService {
             joinOptions,
             searchableColumns,
         );
-        const jobsList = jobs.map((org) => new JobResponseDto(org));
+        let jobsApplied : string[] = null;
+        if(applicantId){
+            const appliedJobs = await this.jobsApplied(applicantId); 
+            jobsApplied = appliedJobs.map(x => x.job.id);
+        }
+        const jobsList = jobs.map((job) => new JobResponseDto(job, jobsApplied));
         return new PaginatedResponseDto<JobResponseDto[]>(
             jobsList,
             total,
             p,
             pp,
         );
+    }
+
+    async jobsApplied(id: string) {
+        const existingApp = await this.jobApplicationRepo.findBy({
+            applicants: { id },
+        });
+        if (!existingApp) {
+            throw new BadRequestException('No applied jobs');
+        }
+
+        return existingApp;
     }
 
     async getJobsByStatusAndByOrgPaginated(
@@ -320,7 +361,7 @@ export class JobPortalService {
     findOne(id: string) {
         return this.jobRepo.findOne({
             where: { id },
-            relations: ['jobCategory', 'jobSkills'],
+            relations: ['jobCategory', 'jobSkills','jobDescriptions'],
         });
     }
 
@@ -340,13 +381,33 @@ export class JobPortalService {
             isPublished: dto.isPublished ?? job.isPublished,
         };
         const updateJob = await this.GetJob(createDto);
-        await this.jobSkillsRepo.delete({ job: { id: id } });
-        await this.jobSkillsRepo.save(await this.GetSkills(createDto, job));
+        const skills = await this.GetSkills(createDto, job);
+        if(skills && skills.length > 0)
+        {
+            await this.jobSkillsRepo.delete({ job: { id: id } });
+            await this.jobSkillsRepo.save(skills);
+        }
+        
 
-        await this.jobCategoryRepo.delete({ job: { id: id } });
-        await this.jobCategoryRepo.save(
-            await this.GetCategories(createDto, job),
-        );
+        const categories = await this.GetCategories(createDto, job);
+        if(categories && categories.length > 0)
+        {
+            await this.jobCategoryRepo.delete({ job: { id: id } });
+            await this.jobCategoryRepo.save(
+                categories
+            );
+        }
+        
+
+        const descripiton = await this.GetDescriptions(createDto, job);
+        if(descripiton && descripiton.length > 0)
+        {
+            await this.jobDescriptionRepo.delete({ job: { id: id } });
+            await this.jobDescriptionRepo.save(
+                descripiton
+            );
+        }
+        
 
         const updated = await this.jobRepo.update(id, updateJob);
 

@@ -16,6 +16,17 @@ import { ExperianceLevelType } from '../../enums/experiance-level-type.enum';
 import { SalaryFrequencyType } from '../../enums/salary-frequency-type.enum';
 import { SalaryType } from '../../enums/salary-type.enum';
 import { WorkPlaceType } from '../../enums/work-place-type.enum';
+import { JobDescriptionType } from '@shega/job_portal/enums/job-description-type.enum';
+
+export class JobDescriptionDto{
+    @ApiProperty()
+    @IsString()
+    descripiton: string;
+
+    @ApiProperty()
+    @IsEnum(JobDescriptionType)
+    type: JobDescriptionType;
+}
 
 export class CreateJobPortalDto {
     @ApiProperty()
@@ -111,6 +122,12 @@ export class CreateJobPortalDto {
     @IsArray()
     @IsOptional()
     catagories?: string[];
+
+    @ApiProperty()
+    @IsArray()
+    @IsOptional()
+    jobDescriptions?: JobDescriptionDto[];
+
 
     @ApiProperty()
     @IsBoolean()

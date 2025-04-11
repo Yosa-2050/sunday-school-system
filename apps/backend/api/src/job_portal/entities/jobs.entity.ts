@@ -23,6 +23,7 @@ import { WorkPlaceType } from '../enums/work-place-type.enum';
 import { JobApplication } from './job-application.entity';
 import { JobCategory } from './job-category.entity';
 import { JobSkills } from './job-skills.entity';
+import { JobDescription } from './job-description.entity';
 
 @Entity()
 export class Jobs extends BaseModel {
@@ -93,6 +94,13 @@ export class Jobs extends BaseModel {
         { cascade: true, onUpdate: 'CASCADE' },
     )
     jobCategory: JobCategory[];
+
+    @OneToMany(
+        () => JobDescription,
+        (descripiton) => descripiton.job,
+        { cascade: true, onUpdate: 'CASCADE' },
+    )
+    jobDescriptions: JobDescription[];
 
     @Column({ default: false })
     isPublished: boolean;
