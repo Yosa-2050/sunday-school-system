@@ -210,7 +210,7 @@ export class JobPortalService {
 
     async getJobsByStatusPaginated(
         paginationDto: string,
-        applicantId = null,
+        applicantId: string = null,
         exportList = false,
     ) {
         let { p, pp } = entityParamDeserializer(paginationDto);
