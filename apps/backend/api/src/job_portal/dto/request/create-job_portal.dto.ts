@@ -22,7 +22,7 @@ import { WorkPlaceType } from '../../enums/work-place-type.enum';
 export class JobDescriptionDto {
     @ApiProperty()
     @IsString()
-    descripiton: string;
+    description: string;
 
     @ApiProperty()
     @IsEnum(JobDescriptionType)

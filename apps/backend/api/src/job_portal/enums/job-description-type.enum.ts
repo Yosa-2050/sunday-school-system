@@ -1,5 +1,5 @@
 export enum JobDescriptionType {
     Benefits = 'BENEFITS',
-    Requirments = 'REQUIRMENTS',
+    Requirements = 'REQUIREMENTS',
     Responsibility = 'RESPONSIBILITY',
 }

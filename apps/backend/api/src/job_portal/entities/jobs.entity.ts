@@ -97,7 +97,7 @@ export class Jobs extends BaseModel {
 
     @OneToMany(
         () => JobDescription,
-        (descripiton) => descripiton.job,
+        (description) => description.job,
         { cascade: true, onUpdate: 'CASCADE' },
     )
     jobDescriptions: JobDescription[];

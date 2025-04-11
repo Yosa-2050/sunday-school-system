@@ -12,7 +12,7 @@ export class JobDescription extends BaseModel {
     job: Jobs;
 
     @Column()
-    descripiton: string;
+    description: string;
 
     @Column()
     type: JobDescriptionType;

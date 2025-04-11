@@ -127,7 +127,7 @@ export class JobPortalService {
         );
         const job = await this.GetJob(dto);
         const skills = this.GetSkills(dto);
-        const descripitons = this.GetDescriptions(dto);
+        const descriptions = this.GetDescriptions(dto);
 
         const category = await this.GetCategories(dto);
         if (category?.length > 0) {
@@ -137,8 +137,8 @@ export class JobPortalService {
             job.jobSkills = skills;
         }
 
-        if (descripitons?.length > 0) {
-            job.jobDescriptions = descripitons;
+        if (descriptions?.length > 0) {
+            job.jobDescriptions = descriptions;
         }
 
         job.postedBy = employeeOrg;
@@ -178,7 +178,7 @@ export class JobPortalService {
         return dto.jobDescriptions
             ?.map((desc) => {
                 const jobDescription = this.jobDescriptionRepo.create();
-                jobDescription.descripiton = desc.descripiton;
+                jobDescription.description = desc.description;
                 jobDescription.type = desc.type;
                 if (job) {
                     jobDescription.job = job;
@@ -400,10 +400,10 @@ export class JobPortalService {
             await this.jobCategoryRepo.save(categories);
         }
 
-        const descripiton = await this.GetDescriptions(createDto, job);
-        if (descripiton && descripiton.length > 0) {
+        const description = await this.GetDescriptions(createDto, job);
+        if (description && description.length > 0) {
             await this.jobDescriptionRepo.delete({ job: { id: id } });
-            await this.jobDescriptionRepo.save(descripiton);
+            await this.jobDescriptionRepo.save(description);
         }
 
         const updated = await this.jobRepo.update(id, updateJob);
