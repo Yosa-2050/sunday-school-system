@@ -80,7 +80,10 @@ export class JobSeekerController {
                 ...(deserialized.f ?? []),
             ],
         });
-        return this.jobPortalService.getJobsByStatusPaginated(queryString, CurrentUser.getApplicantId(req));
+        return this.jobPortalService.getJobsByStatusPaginated(
+            queryString,
+            CurrentUser.getApplicantId(req),
+        );
     }
 
     @Post('apply/:jobId')
