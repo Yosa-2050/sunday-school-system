@@ -1,8 +1,8 @@
+import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { Jobs } from './jobs.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobDescriptionType } from '../enums/job-description-type.enum';
-import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { Jobs } from './jobs.entity';
 
 @Entity()
 export class JobDescription extends BaseModel {

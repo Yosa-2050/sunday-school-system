@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { JobDescriptionType } from '@shega/job_portal/enums/job-description-type.enum';
 import { Transform } from 'class-transformer';
 import {
     IsArray,
@@ -16,7 +17,6 @@ import { ExperianceLevelType } from '../../enums/experiance-level-type.enum';
 import { SalaryFrequencyType } from '../../enums/salary-frequency-type.enum';
 import { SalaryType } from '../../enums/salary-type.enum';
 import { WorkPlaceType } from '../../enums/work-place-type.enum';
-import { JobDescriptionType } from '@shega/job_portal/enums/job-description-type.enum';
 
 export class JobDescriptionDto {
     @ApiProperty()

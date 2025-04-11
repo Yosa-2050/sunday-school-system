@@ -33,12 +33,12 @@ import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
 import { JobResponseDto } from './dto/response/jobs.response.dto';
 import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
+import { JobApplication } from './entities/job-application.entity';
 import { JobCategory } from './entities/job-category.entity';
+import { JobDescription } from './entities/job-description.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
-import { JobDescription } from './entities/job-description.entity';
-import { JobApplication } from './entities/job-application.entity';
 
 @Injectable()
 export class JobPortalService {
