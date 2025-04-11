@@ -41,7 +41,7 @@ import { JobDescription } from './entities/job-description.entity';
             ApplicantSkills,
             EducationHistory,
             Experiance,
-            JobDescription
+            JobDescription,
         ]),
         OrganizationModule,
         DocumentModule,

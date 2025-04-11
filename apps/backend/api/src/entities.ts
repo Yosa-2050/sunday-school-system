@@ -51,5 +51,5 @@ export const AppEntities = [
     ApplicantSkills,
     EducationHistory,
     Experiance,
-    JobDescription
+    JobDescription,
 ];

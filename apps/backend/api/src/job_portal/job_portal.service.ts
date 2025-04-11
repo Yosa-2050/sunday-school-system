@@ -207,7 +207,11 @@ export class JobPortalService {
         return category;
     }
 
-    async getJobsByStatusPaginated(paginationDto: string, applicantId = null, exportList = false) {
+    async getJobsByStatusPaginated(
+        paginationDto: string,
+        applicantId = null,
+        exportList = false,
+    ) {
         let { p, pp } = entityParamDeserializer(paginationDto);
         if (exportList) {
             p = 0;
@@ -245,12 +249,14 @@ export class JobPortalService {
             joinOptions,
             searchableColumns,
         );
-        let jobsApplied : string[] = null;
-        if(applicantId){
-            const appliedJobs = await this.jobsApplied(applicantId); 
-            jobsApplied = appliedJobs.map(x => x.job.id);
+        let jobsApplied: string[] = null;
+        if (applicantId) {
+            const appliedJobs = await this.jobsApplied(applicantId);
+            jobsApplied = appliedJobs.map((x) => x.job.id);
         }
-        const jobsList = jobs.map((job) => new JobResponseDto(job, jobsApplied));
+        const jobsList = jobs.map(
+            (job) => new JobResponseDto(job, jobsApplied),
+        );
         return new PaginatedResponseDto<JobResponseDto[]>(
             jobsList,
             total,
@@ -361,7 +367,7 @@ export class JobPortalService {
     findOne(id: string) {
         return this.jobRepo.findOne({
             where: { id },
-            relations: ['jobCategory', 'jobSkills','jobDescriptions'],
+            relations: ['jobCategory', 'jobSkills', 'jobDescriptions'],
         });
     }
 
@@ -382,32 +388,22 @@ export class JobPortalService {
         };
         const updateJob = await this.GetJob(createDto);
         const skills = await this.GetSkills(createDto, job);
-        if(skills && skills.length > 0)
-        {
+        if (skills && skills.length > 0) {
             await this.jobSkillsRepo.delete({ job: { id: id } });
             await this.jobSkillsRepo.save(skills);
         }
-        
 
         const categories = await this.GetCategories(createDto, job);
-        if(categories && categories.length > 0)
-        {
+        if (categories && categories.length > 0) {
             await this.jobCategoryRepo.delete({ job: { id: id } });
-            await this.jobCategoryRepo.save(
-                categories
-            );
+            await this.jobCategoryRepo.save(categories);
         }
-        
 
         const descripiton = await this.GetDescriptions(createDto, job);
-        if(descripiton && descripiton.length > 0)
-        {
+        if (descripiton && descripiton.length > 0) {
             await this.jobDescriptionRepo.delete({ job: { id: id } });
-            await this.jobDescriptionRepo.save(
-                descripiton
-            );
+            await this.jobDescriptionRepo.save(descripiton);
         }
-        
 
         const updated = await this.jobRepo.update(id, updateJob);
 

@@ -18,7 +18,7 @@ import { SalaryType } from '../../enums/salary-type.enum';
 import { WorkPlaceType } from '../../enums/work-place-type.enum';
 import { JobDescriptionType } from '@shega/job_portal/enums/job-description-type.enum';
 
-export class JobDescriptionDto{
+export class JobDescriptionDto {
     @ApiProperty()
     @IsString()
     descripiton: string;
@@ -127,7 +127,6 @@ export class CreateJobPortalDto {
     @IsArray()
     @IsOptional()
     jobDescriptions?: JobDescriptionDto[];
-
 
     @ApiProperty()
     @IsBoolean()
