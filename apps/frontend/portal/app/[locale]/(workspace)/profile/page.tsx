@@ -125,10 +125,10 @@ export default function ProfilePage() {
                                         }
                                     />
                                     <AboutSection
-                                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                         data={
                                             {
                                                 bio: displayData.bio || '',
+                                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                             } as any
                                         }
                                         onUpdate={(data) =>
