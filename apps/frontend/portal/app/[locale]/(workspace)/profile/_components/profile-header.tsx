@@ -15,6 +15,7 @@ import {
   LoadingOverlay,
   ActionIcon,
   Modal,
+  Card,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCamera, IconCheck, IconX } from "@tabler/icons-react";
@@ -99,138 +100,143 @@ export default function ProfileHeader({ data }: ProfileHeaderProps) {
   };
 
   return (
-    <Box>
-      <Box
-        style={{
-          height: 320,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
-        }}
-      >
-        <Box
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background:
-              "linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%)",
-          }}
-        />
-        <Container size="xl" style={{ position: "relative", height: "100%" }}>
-          <Transition mounted={true} transition="slide-up" duration={400}>
-            {(styles) => (
-              <Paper
-                shadow="md"
-                p={0}
-                style={{
-                  ...styles,
-                  position: "absolute",
-                  bottom: -60,
-                  left: 20,
-                  borderRadius: "50%",
-                  background: "white",
-                }}
-              >
-                <Box style={{ position: "relative" }}>
-                  <Modal
-                    opened={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    size="auto"
-                    centered
-                    padding="md"
-                    styles={{
-                      content: {
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        maxWidth: "90vw",
-                        maxHeight: "90vh",
-                      },
-                    }}
-                  >
-                    <Modal.Header>
-                      <Text size="lg" fw={500}>
-                        Profile Picture
-                      </Text>
-                    </Modal.Header>
-                    <Modal.Content
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+    <Container size="xl" style={{ position: "relative", height: "100%" }}>
+      <Card mih={"500px"} p={0}>
+        <Box>
+          <Box
+            style={{
+              height: 320,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              position: "relative",
+            }}
+          >
+            <Box
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background:
+                  "linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%)",
+              }}
+            />
+            <Transition mounted={true} transition="slide-up" duration={400}>
+              {(styles) => (
+                <Paper
+                  shadow="md"
+                  p={0}
+                  style={{
+                    ...styles,
+                    position: "absolute",
+                    bottom: -60,
+                    left: 20,
+                    borderRadius: "50%",
+                    background: "white",
+                  }}
+                >
+                  <Box style={{ position: "relative" }}>
+                    <Modal
+                      opened={isModalOpen}
+                      onClose={() => setIsModalOpen(false)}
+                      size="auto"
+                      centered
+                      padding="md"
+                      styles={{
+                        content: {
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          maxWidth: "90vw",
+                          maxHeight: "90vh",
+                        },
                       }}
                     >
-                      {profilePicture && (
-                        <Image
-                          src={URL.createObjectURL(profilePicture)}
-                          alt="Profile Picture"
-                          width={1000}
-                          height={1000}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            maxWidth: "800px",
-                            maxHeight: "800px",
-                            borderRadius: "8px",
-                            objectFit: "contain",
-                          }}
-                        />
-                      )}
-                    </Modal.Content>
-                  </Modal>
-                  <Avatar
-                    src={
-                      profilePicture
-                        ? URL.createObjectURL(profilePicture)
-                        : undefined
-                    }
-                    size={180}
-                    radius={180}
-                    style={{ cursor: "pointer" }}
-                    alt={`${data.firstName}'s profile`}
-                    onClick={() => setIsModalOpen(true)}
-                  />
-                  <FileButton
-                    resetRef={resetRef}
-                    onChange={handleFileSelect}
-                    accept="image/*"
-                  >
-                    {(props) => (
-                      <ActionIcon
-                        {...props}
-                        variant="filled"
-                        color="blue"
-                        size="lg"
+                      <Modal.Header>
+                        <Text size="lg" fw={500}>
+                          Profile Picture
+                        </Text>
+                      </Modal.Header>
+                      <Modal.Content
                         style={{
-                          position: "absolute",
-                          bottom: 10,
-                          right: 10,
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
                       >
-                        <IconCamera size={20} />
-                      </ActionIcon>
-                    )}
-                  </FileButton>
-                  <LoadingOverlay
-                    visible={isUploading}
-                    zIndex={1000}
-                    overlayProps={{ radius: "sm", blur: 2 }}
-                  />
-                </Box>
-              </Paper>
-            )}
-          </Transition>
-        </Container>
-      </Box>
-
-      <Container size="md" pt={80} pb={30}>
-        <Flex justify="space-between" align="flex-start">
+                        {profilePicture && (
+                          <Image
+                            src={URL.createObjectURL(profilePicture)}
+                            alt="Profile Picture"
+                            width={1000}
+                            height={1000}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              maxWidth: "800px",
+                              maxHeight: "800px",
+                              borderRadius: "8px",
+                              objectFit: "contain",
+                            }}
+                          />
+                        )}
+                      </Modal.Content>
+                    </Modal>
+                    <Avatar
+                      src={
+                        profilePicture
+                          ? URL.createObjectURL(profilePicture)
+                          : undefined
+                      }
+                      size={180}
+                      radius={180}
+                      style={{ cursor: "pointer" }}
+                      alt={`${data.firstName}'s profile`}
+                      onClick={() => setIsModalOpen(true)}
+                    />
+                    <FileButton
+                      resetRef={resetRef}
+                      onChange={handleFileSelect}
+                      accept="image/*"
+                    >
+                      {(props) => (
+                        <ActionIcon
+                          {...props}
+                          variant="filled"
+                          color="blue"
+                          size="lg"
+                          style={{
+                            position: "absolute",
+                            bottom: 10,
+                            right: 10,
+                          }}
+                        >
+                          <IconCamera size={20} />
+                        </ActionIcon>
+                      )}
+                    </FileButton>
+                    <LoadingOverlay
+                      visible={isUploading}
+                      zIndex={1000}
+                      overlayProps={{ radius: "sm", blur: 2 }}
+                    />
+                  </Box>
+                </Paper>
+              )}
+            </Transition>
+          </Box>
+        </Box>
+        <Flex
+          justify="space-between"
+          align="flex-start"
+          direction={"column"}
+          mt={60}
+          p={"lg"}
+        >
           <Stack gap="xs">
             <Transition mounted={true} transition="fade" duration={400}>
               {(styles) => (
@@ -250,8 +256,18 @@ export default function ProfileHeader({ data }: ProfileHeaderProps) {
               )}
             </Transition>
           </Stack>
+          <Text c={"dimmed"}>
+            React | Nextjs | Javascript | Typescript | Redux | React-router |
+            Nestjs | Shadcn | Mantine
+          </Text>
+          <Flex mt={"sm"} gap={"md"}>
+            <Text c={"dimmed"}>Addis Ababa, Ethiopia</Text>
+            <Text c="primary" className="cursor-pointer">
+              Contact Info
+            </Text>
+          </Flex>
         </Flex>
-      </Container>
-    </Box>
+      </Card>
+    </Container>
   );
 }

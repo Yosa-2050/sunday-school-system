@@ -11,13 +11,24 @@ import {
   Grid,
   Divider,
   Card,
+  Select,
+  Box,
 } from "@mantine/core";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconPencil, IconDeviceFloppy, IconX } from "@tabler/icons-react";
+import {
+  IconPencil,
+  IconDeviceFloppy,
+  IconX,
+  IconCalendar,
+  IconPhone,
+  IconUser,
+} from "@tabler/icons-react";
 import type { PersonalInfo } from "@/lib/types";
 import { personalInfoSchema } from "@/lib/schemas";
 import type { Profile } from "@/models/job-seeker.type";
+import { useUpdateProfile } from "app/_api/profile/queries";
+import { DateInput } from "@mantine/dates";
 
 interface PersonalInfoSectionProps {
   data: Profile;
@@ -29,19 +40,21 @@ export default function PersonalInfoSection({
   onUpdate,
 }: PersonalInfoSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const { mutate: updateProfile } = useUpdateProfile(data?.id || "");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: data,
   });
 
   const onSubmit = (formData: PersonalInfo) => {
-    onUpdate(formData);
+    updateProfile(formData);
     setIsEditing(false);
   };
 
@@ -80,7 +93,12 @@ export default function PersonalInfoSection({
                 color="blue"
                 size="sm"
                 radius="xl"
-                onClick={handleSubmit((data) => onSubmit({ ...data, id: "" }))}
+                onClick={handleSubmit((data) =>
+                  onSubmit({
+                    ...data,
+                    id: "",
+                  })
+                )}
                 style={{
                   transition: "all 0.2s ease",
                   "&:hover": {
@@ -115,74 +133,203 @@ export default function PersonalInfoSection({
         <Divider />
         {isEditing ? (
           <form
-            onSubmit={handleSubmit((data) => onSubmit({ ...data, id: "" }))}
+            onSubmit={handleSubmit((data) =>
+              onSubmit({
+                ...data,
+              })
+            )}
           >
             <Stack gap="xl">
               <Grid>
-                <Grid.Col span={{ base: 12, md: 8 }}>
-                  <Stack gap="md">
-                    <TextInput
-                      label="First Name"
-                      placeholder="Your first name"
-                      withAsterisk
-                      size="md"
-                      radius="md"
-                      {...register("firstName")}
-                      error={errors.firstName?.message}
-                    />
-                    <TextInput
-                      label="Middle Name"
-                      placeholder="Your middle name"
-                      withAsterisk
-                      size="md"
-                      radius="md"
-                      {...register("middleName")}
-                      error={errors.middleName?.message}
-                    />
-                    <TextInput
-                      label="Last Name"
-                      placeholder="Your last name"
-                      withAsterisk
-                      size="md"
-                      radius="md"
-                      {...register("lastName")}
-                      error={errors.lastName?.message}
-                    />
-                    <TextInput
-                      label="Birth Date"
-                      placeholder="YYYY-MM-DD"
-                      withAsterisk
-                      size="md"
-                      radius="md"
-                      {...register("birthDate")}
-                      error={errors.birthDate?.message}
-                    />
-                    <TextInput
-                      label="Gender"
-                      placeholder="Your gender"
-                      withAsterisk
-                      size="md"
-                      radius="md"
-                      {...register("gender")}
-                      error={errors.gender?.message}
-                    />
-                    <TextInput
-                      label="Title"
-                      placeholder="Your title"
-                      withAsterisk
-                      size="md"
-                      radius="md"
-                      {...register("title")}
-                      error={errors.title?.message}
-                    />
-                    <TextInput
-                      label="Phone Number"
-                      placeholder="Your phone number"
-                      withAsterisk
-                      size="md"
-                      radius="md"
-                      {...register("phoneNumber")}
-                      error={errors.phoneNumber?.message}
+                <Grid.Col span={{ base: 12, md: 12 }}>
+                  <Stack gap="lg">
+                    <Group grow>
+                      <TextInput
+                        label="First Name"
+                        placeholder="Enter your first name"
+                        withAsterisk
+                        size="md"
+                        styles={{
+                          input: {
+                            backgroundColor: "#f8f9fa",
+                            "&:focus": {
+                              boxShadow: "0 0 0 3px rgba(34,139,230,0.1)",
+                            },
+                          },
+                          label: {
+                            marginBottom: "8px",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                          },
+                        }}
+                        {...register("firstName")}
+                        error={errors.firstName?.message}
+                      />
+
+                      <TextInput
+                        label="Last Name"
+                        placeholder="Enter your last name"
+                        withAsterisk
+                        size="md"
+                        styles={{
+                          input: {
+                            backgroundColor: "#f8f9fa",
+                            "&:focus": {
+                              boxShadow: "0 0 0 3px rgba(34,139,230,0.1)",
+                            },
+                          },
+                          label: {
+                            marginBottom: "8px",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                          },
+                        }}
+                        {...register("lastName")}
+                        error={errors.lastName?.message}
+                      />
+                    </Group>
+
+                    <Group grow>
+                      <TextInput
+                        label="Middle Name"
+                        placeholder="Enter your middle name"
+                        withAsterisk
+                        size="md"
+                        styles={{
+                          input: {
+                            backgroundColor: "#f8f9fa",
+                            "&:focus": {
+                              boxShadow: "0 0 0 3px rgba(34,139,230,0.1)",
+                            },
+                          },
+                          label: {
+                            marginBottom: "8px",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                          },
+                        }}
+                        {...register("middleName")}
+                        error={errors.middleName?.message}
+                      />
+
+                      <TextInput
+                        label="Phone Number"
+                        placeholder="Enter your phone number"
+                        withAsterisk
+                        size="md"
+                        styles={{
+                          input: {
+                            backgroundColor: "#f8f9fa",
+                            "&:focus": {
+                              boxShadow: "0 0 0 3px rgba(34,139,230,0.1)",
+                            },
+                          },
+                          label: {
+                            marginBottom: "8px",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                          },
+                        }}
+                        {...register("phoneNumber")}
+                        error={errors.phoneNumber?.message}
+                      />
+                    </Group>
+
+                    <Group grow>
+                      <Controller
+                        name="birthDate"
+                        control={control}
+                        render={({ field }) => (
+                          <DateInput
+                            label="Birth Date"
+                            placeholder="Select your birth date"
+                            size="md"
+                            styles={{
+                              input: {
+                                backgroundColor: "#f8f9fa",
+                                "&:focus": {
+                                  boxShadow: "0 0 0 3px rgba(34,139,230,0.1)",
+                                },
+                              },
+                              label: {
+                                marginBottom: "8px",
+                                fontSize: "0.9rem",
+                                fontWeight: 500,
+                              },
+                            }}
+                            {...field}
+                            value={field.value ? new Date(field.value) : null}
+                            onChange={(value) =>
+                              field.onChange(value?.toISOString())
+                            }
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name="gender"
+                        control={control}
+                        render={({ field }) => (
+                          <Select
+                            label="Gender"
+                            placeholder="Select your gender"
+                            withAsterisk
+                            size="md"
+                            styles={{
+                              input: {
+                                backgroundColor: "#f8f9fa",
+                                "&:focus": {
+                                  boxShadow: "0 0 0 3px rgba(34,139,230,0.1)",
+                                },
+                              },
+                              label: {
+                                marginBottom: "8px",
+                                fontSize: "0.9rem",
+                                fontWeight: 500,
+                              },
+                            }}
+                            data={[
+                              { value: "FEMALE", label: "Female" },
+                              { value: "MALE", label: "Male" },
+                            ]}
+                            {...field}
+                            error={errors.gender?.message}
+                          />
+                        )}
+                      />
+                    </Group>
+
+                    <Controller
+                      name="title"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          label="Title"
+                          placeholder="Select your title"
+                          withAsterisk
+                          size="md"
+                          styles={{
+                            input: {
+                              backgroundColor: "#f8f9fa",
+                              "&:focus": {
+                                boxShadow: "0 0 0 3px rgba(34,139,230,0.1)",
+                              },
+                            },
+                            label: {
+                              marginBottom: "8px",
+                              fontSize: "0.9rem",
+                              fontWeight: 500,
+                            },
+                          }}
+                          data={[
+                            { value: "ATO", label: "Ato" },
+                            { value: "WEYZERO", label: "Weyzero" },
+                            { value: "WEYZERIT", label: "Weyzerit" },
+                          ]}
+                          {...field}
+                          error={errors.title?.message}
+                        />
+                      )}
                     />
                   </Stack>
                 </Grid.Col>
@@ -192,22 +339,53 @@ export default function PersonalInfoSection({
         ) : (
           <Stack gap="md">
             <Group>
-              <Stack gap="xs">
-                <Text fw={500} size="lg">
-                  {data.firstName} {data.lastName}
-                </Text>
-                <Text c="dimmed" size="sm">
-                  {data.title}
-                </Text>
-                <Text c="dimmed" size="sm">
-                  {data.gender}
-                </Text>
-                <Text c="dimmed" size="sm">
-                  {data.birthDate}
-                </Text>
-                <Text c="dimmed" size="sm">
-                  {data.phoneNumber}
-                </Text>
+              <Stack gap="lg" w="100%">
+                <Group justify="space-between">
+                  <Text fw={700} size="xl" style={{ letterSpacing: "-0.5px" }}>
+                    {data.firstName} {data.lastName}
+                  </Text>
+                  <Box
+                    px="md"
+                    py="xs"
+                    bg="blue.1"
+                    style={{ borderRadius: "8px" }}
+                  >
+                    <Text size="sm" c="blue.7" fw={500}>
+                      {data.title}
+                    </Text>
+                  </Box>
+                </Group>
+
+                <Stack gap="xs">
+                  <Group gap="xl">
+                    <Group gap="xs">
+                      <Box c="gray.6">
+                        <IconUser size={16} />
+                      </Box>
+                      <Text c="dimmed" size="sm">
+                        {data.gender}
+                      </Text>
+                    </Group>
+
+                    <Group gap="xs">
+                      <Box c="gray.6">
+                        <IconCalendar size={16} />
+                      </Box>
+                      <Text c="dimmed" size="sm">
+                        {data.birthDate}
+                      </Text>
+                    </Group>
+
+                    <Group gap="xs">
+                      <Box c="gray.6">
+                        <IconPhone size={16} />
+                      </Box>
+                      <Text c="dimmed" size="sm">
+                        {data.phoneNumber}
+                      </Text>
+                    </Group>
+                  </Group>
+                </Stack>
               </Stack>
             </Group>
           </Stack>

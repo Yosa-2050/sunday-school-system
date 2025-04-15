@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { jobSeekerDetails } from "./details";
-import type { JobSeeker } from "@/models/job-seeker.type";
+import type { JobSeeker, Profile } from "@/models/job-seeker.type";
 import { COOKIE_ACCESS_TOKEN, fetcher } from "@shega/shared";
 import { getCookie } from "cookies-next";
 
@@ -151,7 +151,7 @@ export const useCreateEducation = () => {
   return useMutation({
     mutationFn: createEducation,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["education"] });
+      queryClient.invalidateQueries({ queryKey: ["jobSeekerDetails"] });
     },
   });
 };
@@ -162,7 +162,7 @@ export const useUpdateEducation = () => {
   return useMutation({
     mutationFn: updateEducation,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["education"] });
+      queryClient.invalidateQueries({ queryKey: ["jobSeekerDetails"] });
     },
   });
 };
@@ -173,7 +173,7 @@ export const useDeleteEducation = () => {
   return useMutation({
     mutationFn: deleteEducation,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["education"] });
+      queryClient.invalidateQueries({ queryKey: ["jobSeekerDetails"] });
     },
   });
 };
@@ -357,7 +357,7 @@ export const useEducationLevels = () => {
 // Bio and Cover Letter
 export const updateBio = async (bio: string): Promise<void> => {
   await fetcher<void>("/job-seeker/detail", {
-    method: "PUT",
+    method: "PATCH",
     headers: { accept: "*/*" },
     body: JSON.stringify({ bio }),
   });
@@ -365,7 +365,7 @@ export const updateBio = async (bio: string): Promise<void> => {
 
 export const updateCoverLetter = async (coverLetter: string): Promise<void> => {
   await fetcher<void>("/job-seeker/detail", {
-    method: "PUT",
+    method: "PATCH",
     headers: { accept: "*/*" },
     body: JSON.stringify({ coverLetter }),
   });
@@ -568,5 +568,23 @@ export const useWorkplaceTypes = () => {
     queryFn: () => fetchEnum("workplaceType"),
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
+  });
+};
+
+const updateProfile = (data: Profile, id: string) => {
+  return fetcher(`/profile/${id}`, {
+    body: JSON.stringify(data),
+    method: "PATCH",
+  });
+};
+
+export const useUpdateProfile = (id: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Profile) => updateProfile(data, id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["jobSeekerDetails"] });
+    },
   });
 };

@@ -231,9 +231,6 @@ export default function HomePage() {
 function JobList({ filters }: { filters: JobFilters }) {
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [searchQuery, setSearchQuery] = useQueryState("search", {
-    defaultValue: "",
-  });
   const [entityParams, setEntityParams] = useQueryState(
     "job-seeker-jbs",
     parseAsJson(entityParamSchema.parse).withDefault({
@@ -268,21 +265,28 @@ function JobList({ filters }: { filters: JobFilters }) {
         >
           <Group justify="space-between" align="flex-start">
             <Group gap="sm">
-              <Avatar size={isMobile ? "sm" : "lg"} color="blue" radius="xl">
-                {job.organization?.name.slice(0, 2)}
-              </Avatar>
-              <div>
-                <Title
-                  order={isMobile ? 5 : 4}
-                  className="font-semibold line-clamp-1 cursor-pointer transition-colors"
-                  onClick={() => router.push(`/jobs/${job.id}`)}
-                >
-                  {job.title}
-                </Title>
-                <Text size="sm" c="dimmed" className="line-clamp-1">
-                  {job.organization?.name}
-                </Text>
-              </div>
+              <Flex align={"center"} justify={"space-between"} w={"100%"}>
+                <div className="flex items-center flex-1">
+                  <Avatar
+                    size={isMobile ? "sm" : "lg"}
+                    color="blue"
+                    radius="xl"
+                  >
+                    {job.organization?.name.slice(0, 2)}
+                  </Avatar>
+                  <Title
+                    order={isMobile ? 5 : 4}
+                    className="font-semibold line-clamp-1 cursor-pointer transition-colors"
+                    onClick={() => router.push(`/jobs/${job.id}`)}
+                  >
+                    {job.title}
+                  </Title>
+                </div>
+                {job.applied && <Badge>Applied</Badge>}
+              </Flex>
+              <Text size="sm" c="dimmed" className="line-clamp-1">
+                {job.organization?.name}
+              </Text>
             </Group>
           </Group>
 
@@ -328,7 +332,7 @@ function JobList({ filters }: { filters: JobFilters }) {
               onClick={() => router.push(`/jobs/${job.id}`)}
               className="transition-colors"
             >
-              Apply
+              Detail
             </Button>
           </Flex>
         </Card>

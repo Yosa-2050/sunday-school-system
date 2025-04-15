@@ -19,15 +19,15 @@ export type JobSeeker = {
 };
 
 export interface Profile {
-  id: string;
+  id?: string;
   firstName: string;
   middleName: string;
   lastName: string;
-  mothersFullName: string;
+  // mothersFullName: string;
   birthDate: string;
-  dobGregorian: string;
+  // dobGregorian: string;
   gender: string;
-  marriageStatus: string;
+  // marriageStatus: string;
   title: string;
   phoneNumber: string;
   profile_picture_id: string;

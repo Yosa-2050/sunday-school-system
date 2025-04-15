@@ -43,11 +43,8 @@ export default function ProfilePage() {
       firstName: "John",
       middleName: "",
       lastName: "Doe",
-      mothersFullName: "",
       birthDate: "",
-      dobGregorian: "",
       gender: "",
-      marriageStatus: "",
       title: "",
       phoneNumber: "+1 (555) 123-4567",
       profile_picture_id: "",
@@ -142,13 +139,10 @@ export default function ProfilePage() {
 
                   <CoverLetterSection />
                 </Stack>
-                <Stack className="mt-4">
+                <Stack className="mt-4" maw={"450px"}>
                   <SkillsSection skills={displayData.skills} />
 
-                  <ResumeSection
-                  // data={displayData.cv}
-                  // onUpdate={(data) => handleUpdateSection("cv", data)}
-                  />
+                  <ResumeSection />
                 </Stack>
               </Flex>
             )}

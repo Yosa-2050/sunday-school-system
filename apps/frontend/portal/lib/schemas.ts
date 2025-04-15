@@ -4,11 +4,9 @@ export const personalInfoSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   middleName: z.string().min(1, "Middle name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  mothersFullName: z.string().min(1, "Mother's full name is required"),
   birthDate: z.string().min(1, "Birth date is required"),
-  dobGregorian: z.string().min(1, "Gregorian date of birth is required"),
   gender: z.string().min(1, "Gender is required"),
-  marriageStatus: z.string().min(1, "Marriage status is required"),
+  // marriageStatus: z.string().min(1, 'Marriage status is required'),
   title: z.string().min(1, "Title is required"),
   phoneNumber: z
     .string()

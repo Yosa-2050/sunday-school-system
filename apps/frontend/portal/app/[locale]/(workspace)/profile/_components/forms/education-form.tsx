@@ -244,7 +244,7 @@ export default function EducationForm({
                 placeholder="Select field of study"
                 data={
                   fieldsOfStudy?.map((field) => ({
-                    value: field.name,
+                    value: field.id,
                     label: field.name,
                   })) || []
                 }
@@ -307,8 +307,7 @@ export default function EducationForm({
                 label="Grade/Score"
                 placeholder="Enter your grade (0-100)"
                 min={0}
-                max={100}
-                suffix="%"
+                max={12}
                 clampBehavior="strict"
                 {...field}
                 error={errors.grade?.message}

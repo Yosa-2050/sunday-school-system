@@ -3,15 +3,15 @@ import type { JobSeeker } from "@/models/job-seeker.type";
 export type ProfileData = JobSeeker;
 
 export type PersonalInfo = {
-  id: string;
+  id?: string;
   firstName: string;
   middleName: string;
   lastName: string;
-  mothersFullName: string;
+  // mothersFullName: string;
   birthDate: string;
-  dobGregorian: string;
+  // dobGregorian: string;
   gender: string;
-  marriageStatus: string;
+  // marriageStatus: string;
   title: string;
   phoneNumber: string;
   profile_picture_id: string;

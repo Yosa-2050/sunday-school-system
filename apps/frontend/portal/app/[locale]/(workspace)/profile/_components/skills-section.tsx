@@ -12,6 +12,7 @@ import {
   Pill,
   Box,
   Card,
+  Flex,
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import SkillsForm from "./forms/skills-form";
@@ -48,13 +49,13 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
             </Text>
           ) : (
             <Box>
-              <Group gap="xs">
+              <Flex gap="xs" wrap={"wrap"}>
                 {skills.map((skill) => (
                   <Pill key={skill.id} size="lg" radius="xl">
                     {skill.skill}
                   </Pill>
                 ))}
-              </Group>
+              </Flex>
             </Box>
           )}
         </Stack>

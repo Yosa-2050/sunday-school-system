@@ -41,6 +41,7 @@ export default function ExperienceSection({
   const [currentExperience, setCurrentExperience] = useState<Experience | null>(
     null
   );
+  const [viewmore, setViewMore] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const addExperienceMutation = useAddExperience();
@@ -216,75 +217,95 @@ export default function ExperienceSection({
         </Box>
       ) : (
         <Stack gap="xl">
-          {experiences.map((experience) => (
-            <Box key={experience.id}>
-              <Card withBorder radius="md" p="md">
-                <Group align="flex-start" wrap="nowrap">
-                  <Avatar size={48} radius="sm" color="blue" variant="light">
-                    {experience.company.charAt(0)}
-                  </Avatar>
+          {experiences
+            .slice(0, viewmore ? experiences.length : 2)
+            .map((experience) => (
+              <Box key={experience.id}>
+                <Card withBorder radius="md" p="md">
+                  <Group align="flex-start" wrap="nowrap">
+                    <Avatar size={48} radius="sm" color="blue" variant="light">
+                      {experience.company.charAt(0)}
+                    </Avatar>
 
-                  <Box style={{ flex: 1 }}>
-                    <Group justify="space-between" align="flex-start">
-                      <Stack gap={4}>
-                        <Title order={5} fw={600}>
-                          {experience.title}
-                        </Title>
-                        <Text fw={500} c="blue">
-                          {experience.company}
-                        </Text>
-                        {getWorkTypeBadge(
-                          experience.type,
-                          experience.workPlace
+                    <Box style={{ flex: 1 }}>
+                      <Group justify="space-between" align="flex-start">
+                        <Stack gap={4}>
+                          <Title order={5} fw={600}>
+                            {experience.title}
+                          </Title>
+                          <Text fw={500} c="blue">
+                            {experience.company}
+                          </Text>
+                          {getWorkTypeBadge(
+                            experience.type,
+                            experience.workPlace
+                          )}
+                        </Stack>
+
+                        <Group gap="xs">
+                          <ActionIcon
+                            variant="subtle"
+                            color="gray"
+                            onClick={() => handleEditExperience(experience)}
+                            aria-label="Edit experience"
+                          >
+                            <IconPencil size={16} />
+                          </ActionIcon>
+                          <ActionIcon
+                            variant="subtle"
+                            color="red"
+                            onClick={() => {
+                              setCurrentExperience(experience);
+                              setDeleteConfirmOpen(true);
+                            }}
+                            aria-label="Delete experience"
+                          >
+                            <IconTrash size={16} />
+                          </ActionIcon>
+                        </Group>
+                      </Group>
+
+                      <Text size="sm" c="dimmed" mt="xs">
+                        {formatDate(experience.startDate)} -{" "}
+                        {formatDate(experience.endDate || "")}
+                        {formatDuration(
+                          experience.startDate,
+                          experience.endDate
                         )}
-                      </Stack>
-
-                      <Group gap="xs">
-                        <ActionIcon
-                          variant="subtle"
-                          color="gray"
-                          onClick={() => handleEditExperience(experience)}
-                          aria-label="Edit experience"
-                        >
-                          <IconPencil size={16} />
-                        </ActionIcon>
-                        <ActionIcon
-                          variant="subtle"
-                          color="red"
-                          onClick={() => setDeleteConfirmOpen(true)}
-                          aria-label="Delete experience"
-                        >
-                          <IconTrash size={16} />
-                        </ActionIcon>
-                      </Group>
-                    </Group>
-
-                    <Text size="sm" c="dimmed" mt="xs">
-                      {formatDate(experience.startDate)} -{" "}
-                      {formatDate(experience.endDate || "")}
-                      {formatDuration(experience.startDate, experience.endDate)}
-                    </Text>
-
-                    {experience.description && (
-                      <Text size="sm" mt="sm">
-                        {experience.description}
                       </Text>
-                    )}
 
-                    {experience.skills && experience.skills.length > 0 && (
-                      <Group gap="xs" mt="sm">
-                        {experience.skills.map((skill) => (
-                          <Badge key={skill} variant="outline" radius="sm">
-                            {skill}
-                          </Badge>
-                        ))}
-                      </Group>
-                    )}
-                  </Box>
-                </Group>
-              </Card>
-            </Box>
-          ))}
+                      {experience.description && (
+                        <Text size="sm" mt="sm">
+                          {experience.description}
+                        </Text>
+                      )}
+
+                      {experience.skills && experience.skills.length > 0 && (
+                        <Group gap="xs" mt="sm">
+                          {experience.skills.map((skill) => (
+                            <Badge key={skill} variant="outline" radius="sm">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </Group>
+                      )}
+                    </Box>
+                  </Group>
+                </Card>
+              </Box>
+            ))}
+          {experiences.length > 2 && (
+            <Flex justify="center">
+              <Button
+                variant="subtle"
+                color="blue"
+                size="sm"
+                onClick={() => setViewMore(!viewmore)}
+              >
+                {viewmore ? "Show Less" : "Show More"}
+              </Button>
+            </Flex>
+          )}
         </Stack>
       )}
 
@@ -307,8 +328,9 @@ export default function ExperienceSection({
             )}
           </Group>
         }
-        size="lg"
+        size="xl"
         radius="md"
+        h={"100%"}
         centered
       >
         <ExperienceForm

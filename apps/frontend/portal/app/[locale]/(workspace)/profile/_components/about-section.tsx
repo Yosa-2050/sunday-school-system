@@ -10,12 +10,20 @@ import {
   Textarea,
   Divider,
   Card,
+  Box,
 } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconPencil, IconDeviceFloppy, IconX } from "@tabler/icons-react";
+import {
+  IconPencil,
+  IconDeviceFloppy,
+  IconX,
+  IconCheck,
+} from "@tabler/icons-react";
 import type { About } from "@/lib/types";
 import { aboutSchema } from "@/lib/schemas";
+import { useUpdateBio } from "app/_api/profile/queries";
+import { notifications } from "@mantine/notifications";
 
 interface AboutSectionProps {
   data: About;
@@ -24,6 +32,8 @@ interface AboutSectionProps {
 
 export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const { mutate: updateBio } = useUpdateBio();
 
   const {
     register,
@@ -35,9 +45,33 @@ export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
     defaultValues: data,
   });
 
-  const onSubmit = (formData: About) => {
-    onUpdate(formData);
-    setIsEditing(false);
+  const onSubmit = async (values: About) => {
+    setIsEditing(true);
+    try {
+      await updateBio(values.bio, {
+        onSuccess: () => {
+          notifications.show({
+            title: "Success",
+            message: "Cover letter updated successfully",
+            color: "green",
+            icon: <IconCheck size={16} />,
+          });
+        },
+        onError: (error) => {
+          notifications.show({
+            title: "Error",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Failed to update cover letter",
+            color: "red",
+            icon: <IconX size={16} />,
+          });
+        },
+      });
+    } finally {
+      setIsEditing(false);
+    }
   };
 
   return (
@@ -93,9 +127,37 @@ export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
               error={errors.bio?.message}
             />
           </form>
+        ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+        data.bio ? (
+          <>
+            <Text
+              style={{ whiteSpace: "pre-wrap" }}
+              className={
+                data.bio.length > 200 && !expanded ? "line-clamp-4" : ""
+              }
+            >
+              {data.bio}
+            </Text>
+            {data.bio.length > 200 && (
+              <Box mt="xs">
+                <Text
+                  component="a"
+                  href="#"
+                  size="sm"
+                  c="blue"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setExpanded(!expanded);
+                  }}
+                >
+                  {expanded ? "Show less" : "Read more"}
+                </Text>
+              </Box>
+            )}
+          </>
         ) : (
           <Text style={{ whiteSpace: "pre-wrap" }}>
-            {data.bio || "No bio provided. Click edit to add your bio."}
+            No bio provided. Click edit to add your bio.
           </Text>
         )}
       </Stack>

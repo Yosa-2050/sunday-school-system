@@ -1,8 +1,23 @@
 "use client";
 
-import { Text, Textarea, Button, Stack, Group, Paper } from "@mantine/core";
+import {
+  Text,
+  Textarea,
+  Button,
+  Stack,
+  Group,
+  Card,
+  Divider,
+  Title,
+  Box,
+} from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconCheck, IconX } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconDeviceFloppy,
+  IconPencil,
+  IconX,
+} from "@tabler/icons-react";
 import { useForm } from "react-hook-form";
 import {
   useJobSeekerDetails,
@@ -15,14 +30,16 @@ interface CoverLetterFormValues {
 }
 
 export default function CoverLetterSection() {
+  const [expanded, setExpanded] = useState(false);
   const { data: jobSeeker } = useJobSeekerDetails();
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const { mutate: updateCoverLetter } = useUpdateCoverLetter();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<CoverLetterFormValues>({
     defaultValues: {
       coverLetter: jobSeeker?.coverLetter || "",
@@ -30,7 +47,7 @@ export default function CoverLetterSection() {
   });
 
   const onSubmit = async (values: CoverLetterFormValues) => {
-    setIsUpdating(true);
+    setIsEditing(true);
     try {
       await updateCoverLetter(values.coverLetter, {
         onSuccess: () => {
@@ -54,32 +71,95 @@ export default function CoverLetterSection() {
         },
       });
     } finally {
-      setIsUpdating(false);
+      setIsEditing(false);
     }
   };
 
   return (
-    <Paper p="md" withBorder>
+    <Card shadow="sm" withBorder>
       <Stack gap="md">
-        <Text fw={500} size="lg">
-          Cover Letter
-        </Text>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack gap="md">
-            <Textarea
-              placeholder="Write your cover letter"
-              minRows={6}
-              error={errors.coverLetter?.message}
-              {...register("coverLetter")}
-            />
-            <Group justify="flex-end">
-              <Button type="submit" loading={isUpdating}>
-                Save Cover Letter
+        <Group justify="space-between">
+          <Title order={4}>Cover Letter</Title>
+          {isEditing ? (
+            <Group>
+              <Button
+                leftSection={<IconX size={16} />}
+                variant="light"
+                color="red"
+                size="sm"
+                onClick={() => {
+                  reset({ coverLetter: jobSeeker?.coverLetter ?? "" });
+                  setIsEditing(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                leftSection={<IconDeviceFloppy size={16} />}
+                variant="light"
+                color="blue"
+                size="sm"
+                onClick={handleSubmit(onSubmit)}
+              >
+                Save
               </Button>
             </Group>
-          </Stack>
-        </form>
+          ) : (
+            <Button
+              leftSection={<IconPencil size={16} />}
+              variant="light"
+              size="sm"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit
+            </Button>
+          )}
+        </Group>
+
+        <Divider />
+
+        {isEditing ? (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Textarea
+              placeholder="Tell us about yourself..."
+              minRows={5}
+              autosize
+              {...register("coverLetter")}
+              error={errors.coverLetter?.message}
+            />
+          </form>
+        ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+        jobSeeker?.coverLetter ? (
+          <>
+            <Text
+              style={{ whiteSpace: "pre-wrap" }}
+              className={expanded ? "" : "line-clamp-4"}
+            >
+              {jobSeeker.coverLetter}
+            </Text>
+            {jobSeeker.coverLetter.length > 200 && (
+              <Box mt="xs">
+                <Text
+                  component="a"
+                  href="#"
+                  size="sm"
+                  c="blue"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setExpanded(!expanded);
+                  }}
+                >
+                  {expanded ? "Show less" : "Read more"}
+                </Text>
+              </Box>
+            )}
+          </>
+        ) : (
+          <Text style={{ whiteSpace: "pre-wrap" }}>
+            No cover letter provided. Click edit to add your cover letter.
+          </Text>
+        )}
       </Stack>
-    </Paper>
+    </Card>
   );
 }

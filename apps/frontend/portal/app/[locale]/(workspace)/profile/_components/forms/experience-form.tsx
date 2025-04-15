@@ -9,8 +9,9 @@ import {
   Select,
   Textarea,
   Switch,
-  Grid,
   LoadingOverlay,
+  Divider,
+  Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
@@ -49,7 +50,7 @@ export default function ExperienceForm({
     control,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<ExperienceFormValues>({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
@@ -156,77 +157,26 @@ export default function ExperienceForm({
       />
 
       <Stack gap="md">
-        <TextInput
-          label="Job Title"
-          placeholder="e.g. Senior Software Engineer"
-          required
-          error={errors.title?.message}
-          {...register("title")}
-        />
+        <Text fw={500} size="sm">
+          Basic Information
+        </Text>
+        <Group grow>
+          <TextInput
+            label="Job Title"
+            placeholder="e.g. Senior Software Engineer"
+            required
+            error={errors.title?.message}
+            {...register("title")}
+          />
 
-        <TextInput
-          label="Company"
-          placeholder="e.g. Tech Corp Inc."
-          required
-          error={errors.company?.message}
-          {...register("company")}
-        />
-
-        <Grid>
-          <Grid.Col span={{ base: 12, sm: 6 }}>
-            <Controller
-              name="startDate"
-              control={control}
-              render={({ field }) => (
-                <DateInput
-                  label="Start Date"
-                  placeholder="Select start date"
-                  required
-                  valueFormat="YYYY-MM-DD"
-                  error={errors.startDate?.message}
-                  value={field.value ? new Date(field.value) : null}
-                  onChange={(date: Date | null) =>
-                    field.onChange(date?.toISOString() || "")
-                  }
-                />
-              )}
-            />
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 12, sm: 6 }}>
-            <Controller
-              name="endDate"
-              control={control}
-              render={({ field }) => (
-                <DateInput
-                  label="End Date"
-                  placeholder="Select end date"
-                  valueFormat="YYYY-MM-DD"
-                  disabled={isCurrentlyWorking}
-                  error={errors.endDate?.message}
-                  value={field.value ? new Date(field.value) : null}
-                  onChange={(date: Date | null) =>
-                    field.onChange(date?.toISOString() || "")
-                  }
-                />
-              )}
-            />
-          </Grid.Col>
-        </Grid>
-
-        <Controller
-          name="currentlyWorking"
-          control={control}
-          render={({ field }) => (
-            <Switch
-              label="I currently work here"
-              checked={field.value}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                field.onChange(event.currentTarget.checked)
-              }
-            />
-          )}
-        />
+          <TextInput
+            label="Company"
+            placeholder="e.g. Tech Corp Inc."
+            required
+            error={errors.company?.message}
+            {...register("company")}
+          />
+        </Group>
 
         <Controller
           name="type"
@@ -245,93 +195,169 @@ export default function ExperienceForm({
           )}
         />
 
+        <Divider my="xs" />
+        <Group grow>
+          <Controller
+            name="startDate"
+            control={control}
+            render={({ field }) => (
+              <DateInput
+                label="Start Date"
+                placeholder="Select start date"
+                required
+                valueFormat="MMMM YYYY"
+                error={errors.startDate?.message}
+                value={field.value ? new Date(field.value) : null}
+                onChange={(date: Date | null) =>
+                  field.onChange(date?.toISOString() || "")
+                }
+                maxDate={new Date()}
+              />
+            )}
+          />
+
+          <Controller
+            name="endDate"
+            control={control}
+            render={({ field }) => (
+              <DateInput
+                label="End Date"
+                placeholder="Select end date"
+                valueFormat="MMMM YYYY"
+                disabled={isCurrentlyWorking}
+                error={errors.endDate?.message}
+                value={field.value ? new Date(field.value) : null}
+                onChange={(date: Date | null) =>
+                  field.onChange(date?.toISOString() || "")
+                }
+                minDate={
+                  watch("startDate") ? new Date(watch("startDate")) : undefined
+                }
+                maxDate={new Date()}
+              />
+            )}
+          />
+        </Group>
+
         <Controller
-          name="countryId"
+          name="currentlyWorking"
           control={control}
           render={({ field }) => (
-            <Select
-              label="Country"
-              placeholder="Select country"
-              data={countries.map((country) => ({
-                value: country.id,
-                label: country.name,
-              }))}
-              error={errors.countryId?.message}
-              required
-              {...field}
+            <Switch
+              label="I currently work here"
+              checked={field.value}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                field.onChange(event.currentTarget.checked)
+              }
             />
           )}
         />
 
-        <Controller
-          name="stateId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              label="State/Region"
-              placeholder="Select state/region"
-              data={regions.map((region) => ({
-                value: region.id,
-                label: region.name,
-              }))}
-              error={errors.stateId?.message}
-              required
-              disabled={!selectedCountryId}
-              {...field}
-            />
-          )}
-        />
+        <Divider my="xs" />
+        <Group grow>
+          <Controller
+            name="countryId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Country"
+                placeholder="Select country"
+                data={countries.map((country) => ({
+                  value: country.id,
+                  label: country.name,
+                }))}
+                error={errors.countryId?.message}
+                required
+                searchable
+                {...field}
+              />
+            )}
+          />
 
-        <Controller
-          name="cityId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              label="City"
-              placeholder="Select city"
-              data={cities.map((city) => ({
-                value: city.id,
-                label: city.name,
-              }))}
-              error={errors.cityId?.message}
-              required
-              disabled={!selectedStateId}
-              {...field}
-            />
-          )}
-        />
+          <Controller
+            name="stateId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="State/Region"
+                placeholder={
+                  selectedCountryId
+                    ? "Select state/region"
+                    : "Select country first"
+                }
+                data={regions.map((region) => ({
+                  value: region.id,
+                  label: region.name,
+                }))}
+                error={errors.stateId?.message}
+                required
+                disabled={!selectedCountryId}
+                searchable
+                {...field}
+              />
+            )}
+          />
+        </Group>
 
-        <Controller
-          name="workPlace"
-          control={control}
-          render={({ field }) => (
-            <Select
-              label="Workplace"
-              placeholder="Select workplace"
-              data={workplaceTypes.map((type) => ({
-                value: type.value,
-                label: type.key,
-              }))}
-              error={errors.workPlace?.message}
-              required
-              {...field}
-            />
-          )}
-        />
+        <Group grow>
+          <Controller
+            name="cityId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="City"
+                placeholder={
+                  selectedStateId ? "Select city" : "Select state/region first"
+                }
+                data={cities.map((city) => ({
+                  value: city.id,
+                  label: city.name,
+                }))}
+                error={errors.cityId?.message}
+                required
+                disabled={!selectedStateId}
+                searchable
+                {...field}
+              />
+            )}
+          />
+
+          <Controller
+            name="workPlace"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Workplace Type"
+                placeholder="Select workplace type"
+                data={workplaceTypes.map((type) => ({
+                  value: type.value,
+                  label: type.key,
+                }))}
+                error={errors.workPlace?.message}
+                required
+                {...field}
+              />
+            )}
+          />
+        </Group>
+
+        <Divider my="xs" />
 
         <Textarea
           label="Description"
-          placeholder="Describe your responsibilities and achievements"
-          minRows={3}
+          placeholder="Describe your key responsibilities, achievements, and technologies used"
+          minRows={4}
+          autosize
+          maxRows={8}
           error={errors.description?.message}
           {...register("description")}
         />
 
-        <Group justify="flex-end" mt="md">
-          <Button variant="light" onClick={onCancel}>
+        <Group justify="flex-end" mt="xl">
+          <Button variant="light" color="gray" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit">
+          <Button type="submit" disabled={!isDirty}>
             {experience ? "Update Experience" : "Add Experience"}
           </Button>
         </Group>
