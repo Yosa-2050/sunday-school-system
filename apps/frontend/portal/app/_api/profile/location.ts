@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { fetcher } from '@shega/shared';
+import { useQuery } from '@tanstack/react-query';
 
 // Types
 export type Country = {
