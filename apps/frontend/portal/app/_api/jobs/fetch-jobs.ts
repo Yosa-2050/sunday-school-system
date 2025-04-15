@@ -20,6 +20,7 @@ export type Response = {
         status: string;
         currency: string;
         createdAt: string;
+        applied: boolean;
         organization: {
             id: string;
             isActive: boolean;

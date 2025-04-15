@@ -5,7 +5,7 @@ import { Avatar, Button, Container, Group, Menu, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 import { useAuth } from '@shega/ui';
-import { IconLogout2 } from '@tabler/icons-react';
+import { IconLogout2, IconUser } from '@tabler/icons-react';
 import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -94,12 +94,13 @@ function AppHeader() {
                                 </Menu.Target>
 
                                 <Menu.Dropdown>
-                                    {/* <Menu.Item
+                                    <Menu.Item
                                         leftSection={<IconUser size={14} />}
                                         onClick={() => router.push('/profile')}
                                     >
                                         {t('profile')}
                                     </Menu.Item>
+                                    {/*
                                     <Menu.Item
                                         leftSection={<IconSettings size={14} />}
                                         onClick={() => router.push('/settings')}

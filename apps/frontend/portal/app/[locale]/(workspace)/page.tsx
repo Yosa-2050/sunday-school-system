@@ -20,11 +20,7 @@ import {
     Title,
     TypographyStylesProvider,
 } from '@mantine/core';
-import {
-    useDebouncedCallback,
-    useDebouncedValue,
-    useMediaQuery,
-} from '@mantine/hooks';
+import { useDebouncedCallback, useMediaQuery } from '@mantine/hooks';
 import {
     PER_PAGE,
     entityParamSchema,
@@ -66,7 +62,6 @@ export default function HomePage() {
     const { user } = useAuth();
     const locale = useLocale();
     const t = useTranslations('jobListing');
-    const isMobile = useMediaQuery('(max-width: 768px)');
     const router = useRouter();
 
     const [entityParams, setEntityParams] = useQueryState(
@@ -88,7 +83,6 @@ export default function HomePage() {
         experienceLevel: '',
         keyword: '',
     });
-    const [opened, setOpened] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -237,18 +231,12 @@ export default function HomePage() {
 function JobList({ filters }: { filters: JobFilters }) {
     const router = useRouter();
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const [searchQuery, setSearchQuery] = useQueryState('search', {
-        defaultValue: '',
-    });
-    const [page, setPage] = useQueryState('page', { defaultValue: '1' });
-    const [limit] = useQueryState('limit', { defaultValue: '10' });
-    const [debouncedSearch] = useDebouncedValue(searchQuery, 500);
-
     const [entityParams, setEntityParams] = useQueryState(
         'job-seeker-jbs',
         parseAsJson(entityParamSchema.parse).withDefault({
             p: 1,
             pp: PER_PAGE,
+            //   f: [{ f: "applied", v: "false", o: "eq" }],
         }),
     );
 
@@ -277,31 +265,34 @@ function JobList({ filters }: { filters: JobFilters }) {
                 >
                     <Group justify="space-between" align="flex-start">
                         <Group gap="sm">
-                            <Avatar
-                                size={isMobile ? 'sm' : 'lg'}
-                                color="blue"
-                                radius="xl"
+                            <Flex
+                                align={'center'}
+                                justify={'space-between'}
+                                w={'100%'}
                             >
-                                {job.organization?.name.slice(0, 2)}
-                            </Avatar>
-                            <div>
-                                <Title
-                                    order={isMobile ? 5 : 4}
-                                    className="font-semibold line-clamp-1 cursor-pointer transition-colors"
-                                    onClick={() =>
-                                        router.push(`/jobs/${job.id}`)
-                                    }
-                                >
-                                    {job.title}
-                                </Title>
-                                <Text
-                                    size="sm"
-                                    c="dimmed"
-                                    className="line-clamp-1"
-                                >
-                                    {job.organization?.name}
-                                </Text>
-                            </div>
+                                <div className="flex items-center flex-1">
+                                    <Avatar
+                                        size={isMobile ? 'sm' : 'lg'}
+                                        color="blue"
+                                        radius="xl"
+                                    >
+                                        {job.organization?.name.slice(0, 2)}
+                                    </Avatar>
+                                    <Title
+                                        order={isMobile ? 5 : 4}
+                                        className="font-semibold line-clamp-1 cursor-pointer transition-colors"
+                                        onClick={() =>
+                                            router.push(`/jobs/${job.id}`)
+                                        }
+                                    >
+                                        {job.title}
+                                    </Title>
+                                </div>
+                                {job.applied && <Badge>Applied</Badge>}
+                            </Flex>
+                            <Text size="sm" c="dimmed" className="line-clamp-1">
+                                {job.organization?.name}
+                            </Text>
                         </Group>
                     </Group>
 
@@ -347,7 +338,7 @@ function JobList({ filters }: { filters: JobFilters }) {
                             onClick={() => router.push(`/jobs/${job.id}`)}
                             className="transition-colors"
                         >
-                            Apply
+                            Detail
                         </Button>
                     </Flex>
                 </Card>
