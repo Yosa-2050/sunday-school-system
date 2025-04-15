@@ -128,7 +128,7 @@ export class JobsService {
 
         const updated = await this.applicantRepo.update(
             { id: applicantId },
-            { bio: dto.bio, coverLetter: dto.coverLetter, cv: dto.cv }, //CV from file upload
+            { bio: dto.bio, coverLetter: dto.coverLetter }, //CV from file upload
         );
 
         return UtilityServices.EnsureUpdated(updated, applicantId);

@@ -1,16 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateApplicantRequestDto {
     @ApiProperty()
     @IsString()
+    @IsOptional()
     bio: string;
 
     @ApiProperty()
     @IsString()
-    cv: string;
-
-    @ApiProperty()
-    @IsString()
+    @IsOptional()
     coverLetter: string;
 }

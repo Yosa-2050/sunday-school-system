@@ -7,7 +7,6 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
-    Put,
     Request,
     UploadedFile,
     UseInterceptors,
@@ -168,7 +167,7 @@ export class JobSeekerController {
         );
     }
 
-    @Put('detail')
+    @Patch('detail')
     updateDetail(@Request() req, @Body() dto: UpdateApplicantRequestDto) {
         return this.jobsService.updateApplicantDetail(
             CurrentUser.getApplicantId(req),
