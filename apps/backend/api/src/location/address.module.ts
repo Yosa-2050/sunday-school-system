@@ -7,6 +7,8 @@ import { LocationInfo } from './entities/LocationInfo.entity';
 import { ContactDetails } from './entities/contact-details.entity';
 import { Country } from './entities/country.entity';
 import { Location } from './entities/location.entity';
+import { LocationController } from './location.controller';
+import { LocationService } from './location.service';
 
 @Module({
     imports: [
@@ -17,8 +19,8 @@ import { Location } from './entities/location.entity';
             LocationInfo,
         ]),
     ],
-    controllers: [AddressController],
-    providers: [AddressService, CountrySeedService],
+    controllers: [AddressController, LocationController],
+    providers: [AddressService, CountrySeedService, LocationService],
     exports: [AddressService, CountrySeedService],
 })
 export class AddressModule {

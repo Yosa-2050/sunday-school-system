@@ -1,8 +1,10 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -58,8 +60,24 @@ export class OrganizationService {
         private readonly usersService: UsersService,
     ) {}
 
+    async organizationApproval(
+        id: string,
+        status: ApprovalType,
+        note?: string,
+    ) {
+        await this.organizationRepo.findOneByOrFail({ id });
+
+        const updatedOrg = await this.organizationRepo.update(
+            { id },
+            { status, note },
+        );
+
+        return UtilityServices.EnsureUpdated(updatedOrg, id);
+    }
+
     async create(request: CreateOrganizationDto) {
         const organization = this.organizationRepo.create(request);
+        organization.status = ApprovalType.New;
         organization.branches = [];
         const branches = await organization.branches;
 

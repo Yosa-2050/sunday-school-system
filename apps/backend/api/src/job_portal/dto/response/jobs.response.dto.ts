@@ -8,7 +8,7 @@ import { CurrencyType } from '@shega/job_portal/enums/currency-type.enum';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 
 export class JobResponseDto {
-    constructor(job: Jobs) {
+    constructor(job: Jobs, appliedJobs: string[] = null) {
         this.id = job.id;
         this.salaryTo = job.salaryTo;
         this.createdDate = job.createdAt;
@@ -22,6 +22,7 @@ export class JobResponseDto {
         this.note = job.notes;
         this.currency = job.currency;
         this.isPublished = job.isPublished;
+        this.applied = appliedJobs ? appliedJobs.includes(job.id) : false;
     }
     id: string;
     title: string;
@@ -71,4 +72,5 @@ export class JobResponseDto {
     createdDate: Date;
     note: string;
     currency: CurrencyType;
+    applied: boolean;
 }

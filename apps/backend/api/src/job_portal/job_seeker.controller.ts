@@ -7,7 +7,6 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
-    Put,
     Request,
     UploadedFile,
     UseInterceptors,
@@ -68,7 +67,7 @@ export class JobSeekerController {
     }
 
     @Post('jobs')
-    getAllPending(@Body() dto: { q: string }) {
+    getAllPending(@Body() dto: { q: string }, @Request() req) {
         const deserialized = entityParamDeserializer(dto.q);
 
         const searchableColumns = [];
@@ -80,7 +79,10 @@ export class JobSeekerController {
                 ...(deserialized.f ?? []),
             ],
         });
-        return this.jobPortalService.getJobsByStatusPaginated(queryString);
+        return this.jobPortalService.getJobsByStatusPaginated(
+            queryString,
+            CurrentUser.getApplicantId(req),
+        );
     }
 
     @Post('apply/:jobId')
@@ -165,7 +167,7 @@ export class JobSeekerController {
         );
     }
 
-    @Put('detail')
+    @Patch('detail')
     updateDetail(@Request() req, @Body() dto: UpdateApplicantRequestDto) {
         return this.jobsService.updateApplicantDetail(
             CurrentUser.getApplicantId(req),

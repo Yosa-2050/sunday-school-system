@@ -4,13 +4,20 @@ import {
     Delete,
     Get,
     Param,
+    ParseUUIDPipe,
     Patch,
     Post,
+    Request,
     Put,
     Res,
 } from '@nestjs/common';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExportWithQuesryRequestModel } from '@shega/Utilities/models/list-string.model';
+import {
+    ExportWithQuesryRequestModel,
+    StringRequestModel,
+} from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
@@ -44,6 +51,36 @@ export class OrganizationController {
     @Post('createEmployee')
     createEmployee(@Body() dto: CreateOrganizationEmployeeDto) {
         return this.organizationService.CreateEmployeeQDE(dto);
+    }
+
+    @Patch('submit')
+    submitForApproval(@Request() req) {
+        return this.organizationService.organizationApproval(
+            CurrentUser.getOrganizationId(req),
+            ApprovalType.Waiting_Approval,
+        );
+    }
+
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
+    @Patch('approve/:id')
+    approveOrganization(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.organizationService.organizationApproval(
+            id,
+            ApprovalType.Approved,
+        );
+    }
+
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
+    @Patch('decline/:id')
+    declineOrganization(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: StringRequestModel,
+    ) {
+        return this.organizationService.organizationApproval(
+            id,
+            ApprovalType.Declined,
+            dto?.note,
+        );
     }
 
     @Post()
@@ -110,11 +147,11 @@ export class OrganizationController {
 
     @Patch(':id')
     updateOrganization(
-        @Param('id') id: string,
+        @Request() req,
         @Body() updateOrganizationDto: UpdateOrganizationDto,
     ) {
         return this.organizationService.updateOrganization(
-            id,
+            CurrentUser.getOrganizationId(req),
             updateOrganizationDto,
         );
     }

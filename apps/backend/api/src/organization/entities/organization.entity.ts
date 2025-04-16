@@ -1,5 +1,7 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetails } from '@shega/location/entities/contact-details.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Location } from '@shega/location/entities/location.entity';
@@ -20,6 +22,9 @@ export class Organization extends BaseModel {
 
     @Column({ nullable: true })
     displayName: string;
+
+    @Column({ nullable: true })
+    note: string;
 
     @OneToMany(
         (type) => Branch,
@@ -42,6 +47,9 @@ export class Organization extends BaseModel {
         },
     )
     employee: EmployeeOrganization[];
+
+    @Column({ nullable: true })
+    status: ApprovalType;
 
     locations: Location[];
     contacts: ContactDetails[];

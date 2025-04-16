@@ -6,6 +6,7 @@ import { EducationHistory } from './job_portal/entities/educational-history.enti
 import { Experiance } from './job_portal/entities/experiance.entity';
 import { JobApplication } from './job_portal/entities/job-application.entity';
 import { JobCategory } from './job_portal/entities/job-category.entity';
+import { JobDescription } from './job_portal/entities/job-description.entity';
 import { JobSkills } from './job_portal/entities/job-skills.entity';
 import { Jobs } from './job_portal/entities/jobs.entity';
 import { Skills } from './job_portal/entities/skills.entity';
@@ -50,4 +51,5 @@ export const AppEntities = [
     ApplicantSkills,
     EducationHistory,
     Experiance,
+    JobDescription,
 ];
