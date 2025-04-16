@@ -196,7 +196,9 @@ export class JobsService {
     ) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        if (applicant.experiance.find((x) => x.id === experianceId)) {
+        const existingExperiance = await applicant.experiance;
+
+        if (existingExperiance.find((x) => x.id === experianceId)) {
             throw new BadRequestException('Experiance not found');
         }
         const experiance = await this.experianceRepo.preload({
@@ -213,7 +215,8 @@ export class JobsService {
     ) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        if (applicant.educationalHistory.find((x) => x.id === historyId)) {
+        const educationHistory = await applicant.educationalHistory;
+        if (educationHistory.find((x) => x.id === historyId)) {
             throw new BadRequestException('Educational history not found');
         }
 
@@ -234,7 +237,9 @@ export class JobsService {
     async deleteExperiance(applicantId: string, experianceId: string) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        const experiance = applicant.experiance.find(
+        const existingExperiance = await applicant.experiance;
+
+        const experiance = existingExperiance.find(
             (x) => x.id === experianceId,
         );
 
@@ -245,7 +250,9 @@ export class JobsService {
     async deleteEducationalHistory(applicantId: string, historyId: string) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        const history = applicant.educationalHistory.find(
+        const educationHistory = await applicant.educationalHistory;
+
+        const history = educationHistory.find(
             (x) => x.id === historyId,
         );
 

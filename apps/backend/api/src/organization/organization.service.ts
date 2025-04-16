@@ -35,9 +35,13 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 
 @Injectable()
 export class OrganizationService {
+    
+    
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -56,8 +60,17 @@ export class OrganizationService {
         private queryBuilderService: QueryBuilderService,
     ) {}
 
+    async organizationApproval(id: string, status: ApprovalType, note?: string) {
+        await this.organizationRepo.findOneByOrFail({id});
+
+        const updatedOrg = await this.organizationRepo.update({id}, {status, note});
+
+        return UtilityServices.EnsureUpdated(updatedOrg, id);  
+    }
+
     async create(request: CreateOrganizationDto) {
         const organization = this.organizationRepo.create(request);
+        organization.status = ApprovalType.New;
         organization.branches = [];
         const branches = await organization.branches;
 
