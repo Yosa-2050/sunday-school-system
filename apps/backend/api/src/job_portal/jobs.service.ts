@@ -252,9 +252,7 @@ export class JobsService {
 
         const educationHistory = await applicant.educationalHistory;
 
-        const history = educationHistory.find(
-            (x) => x.id === historyId,
-        );
+        const history = educationHistory.find((x) => x.id === historyId);
 
         const deleted = await this.experianceRepo.delete(history.id);
 

@@ -40,8 +40,6 @@ import { UtilityServices } from '@shega/Utilities/service/utility.services';
 
 @Injectable()
 export class OrganizationService {
-    
-    
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -60,12 +58,19 @@ export class OrganizationService {
         private queryBuilderService: QueryBuilderService,
     ) {}
 
-    async organizationApproval(id: string, status: ApprovalType, note?: string) {
-        await this.organizationRepo.findOneByOrFail({id});
+    async organizationApproval(
+        id: string,
+        status: ApprovalType,
+        note?: string,
+    ) {
+        await this.organizationRepo.findOneByOrFail({ id });
 
-        const updatedOrg = await this.organizationRepo.update({id}, {status, note});
+        const updatedOrg = await this.organizationRepo.update(
+            { id },
+            { status, note },
+        );
 
-        return UtilityServices.EnsureUpdated(updatedOrg, id);  
+        return UtilityServices.EnsureUpdated(updatedOrg, id);
     }
 
     async create(request: CreateOrganizationDto) {

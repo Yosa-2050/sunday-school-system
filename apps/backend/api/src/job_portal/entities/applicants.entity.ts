@@ -23,14 +23,14 @@ export class Applicants extends BaseModel {
     @OneToMany(
         () => JobApplication,
         (application) => application.applicants,
-        {lazy: true}
+        { lazy: true },
     )
     applications: JobApplication[];
 
     @OneToMany(
         () => EducationHistory,
         (history) => history.applicant,
-        { cascade: true , lazy: true},
+        { cascade: true, lazy: true },
     )
     educationalHistory: EducationHistory[];
 

@@ -122,8 +122,10 @@ export class JobPortalService {
         const organization =
             await this.organizationService.getOrganizationById(organizationId);
 
-        if(organization.status !== ApprovalType.Approved){
-            throw new BadRequestException("Organization is not approved, please contact your administrator");
+        if (organization.status !== ApprovalType.Approved) {
+            throw new BadRequestException(
+                'Organization is not approved, please contact your administrator',
+            );
         }
 
         const employeeOrg = (await organization.employee).find(

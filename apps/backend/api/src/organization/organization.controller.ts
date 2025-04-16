@@ -8,10 +8,13 @@ import {
     Post,
     Res,
     Request,
-    ParseUUIDPipe
+    ParseUUIDPipe,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExportWithQuesryRequestModel, StringRequestModel } from '@shega/Utilities/models/list-string.model';
+import {
+    ExportWithQuesryRequestModel,
+    StringRequestModel,
+} from '@shega/Utilities/models/list-string.model';
 // biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
@@ -50,20 +53,33 @@ export class OrganizationController {
     }
 
     @Patch('submit')
-    submitForApproval(@Request() req){
-        return this.organizationService.organizationApproval(CurrentUser.getOrganizationId(req), ApprovalType.Waiting_Approval);
+    submitForApproval(@Request() req) {
+        return this.organizationService.organizationApproval(
+            CurrentUser.getOrganizationId(req),
+            ApprovalType.Waiting_Approval,
+        );
     }
 
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Patch('approve/:id')
-    approveOrganization(@Param('id', new ParseUUIDPipe()) id: string){
-        return this.organizationService.organizationApproval(id, ApprovalType.Approved);
+    approveOrganization(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.organizationService.organizationApproval(
+            id,
+            ApprovalType.Approved,
+        );
     }
 
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Patch('decline/:id')
-    declineOrganization(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: StringRequestModel){
-        return this.organizationService.organizationApproval(id, ApprovalType.Declined, dto?.note);
+    declineOrganization(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: StringRequestModel,
+    ) {
+        return this.organizationService.organizationApproval(
+            id,
+            ApprovalType.Declined,
+            dto?.note,
+        );
     }
 
     @Post()
