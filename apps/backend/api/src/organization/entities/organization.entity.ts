@@ -1,13 +1,13 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetails } from '@shega/location/entities/contact-details.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Location } from '@shega/location/entities/location.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Branch } from './branch.entity';
 import { EmployeeOrganization } from './employee-organization.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 
 @Entity()
 export class Organization extends BaseModel {
