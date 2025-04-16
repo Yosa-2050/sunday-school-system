@@ -113,8 +113,14 @@ export class UsersController {
     }
 
     @Roles(UserRoleType.SuperAdmin)
+    @Put('activate/:userId')
+    activateUser(@Param('userId') userId: string) {
+        return this.usersService.setUserActivationStatus(userId, true);
+    }
+
+    @Roles(UserRoleType.SuperAdmin)
     @Put('deactivate/:userId')
     deactivateUser(@Param('userId') userId: string) {
-        return this.usersService.deactiveUser(userId);
-    }
+        return this.usersService.setUserActivationStatus(userId, false);
+    } 
 }

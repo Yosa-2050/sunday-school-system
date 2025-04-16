@@ -6,6 +6,7 @@ import {
     Param,
     Patch,
     Post,
+    Put,
     Res,
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -30,6 +31,8 @@ import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
 import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
+import { Roles } from '@shega/auth/decorators/roles.decorator';
 
 @Controller('organization')
 export class OrganizationController {
@@ -120,4 +123,16 @@ export class OrganizationController {
     remove(@Param('id') id: string) {
         return this.organizationService.remove(+id);
     }
+
+    @Roles(UserRoleType.SuperAdmin)
+    @Put('activate/:orgId/:isIncludeEmployees')
+    activateUser(@Param('orgId') orgId: string, @Param('isIncludeEmployees')isIncludeEmployees: string) {
+        return this.organizationService.setOrgActivationStatus(orgId, true, true, isIncludeEmployees);
+    } 
+
+    @Roles(UserRoleType.SuperAdmin)
+    @Put('deactivate/:orgId/:isIncludeEmployees')
+    deactivateUser(@Param('orgId') orgId: string, @Param('isIncludeEmployees')isIncludeEmployees: string) {
+        return this.organizationService.setOrgActivationStatus(orgId, false, false, isIncludeEmployees);
+    } 
 }
