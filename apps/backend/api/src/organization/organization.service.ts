@@ -12,6 +12,8 @@ import { NotificationService } from '@shega/notification/notification.service';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { UsersService } from '@shega/users/users.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import {
     type EntityParam,
@@ -56,6 +58,7 @@ export class OrganizationService {
         @Inject(PasswordService)
         private readonly passwordService: PasswordService,
         private queryBuilderService: QueryBuilderService,
+        private readonly usersService: UsersService,
     ) {}
 
     async organizationApproval(
@@ -236,8 +239,8 @@ export class OrganizationService {
         return this.employeeOrgRepo.save(person);
     }
 
-    findEmployee(id: string) {
-        return this.employeeOrgRepo.findBy({
+    async findEmployee(id: string) {
+        return await this.employeeOrgRepo.findBy({
             organization: { id },
             isActive: true,
         });
@@ -339,5 +342,48 @@ export class OrganizationService {
             return saved;
         }
         return saved;
+    }
+
+    async setOrgActivationStatus(
+        orgId: string,
+        isOrgActive: boolean,
+        isActivateProcess: boolean,
+        isIncludeEmployees: string,
+    ) {
+        const isIncludeEmployeesBoolean = isIncludeEmployees === 'true';
+        //activate/deactivate users if included employees in the request
+        if (isIncludeEmployeesBoolean) {
+            const isUserActive = isActivateProcess;
+            const employeeList = await this.findEmployee(orgId);
+            const profileIds = [];
+            const users = [];
+
+            for (const employee of employeeList) {
+                profileIds.push(employee.employee.profile.id);
+            }
+
+            for (const profileId of profileIds) {
+                const user =
+                    await this.profileService.findUserByProfileId(profileId);
+                users.push(user);
+            }
+
+            for (const user of users) {
+                this.usersService.setUserActivationStatus(
+                    user.id,
+                    isUserActive,
+                );
+            }
+        }
+
+        //activate/deactivate org
+        const update = await this.organizationRepo.preload({
+            id: orgId,
+            isActive: isOrgActive,
+        });
+        if (!update) {
+            throw new BadRequestException('Organization not found');
+        }
+        return this.organizationRepo.save(update);
     }
 }

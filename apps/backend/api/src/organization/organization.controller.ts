@@ -7,6 +7,7 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Put,
     Request,
     Res,
 } from '@nestjs/common';
@@ -158,5 +159,33 @@ export class OrganizationController {
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.organizationService.remove(+id);
+    }
+
+    @Roles(UserRoleType.SuperAdmin)
+    @Put('activate/:orgId/:isIncludeEmployees')
+    activateUser(
+        @Param('orgId') orgId: string,
+        @Param('isIncludeEmployees') isIncludeEmployees: string,
+    ) {
+        return this.organizationService.setOrgActivationStatus(
+            orgId,
+            true,
+            true,
+            isIncludeEmployees,
+        );
+    }
+
+    @Roles(UserRoleType.SuperAdmin)
+    @Put('deactivate/:orgId/:isIncludeEmployees')
+    deactivateUser(
+        @Param('orgId') orgId: string,
+        @Param('isIncludeEmployees') isIncludeEmployees: string,
+    ) {
+        return this.organizationService.setOrgActivationStatus(
+            orgId,
+            false,
+            false,
+            isIncludeEmployees,
+        );
     }
 }
