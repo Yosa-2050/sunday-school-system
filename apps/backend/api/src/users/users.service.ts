@@ -157,7 +157,7 @@ export class UsersService {
         return `This action updates a #${id} user`;
     }
 
-    async setUserActivationStatus(id: string, isUserActive : boolean) {
+    async setUserActivationStatus(id: string, isUserActive: boolean) {
         const update = await this.userRepo.preload({
             id,
             isActive: isUserActive,

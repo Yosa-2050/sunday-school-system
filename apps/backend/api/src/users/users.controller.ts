@@ -122,5 +122,5 @@ export class UsersController {
     @Put('deactivate/:userId')
     deactivateUser(@Param('userId') userId: string) {
         return this.usersService.setUserActivationStatus(userId, false);
-    } 
+    }
 }

@@ -177,11 +177,13 @@ export class ProfileService {
         return UtilityServices.EnsureUpdated(updated, profileId);
     }
 
-   async findUserByProfileId(profileId : string){
+    async findUserByProfileId(profileId: string) {
         const profile = await this.findById(profileId);
 
-        if(!profile){
-            throw new BadRequestException(`Profile not found with profileId ${profileId}.`)
+        if (!profile) {
+            throw new BadRequestException(
+                `Profile not found with profileId ${profileId}.`,
+            );
         }
 
         const user = profile.user;
