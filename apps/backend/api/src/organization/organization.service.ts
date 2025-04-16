@@ -11,7 +11,8 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 import { NotificationService } from '@shega/notification/notification.service';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
-import type { UsersService } from '@shega/users/users.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import {
@@ -349,11 +350,10 @@ export class OrganizationService {
         isActivateProcess: boolean,
         isIncludeEmployees: string,
     ) {
-        const isIncludeEmployeesBoolean =
-            isIncludeEmployees === 'true' ? true : false;
+        const isIncludeEmployeesBoolean = isIncludeEmployees === 'true';
         //activate/deactivate users if included employees in the request
         if (isIncludeEmployeesBoolean) {
-            const isUserActive = isActivateProcess ? true : false;
+            const isUserActive = isActivateProcess;
             const employeeList = await this.findEmployee(orgId);
             const profileIds = [];
             const users = [];
