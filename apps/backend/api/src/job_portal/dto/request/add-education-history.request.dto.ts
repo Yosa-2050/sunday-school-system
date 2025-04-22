@@ -27,10 +27,10 @@ export class AddEducationalHistoryRequestDto {
     @IsDateString()
     startDate: Date;
 
-   @ApiProperty()
-       @IsDateString()
-       @IsOptional()
-       @Transform(({ value }) => value === '' ? undefined : value)
+    @ApiProperty()
+    @IsDateString()
+    @IsOptional()
+    @Transform(({ value }) => (value === '' ? undefined : value))
     endDate: Date;
 
     @ApiProperty()
