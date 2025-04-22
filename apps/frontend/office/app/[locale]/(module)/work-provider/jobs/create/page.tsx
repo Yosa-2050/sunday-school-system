@@ -210,6 +210,7 @@ export default function PostJobPage() {
         jobMutation.mutate({
             ...data,
             organizationId: organizationId ?? '',
+            isPublished: true,
         });
     };
 
@@ -228,6 +229,7 @@ export default function PostJobPage() {
         draftMutation.mutate({
             ...watch(),
             organizationId: organizationId ?? '',
+            isPublished: false,
         });
     };
 
