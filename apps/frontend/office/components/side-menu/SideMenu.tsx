@@ -15,13 +15,13 @@ export type MenuTree = {
     isExternal?: string;
     children?: MenuTree[];
     pathMatch?: number;
-    role: 'administrator' | 'work_provider';
+    role: 'super_admin' | 'administrator' | 'work_provider';
 };
 
 type MenuItemProps = {
     data: MenuTree;
     level?: number;
-    role: 'administrator' | 'work_provider';
+    role: 'super_admin' | 'administrator' | 'work_provider';
 };
 
 type MenuLabelProps = {
@@ -198,7 +198,7 @@ export function SideMenu({
     role,
 }: {
     menu: MenuTree[];
-    role: 'administrator' | 'work_provider';
+    role: 'super_admin' | 'administrator' | 'work_provider';
 }) {
     return (
         <ScrollArea className="w-full px-4 py-4" scrollHideDelay={500}>

@@ -75,5 +75,23 @@ export const Menus = (): MenuTree[] => {
             link: '/work-provider/draft-jobs',
             role: 'work_provider',
         },
+        {
+            label: t('dashboard'),
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/admin/dashboard',
+            role: 'super_admin',
+        },
+        {
+            label: t('users'),
+            icon: <IconUser stroke={1.4} size={20} />,
+            link: '/admin/users',
+            role: 'super_admin',
+        },
+        {
+            label: t('organizations'),
+            icon: <IconBuilding stroke={1.4} size={20} />,
+            link: '/admin/organizations',
+            role: 'super_admin',
+        },
     ];
 };

@@ -94,6 +94,8 @@ const Login = () => {
                             router.push('/admin/dashboard');
                         } else if (data.role === 'work_provider') {
                             router.push('/work-provider/jobs');
+                        } else if (data.role === 'super_admin') {
+                            router.push('/admin/dashboard');
                         }
                         setCookie('role', data.role);
                         setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {

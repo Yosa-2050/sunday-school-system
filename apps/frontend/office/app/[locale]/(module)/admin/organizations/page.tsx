@@ -10,14 +10,15 @@ import {
     Group,
     LoadingOverlay,
     Menu,
+    Modal,
     Paper,
     Stack,
     Table,
     TableScrollContainer,
     Text,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { notifications, showNotification } from '@mantine/notifications';
 import {
     PER_PAGE,
     entityParamSchema,
@@ -32,6 +33,10 @@ import {
     type Daum,
     fetchOrganizations,
 } from 'app/[locale]/_api/organizations/fetch-organizations';
+import {
+    activateOrg,
+    deactivateOrg,
+} from 'app/[locale]/_api/organizations/orgStatus';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
@@ -41,7 +46,39 @@ import { CreateOrganization } from './_components/create-organization';
 const OrganizationsPage = () => {
     const t = useTranslations('organizationsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const [opened, { open, close }] = useDisclosure(false);
+    const [openedActivation, activationHandlers] = useDisclosure(false);
 
+    const [selectedUser, setSelectedUser] = useState<{
+        id: string;
+        name: string;
+    } | null>(null);
+
+    const handleStatus = async (userId: string, currentStatus: boolean) => {
+        try {
+            if (currentStatus) {
+                await deactivateOrg(userId);
+                showNotification({
+                    title: 'Deactivated',
+                    message: 'Organization has been deactivated.',
+                    color: 'green',
+                });
+            } else {
+                await activateOrg(userId);
+                showNotification({
+                    title: 'Activated',
+                    message: 'Organization has been activated.',
+                    color: 'green',
+                });
+            }
+        } catch (error) {
+            showNotification({
+                title: 'Error',
+                message: 'An error occurred while updating the user status.',
+                color: 'red',
+            });
+        }
+    };
     const [entityParams] = useQueryState(
         'organizations',
         parseAsJson(entityParamSchema.parse).withDefault({
@@ -272,14 +309,127 @@ const OrganizationsPage = () => {
                                     <Table.Td>
                                         <Menu width={200}>
                                             <Menu.Target>
-                                                <IconDotsVertical size={18} />
+                                                <IconDotsVertical
+                                                    size={18}
+                                                    className="cursor-pointer"
+                                                />
                                             </Menu.Target>
+                                            <Menu.Dropdown>
+                                                {user.isActive ? (
+                                                    <Menu.Item
+                                                        color="red"
+                                                        onClick={() => {
+                                                            setSelectedUser({
+                                                                id: user.id,
+                                                                name: user.name,
+                                                            });
+                                                            open();
+                                                        }}
+                                                    >
+                                                        Deactivate
+                                                    </Menu.Item>
+                                                ) : (
+                                                    <Menu.Item
+                                                        onClick={() => {
+                                                            setSelectedUser({
+                                                                id: user.id,
+                                                                name: user.name,
+                                                            });
+                                                            activationHandlers.open();
+                                                        }}
+                                                    >
+                                                        Activate
+                                                    </Menu.Item>
+                                                )}
+                                            </Menu.Dropdown>
                                         </Menu>
                                     </Table.Td>
                                 </Table.Tr>
                             ))}
                         </Table.Tbody>
                     </Table>
+                    <Modal
+                        opened={opened}
+                        onClose={() => {
+                            close();
+                            setSelectedUser(null);
+                        }}
+                        title="Organization Deactivation"
+                        centered
+                    >
+                        <Text>
+                            Are you sure you want to deactivate{' '}
+                            <Text span fw={600}>
+                                {selectedUser?.name}{' '}
+                            </Text>
+                            Organization?
+                        </Text>
+
+                        <Group mt="xl" justify="flex-end">
+                            <Button variant="default" onClick={close}>
+                                Cancel
+                            </Button>
+                            <Button
+                                color="red"
+                                onClick={async () => {
+                                    if (selectedUser) {
+                                        await handleStatus(
+                                            selectedUser.id,
+                                            true,
+                                        );
+                                        close();
+                                        setSelectedUser(null);
+                                    }
+                                }}
+                            >
+                                Deactivate
+                            </Button>
+                        </Group>
+                    </Modal>
+                    <Modal
+                        opened={openedActivation}
+                        onClose={() => {
+                            activationHandlers.close();
+                            setSelectedUser(null);
+                        }}
+                        title="Organization Deactivation"
+                        centered
+                    >
+                        <Text>
+                            Are you sure you want to activate{' '}
+                            <Text span fw={600}>
+                                {selectedUser?.name}{' '}
+                            </Text>
+                            Organization?
+                        </Text>
+
+                        <Group mt="xl" justify="flex-end">
+                            <Button
+                                variant="default"
+                                onClick={() => {
+                                    activationHandlers.close();
+                                    setSelectedUser(null);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                color="red"
+                                onClick={async () => {
+                                    if (selectedUser) {
+                                        await handleStatus(
+                                            selectedUser.id,
+                                            false,
+                                        );
+                                        activationHandlers.close();
+                                        setSelectedUser(null);
+                                    }
+                                }}
+                            >
+                                Activate
+                            </Button>
+                        </Group>
+                    </Modal>
                 </TableScrollContainer>
             )}
 
