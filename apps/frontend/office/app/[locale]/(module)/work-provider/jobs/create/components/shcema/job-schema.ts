@@ -1,5 +1,16 @@
 import * as z from 'zod';
 
+export enum JobDescriptionType {
+    Benefits = 'BENEFITS',
+    Requirements = 'REQUIREMENTS',
+    Responsibility = 'RESPONSIBILITY',
+}
+
+export const jobDescriptionSchema = z.object({
+    description: z.string(),
+    type: z.nativeEnum(JobDescriptionType),
+});
+
 export const jobSchema = z
     .object({
         title: z
@@ -78,6 +89,22 @@ export const jobSchema = z
             .optional()
             .or(z.literal('')),
         additionalInfo: z.string().optional(),
+        benefits: z
+            .array(z.string(), { required_error: 'Benefits are required' })
+            .min(1, { message: 'Please add at least one benefit' }),
+        requirements: z
+            .array(z.string(), { required_error: 'Requirements are required' })
+            .min(1, { message: 'Please add at least one requirement' }),
+        responsibilities: z
+            .array(z.string(), {
+                required_error: 'Responsibilities are required',
+            })
+            .min(1, { message: 'Please add at least one responsibility' }),
+        jobDescriptions: z
+            .array(jobDescriptionSchema, {
+                required_error: 'Job descriptions are required',
+            })
+            .min(1, { message: 'Please add at least one job description' }),
     })
     .superRefine((data, ctx) => {
         if (data.salaryTo <= data.salaryFrom) {

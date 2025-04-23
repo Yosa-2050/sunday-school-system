@@ -40,6 +40,19 @@ interface Organization {
     hasBranches: boolean;
 }
 
+interface JobSkill {
+    id: string;
+    isActive: boolean;
+    skill: string;
+}
+
+interface JobDescription {
+    id: string;
+    isActive: boolean;
+    description: string;
+    type: string;
+}
+
 interface Job {
     workPlace: string;
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -57,6 +70,9 @@ interface Job {
     organization: Organization;
     currency: string;
     postedBy: PostedBy;
+    jobSkills: JobSkill[];
+    jobDescriptions: JobDescription[];
+    applied: boolean;
 }
 
 export const fetchJobsById = async (id: string): Promise<Job> => {

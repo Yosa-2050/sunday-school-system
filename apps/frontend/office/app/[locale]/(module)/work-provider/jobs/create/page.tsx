@@ -159,7 +159,7 @@ export default function PostJobPage() {
         mutationFn: createJob,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobs'] });
-            router.push('work-provider/jobs');
+            router.push('/work-provider/jobs');
             notifications.show({
                 title: 'Success',
                 message: 'Job posted successfully',
