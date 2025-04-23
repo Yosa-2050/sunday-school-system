@@ -126,9 +126,9 @@ export const JobRequirements = ({
                                     | number
                                     | bigint
                                     | boolean
-                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                     | ReactElement<
                                           unknown,
+                                          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                           string | JSXElementConstructor<any>
                                       >
                                     | Iterable<ReactNode>
@@ -140,8 +140,8 @@ export const JobRequirements = ({
                                           | ReactPortal
                                           | ReactElement<
                                                 unknown,
-                                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                                 | string
+                                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                                 | JSXElementConstructor<any>
                                             >
                                           | Iterable<ReactNode>
