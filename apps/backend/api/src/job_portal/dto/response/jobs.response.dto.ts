@@ -17,7 +17,7 @@ export class JobResponseDto {
         this.status = job.status;
         this.type = job.type;
         this.title = job.title;
-        this.orgName = job.organization.name;
+        this.orgName = job.organization?.name;
         this.description = job.description;
         this.note = job.notes;
         this.currency = job.currency;

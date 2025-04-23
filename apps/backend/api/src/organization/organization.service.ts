@@ -66,7 +66,10 @@ export class OrganizationService {
         status: ApprovalType,
         note?: string,
     ) {
-        await this.organizationRepo.findOneByOrFail({ id });
+        const org = await this.organizationRepo.findOneBy({ id });
+        if (!org) {
+            throw new BadRequestException('Organization not found');
+        }
 
         const updatedOrg = await this.organizationRepo.update(
             { id },
