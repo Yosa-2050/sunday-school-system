@@ -218,6 +218,14 @@ export class JobPortalService {
 
     async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
         const query = this.jobRepo.createQueryBuilder('job');
+        query.orderBy('job.postedDate', 'DESC');
+        query.leftJoinAndSelect('job.organization', 'organization');
+        query.andWhere('job.status = :status', {
+            status: ApprovalType.Approved,
+        });
+        query.andWhere('job.isPublished = :isPublished', {
+            isPublished: true,
+        });
 
         if (filter.title) {
             query.andWhere('LOWER(job.title) LIKE LOWER(:title)', {
@@ -246,7 +254,7 @@ export class JobPortalService {
         }
 
         if (filter.salaryFrom) {
-            query.andWhere('job.salaryFrom >= :experianceLevel', {
+            query.andWhere('job.salaryFrom >= :salaryFrom', {
                 salaryFrom: filter.salaryFrom,
             });
         }
@@ -268,12 +276,6 @@ export class JobPortalService {
                 cityId: filter.cityId,
             });
         }
-
-        query.andWhere('job.isPublished = :isPublished', {
-            isPublished: true,
-        });
-
-        query.orderBy('job.postedDate', 'DESC');
 
         let jobsApplied: string[] = null;
         if (applicantId) {

@@ -24,16 +24,19 @@ export class GetJobsRequestDto {
     @ApiProperty()
     @IsOptional()
     @IsUUID()
+    @Transform(({ value }) => (value === '' ? undefined : value))
     categoryId?: string;
 
     @ApiProperty()
     @IsOptional()
     @IsUUID()
+    @Transform(({ value }) => (value === '' ? undefined : value))
     organizationId?: string;
 
     @ApiProperty()
     @IsOptional()
     @IsUUID()
+    @Transform(({ value }) => (value === '' ? undefined : value))
     cityId?: string;
 
     @ApiProperty()
