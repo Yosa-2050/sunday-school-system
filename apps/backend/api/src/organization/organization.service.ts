@@ -67,8 +67,8 @@ export class OrganizationService {
         note?: string,
     ) {
         const org = await this.organizationRepo.findOneBy({ id });
-        if(!org){
-            throw new BadRequestException("Organization not found");
+        if (!org) {
+            throw new BadRequestException('Organization not found');
         }
 
         const updatedOrg = await this.organizationRepo.update(

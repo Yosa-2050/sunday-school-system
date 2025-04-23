@@ -29,6 +29,8 @@ import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/request/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
 import { JobResponseDto } from './dto/response/jobs.response.dto';
 import { Applicants } from './entities/applicants.entity';
@@ -39,8 +41,6 @@ import { JobDescription } from './entities/job-description.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
 
 @Injectable()
 export class JobPortalService {

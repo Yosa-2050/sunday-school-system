@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { Transform, Type } from 'class-transformer';
 import {
     IsDefined,

@@ -32,13 +32,13 @@ import {
     UpdateExperianceRequestDto,
 } from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobsService } from './jobs.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
 
 @Roles(UserRoleType.JobSeeker)
 @ApiTags('job-seeker')
