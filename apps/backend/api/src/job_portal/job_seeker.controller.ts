@@ -88,7 +88,6 @@ export class JobSeekerController {
 
     @Post('jobs')
     getAllPending(@Body() dto: GetJobsRequestDto, @Request() req) {
-        
         return this.jobPortalService.filterJobs(
             dto,
             CurrentUser.getApplicantId(req),

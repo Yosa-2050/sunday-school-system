@@ -218,70 +218,73 @@ export class JobPortalService {
 
     async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
         const query = this.jobRepo.createQueryBuilder('job');
-    
+
         if (filter.title) {
-          query.andWhere('LOWER(job.title) LIKE LOWER(:title)', {
-            title: `%${filter.title}%`,
-          });
+            query.andWhere('LOWER(job.title) LIKE LOWER(:title)', {
+                title: `%${filter.title}%`,
+            });
         }
-    
+
         if (filter.categoryId) {
-          query.leftJoin('job.jobCategory', 'category')
-          .andWhere('category.id = :categoryId', { categoryId: filter.categoryId });
+            query
+                .leftJoin('job.jobCategory', 'category')
+                .andWhere('category.id = :categoryId', {
+                    categoryId: filter.categoryId,
+                });
         }
-    
+
         if (filter.type) {
-          query.andWhere('job.type = :employmentType', {
-            employmentType: filter.type,
-          });
+            query.andWhere('job.type = :employmentType', {
+                employmentType: filter.type,
+            });
         }
 
         if (filter.experianceLevel) {
             query.andWhere('job.experianceLevel = :experianceLevel', {
                 experianceLevel: filter.experianceLevel,
             });
-          }
+        }
 
-          if (filter.salaryFrom) {
+        if (filter.salaryFrom) {
             query.andWhere('job.salaryFrom >= :experianceLevel', {
                 salaryFrom: filter.salaryFrom,
             });
-          }
+        }
 
-          if (filter.salaryTo) {
+        if (filter.salaryTo) {
             query.andWhere('job.salaryTo <= :salaryTo', {
                 salaryTo: filter.salaryTo,
             });
-          }
-    
+        }
+
         if (filter.organizationId) {
-          query.andWhere('job.organizationId = :organizationId', {
-            organizationId: filter.organizationId,
-          });
+            query.andWhere('job.organizationId = :organizationId', {
+                organizationId: filter.organizationId,
+            });
         }
 
         if (filter.cityId) {
             query.andWhere('job.cityId = :cityId', {
                 cityId: filter.cityId,
             });
-          }
-    
+        }
+
         query.andWhere('job.isPublished = :isPublished', {
             isPublished: true,
-          });
+        });
 
-          query.orderBy('job.postedDate', 'DESC');
+        query.orderBy('job.postedDate', 'DESC');
 
         let jobsApplied: string[] = null;
         if (applicantId) {
             const appliedJobs = await this.jobsApplied(applicantId);
             jobsApplied = appliedJobs.map((x) => x.job.id);
         }
-    
+
         const [data, total] = await query
-                .skip((filter.pagination.page - 1) * filter.pagination.limit)
-                .take(filter.pagination.limit)
-                .getManyAndCount();
+            .skip((filter.pagination.page - 1) * filter.pagination.limit)
+            .take(filter.pagination.limit)
+            .getManyAndCount();
         const jobsList = data.map(
             (job) => new JobResponseDto(job, jobsApplied),
         );
@@ -291,7 +294,7 @@ export class JobPortalService {
             filter.pagination.page,
             filter.pagination.limit,
         );
-      }
+    }
 
     async getJobsByStatusPaginated(
         paginationDto: string,
