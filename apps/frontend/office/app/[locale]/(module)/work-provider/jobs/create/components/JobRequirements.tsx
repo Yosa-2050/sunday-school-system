@@ -15,7 +15,13 @@ import {
     Title,
 } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import {
+    type JSXElementConstructor,
+    type ReactElement,
+    type ReactNode,
+    type ReactPortal,
+    useState,
+} from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { JobDescriptionType } from './shcema/job-schema';
 import type { JobFormData } from './types';
@@ -60,7 +66,12 @@ export const JobRequirements = ({
 
     const handleDeleteItem = (type: JobDescriptionType, index: number) => {
         const currentItems = control._getWatch('jobDescriptions') || [];
-        const newItems = currentItems.filter((_, i) => i !== index);
+        const newItems = currentItems.filter(
+            (
+                item: { type: JobDescriptionType; description: string },
+                i: number,
+            ) => i !== index,
+        );
         setValue('jobDescriptions', newItems);
     };
 
@@ -88,7 +99,7 @@ export const JobRequirements = ({
 
     const renderListItems = (type: JobDescriptionType, label: string) => {
         const items = (control._getWatch('jobDescriptions') || []).filter(
-            (item) => item.type === type,
+            (item: { type: JobDescriptionType }) => item.type === type,
         );
 
         if (items.length === 0) {
@@ -106,65 +117,107 @@ export const JobRequirements = ({
                     {items.length} {label}
                 </Text>
                 <Stack gap="xs">
-                    {items.map((item, index) => (
-                        <Group
-                            key={`${item.type}-${index}`}
-                            gap="xs"
-                            wrap="nowrap"
-                        >
-                            <Checkbox checked={true} readOnly />
-                            {editingItem?.type === type &&
-                            editingItem?.index === index ? (
-                                <Group gap="xs" style={{ flex: 1 }}>
-                                    <TextInput
-                                        value={editingItem.value}
-                                        onChange={(e) =>
-                                            setEditingItem({
-                                                ...editingItem,
-                                                value: e.target.value,
-                                            })
-                                        }
-                                        size="xs"
-                                        style={{ flex: 1 }}
-                                    />
-                                    <Button size="xs" onClick={handleSaveEdit}>
-                                        Save
-                                    </Button>
-                                </Group>
-                            ) : (
-                                <>
-                                    <Text size="sm" style={{ flex: 1 }}>
-                                        {item.description}
-                                    </Text>
-                                    <Group gap={4}>
-                                        <ActionIcon
-                                            size="sm"
-                                            variant="subtle"
-                                            onClick={() =>
-                                                handleEditItem(
-                                                    type,
-                                                    index,
-                                                    item.description,
-                                                )
+                    {items.map(
+                        (
+                            item: {
+                                type: JobDescriptionType;
+                                description:
+                                    | string
+                                    | number
+                                    | bigint
+                                    | boolean
+                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                    | ReactElement<
+                                          unknown,
+                                          string | JSXElementConstructor<any>
+                                      >
+                                    | Iterable<ReactNode>
+                                    | Promise<
+                                          | string
+                                          | number
+                                          | bigint
+                                          | boolean
+                                          | ReactPortal
+                                          | ReactElement<
+                                                unknown,
+                                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                                | string
+                                                | JSXElementConstructor<any>
+                                            >
+                                          | Iterable<ReactNode>
+                                          | null
+                                          | undefined
+                                      >
+                                    | null
+                                    | undefined;
+                            },
+                            index: number,
+                        ) => (
+                            <Group
+                                key={`${item.type}-${index}`}
+                                gap="xs"
+                                wrap="nowrap"
+                            >
+                                <Checkbox checked={true} readOnly />
+                                {editingItem?.type === type &&
+                                editingItem?.index === index ? (
+                                    <Group gap="xs" style={{ flex: 1 }}>
+                                        <TextInput
+                                            value={editingItem.value}
+                                            onChange={(e) =>
+                                                setEditingItem({
+                                                    ...editingItem,
+                                                    value: e.target.value,
+                                                })
                                             }
+                                            size="xs"
+                                            style={{ flex: 1 }}
+                                        />
+                                        <Button
+                                            size="xs"
+                                            onClick={handleSaveEdit}
                                         >
-                                            <IconEdit size={14} />
-                                        </ActionIcon>
-                                        <ActionIcon
-                                            size="sm"
-                                            variant="subtle"
-                                            color="red"
-                                            onClick={() =>
-                                                handleDeleteItem(type, index)
-                                            }
-                                        >
-                                            <IconTrash size={14} />
-                                        </ActionIcon>
+                                            Save
+                                        </Button>
                                     </Group>
-                                </>
-                            )}
-                        </Group>
-                    ))}
+                                ) : (
+                                    <>
+                                        <Text size="sm" style={{ flex: 1 }}>
+                                            {item.description}
+                                        </Text>
+                                        <Group gap={4}>
+                                            <ActionIcon
+                                                size="sm"
+                                                variant="subtle"
+                                                onClick={() =>
+                                                    handleEditItem(
+                                                        type,
+                                                        index,
+                                                        item.description as string,
+                                                    )
+                                                }
+                                            >
+                                                <IconEdit size={14} />
+                                            </ActionIcon>
+                                            <ActionIcon
+                                                size="sm"
+                                                variant="subtle"
+                                                color="red"
+                                                onClick={() =>
+                                                    handleDeleteItem(
+                                                        type,
+                                                        index,
+                                                    )
+                                                }
+                                            >
+                                                <IconTrash size={14} />
+                                            </ActionIcon>
+                                        </Group>
+                                    </>
+                                )}
+                            </Group>
+                        ),
+                    )}
                 </Stack>
             </Paper>
         );
