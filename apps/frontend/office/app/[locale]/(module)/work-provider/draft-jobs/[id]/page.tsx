@@ -35,7 +35,10 @@ import { ApplicationDetails } from '../../jobs/create/components/ApplicationDeta
 import { JobDetails } from '../../jobs/create/components/JobDetails';
 import { JobPreview } from '../../jobs/create/components/JobPreview';
 import { JobRequirements } from '../../jobs/create/components/JobRequirements';
-import { jobSchema } from '../../jobs/create/components/shcema/job-schema';
+import {
+    type JobDescriptionType,
+    jobSchema,
+} from '../../jobs/create/components/shcema/job-schema';
 import type { JobFormData } from '../../jobs/create/components/types';
 
 const getDefaultValues = (job: JobDetailsViewProps | undefined) => {
@@ -68,6 +71,19 @@ const getDefaultValues = (job: JobDetailsViewProps | undefined) => {
         contactEmail: '',
         applicationUrl: '',
         additionalInfo: job.notes || '',
+        requirements:
+            job.jobDescriptions
+                ?.filter((d) => d.type === 'REQUIREMENTS')
+                .map((d) => d.description) || [],
+        responsibilities:
+            job.jobDescriptions
+                ?.filter((d) => d.type === 'RESPONSIBILITY')
+                .map((d) => d.description) || [],
+        benefits:
+            job.jobDescriptions
+                ?.filter((d) => d.type === 'BENEFITS')
+                .map((d) => d.description) || [],
+        jobDescriptions: job.jobDescriptions || [],
     };
 };
 
@@ -120,6 +136,23 @@ const DraftJobEdit = () => {
                   contactEmail: '',
                   applicationUrl: '',
                   additionalInfo: job.notes || '',
+                  requirements:
+                      job.jobDescriptions
+                          ?.filter((d) => d.type === 'REQUIREMENTS')
+                          .map((d) => d.description) || [],
+                  responsibilities:
+                      job.jobDescriptions
+                          ?.filter((d) => d.type === 'RESPONSIBILITY')
+                          .map((d) => d.description) || [],
+                  benefits:
+                      job.jobDescriptions
+                          ?.filter((d) => d.type === 'BENEFITS')
+                          .map((d) => d.description) || [],
+                  jobDescriptions:
+                      job.jobDescriptions?.map((desc) => ({
+                          description: desc.description,
+                          type: desc.type as JobDescriptionType,
+                      })) || [],
               }
             : undefined,
         mode: 'onChange',
@@ -128,7 +161,15 @@ const DraftJobEdit = () => {
 
     useEffect(() => {
         if (job) {
-            methods.reset(getDefaultValues(job));
+            const defaultValues = {
+                ...getDefaultValues(job),
+                jobDescriptions:
+                    job.jobDescriptions?.map((desc) => ({
+                        description: desc.description,
+                        type: desc.type as JobDescriptionType,
+                    })) || [],
+            };
+            methods.reset(defaultValues);
         }
     }, [job, methods]);
 

@@ -13,12 +13,14 @@ import {
     Flex,
     Grid,
     Group,
+    List,
     LoadingOverlay,
     Modal,
     Paper,
     Stack,
     Text,
     Title,
+    useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -46,6 +48,7 @@ const JobDetails = () => {
     const queryClient = new QueryClient();
     const jobId = params.id as string;
     const [opened, { open, close }] = useDisclosure(false);
+    const theme = useMantineTheme();
 
     const { data: job, isLoading } = useQuery<JobDetailsViewProps>({
         queryKey: ['job', jobId],
@@ -316,6 +319,143 @@ const JobDetails = () => {
                                     ) : (
                                         <Text className="text-gray-500">
                                             No description provided
+                                        </Text>
+                                    )}
+                                </Paper>
+                            </Stack>
+
+                            <Stack>
+                                <Title order={3} className="mb-4">
+                                    Requirements
+                                </Title>
+                                <Paper p="md" withBorder>
+                                    {job.jobDescriptions?.filter(
+                                        (desc) =>
+                                            desc.type === 'REQUIREMENTS' &&
+                                            desc.isActive,
+                                    ).length > 0 ? (
+                                        <List>
+                                            {job.jobDescriptions
+                                                .filter(
+                                                    (desc) =>
+                                                        desc.type ===
+                                                            'REQUIREMENTS' &&
+                                                        desc.isActive,
+                                                )
+                                                .map((req) => (
+                                                    <List.Item
+                                                        key={req.id}
+                                                        icon={
+                                                            <IconCheck
+                                                                size={18}
+                                                                color={
+                                                                    theme.colors
+                                                                        .teal[5]
+                                                                }
+                                                            />
+                                                        }
+                                                    >
+                                                        <Text>
+                                                            {req.description}
+                                                        </Text>
+                                                    </List.Item>
+                                                ))}
+                                        </List>
+                                    ) : (
+                                        <Text className="text-gray-500">
+                                            No requirements provided
+                                        </Text>
+                                    )}
+                                </Paper>
+                            </Stack>
+
+                            <Stack>
+                                <Title order={3} className="mb-4">
+                                    Responsibilities
+                                </Title>
+                                <Paper p="md" withBorder>
+                                    {job.jobDescriptions?.filter(
+                                        (desc) =>
+                                            desc.type === 'RESPONSIBILITY' &&
+                                            desc.isActive,
+                                    ).length > 0 ? (
+                                        <List>
+                                            {job.jobDescriptions
+                                                .filter(
+                                                    (desc) =>
+                                                        desc.type ===
+                                                            'RESPONSIBILITY' &&
+                                                        desc.isActive,
+                                                )
+                                                .map((resp) => (
+                                                    <List.Item
+                                                        key={resp.id}
+                                                        icon={
+                                                            <IconCheck
+                                                                size={18}
+                                                                color={
+                                                                    theme.colors
+                                                                        .teal[5]
+                                                                }
+                                                            />
+                                                        }
+                                                    >
+                                                        <Text>
+                                                            {resp.description}
+                                                        </Text>
+                                                    </List.Item>
+                                                ))}
+                                        </List>
+                                    ) : (
+                                        <Text className="text-gray-500">
+                                            No responsibilities provided
+                                        </Text>
+                                    )}
+                                </Paper>
+                            </Stack>
+
+                            <Stack>
+                                <Title order={3} className="mb-4">
+                                    Benefits
+                                </Title>
+                                <Paper p="md" withBorder>
+                                    {job.jobDescriptions?.filter(
+                                        (desc) =>
+                                            desc.type === 'BENEFITS' &&
+                                            desc.isActive,
+                                    ).length > 0 ? (
+                                        <List>
+                                            {job.jobDescriptions
+                                                .filter(
+                                                    (desc) =>
+                                                        desc.type ===
+                                                            'BENEFITS' &&
+                                                        desc.isActive,
+                                                )
+                                                .map((benefit) => (
+                                                    <List.Item
+                                                        key={benefit.id}
+                                                        icon={
+                                                            <IconCheck
+                                                                size={18}
+                                                                color={
+                                                                    theme.colors
+                                                                        .teal[5]
+                                                                }
+                                                            />
+                                                        }
+                                                    >
+                                                        <Text>
+                                                            {
+                                                                benefit.description
+                                                            }
+                                                        </Text>
+                                                    </List.Item>
+                                                ))}
+                                        </List>
+                                    ) : (
+                                        <Text className="text-gray-500">
+                                            No benefits provided
                                         </Text>
                                     )}
                                 </Paper>

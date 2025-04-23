@@ -103,7 +103,7 @@ export default function EducationSection({
 
                     <Divider />
 
-                    {education.length === 0 ? (
+                    {education?.length === 0 ? (
                         <Box
                             p="md"
                             style={{
@@ -118,7 +118,7 @@ export default function EducationSection({
                     ) : (
                         <Stack gap="sm">
                             {education
-                                .slice(0, viewmore ? education.length : 2)
+                                ?.slice(0, viewmore ? education?.length : 2)
                                 .map((edu) => (
                                     <Card
                                         key={edu.id}
@@ -221,7 +221,7 @@ export default function EducationSection({
                                         </Stack>
                                     </Card>
                                 ))}
-                            {education.length > 2 && (
+                            {education?.length > 2 && (
                                 <Flex justify="center">
                                     <Button
                                         variant="subtle"

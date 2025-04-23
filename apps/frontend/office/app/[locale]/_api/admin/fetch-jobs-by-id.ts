@@ -41,6 +41,12 @@ export interface JobDetailsViewProps {
     postedDate: string | null;
     jobCategory: JobCategory[];
     jobSkills: JobSkill[];
+    jobDescriptions: {
+        type: string;
+        description: string;
+        isActive: string;
+        id: string;
+    }[];
     country: {
         id: string;
         isActive: boolean;

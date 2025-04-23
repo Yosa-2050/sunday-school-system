@@ -32,6 +32,7 @@ import {
     Title,
     Tooltip,
     TypographyStylesProvider,
+    useMantineTheme,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -44,7 +45,6 @@ import {
     IconCheck,
     IconClock,
     IconCurrencyDollar,
-    IconDeviceFloppy,
     IconFileText,
     IconHelp,
     IconMapPin,
@@ -58,6 +58,35 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+interface JobDescription {
+    id: string;
+    type: 'REQUIREMENTS' | 'RESPONSIBILITY' | 'BENEFITS';
+    description: string;
+    isActive: boolean;
+}
+
+interface JobSkill {
+    id: string;
+    isActive: boolean;
+    skill: string;
+}
+
+interface Job {
+    id: string;
+    title: string;
+    description: string;
+    organization: {
+        name: string;
+    };
+    type: string;
+    salaryFrom: number;
+    salaryTo: number;
+    currency: string;
+    workPlace?: string;
+    jobDescriptions?: JobDescription[];
+    jobSkills?: JobSkill[];
+}
+
 export default function JobDetailsPage() {
     const params = useParams<{ id: string }>();
     const locale = useLocale();
@@ -68,6 +97,7 @@ export default function JobDetailsPage() {
     const [activeTab, setActiveTab] = useState('overview');
     const [applicationProgress, setApplicationProgress] = useState(60);
     const { user } = useAuth();
+    const theme = useMantineTheme();
 
     const {
         data: job,
@@ -359,42 +389,156 @@ export default function JobDetailsPage() {
 
                                             <Stack gap="xs">
                                                 <Title order={4}>
-                                                    Responsibilities
+                                                    Requirements
                                                 </Title>
                                                 <List size="sm" color="dimmed">
-                                                    {job.responsibilities?.map(
-                                                        (
-                                                            req: string,
-                                                            index: number,
-                                                        ) => (
-                                                            <List.Item
-                                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                                                                key={index}
-                                                            >
-                                                                {req}
-                                                            </List.Item>
-                                                        ),
+                                                    {job.jobDescriptions?.filter(
+                                                        (desc) =>
+                                                            desc.type ===
+                                                                'REQUIREMENTS' &&
+                                                            desc.isActive,
+                                                    ).length > 0 ? (
+                                                        job.jobDescriptions
+                                                            .filter(
+                                                                (desc) =>
+                                                                    desc.type ===
+                                                                        'REQUIREMENTS' &&
+                                                                    desc.isActive,
+                                                            )
+                                                            .map((req) => (
+                                                                <List.Item
+                                                                    key={req.id}
+                                                                    icon={
+                                                                        <IconCheck
+                                                                            size={
+                                                                                16
+                                                                            }
+                                                                            color={
+                                                                                theme
+                                                                                    .colors
+                                                                                    .teal[5]
+                                                                            }
+                                                                        />
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        req.description
+                                                                    }
+                                                                </List.Item>
+                                                            ))
+                                                    ) : (
+                                                        <Text
+                                                            size="sm"
+                                                            color="dimmed"
+                                                        >
+                                                            No requirements
+                                                            provided
+                                                        </Text>
                                                     )}
                                                 </List>
                                             </Stack>
 
                                             <Stack gap="xs">
                                                 <Title order={4}>
-                                                    Requirements
+                                                    Responsibilities
                                                 </Title>
                                                 <List size="sm" color="dimmed">
-                                                    {job.requirements?.map(
-                                                        (
-                                                            req: string,
-                                                            index: number,
-                                                        ) => (
-                                                            <List.Item
-                                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                                                                key={index}
-                                                            >
-                                                                {req}
-                                                            </List.Item>
-                                                        ),
+                                                    {job.jobDescriptions?.filter(
+                                                        (desc) =>
+                                                            desc.type ===
+                                                                'RESPONSIBILITY' &&
+                                                            desc.isActive,
+                                                    ).length > 0 ? (
+                                                        job.jobDescriptions
+                                                            .filter(
+                                                                (desc) =>
+                                                                    desc.type ===
+                                                                        'RESPONSIBILITY' &&
+                                                                    desc.isActive,
+                                                            )
+                                                            .map((resp) => (
+                                                                <List.Item
+                                                                    key={
+                                                                        resp.id
+                                                                    }
+                                                                    icon={
+                                                                        <IconCheck
+                                                                            size={
+                                                                                16
+                                                                            }
+                                                                            color={
+                                                                                theme
+                                                                                    .colors
+                                                                                    .teal[5]
+                                                                            }
+                                                                        />
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        resp.description
+                                                                    }
+                                                                </List.Item>
+                                                            ))
+                                                    ) : (
+                                                        <Text
+                                                            size="sm"
+                                                            color="dimmed"
+                                                        >
+                                                            No responsibilities
+                                                            provided
+                                                        </Text>
+                                                    )}
+                                                </List>
+                                            </Stack>
+
+                                            <Stack gap="xs">
+                                                <Title order={4}>
+                                                    Benefits
+                                                </Title>
+                                                <List size="sm" color="dimmed">
+                                                    {job.jobDescriptions?.filter(
+                                                        (desc) =>
+                                                            desc.type ===
+                                                                'BENEFITS' &&
+                                                            desc.isActive,
+                                                    ).length > 0 ? (
+                                                        job.jobDescriptions
+                                                            .filter(
+                                                                (desc) =>
+                                                                    desc.type ===
+                                                                        'BENEFITS' &&
+                                                                    desc.isActive,
+                                                            )
+                                                            .map((benefit) => (
+                                                                <List.Item
+                                                                    key={
+                                                                        benefit.id
+                                                                    }
+                                                                    icon={
+                                                                        <IconCheck
+                                                                            size={
+                                                                                16
+                                                                            }
+                                                                            color={
+                                                                                theme
+                                                                                    .colors
+                                                                                    .teal[5]
+                                                                            }
+                                                                        />
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        benefit.description
+                                                                    }
+                                                                </List.Item>
+                                                            ))
+                                                    ) : (
+                                                        <Text
+                                                            size="sm"
+                                                            color="dimmed"
+                                                        >
+                                                            No benefits provided
+                                                        </Text>
                                                     )}
                                                 </List>
                                             </Stack>
@@ -404,63 +548,36 @@ export default function JobDetailsPage() {
                                                     Skills & Expertise
                                                 </Title>
                                                 <Group gap="xs">
-                                                    {[
-                                                        'React',
-                                                        'TypeScript',
-                                                        'Next.js',
-                                                        'Redux',
-                                                        'HTML5',
-                                                        'CSS3',
-                                                        'JavaScript',
-                                                        'REST APIs',
-                                                        'Responsive Design',
-                                                        'UI/UX',
-                                                    ].map((skill) => (
-                                                        <Badge
-                                                            key={skill}
-                                                            variant="outline"
+                                                    {job.jobSkills?.filter(
+                                                        (skill) =>
+                                                            skill.isActive,
+                                                    ).length > 0 ? (
+                                                        job.jobSkills
+                                                            .filter(
+                                                                (skill) =>
+                                                                    skill.isActive,
+                                                            )
+                                                            .map((skill) => (
+                                                                <Badge
+                                                                    key={
+                                                                        skill.id
+                                                                    }
+                                                                    variant="outline"
+                                                                >
+                                                                    {
+                                                                        skill.skill
+                                                                    }
+                                                                </Badge>
+                                                            ))
+                                                    ) : (
+                                                        <Text
+                                                            size="sm"
+                                                            color="dimmed"
                                                         >
-                                                            {skill}
-                                                        </Badge>
-                                                    ))}
+                                                            No skills provided
+                                                        </Text>
+                                                    )}
                                                 </Group>
-                                            </Stack>
-
-                                            <Stack gap="xs">
-                                                <Title order={4}>
-                                                    Benefits
-                                                </Title>
-                                                <List size="sm" color="dimmed">
-                                                    <List.Item>
-                                                        Competitive salary and
-                                                        equity package
-                                                    </List.Item>
-                                                    <List.Item>
-                                                        Health, dental, and
-                                                        vision insurance
-                                                    </List.Item>
-                                                    <List.Item>
-                                                        401(k) matching
-                                                    </List.Item>
-                                                    <List.Item>
-                                                        Flexible working hours
-                                                        and remote work options
-                                                    </List.Item>
-                                                    <List.Item>
-                                                        Professional development
-                                                        budget
-                                                    </List.Item>
-                                                    <List.Item>
-                                                        Unlimited PTO policy
-                                                    </List.Item>
-                                                    <List.Item>
-                                                        Home office stipend
-                                                    </List.Item>
-                                                    <List.Item>
-                                                        Team retreats and social
-                                                        events
-                                                    </List.Item>
-                                                </List>
                                             </Stack>
                                         </Stack>
                                     </Stack>
@@ -497,24 +614,28 @@ export default function JobDetailsPage() {
                                                     <TextInput
                                                         label="Full Name"
                                                         name="fullName"
-                                                        defaultValue="Alex Johnson"
+                                                        defaultValue={`${user?.firstName} ${user?.lastName}`}
+                                                        readOnly
                                                     />
                                                     <TextInput
                                                         label="Email"
                                                         name="email"
                                                         type="email"
-                                                        defaultValue="alex.johnson@example.com"
+                                                        defaultValue={
+                                                            user?.updatedBy
+                                                        }
+                                                        readOnly
                                                     />
-                                                    <TextInput
-                                                        label="Phone Number"
-                                                        name="phone"
-                                                        defaultValue="(555) 123-4567"
-                                                    />
-                                                    <TextInput
-                                                        label="Portfolio Website"
-                                                        name="portfolio"
-                                                        defaultValue="https://alexjohnson.dev"
-                                                    />
+                                                    {/* <TextInput
+                            label="Phone Number"
+                            name="phone"
+                            defaultValue="(555) 123-4567"
+                          />
+                          <TextInput
+                            label="Portfolio Website"
+                            name="portfolio"
+                            defaultValue="https://alexjohnson.dev"
+                          /> */}
                                                 </SimpleGrid>
                                             </Stack>
 
@@ -758,65 +879,51 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             {/* Legal */}
-                                            <Checkbox
-                                                label={
-                                                    <>
-                                                        I agree to the terms and
-                                                        conditions. By applying,
-                                                        you agree to our{' '}
-                                                        <Anchor
-                                                            href="#"
-                                                            size="sm"
-                                                        >
-                                                            Privacy Policy
-                                                        </Anchor>{' '}
-                                                        and{' '}
-                                                        <Anchor
-                                                            href="#"
-                                                            size="sm"
-                                                        >
-                                                            Terms of Service
-                                                        </Anchor>
-                                                    </>
-                                                }
-                                                defaultChecked
-                                                required
-                                            />
+                                            {!job?.applied && (
+                                                <Checkbox
+                                                    label={
+                                                        <>
+                                                            I agree to the terms
+                                                            and conditions. By
+                                                            applying, you agree
+                                                            to our{' '}
+                                                            <Anchor
+                                                                href="#"
+                                                                size="sm"
+                                                            >
+                                                                Privacy Policy
+                                                            </Anchor>{' '}
+                                                            and{' '}
+                                                            <Anchor
+                                                                href="#"
+                                                                size="sm"
+                                                            >
+                                                                Terms of Service
+                                                            </Anchor>
+                                                        </>
+                                                    }
+                                                    defaultChecked
+                                                    required
+                                                />
+                                            )}
 
                                             <Group grow>
-                                                <Button
-                                                    variant="default"
-                                                    leftSection={
-                                                        <IconDeviceFloppy
-                                                            size={16}
-                                                        />
-                                                    }
-                                                    onClick={() => {
-                                                        // Save as draft functionality
-                                                        setApplicationProgress(
-                                                            60,
-                                                        );
-                                                        notifications.show({
-                                                            title: 'Draft Saved',
-                                                            message:
-                                                                'Your application has been saved as a draft.',
-                                                            color: 'blue',
-                                                        });
-                                                    }}
-                                                >
-                                                    Save as Draft
-                                                </Button>
-                                                <Button
-                                                    type="submit"
-                                                    loading={
-                                                        applyMutation.isPending
-                                                    }
-                                                    disabled={
-                                                        applyMutation.isPending
-                                                    }
-                                                >
-                                                    Submit Application
-                                                </Button>
+                                                {!job?.applied && (
+                                                    <Flex justify={'end'}>
+                                                        <Button
+                                                            w={'50%'}
+                                                            type="submit"
+                                                            loading={
+                                                                applyMutation.isPending
+                                                            }
+                                                            disabled={
+                                                                applyMutation.isPending
+                                                            }
+                                                        >
+                                                            Submit Application
+                                                        </Button>
+                                                    </Flex>
+                                                )}
                                             </Group>
                                         </Stack>
                                     </form>
@@ -949,75 +1056,6 @@ export default function JobDetailsPage() {
                                     </Group>
 
                                     <Divider my="sm" />
-
-                                    {/* <Stack gap="xs">
-                    <Title order={5}>About the company</Title>
-                    <Text size="sm" color="dimmed">
-                      {job.organization?.description ||
-                        "TechCorp is a leading technology company specializing in cloud-based solutions and innovative software products. Founded in 2010, we've grown from a small startup to an industry leader with offices across the globe."}
-                    </Text>
-                  </Stack>
-
-                  <SimpleGrid cols={2} spacing="xs">
-                    <Card shadow="sm" p="sm">
-                      <Text size="sm" color="dimmed">
-                        Industry
-                      </Text>
-                      <Text fw={500}>Technology</Text>
-                    </Card>
-                    <Card shadow="sm" p="sm">
-                      <Text size="sm" color="dimmed">
-                        Company size
-                      </Text>
-                      <Text fw={500}>500-1000</Text>
-                    </Card>
-                    <Card shadow="sm" p="sm">
-                      <Text size="sm" color="dimmed">
-                        Founded
-                      </Text>
-                      <Text fw={500}>2010</Text>
-                    </Card>
-                    <Card shadow="sm" p="sm">
-                      <Text size="sm" color="dimmed">
-                        Revenue
-                      </Text>
-                      <Text fw={500}>$50M-$100M</Text>
-                    </Card>
-                  </SimpleGrid>
-
-                  <Stack gap="xs">
-                    <Title order={5}>Company culture</Title>
-                    <SimpleGrid cols={2}>
-                      <Stack gap="xs">
-                        <Text size="sm">Work-Life Balance</Text>
-                        <Progress value={90} size="sm" />
-                        <Text size="sm" color="dimmed" ta="right">
-                          9/10
-                        </Text>
-                      </Stack>
-                      <Stack gap="xs">
-                        <Text size="sm">Professional Growth</Text>
-                        <Progress value={85} size="sm" />
-                        <Text size="sm" color="dimmed" ta="right">
-                          8.5/10
-                        </Text>
-                      </Stack>
-                      <Stack gap="xs">
-                        <Text size="sm">Compensation & Benefits</Text>
-                        <Progress value={95} size="sm" />
-                        <Text size="sm" color="dimmed" ta="right">
-                          9.5/10
-                        </Text>
-                      </Stack>
-                      <Stack gap="xs">
-                        <Text size="sm">Company Culture</Text>
-                        <Progress value={90} size="sm" />
-                        <Text size="sm" color="dimmed" ta="right">
-                          9/10
-                        </Text>
-                      </Stack>
-                    </SimpleGrid>
-                  </Stack> */}
 
                                     <Button variant="outline" fullWidth>
                                         View company profile
