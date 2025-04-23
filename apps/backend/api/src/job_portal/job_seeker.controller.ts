@@ -14,14 +14,13 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
-import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
+// import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     AddEducationalHistoryRequestDto,
@@ -38,6 +37,8 @@ import { UpdateApplicantRequestDto } from './dto/request/update-applicant.reques
 import { JobPortalService } from './job_portal.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobsService } from './jobs.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
 
 @Roles(UserRoleType.JobSeeker)
 @ApiTags('job-seeker')
@@ -66,21 +67,30 @@ export class JobSeekerController {
         return this.jobsService.uploadCv(CurrentUser.getApplicantId(req), file);
     }
 
+    // @Post('jobs')
+    // getAllPending(@Body() dto: { q: string }, @Request() req) {
+    //     const deserialized = entityParamDeserializer(dto.q);
+
+    //     const searchableColumns = [];
+
+    //     const queryString = entityParamSerializer({
+    //         ...deserialized,
+    //         f: [
+    //             { f: 'status', v: ApprovalType.Approved, o: 'eq' },
+    //             ...(deserialized.f ?? []),
+    //         ],
+    //     });
+    //     return this.jobPortalService.getJobsByStatusPaginated(
+    //         queryString,
+    //         CurrentUser.getApplicantId(req),
+    //     );
+    // }
+
     @Post('jobs')
-    getAllPending(@Body() dto: { q: string }, @Request() req) {
-        const deserialized = entityParamDeserializer(dto.q);
-
-        const searchableColumns = [];
-
-        const queryString = entityParamSerializer({
-            ...deserialized,
-            f: [
-                { f: 'status', v: ApprovalType.Approved, o: 'eq' },
-                ...(deserialized.f ?? []),
-            ],
-        });
-        return this.jobPortalService.getJobsByStatusPaginated(
-            queryString,
+    getAllPending(@Body() dto: GetJobsRequestDto, @Request() req) {
+        
+        return this.jobPortalService.filterJobs(
+            dto,
             CurrentUser.getApplicantId(req),
         );
     }
