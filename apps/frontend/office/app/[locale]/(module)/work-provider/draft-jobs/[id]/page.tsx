@@ -136,18 +136,6 @@ const DraftJobEdit = () => {
                   contactEmail: '',
                   applicationUrl: '',
                   additionalInfo: job.notes || '',
-                  requirements:
-                      job.jobDescriptions
-                          ?.filter((d) => d.type === 'REQUIREMENTS')
-                          .map((d) => d.description) || [],
-                  responsibilities:
-                      job.jobDescriptions
-                          ?.filter((d) => d.type === 'RESPONSIBILITY')
-                          .map((d) => d.description) || [],
-                  benefits:
-                      job.jobDescriptions
-                          ?.filter((d) => d.type === 'BENEFITS')
-                          .map((d) => d.description) || [],
                   jobDescriptions:
                       job.jobDescriptions?.map((desc) => ({
                           description: desc.description,
