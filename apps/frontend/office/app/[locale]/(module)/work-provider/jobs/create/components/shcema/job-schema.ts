@@ -33,12 +33,57 @@ export const jobSchema = z
         currency: z
             .string({ required_error: 'Currency is required' })
             .min(1, { message: 'Please select a currency' }),
-        salaryFrom: z.coerce
-            .number({ required_error: 'Minimum salary is required' })
-            .min(1, { message: 'Minimum salary must be at least 1' }),
-        salaryTo: z.coerce
-            .number({ required_error: 'Maximum salary is required' })
-            .min(1, { message: 'Maximum salary must be at least 1' }),
+        salaryFrom: z.coerce.number().superRefine((val, ctx) => {
+            const salaryType = (
+                ctx as z.RefinementCtx & { parent: { salaryType: string } }
+            ).parent.salaryType;
+            if (salaryType === 'FIXED' || salaryType === 'RANGE') {
+                if (val === undefined || val === null) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'Minimum salary is required',
+                    });
+                } else if (val < 1) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'Minimum salary must be at least 1',
+                    });
+                }
+            }
+        }),
+        salaryTo: z.coerce.number().superRefine((val, ctx) => {
+            const salaryType = (
+                ctx as z.RefinementCtx & {
+                    parent: { salaryType: string; salaryFrom: number };
+                }
+            ).parent.salaryType;
+            if (salaryType === 'RANGE') {
+                if (val === undefined || val === null) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'Maximum salary is required',
+                    });
+                } else if (val < 1) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'Maximum salary must be at least 1',
+                    });
+                } else if (
+                    val <=
+                    (
+                        ctx as z.RefinementCtx & {
+                            parent: { salaryFrom: number };
+                        }
+                    ).parent.salaryFrom
+                ) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message:
+                            'Maximum salary must be greater than minimum salary',
+                    });
+                }
+            }
+        }),
         salaryFrequency: z
             .string({ required_error: 'Salary frequency is required' })
             .min(1, { message: 'Please select a salary frequency' }),

@@ -1,4 +1,4 @@
-import { Grid } from '@mantine/core';
+import { Grid, Textarea } from '@mantine/core';
 import { type Control, Controller, type FieldErrors } from 'react-hook-form';
 import { MemoizedRichTextEditor } from './MemoizedRichTextEditor';
 import type { JobFormData } from './types';
@@ -39,16 +39,14 @@ export const ApplicationDetails = ({
                     control={control}
                     name="additionalInfo"
                     render={({ field }) => (
-                        <MemoizedRichTextEditor
-                            field={field}
-                            error={
-                                errors.additionalInfo ?? {
-                                    message: '',
-                                    type: 'error',
-                                }
-                            }
+                        <Textarea
+                            {...field}
+                            error={errors.additionalInfo?.message}
                             label="Additional Information"
                             placeholder="Any additional information about the job"
+                            autosize
+                            minRows={4}
+                            maxRows={8}
                         />
                     )}
                 />

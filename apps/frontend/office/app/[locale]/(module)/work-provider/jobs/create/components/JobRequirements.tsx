@@ -42,6 +42,7 @@ export const JobRequirements = ({
         control,
         formState: { errors },
         setValue,
+        watch,
     } = useFormContext<JobFormData>();
 
     const [tempBenefits, setTempBenefits] = useState('');
@@ -53,20 +54,20 @@ export const JobRequirements = ({
         value: string;
     } | null>(null);
 
+    const jobDescriptions = watch('jobDescriptions') || [];
+
     const handleAddItems = (type: JobDescriptionType, value: string) => {
         if (!value.trim()) {
             return;
         }
-        const currentItems = control._getWatch('jobDescriptions') || [];
         setValue('jobDescriptions', [
-            ...currentItems,
+            ...jobDescriptions,
             { description: value.trim(), type },
         ]);
     };
 
     const handleDeleteItem = (type: JobDescriptionType, index: number) => {
-        const currentItems = control._getWatch('jobDescriptions') || [];
-        const newItems = currentItems.filter(
+        const newItems = jobDescriptions.filter(
             (
                 item: { type: JobDescriptionType; description: string },
                 i: number,
@@ -98,7 +99,7 @@ export const JobRequirements = ({
     };
 
     const renderListItems = (type: JobDescriptionType, label: string) => {
-        const items = (control._getWatch('jobDescriptions') || []).filter(
+        const items = jobDescriptions.filter(
             (item: { type: JobDescriptionType }) => item.type === type,
         );
 
@@ -238,6 +239,7 @@ export const JobRequirements = ({
                                     value: category.id,
                                     label: category.name,
                                 }))}
+                                searchable
                                 value={field.value}
                                 onChange={field.onChange}
                                 error={errors.catagories?.message}
@@ -259,6 +261,7 @@ export const JobRequirements = ({
                                     value: skill.name,
                                     label: skill.name,
                                 }))}
+                                searchable
                                 value={field.value}
                                 onChange={field.onChange}
                                 error={errors.skills?.message}
@@ -300,7 +303,7 @@ export const JobRequirements = ({
                                 label="Years of Experience"
                                 placeholder="Enter years of experience"
                                 min={0}
-                                value={Number(field.value) || 0}
+                                value={Number(field.value) || undefined}
                                 onChange={(value) =>
                                     field.onChange(Number(value))
                                 }
