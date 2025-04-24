@@ -226,6 +226,14 @@ export default function PostJobPage() {
             return;
         }
 
+        if (watch('title') === '') {
+            notifications.show({
+                title: 'Error',
+                message: 'Job title is required',
+                color: 'red',
+            });
+            return;
+        }
         draftMutation.mutate({
             ...watch(),
             organizationId: organizationId ?? '',
@@ -241,7 +249,7 @@ export default function PostJobPage() {
             // Manually check salary values
             const salaryFrom = methods.getValues('salaryFrom');
             const salaryTo = methods.getValues('salaryTo');
-            if (salaryTo <= salaryFrom) {
+            if (salaryFrom && salaryTo && salaryTo <= salaryFrom) {
                 methods.setError('salaryTo', {
                     type: 'manual',
                     message: 'Salary to must be greater than salary from',

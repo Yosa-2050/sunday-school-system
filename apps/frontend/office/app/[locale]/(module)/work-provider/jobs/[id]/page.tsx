@@ -179,15 +179,47 @@ export default function JobDetailsPage() {
                                     >
                                         {job?.type}
                                     </Badge>
-                                    <Badge
-                                        variant="outline"
-                                        leftSection={
-                                            <IconCurrencyDollar size={14} />
-                                        }
-                                    >
-                                        {job?.salaryFrom} - {job?.salaryTo}{' '}
-                                        {job?.currency}
-                                    </Badge>
+                                    {job?.salaryFrom || job?.salaryTo ? (
+                                        <Badge
+                                            variant="outline"
+                                            leftSection={
+                                                <IconCurrencyDollar size={14} />
+                                            }
+                                        >
+                                            {job?.salaryFrom &&
+                                                new Intl.NumberFormat(
+                                                    undefined,
+                                                    {
+                                                        style: 'currency',
+                                                        currency: job?.currency,
+                                                        minimumFractionDigits: 0,
+                                                        maximumFractionDigits: 0,
+                                                    },
+                                                ).format(job.salaryFrom)}
+                                            {job?.salaryFrom &&
+                                                job?.salaryTo &&
+                                                ' - '}
+                                            {job?.salaryTo &&
+                                                new Intl.NumberFormat(
+                                                    undefined,
+                                                    {
+                                                        style: 'currency',
+                                                        currency: job?.currency,
+                                                        minimumFractionDigits: 0,
+                                                        maximumFractionDigits: 0,
+                                                    },
+                                                ).format(job.salaryTo)}
+                                        </Badge>
+                                    ) : (
+                                        <Badge
+                                            variant="outline"
+                                            leftSection={
+                                                <IconCurrencyDollar size={14} />
+                                            }
+                                        >
+                                            Salary not specified
+                                        </Badge>
+                                    )}
                                     {/* <Badge
                     variant="outline"
                     leftSection={<IconCalendar size={14} />}
@@ -226,23 +258,6 @@ export default function JobDetailsPage() {
                                     ] || job?.status}
                                 </Badge>
                             </Box>
-                            <Group gap="xs">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    leftSection={<IconEdit size={14} />}
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    leftSection={<IconArchive size={14} />}
-                                    color="red"
-                                >
-                                    Close
-                                </Button>
-                            </Group>
                         </Stack>
                     </Group>
                 </Stack>
@@ -286,179 +301,6 @@ export default function JobDetailsPage() {
                                                 ) : (
                                                     <Text className="text-gray-500">
                                                         No description provided
-                                                    </Text>
-                                                )}
-                                            </Paper>
-                                        </Stack>
-
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
-                                                Requirements
-                                            </Title>
-                                            <Paper p="md" withBorder>
-                                                {(
-                                                    job?.jobDescriptions ?? []
-                                                ).filter(
-                                                    (desc) =>
-                                                        desc?.type ===
-                                                            'REQUIREMENTS' &&
-                                                        desc?.isActive,
-                                                ).length > 0 ? (
-                                                    <List>
-                                                        {(
-                                                            job?.jobDescriptions ??
-                                                            []
-                                                        )
-                                                            .filter(
-                                                                (desc) =>
-                                                                    desc.type ===
-                                                                        'REQUIREMENTS' &&
-                                                                    desc.isActive,
-                                                            )
-                                                            .map((req) => (
-                                                                <List.Item
-                                                                    key={req.id}
-                                                                    icon={
-                                                                        <IconCircleCheck
-                                                                            size={
-                                                                                18
-                                                                            }
-                                                                            color={
-                                                                                theme
-                                                                                    .colors
-                                                                                    .teal[5]
-                                                                            }
-                                                                        />
-                                                                    }
-                                                                >
-                                                                    <Text>
-                                                                        {
-                                                                            req.description
-                                                                        }
-                                                                    </Text>
-                                                                </List.Item>
-                                                            ))}
-                                                    </List>
-                                                ) : (
-                                                    <Text className="text-gray-500">
-                                                        No requirements provided
-                                                    </Text>
-                                                )}
-                                            </Paper>
-                                        </Stack>
-
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
-                                                Responsibilities
-                                            </Title>
-                                            <Paper p="md" withBorder>
-                                                {(
-                                                    job?.jobDescriptions ?? []
-                                                ).filter(
-                                                    (desc) =>
-                                                        desc?.type ===
-                                                            'RESPONSIBILITY' &&
-                                                        desc?.isActive,
-                                                ).length > 0 ? (
-                                                    <List>
-                                                        {(
-                                                            job?.jobDescriptions ??
-                                                            []
-                                                        )
-                                                            .filter(
-                                                                (desc) =>
-                                                                    desc.type ===
-                                                                        'RESPONSIBILITY' &&
-                                                                    desc.isActive,
-                                                            )
-                                                            .map((resp) => (
-                                                                <List.Item
-                                                                    key={
-                                                                        resp.id
-                                                                    }
-                                                                    icon={
-                                                                        <IconCircleCheck
-                                                                            size={
-                                                                                18
-                                                                            }
-                                                                            color={
-                                                                                theme
-                                                                                    .colors
-                                                                                    .teal[5]
-                                                                            }
-                                                                        />
-                                                                    }
-                                                                >
-                                                                    <Text>
-                                                                        {
-                                                                            resp.description
-                                                                        }
-                                                                    </Text>
-                                                                </List.Item>
-                                                            ))}
-                                                    </List>
-                                                ) : (
-                                                    <Text className="text-gray-500">
-                                                        No responsibilities
-                                                        provided
-                                                    </Text>
-                                                )}
-                                            </Paper>
-                                        </Stack>
-
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
-                                                Benefits
-                                            </Title>
-                                            <Paper p="md" withBorder>
-                                                {(
-                                                    job?.jobDescriptions ?? []
-                                                ).filter(
-                                                    (desc) =>
-                                                        desc?.type ===
-                                                            'BENEFITS' &&
-                                                        desc?.isActive,
-                                                ).length > 0 ? (
-                                                    <List>
-                                                        {(
-                                                            job?.jobDescriptions ??
-                                                            []
-                                                        )
-                                                            .filter(
-                                                                (desc) =>
-                                                                    desc.type ===
-                                                                        'BENEFITS' &&
-                                                                    desc.isActive,
-                                                            )
-                                                            .map((benefit) => (
-                                                                <List.Item
-                                                                    key={
-                                                                        benefit.id
-                                                                    }
-                                                                    icon={
-                                                                        <IconCircleCheck
-                                                                            size={
-                                                                                18
-                                                                            }
-                                                                            color={
-                                                                                theme
-                                                                                    .colors
-                                                                                    .teal[5]
-                                                                            }
-                                                                        />
-                                                                    }
-                                                                >
-                                                                    <Text>
-                                                                        {
-                                                                            benefit.description
-                                                                        }
-                                                                    </Text>
-                                                                </List.Item>
-                                                            ))}
-                                                    </List>
-                                                ) : (
-                                                    <Text className="text-gray-500">
-                                                        No benefits provided
                                                     </Text>
                                                 )}
                                             </Paper>
@@ -622,7 +464,7 @@ export default function JobDetailsPage() {
                         </Card>
 
                         {/* Applicant Pipeline Card */}
-                        <Card withBorder radius="md">
+                        <Card withBorder radius="md" hidden>
                             <Card.Section withBorder p="md" bg="gray.0">
                                 <Group>
                                     <IconUsers
@@ -955,7 +797,7 @@ export default function JobDetailsPage() {
                         </Card>
 
                         {/* Recent Applicants Card */}
-                        <Card withBorder radius="md">
+                        <Card withBorder radius="md" hidden>
                             <Card.Section withBorder p="md" bg="gray.0">
                                 <Group justify="space-between">
                                     <Group>
@@ -1088,11 +930,6 @@ export default function JobDetailsPage() {
                                     </div>
                                     <Stack gap="xs">
                                         <Button
-                                            leftSection={<IconEdit size={16} />}
-                                        >
-                                            Edit Job Posting
-                                        </Button>
-                                        <Button
                                             variant="outline"
                                             leftSection={<IconBell size={16} />}
                                         >
@@ -1204,7 +1041,7 @@ export default function JobDetailsPage() {
                         </Card>
 
                         {/* Actions Card */}
-                        <Card withBorder radius="md">
+                        <Card withBorder radius="md" hidden>
                             <Card.Section withBorder p="md" bg="gray.0">
                                 <Group>
                                     <IconExternalLink
@@ -1262,7 +1099,7 @@ export default function JobDetailsPage() {
                         </Card>
 
                         {/* Job Timeline Card */}
-                        <Card withBorder radius="md">
+                        <Card withBorder radius="md" hidden>
                             <Card.Section withBorder p="md" bg="gray.0">
                                 <Group>
                                     <IconClock

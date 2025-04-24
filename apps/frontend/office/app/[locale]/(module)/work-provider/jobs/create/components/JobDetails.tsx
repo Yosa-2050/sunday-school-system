@@ -225,25 +225,29 @@ export const JobDetails = ({
                         )}
                     />
                 </Grid.Col>
-                <Grid.Col span={{ base: 12, sm: 6 }}>
-                    <Controller
-                        name="salaryFrequency"
-                        control={control}
-                        render={({ field }) => (
-                            <Select
-                                label="Salary Frequency"
-                                placeholder="Select salary frequency"
-                                data={mapEnumToOptions(
-                                    salaryFrequencyTypes.data,
-                                )}
-                                value={field.value}
-                                onChange={field.onChange}
-                                error={errors.salaryFrequency?.message}
-                                required
-                            />
-                        )}
-                    />
-                </Grid.Col>
+                {(watch('salaryType') === 'FIXED' ||
+                    watch('salaryType') === 'RANGE' ||
+                    !watch('salaryType')) && (
+                    <Grid.Col span={{ base: 12, sm: 6 }}>
+                        <Controller
+                            name="salaryFrequency"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    label="Salary Frequency"
+                                    placeholder="Select salary frequency"
+                                    data={mapEnumToOptions(
+                                        salaryFrequencyTypes.data,
+                                    )}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={errors.salaryFrequency?.message}
+                                    required
+                                />
+                            )}
+                        />
+                    </Grid.Col>
+                )}
                 <Grid.Col span={{ base: 12, sm: 6 }}>
                     {(watch('salaryType') === 'FIXED' ||
                         watch('salaryType') === 'RANGE' ||
@@ -300,30 +304,37 @@ export const JobDetails = ({
                     </Grid.Col>
                 )}
 
-                <Grid.Col span={{ base: 12, sm: 6 }}>
-                    <Controller
-                        name="currency"
-                        control={control}
-                        render={({ field }) => (
-                            <Select
-                                label="Currency"
-                                placeholder="Select currency"
-                                data={[
-                                    {
-                                        value: 'ETB',
-                                        label: 'Ethiopian Birr (ETB)',
-                                    },
-                                    { value: 'USD', label: 'US Dollar (USD)' },
-                                    { value: 'EUR', label: 'Euro (EUR)' },
-                                ]}
-                                value={field.value}
-                                onChange={field.onChange}
-                                error={errors.currency?.message}
-                                required
-                            />
-                        )}
-                    />
-                </Grid.Col>
+                {(watch('salaryType') === 'FIXED' ||
+                    watch('salaryType') === 'RANGE' ||
+                    !watch('salaryType')) && (
+                    <Grid.Col span={{ base: 12, sm: 6 }}>
+                        <Controller
+                            name="currency"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    label="Currency"
+                                    placeholder="Select currency"
+                                    data={[
+                                        {
+                                            value: 'ETB',
+                                            label: 'Ethiopian Birr (ETB)',
+                                        },
+                                        {
+                                            value: 'USD',
+                                            label: 'US Dollar (USD)',
+                                        },
+                                        { value: 'EUR', label: 'Euro (EUR)' },
+                                    ]}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={errors.currency?.message}
+                                    required
+                                />
+                            )}
+                        />
+                    </Grid.Col>
+                )}
             </Grid>
         </Stack>
     );

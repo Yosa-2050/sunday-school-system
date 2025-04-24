@@ -1,20 +1,29 @@
 import {
+    Avatar,
     Badge,
     Box,
-    Divider,
+    Card,
+    Container,
     Grid,
     Group,
+    List,
     Paper,
+    Progress,
     Stack,
+    Tabs,
     Text,
     Title,
+    useMantineTheme,
 } from '@mantine/core';
 import {
     IconBriefcase,
     IconBuilding,
     IconCalendar,
-    IconCapRounded,
+    IconCircleCheck,
     IconCurrencyDollar,
+    IconMapPin,
+    IconSchool,
+    IconUser,
 } from '@tabler/icons-react';
 import parse from 'html-react-parser';
 import type { JobFormData } from './types';
@@ -24,6 +33,8 @@ interface JobPreviewProps {
 }
 
 export const JobPreview = ({ formData }: JobPreviewProps) => {
+    const theme = useMantineTheme();
+
     const formatDate = (date: Date) => {
         return new Date(date).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -32,197 +43,446 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
         });
     };
 
-    const formatSalary = (from: number, to: number, frequency: string) => {
-        return `${from.toLocaleString()} - ${to.toLocaleString()} ${frequency}`;
+    const formatSalary = () => {
+        if (formData.salaryType === 'RANGE') {
+            return `${formData.salaryFrom?.toLocaleString()} - ${formData.salaryTo?.toLocaleString()} ${formData.currency} ${formData.salaryFrequency}`;
+        }
+        if (formData.salaryType === 'FIXED') {
+            return `${formData.salaryFrom?.toLocaleString()} ${formData.currency} ${formData.salaryFrequency}`;
+        }
+        return 'Not specified';
     };
 
     return (
-        <Paper shadow="sm" p="xl" radius="md" withBorder>
-            <Stack gap="xl">
-                {/* Header Section */}
-                <div>
-                    <Title order={2} mb="xs">
-                        {formData.title}
-                    </Title>
-                    <Group gap="xs" mb="md">
-                        <Badge size="lg" variant="light">
-                            {formData.type}
-                        </Badge>
-                        <Badge size="lg" variant="light">
-                            {formData.workPlace}
-                        </Badge>
+        <Container size="xl" py="xl" px="md">
+            {/* Header Section */}
+            <Paper
+                p="xl"
+                mb="xl"
+                radius="lg"
+                style={{
+                    background: 'linear-gradient(to right, #f0f7ff, #e6f1ff)',
+                    border: '1px solid #cce3ff',
+                }}
+            >
+                <Stack>
+                    <Group justify="space-between" align="flex-start">
+                        <Group gap="lg" wrap="nowrap">
+                            <Avatar size={64} radius="md">
+                                <IconBuilding
+                                    size={32}
+                                    style={{ color: 'primary' }}
+                                />
+                            </Avatar>
+                            <div>
+                                <Title order={1} size={32}>
+                                    {formData.title}
+                                </Title>
+                                <Group gap="sm" mt="md">
+                                    <Badge
+                                        variant="outline"
+                                        leftSection={<IconMapPin size={14} />}
+                                    >
+                                        {formData.cityId}, {formData.stateId},{' '}
+                                        {formData.countryId}
+                                    </Badge>
+                                    <Badge
+                                        variant="outline"
+                                        leftSection={
+                                            <IconBriefcase size={14} />
+                                        }
+                                    >
+                                        {formData.type}
+                                    </Badge>
+                                    <Badge
+                                        variant="outline"
+                                        leftSection={
+                                            <IconCurrencyDollar size={14} />
+                                        }
+                                    >
+                                        {formatSalary()}
+                                    </Badge>
+                                    <Badge
+                                        variant="outline"
+                                        leftSection={<IconUser size={14} />}
+                                    >
+                                        {formData.experianceLevel} Level
+                                    </Badge>
+                                    <Badge
+                                        variant="outline"
+                                        leftSection={<IconSchool size={14} />}
+                                    >
+                                        {formData.educationalRequirment}
+                                    </Badge>
+                                </Group>
+                            </div>
+                        </Group>
                     </Group>
-                </div>
+                </Stack>
+            </Paper>
 
-                <Divider />
+            <Grid>
+                {/* Main content - 2/3 width */}
+                <Grid.Col span={{ base: 12, md: 8 }}>
+                    <Stack gap="xl">
+                        {/* Job Details Card */}
+                        <Card withBorder radius="md">
+                            <Card.Section withBorder p="md" bg="gray.0">
+                                <Title order={2}>Job Details</Title>
+                            </Card.Section>
+                            <Tabs defaultValue="description">
+                                <Tabs.List grow>
+                                    <Tabs.Tab value="description">
+                                        Description
+                                    </Tabs.Tab>
+                                </Tabs.List>
+                                <Box p="xl">
+                                    <Tabs.Panel value="description">
+                                        <Stack>
+                                            <Title order={3} className="mb-4">
+                                                Job Description
+                                            </Title>
+                                            <Paper p="md" withBorder>
+                                                <Box className="prose prose-stone max-w-none px-2.5">
+                                                    {parse(
+                                                        formData.description,
+                                                    )}
+                                                </Box>
+                                            </Paper>
+                                        </Stack>
 
-                {/* Key Details Section */}
-                <Grid>
-                    <Grid.Col span={{ base: 12, sm: 6 }}>
-                        <Group gap="xs" mb="md">
-                            <IconBuilding size={20} className="text-gray-500" />
-                            <Text size="sm" c="dimmed">
-                                {formData.type}
-                            </Text>
-                        </Group>
-                    </Grid.Col>
+                                        <Stack>
+                                            <Title order={3} className="mb-4">
+                                                Requirements
+                                            </Title>
+                                            <Paper p="md" withBorder>
+                                                <List>
+                                                    {formData.jobDescriptions
+                                                        ?.filter(
+                                                            (desc) =>
+                                                                desc.type ===
+                                                                'REQUIREMENTS',
+                                                        )
+                                                        .map((req, index) => (
+                                                            <List.Item
+                                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                                                key={index}
+                                                                icon={
+                                                                    <IconCircleCheck
+                                                                        size={
+                                                                            18
+                                                                        }
+                                                                        color={
+                                                                            theme
+                                                                                .colors
+                                                                                .teal[5]
+                                                                        }
+                                                                    />
+                                                                }
+                                                            >
+                                                                <Text>
+                                                                    {
+                                                                        req.description
+                                                                    }
+                                                                </Text>
+                                                            </List.Item>
+                                                        ))}
+                                                </List>
+                                            </Paper>
+                                        </Stack>
 
-                    {/* <Grid.Col span={{ base: 12, sm: 6 }}>
-            <Group gap="xs" mb="md">
-              <IconMapPin size={20} className="text-gray-500" />
-              <Text size="sm" c="dimmed">
-                {formData.cityId} • {formData.stateId} • {formData.countryId}
-              </Text>
-            </Group>
-          </Grid.Col> */}
+                                        <Stack>
+                                            <Title order={3} className="mb-4">
+                                                Responsibilities
+                                            </Title>
+                                            <Paper p="md" withBorder>
+                                                <List>
+                                                    {formData.jobDescriptions
+                                                        ?.filter(
+                                                            (desc) =>
+                                                                desc.type ===
+                                                                'RESPONSIBILITY',
+                                                        )
+                                                        .map((resp, index) => (
+                                                            <List.Item
+                                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                                                key={index}
+                                                                icon={
+                                                                    <IconCircleCheck
+                                                                        size={
+                                                                            18
+                                                                        }
+                                                                        color={
+                                                                            theme
+                                                                                .colors
+                                                                                .teal[5]
+                                                                        }
+                                                                    />
+                                                                }
+                                                            >
+                                                                <Text>
+                                                                    {
+                                                                        resp.description
+                                                                    }
+                                                                </Text>
+                                                            </List.Item>
+                                                        ))}
+                                                </List>
+                                            </Paper>
+                                        </Stack>
 
-                    <Grid.Col span={{ base: 12, sm: 6 }}>
-                        <Group gap="xs" mb="md">
-                            <IconCurrencyDollar
-                                size={20}
-                                className="text-gray-500"
-                            />
-                            <Text size="sm" c="dimmed">
-                                {formatSalary(
-                                    formData.salaryFrom,
-                                    formData.salaryTo,
-                                    formData.salaryFrequency,
-                                )}
-                            </Text>
-                        </Group>
-                    </Grid.Col>
+                                        <Stack>
+                                            <Title order={3} className="mb-4">
+                                                Benefits
+                                            </Title>
+                                            <Paper p="md" withBorder>
+                                                <List>
+                                                    {formData.jobDescriptions
+                                                        ?.filter(
+                                                            (desc) =>
+                                                                desc.type ===
+                                                                'BENEFITS',
+                                                        )
+                                                        .map(
+                                                            (
+                                                                benefit,
+                                                                index,
+                                                            ) => (
+                                                                <List.Item
+                                                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                                                    key={index}
+                                                                    icon={
+                                                                        <IconCircleCheck
+                                                                            size={
+                                                                                18
+                                                                            }
+                                                                            color={
+                                                                                theme
+                                                                                    .colors
+                                                                                    .teal[5]
+                                                                            }
+                                                                        />
+                                                                    }
+                                                                >
+                                                                    <Text>
+                                                                        {
+                                                                            benefit.description
+                                                                        }
+                                                                    </Text>
+                                                                </List.Item>
+                                                            ),
+                                                        )}
+                                                </List>
+                                            </Paper>
+                                        </Stack>
 
-                    <Grid.Col span={{ base: 12, sm: 6 }}>
-                        <Group gap="xs" mb="md">
-                            <IconCalendar size={20} className="text-gray-500" />
-                            <Text size="sm" c="dimmed">
-                                Apply by {formatDate(formData.deadline)}
-                            </Text>
-                        </Group>
-                    </Grid.Col>
-                </Grid>
+                                        <Stack>
+                                            <Title order={3} className="mb-4">
+                                                Skills & Expertise
+                                            </Title>
+                                            <Paper p="md" withBorder>
+                                                <Group gap="xs">
+                                                    {formData.skills.map(
+                                                        (skill) => (
+                                                            <Badge
+                                                                key={skill}
+                                                                variant="outline"
+                                                            >
+                                                                {skill}
+                                                            </Badge>
+                                                        ),
+                                                    )}
+                                                </Group>
+                                            </Paper>
+                                        </Stack>
 
-                <Divider />
+                                        <Stack>
+                                            <Title order={3} className="mb-4">
+                                                Categories
+                                            </Title>
+                                            <Paper p="md" withBorder>
+                                                <Group gap="xs">
+                                                    {formData.catagories.map(
+                                                        (category) => (
+                                                            <Badge
+                                                                key={category}
+                                                                variant="outline"
+                                                            >
+                                                                {category}
+                                                            </Badge>
+                                                        ),
+                                                    )}
+                                                </Group>
+                                            </Paper>
+                                        </Stack>
 
-                {/* Requirements Section */}
-                <div>
-                    <Title order={3} mb="md">
-                        Requirements
-                    </Title>
-                    <Grid>
-                        <Grid.Col span={{ base: 12, sm: 6 }}>
-                            <Group gap="xs" mb="md">
-                                <IconBriefcase
-                                    size={20}
-                                    className="text-gray-500"
-                                />
-                                <Text size="sm" c="dimmed">
-                                    {formData.experianceLevel} Level •{' '}
-                                    {formData.experiance} years experience
+                                        {formData.additionalInfo && (
+                                            <Stack>
+                                                <Title
+                                                    order={3}
+                                                    className="mb-4"
+                                                >
+                                                    Additional Information
+                                                </Title>
+                                                <Paper p="md" withBorder>
+                                                    <Text>
+                                                        {
+                                                            formData.additionalInfo
+                                                        }
+                                                    </Text>
+                                                </Paper>
+                                            </Stack>
+                                        )}
+                                    </Tabs.Panel>
+                                </Box>
+                            </Tabs>
+                        </Card>
+                    </Stack>
+                </Grid.Col>
+
+                {/* Sidebar - 1/3 width */}
+                <Grid.Col span={{ base: 12, md: 4 }}>
+                    <Stack gap="xl">
+                        {/* Job Status Card */}
+                        <Card withBorder radius="md">
+                            <Card.Section withBorder p="md" bg="primary.9">
+                                <Title order={2} c="white">
+                                    Job Status
+                                </Title>
+                                <Text c="gray.4">
+                                    This job posting is currently active
                                 </Text>
-                            </Group>
-                        </Grid.Col>
+                            </Card.Section>
+                            <Card.Section p="xl" bg="gray.0">
+                                <Stack gap="lg">
+                                    <Group justify="space-between">
+                                        <Group gap="xs">
+                                            <IconCalendar
+                                                size={16}
+                                                color={theme.colors.gray[6]}
+                                            />
+                                            <Text size="sm">
+                                                Posted {formatDate(new Date())}
+                                            </Text>
+                                        </Group>
+                                        <Badge variant="filled" color="gray">
+                                            {Math.ceil(
+                                                (new Date(
+                                                    formData.deadline,
+                                                ).getTime() -
+                                                    Date.now()) /
+                                                    (1000 * 60 * 60 * 24),
+                                            )}{' '}
+                                            days left
+                                        </Badge>
+                                    </Group>
+                                    <div>
+                                        <Group justify="space-between" mb="xs">
+                                            <Text size="sm" fw={500}>
+                                                Time Remaining
+                                            </Text>
+                                            <Text size="sm" c="gray.6" fw={500}>
+                                                {Math.round(
+                                                    ((new Date(
+                                                        formData.deadline,
+                                                    ).getTime() -
+                                                        Date.now()) /
+                                                        (new Date(
+                                                            formData.deadline,
+                                                        ).getTime() -
+                                                            Date.now())) *
+                                                        100,
+                                                )}
+                                                %
+                                            </Text>
+                                        </Group>
+                                        <Progress
+                                            value={Math.round(
+                                                ((new Date(
+                                                    formData.deadline,
+                                                ).getTime() -
+                                                    Date.now()) /
+                                                    (new Date(
+                                                        formData.deadline,
+                                                    ).getTime() -
+                                                        Date.now())) *
+                                                    100,
+                                            )}
+                                            size="sm"
+                                            mb="xs"
+                                        />
+                                    </div>
+                                </Stack>
+                            </Card.Section>
+                        </Card>
 
-                        <Grid.Col span={{ base: 12, sm: 6 }}>
-                            <Group gap="xs" mb="md">
-                                <IconCapRounded
-                                    size={20}
-                                    className="text-gray-500"
-                                />
-                                <Text size="sm" c="dimmed">
-                                    {formData.educationalRequirment}
-                                </Text>
-                            </Group>
-                        </Grid.Col>
-                    </Grid>
+                        {/* Application Details Card */}
+                        <Card withBorder radius="md">
+                            <Card.Section withBorder p="md" bg="gray.0">
+                                <Title order={2}>Application Details</Title>
+                            </Card.Section>
+                            <Card.Section p="xl">
+                                <Stack gap="md">
+                                    {formData.contactEmail && (
+                                        <Group gap="xs">
+                                            <Text size="sm" fw={500}>
+                                                Contact Email:
+                                            </Text>
+                                            <Text size="sm">
+                                                {formData.contactEmail}
+                                            </Text>
+                                        </Group>
+                                    )}
+                                    {formData.applicationUrl && (
+                                        <Group gap="xs">
+                                            <Text size="sm" fw={500}>
+                                                Application URL:
+                                            </Text>
+                                            <Text size="sm">
+                                                <a
+                                                    href={
+                                                        formData.applicationUrl
+                                                    }
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {formData.applicationUrl}
+                                                </a>
+                                            </Text>
+                                        </Group>
+                                    )}
+                                    <Group gap="xs">
+                                        <Text size="sm" fw={500}>
+                                            Work Place:
+                                        </Text>
+                                        <Text size="sm">
+                                            {formData.workPlace}
+                                        </Text>
+                                    </Group>
+                                    <Group gap="xs">
+                                        <Text size="sm" fw={500}>
+                                            Experience:
+                                        </Text>
+                                        <Text size="sm">
+                                            {formData.experiance} years
+                                        </Text>
+                                    </Group>
+                                    <Group gap="xs">
+                                        <Text size="sm" fw={500}>
+                                            Deadline:
+                                        </Text>
+                                        <Text size="sm">
+                                            {formatDate(formData.deadline)}
+                                        </Text>
+                                    </Group>
+                                </Stack>
+                            </Card.Section>
+                        </Card>
 
-                    <div className="mb-4">
-                        <Text fw={500} size="sm" mb="xs">
-                            Required Skills
-                        </Text>
-                        <Group gap="xs">
-                            {formData.skills.map((skill) => (
-                                <Badge key={skill} size="sm" variant="light">
-                                    {skill}
-                                </Badge>
-                            ))}
-                        </Group>
-                    </div>
-
-                    {/* <div>
-                        <Text fw={500} size="sm" mb="xs">
-                            Job Categories
-                        </Text>
-                        <Group gap="xs">
-                            {formData.catagories.map((category) => (
-                                <Badge key={category} size="sm" variant="light">
-                                    {category}
-                                </Badge>
-                            ))}
-                        </Group> */}
-                    {/* </div> */}
-                </div>
-
-                <Divider />
-
-                {/* Description Section */}
-                <div>
-                    <Title order={3} mb="md">
-                        Job Description
-                    </Title>
-                    <Box className="prose prose-stone max-w-none px-2.5">
-                        {parse(formData.description)}
-                    </Box>
-                </div>
-
-                {/* Application Details Section */}
-                {(formData.contactEmail || formData.applicationUrl) && (
-                    <>
-                        <Divider />
-                        <div>
-                            <Title order={3} mb="md">
-                                How to Apply
-                            </Title>
-                            <Stack gap="xs">
-                                {formData.contactEmail && (
-                                    <Text size="sm">
-                                        <strong>Email:</strong>{' '}
-                                        {formData.contactEmail}
-                                    </Text>
-                                )}
-                                {formData.applicationUrl && (
-                                    <Text size="sm">
-                                        <strong>Application URL:</strong>{' '}
-                                        <a
-                                            href={formData.applicationUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:underline"
-                                        >
-                                            {formData.applicationUrl}
-                                        </a>
-                                    </Text>
-                                )}
-                            </Stack>
-                        </div>
-                    </>
-                )}
-
-                {/* Additional Information */}
-                {formData.additionalInfo && (
-                    <>
-                        <Divider />
-                        <div>
-                            <Title order={3} mb="md">
-                                Additional Information
-                            </Title>
-                            <Box className="prose prose-stone max-w-none px-2.5">
-                                {parse(formData.additionalInfo)}
-                            </Box>
-                        </div>
-                    </>
-                )}
-            </Stack>
-        </Paper>
+                        {/* Actions Card */}
+                    </Stack>
+                </Grid.Col>
+            </Grid>
+        </Container>
     );
 };
