@@ -347,7 +347,7 @@ const DraftJobEdit = () => {
             // Manually check salary values
             const salaryFrom = methods.getValues('salaryFrom');
             const salaryTo = methods.getValues('salaryTo');
-            if (salaryTo <= salaryFrom) {
+            if (salaryFrom && salaryTo && salaryTo <= salaryFrom) {
                 methods.setError('salaryTo', {
                     type: 'manual',
                     message: 'Salary to must be greater than salary from',
