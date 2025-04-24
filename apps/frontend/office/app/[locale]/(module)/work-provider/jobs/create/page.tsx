@@ -382,6 +382,7 @@ export default function PostJobPage() {
                         color={hasStepErrors(0) ? 'red' : ''}
                         data-error={hasStepErrors(2)}
                         allowStepSelect={true}
+                        onClick={nextStep}
                     >
                         <ApplicationDetails
                             control={control}

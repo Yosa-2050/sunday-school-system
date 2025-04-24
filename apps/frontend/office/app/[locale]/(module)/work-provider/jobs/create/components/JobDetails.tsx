@@ -8,6 +8,7 @@ import {
     Title,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
+import { IconCalendar } from '@tabler/icons-react';
 import { Controller, useFormContext } from 'react-hook-form';
 import type { JobFormData } from './types';
 import { mapEnumToOptions } from './utils';
@@ -38,6 +39,8 @@ export const JobDetails = ({
         control,
         setValue,
     } = useFormContext<JobFormData>();
+
+    const icon = <IconCalendar size={18} stroke={1.5} />;
 
     const selectedCountry = watch('countryId');
     const selectedState = watch('stateId');
@@ -105,6 +108,11 @@ export const JobDetails = ({
                         control={control}
                         render={({ field }) => (
                             <DateInput
+                                leftSection={
+                                    <IconCalendar size={18} stroke={1.5} />
+                                }
+                                // contentEditable={false}
+                                // readOnly
                                 label="Application Deadline"
                                 placeholder="Select deadline"
                                 minDate={new Date()}
@@ -131,6 +139,7 @@ export const JobDetails = ({
                                     value: country.id,
                                     label: country.name,
                                 }))}
+                                searchable
                                 value={field.value}
                                 onChange={(value) => {
                                     field.onChange(value);
@@ -156,6 +165,7 @@ export const JobDetails = ({
                                     value: region.id,
                                     label: region.name,
                                 }))}
+                                searchable
                                 value={field.value}
                                 onChange={(value) => {
                                     field.onChange(value);
@@ -181,6 +191,7 @@ export const JobDetails = ({
                                     value: city.id,
                                     label: city.name,
                                 }))}
+                                searchable
                                 value={field.value}
                                 onChange={field.onChange}
                                 error={errors.cityId?.message}
@@ -216,48 +227,6 @@ export const JobDetails = ({
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
-                        name="salaryFrom"
-                        control={control}
-                        render={({ field }) => (
-                            <NumberInput
-                                label="Minimum Salary"
-                                placeholder="Enter minimum salary"
-                                min={0}
-                                value={Number(field.value) || 0}
-                                onChange={(value) =>
-                                    field.onChange(Number(value))
-                                }
-                                error={errors.salaryFrom?.message}
-                                required
-                                hideControls
-                            />
-                        )}
-                    />
-                </Grid.Col>
-
-                <Grid.Col span={{ base: 12, sm: 6 }}>
-                    <Controller
-                        name="salaryTo"
-                        control={control}
-                        render={({ field }) => (
-                            <NumberInput
-                                label="Maximum Salary"
-                                placeholder="Enter maximum salary"
-                                min={0}
-                                value={Number(field.value) || 0}
-                                onChange={(value) =>
-                                    field.onChange(Number(value))
-                                }
-                                error={errors.salaryTo?.message}
-                                required
-                                hideControls
-                            />
-                        )}
-                    />
-                </Grid.Col>
-
-                <Grid.Col span={{ base: 12, sm: 6 }}>
-                    <Controller
                         name="salaryFrequency"
                         control={control}
                         render={({ field }) => (
@@ -275,6 +244,61 @@ export const JobDetails = ({
                         )}
                     />
                 </Grid.Col>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
+                    {(watch('salaryType') === 'FIXED' ||
+                        watch('salaryType') === 'RANGE' ||
+                        !watch('salaryType')) && (
+                        <Controller
+                            name="salaryFrom"
+                            control={control}
+                            render={({ field }) => (
+                                <NumberInput
+                                    label={
+                                        watch('salaryType') === 'FIXED'
+                                            ? 'Salary'
+                                            : 'Minimum Salary'
+                                    }
+                                    placeholder={
+                                        watch('salaryType') === 'FIXED'
+                                            ? 'Enter salary'
+                                            : 'Enter minimum salary'
+                                    }
+                                    min={0}
+                                    value={Number(field.value) || undefined}
+                                    onChange={(value) =>
+                                        field.onChange(Number(value))
+                                    }
+                                    error={errors.salaryFrom?.message}
+                                    required
+                                    hideControls
+                                />
+                            )}
+                        />
+                    )}
+                </Grid.Col>
+
+                {(watch('salaryType') === 'RANGE' || !watch('salaryType')) && (
+                    <Grid.Col span={{ base: 12, sm: 6 }}>
+                        <Controller
+                            name="salaryTo"
+                            control={control}
+                            render={({ field }) => (
+                                <NumberInput
+                                    label="Maximum Salary"
+                                    placeholder="Enter maximum salary"
+                                    min={0}
+                                    value={Number(field.value) || undefined}
+                                    onChange={(value) =>
+                                        field.onChange(Number(value))
+                                    }
+                                    error={errors.salaryTo?.message}
+                                    required
+                                    hideControls
+                                />
+                            )}
+                        />
+                    </Grid.Col>
+                )}
 
                 <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
