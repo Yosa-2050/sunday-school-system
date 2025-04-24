@@ -62,11 +62,30 @@ export type Response = {
     totalPages: number;
 };
 
-export const fetchJobs = async (data: string) => {
+export type Filter = {
+    title?: string;
+    categoryId?: string;
+    organizationId?: string;
+    cityId?: string;
+    type?: string;
+    experianceLevel?: string;
+    salaryFrom?: number;
+    salaryTo?: number;
+    pagination: Pagination;
+};
+
+export interface Pagination {
+    status?: string;
+    search?: string;
+    page: number;
+    limit: number;
+}
+
+export const fetchJobs = async (data: Filter) => {
     const response = await fetcher('/job-seeker/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: data }),
+        body: JSON.stringify(data),
     });
 
     return response as Response;

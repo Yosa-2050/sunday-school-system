@@ -253,43 +253,59 @@ export default function PersonalInfoSection({
                                             <Controller
                                                 name="birthDate"
                                                 control={control}
-                                                render={({ field }) => (
-                                                    <DateInput
-                                                        label="Birth Date"
-                                                        placeholder="Select your birth date"
-                                                        size="md"
-                                                        styles={{
-                                                            input: {
-                                                                backgroundColor:
-                                                                    '#f8f9fa',
-                                                                '&:focus': {
-                                                                    boxShadow:
-                                                                        '0 0 0 3px rgba(34,139,230,0.1)',
+                                                render={({ field }) => {
+                                                    const maxDate = new Date();
+                                                    maxDate.setFullYear(
+                                                        maxDate.getFullYear() -
+                                                            16,
+                                                    );
+                                                    return (
+                                                        <DateInput
+                                                            label="Birth Date"
+                                                            placeholder="Select your birth date"
+                                                            size="md"
+                                                            hideOutsideDates
+                                                            styles={{
+                                                                input: {
+                                                                    backgroundColor:
+                                                                        '#f8f9fa',
+                                                                    '&:focus': {
+                                                                        boxShadow:
+                                                                            '0 0 0 3px rgba(34,139,230,0.1)',
+                                                                    },
                                                                 },
-                                                            },
-                                                            label: {
-                                                                marginBottom:
-                                                                    '8px',
-                                                                fontSize:
-                                                                    '0.9rem',
-                                                                fontWeight: 500,
-                                                            },
-                                                        }}
-                                                        {...field}
-                                                        value={
-                                                            field.value
-                                                                ? new Date(
-                                                                      field.value,
-                                                                  )
-                                                                : null
-                                                        }
-                                                        onChange={(value) =>
-                                                            field.onChange(
-                                                                value?.toISOString(),
-                                                            )
-                                                        }
-                                                    />
-                                                )}
+                                                                label: {
+                                                                    marginBottom:
+                                                                        '8px',
+                                                                    fontSize:
+                                                                        '0.9rem',
+                                                                    fontWeight: 500,
+                                                                },
+                                                            }}
+                                                            {...field}
+                                                            value={
+                                                                field.value
+                                                                    ? new Date(
+                                                                          field.value,
+                                                                      )
+                                                                    : null
+                                                            }
+                                                            onChange={(value) =>
+                                                                field.onChange(
+                                                                    value?.toISOString(),
+                                                                )
+                                                            }
+                                                            maxDate={maxDate}
+                                                            minDate={
+                                                                new Date(
+                                                                    1900,
+                                                                    0,
+                                                                    1,
+                                                                )
+                                                            } // Optional: Set a reasonable minimum date
+                                                        />
+                                                    );
+                                                }}
                                             />
 
                                             <Controller

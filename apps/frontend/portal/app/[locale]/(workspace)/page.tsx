@@ -242,7 +242,13 @@ function JobList({ filters }: { filters: JobFilters }) {
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['job-seeker-jbs', entityParamSerializer(entityParams)],
-        queryFn: () => fetchJobs(entityParamSerializer(entityParams)),
+        queryFn: () =>
+            fetchJobs({
+                pagination: {
+                    page: 1,
+                    limit: 5,
+                },
+            }),
     });
 
     if (isLoading) {
