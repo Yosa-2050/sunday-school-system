@@ -6,8 +6,8 @@ export type CreateJob = {
     title: string;
     description: string;
     type: string;
-    salaryFrom: number;
-    salaryTo: number;
+    salaryFrom?: number;
+    salaryTo?: number;
     deadline: Date;
     isPublished: boolean;
 };
