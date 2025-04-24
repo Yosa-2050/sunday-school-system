@@ -89,17 +89,6 @@ export const jobSchema = z
             .optional()
             .or(z.literal('')),
         additionalInfo: z.string().optional(),
-        benefits: z
-            .array(z.string(), { required_error: 'Benefits are required' })
-            .min(1, { message: 'Please add at least one benefit' }),
-        requirements: z
-            .array(z.string(), { required_error: 'Requirements are required' })
-            .min(1, { message: 'Please add at least one requirement' }),
-        responsibilities: z
-            .array(z.string(), {
-                required_error: 'Responsibilities are required',
-            })
-            .min(1, { message: 'Please add at least one responsibility' }),
         jobDescriptions: z
             .array(jobDescriptionSchema, {
                 required_error: 'Job descriptions are required',
