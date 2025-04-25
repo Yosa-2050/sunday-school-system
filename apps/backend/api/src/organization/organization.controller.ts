@@ -172,7 +172,7 @@ export class OrganizationController {
             true,
             true,
             isIncludeEmployees,
-            ""
+            '',
         );
     }
 
@@ -188,7 +188,7 @@ export class OrganizationController {
             false,
             false,
             isIncludeEmployees,
-            dto.note
+            dto.note,
         );
     }
 }

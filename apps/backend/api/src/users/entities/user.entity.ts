@@ -22,7 +22,7 @@ class User extends BaseModel {
     @Column({ default: false })
     email_confirmed: boolean;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     note: string;
 
     @OneToOne(
