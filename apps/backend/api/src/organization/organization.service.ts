@@ -76,7 +76,52 @@ export class OrganizationService {
             { status, note },
         );
 
-        return UtilityServices.EnsureUpdated(updatedOrg, id);
+        const result = UtilityServices.EnsureUpdated(updatedOrg, id);
+        if (result.sucess === 'true') {
+            let emailTemplate = null;
+            const employeeList = await this.findEmployee(id);
+            const profile = employeeList[0].employee.profile;
+
+            if (status === ApprovalType.Approved) {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'orgRegistrationApprovedEmailTemplate',
+                    {
+                        contactPerson: profile.firstName,
+                        organizationName: org.name,
+                    },
+                    {
+                        organizationName: org.name,
+                    },
+                );
+            }
+
+            if (status === ApprovalType.Declined) {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'orgRegistrationDeclinedEmailTemplate',
+                    {
+                        contactPerson: profile.firstName,
+                        organizationName: org.name,
+                        reasonForDecline: note,
+                    },
+                    {
+                        organizationName: org.name,
+                    },
+                );
+            }
+
+            const user = await this.profileService.findUserByProfileId(
+                profile.id,
+            );
+
+            this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: emailTemplate.content,
+                to: user.email,
+                subject: emailTemplate.subject,
+                reference: user.id,
+            });
+        }
+        return result;
     }
 
     async create(request: CreateOrganizationDto) {

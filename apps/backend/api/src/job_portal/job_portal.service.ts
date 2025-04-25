@@ -448,7 +448,52 @@ export class JobPortalService {
             notes: note,
         });
 
-        return UtilityServices.EnsureUpdated(updatedJob, id);
+        const result = UtilityServices.EnsureUpdated(updatedJob, id);
+        if (result.sucess === 'true') {
+            let emailTemplate = null;
+
+            if (status === ApprovalType.Approved) {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'jobPostApprovedEmailTemplate',
+                    {
+                        employerName: job.postedBy.employee.profile.firstName,
+                        jobTitle: job.title,
+                        organizationName: job.organization.name,
+                    },
+                    {
+                        jobTitle: job.title,
+                    },
+                );
+            }
+
+            if (status === ApprovalType.Declined) {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'jobPostDeclinedEmailTemplate',
+                    {
+                        employerName: job.postedBy.employee.profile.firstName,
+                        jobTitle: job.title,
+                        organizationName: job.organization.name,
+                        reasonForDecline: note,
+                    },
+                    {
+                        jobTitle: job.title,
+                    },
+                );
+            }
+            const user = await this.profileService.findUserByProfileId(
+                job.postedBy.employee.profile.id,
+            );
+
+            this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: emailTemplate.content,
+                to: user.email,
+                subject: emailTemplate.subject,
+                reference: user.id,
+            });
+        }
+
+        return result;
     }
 
     findAll() {

@@ -42,7 +42,7 @@ export const NotificationTemplatesSeedData = [
     {
         channelType: NotificationChannel.Email,
         templateName: 'orgRegistrationApprovedEmailTemplate',
-        subject: 'Organization Registration Approved - {{Organization Name}}',
+        subject: 'Organization Registration Approved - {{organizationName}}',
         content: getCleanedHtmlString(
             getOrgRegistrationApprovedEmailTemplate(),
         ),
@@ -50,7 +50,7 @@ export const NotificationTemplatesSeedData = [
     {
         channelType: NotificationChannel.Email,
         templateName: 'orgRegistrationDeclinedEmailTemplate',
-        subject: 'Organization Registration Declined - {{Organization Name}}',
+        subject: 'Organization Registration Declined - {{organizationName}}',
         content: getCleanedHtmlString(
             getOrgRegistrationDeclinedEmailTemplate(),
         ),
