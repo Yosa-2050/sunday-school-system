@@ -1,18 +1,18 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
-import { LocationInfo } from './entities/LocationInfo.entity';
-import { Country } from './entities/country.entity';
-import { countrySeed } from './seeds/country.seed';
-import { ethiopiaRegionSeedData } from './seeds/region.ethiopia.seed';
-import { ethiopiaZoneSeedData } from './seeds/zone.ethiopia.seed';
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as fs from 'fs';
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as path from 'path';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import csv from 'csv-parser';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Repository } from 'typeorm';
+import { LocationInfo } from './entities/LocationInfo.entity';
+import { Country } from './entities/country.entity';
 import { Continents } from './enums/continents.enum';
+import { countrySeed } from './seeds/country.seed';
+import { ethiopiaRegionSeedData } from './seeds/region.ethiopia.seed';
+import { ethiopiaZoneSeedData } from './seeds/zone.ethiopia.seed';
 
 @Injectable()
 export class CountrySeedService {
