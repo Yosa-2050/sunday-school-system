@@ -53,6 +53,7 @@ interface Job {
     organization: Organization;
     postedBy: PostedBy;
     currency: string;
+    salaryType: string;
 }
 
 interface JobsResponse {

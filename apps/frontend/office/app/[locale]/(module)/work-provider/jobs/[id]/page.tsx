@@ -265,12 +265,31 @@ export default function JobDetailsPage() {
 
             <Grid>
                 {/* Main content - 2/3 width */}
-                <Grid.Col span={{ base: 12, md: 8 }}>
+                <Grid.Col span={{ base: 12, md: 12 }}>
                     <Stack gap="xl">
                         {/* Job Details Card */}
                         <Card withBorder radius="md">
-                            <Card.Section withBorder p="md" bg="gray.0">
+                            <Card.Section
+                                withBorder
+                                p="md"
+                                bg="gray.0"
+                                className="flex justify-between"
+                            >
                                 <Title order={2}>Job Details</Title>
+                                <Group gap="xs">
+                                    <Text size="md" fw={800} c="gray.9">
+                                        Expires:{' '}
+                                        {job?.deadline
+                                            ? new Date(
+                                                  job.deadline,
+                                              ).toLocaleDateString('en-US', {
+                                                  year: 'numeric',
+                                                  month: 'long',
+                                                  day: 'numeric',
+                                              })
+                                            : 'No deadline'}
+                                    </Text>
+                                </Group>
                             </Card.Section>
                             <Tabs defaultValue="description">
                                 <Tabs.List grow>
@@ -306,8 +325,8 @@ export default function JobDetailsPage() {
                                             </Paper>
                                         </Stack>
 
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
+                                        <Stack mt={'md'}>
+                                            <Title order={3} className="">
                                                 Skills & Expertise
                                             </Title>
                                             <Paper p="md" withBorder>
@@ -434,28 +453,11 @@ export default function JobDetailsPage() {
                             </Tabs>
                             <Card.Section withBorder p="md" bg="gray.0">
                                 <Group justify="space-between">
-                                    <Group gap="xs">
-                                        <IconClock size={16} />
-                                        <Text size="sm" c="gray.6">
-                                            Expires:{' '}
-                                            {job?.deadline
-                                                ? new Date(
-                                                      job.deadline,
-                                                  ).toLocaleDateString(
-                                                      'en-US',
-                                                      {
-                                                          year: 'numeric',
-                                                          month: 'long',
-                                                          day: 'numeric',
-                                                      },
-                                                  )
-                                                : 'No deadline'}
-                                        </Text>
-                                    </Group>
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         leftSection={<IconShare size={14} />}
+                                        hidden
                                     >
                                         Share
                                     </Button>
@@ -867,7 +869,7 @@ export default function JobDetailsPage() {
                 </Grid.Col>
 
                 {/* Sidebar - 1/3 width */}
-                <Grid.Col span={{ base: 12, md: 4 }}>
+                <Grid.Col span={{ base: 12, md: 4 }} hidden>
                     <Stack gap="xl">
                         {/* Job Status Card */}
                         <Card withBorder radius="md">

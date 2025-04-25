@@ -93,5 +93,36 @@ export const Menus = (): MenuTree[] => {
             link: '/admin/organizations',
             role: 'super_admin',
         },
+        {
+            label: t('job-explorer'),
+            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            link: '/admin/jobs',
+            role: 'super_admin',
+        },
+        {
+            isGroup: true,
+            label: 'Lookup',
+            role: 'super_admin',
+            children: [
+                {
+                    label: t('locations'),
+                    icon: <IconMapPin stroke={1.4} size={20} />, // Updated icon for locations
+                    link: '/admin/locations',
+                    role: 'super_admin',
+                },
+                {
+                    label: t('skills'),
+                    icon: <IconStar stroke={1.4} size={20} />, // Updated icon for skills
+                    link: '/admin/skills',
+                    role: 'super_admin',
+                },
+                {
+                    label: t('categories'),
+                    icon: <IconCategory stroke={1.4} size={20} />, // Updated icon for categories
+                    link: '/admin/categories',
+                    role: 'super_admin',
+                },
+            ],
+        },
     ];
 };

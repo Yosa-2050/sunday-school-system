@@ -53,6 +53,7 @@ interface Job {
     createdDate: string;
     postedBy: PostedBy;
     currency: string;
+    salaryType: string;
 }
 
 interface JobsResponse {

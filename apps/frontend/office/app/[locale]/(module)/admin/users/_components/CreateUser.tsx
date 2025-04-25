@@ -100,6 +100,7 @@ export function CreateUser() {
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack gap="sm">
+                        {/* <Can roles={["super_admin"]}> */}
                         <Controller
                             name="role"
                             control={control}
@@ -124,6 +125,31 @@ export function CreateUser() {
                                 />
                             )}
                         />
+                        {/* </Can> */}
+                        {/* <Can roles={["administrator"]}>
+              <Controller
+                name="role"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    label={t("roleLabel")}
+                    placeholder={t("rolePlaceholder")}
+                    value={"JOB_SEEKER"}
+                    readOnly
+                    data={[
+                      {
+                        value: "JOB_SEEKER",
+                        label: t("roles.jobSeeker"),
+                      },
+                    ]}
+                    error={errors.role?.message}
+                    allowDeselect={false}
+                    withAsterisk
+                  />
+                )}
+              />
+            </Can> */}
                         <TextInput
                             label={t('firstNameLabel')}
                             placeholder={t('firstNamePlaceholder')}

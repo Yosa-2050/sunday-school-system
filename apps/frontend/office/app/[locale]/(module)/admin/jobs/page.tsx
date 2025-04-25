@@ -300,7 +300,7 @@ const JobsList = () => {
                                 <Table.Th>Job Title</Table.Th>
                                 <Table.Th>Created Date</Table.Th>
                                 <Table.Th>Salary</Table.Th>
-                                <Table.Th>Location</Table.Th>
+                                <Table.Th>Salary Type</Table.Th>
                                 <Table.Th>Status</Table.Th>
                                 <Table.Th>Actions</Table.Th>
                             </Table.Tr>
@@ -333,11 +333,20 @@ const JobsList = () => {
                                         ).toDateString()}
                                     </Table.Td>
                                     <Table.Td>
-                                        {job.salaryFrom.toLocaleString()} -
-                                        {job.salaryTo.toLocaleString()}{' '}
-                                        {job.currency}
+                                        {(() => {
+                                            if (
+                                                job?.salaryFrom &&
+                                                job?.salaryTo
+                                            ) {
+                                                return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                            }
+                                            if (job?.salaryFrom) {
+                                                return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                            }
+                                            return 'N/A';
+                                        })()}
                                     </Table.Td>
-                                    <Table.Td>{'Location'}</Table.Td>
+                                    <Table.Td>{job.salaryType}</Table.Td>
                                     <Table.Td>
                                         <span
                                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
