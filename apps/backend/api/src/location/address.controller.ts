@@ -77,6 +77,11 @@ export class AddressController {
         return this.addressService.findLocationInfoByParent(parentId);
     }
 
+    @Get(':id')
+    getById(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.addressService.findLocationById(id);
+    }
+
     @Delete(':id')
     remove(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.addressService.remove(+id);

@@ -22,6 +22,9 @@ class User extends BaseModel {
     @Column({ default: false })
     email_confirmed: boolean;
 
+    @Column({ nullable: true })
+    note: string;
+
     @OneToOne(
         () => Profile,
         (profile) => profile.user,

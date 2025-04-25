@@ -6,6 +6,8 @@ import { Jobs } from '@shega/job_portal/entities/jobs.entity';
 import { CurrencyType } from '@shega/job_portal/enums/currency-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 
 export class JobResponseDto {
     constructor(job: Jobs, appliedJobs: string[] = null) {
@@ -23,6 +25,7 @@ export class JobResponseDto {
         this.currency = job.currency;
         this.isPublished = job.isPublished;
         this.applied = appliedJobs ? appliedJobs.includes(job.id) : false;
+        this.salaryType = job.salaryType;
     }
     id: string;
     title: string;
@@ -35,7 +38,7 @@ export class JobResponseDto {
 
     salaryTo: number;
 
-    //salaryType: SalaryType; //fixed, negotiable
+    salaryType: SalaryType;
 
     //salaryFrequency: SalaryFrequencyType;
 
