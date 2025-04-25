@@ -86,7 +86,7 @@ export class JobSeekerController {
     //     );
     // }
 
-    @Get(':id')
+    @Get('job/:id')
     findOne(@Param('id', new ParseUUIDPipe()) id: string, @Request() req) {
         return this.jobPortalService.findOneForJobSeeker(
             id,

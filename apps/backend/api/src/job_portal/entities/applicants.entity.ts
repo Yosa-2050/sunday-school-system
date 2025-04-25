@@ -12,6 +12,9 @@ export class Applicants extends BaseModel {
     profile: Profile;
 
     @Column({ nullable: true })
+    headline: string;
+
+    @Column({ nullable: true })
     bio: string;
 
     @Column({ nullable: true })

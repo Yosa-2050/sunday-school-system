@@ -11,4 +11,9 @@ export class UpdateApplicantRequestDto {
     @IsString()
     @IsOptional()
     coverLetter: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    headline: string;
 }
