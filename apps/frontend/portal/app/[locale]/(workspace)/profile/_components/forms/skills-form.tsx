@@ -1,6 +1,5 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Box,
     Button,
@@ -15,14 +14,6 @@ import { notifications } from '@mantine/notifications';
 import { IconCheck, IconPlus, IconX } from '@tabler/icons-react';
 import { useUpdateSkills } from 'app/_api/profile/queries';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-
-const skillsSchema = z.object({
-    skill: z.string().min(1, 'Skill is required'),
-});
-
-type SkillsFormValues = z.infer<typeof skillsSchema>;
 
 interface SkillsFormProps {
     initialSkills?: string[];
@@ -36,16 +27,6 @@ export default function SkillsForm({
     const [skills, setSkills] = useState<string[]>(initialSkills);
     const [currentSkill, setCurrentSkill] = useState('');
     const [pendingSkills, setPendingSkills] = useState<string[]>([]);
-
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<SkillsFormValues>({
-        resolver: zodResolver(skillsSchema),
-    });
-
     const { mutate: updateSkills, isPending: isUpdating } = useUpdateSkills();
 
     const handleAddSkill = () => {
@@ -55,7 +36,6 @@ export default function SkillsForm({
         ) {
             setPendingSkills([...pendingSkills, currentSkill.trim()]);
             setCurrentSkill('');
-            reset();
         }
     };
 
@@ -66,7 +46,8 @@ export default function SkillsForm({
         }
     };
 
-    const onFormSubmit = () => {
+    const onFormSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
         try {
             const newSkills = [...skills, ...pendingSkills];
             updateSkills(newSkills, {
@@ -74,7 +55,6 @@ export default function SkillsForm({
                     setSkills(newSkills);
                     setPendingSkills([]);
                     setCurrentSkill('');
-                    reset();
                     notifications.show({
                         title: 'Success',
                         message: 'Skills updated successfully',
@@ -131,7 +111,7 @@ export default function SkillsForm({
     };
 
     return (
-        <form onSubmit={handleSubmit(onFormSubmit)}>
+        <form onSubmit={onFormSubmit}>
             <LoadingOverlay
                 visible={isUpdating}
                 zIndex={1000}
@@ -143,8 +123,6 @@ export default function SkillsForm({
                     <TextInput
                         label="Add Skill"
                         placeholder="Enter a skill"
-                        error={errors.skill?.message}
-                        {...register('skill')}
                         value={currentSkill}
                         onChange={(e) => setCurrentSkill(e.target.value)}
                         onKeyDown={handleKeyDown}

@@ -7,11 +7,8 @@ export type PersonalInfo = {
     firstName: string;
     middleName: string;
     lastName: string;
-    // mothersFullName: string;
     birthDate: string;
-    // dobGregorian: string;
     gender: string;
-    // marriageStatus: string;
     title: string;
     phoneNumber: string;
     profile_picture_id: string;

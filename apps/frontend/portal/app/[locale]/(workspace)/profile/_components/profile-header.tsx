@@ -6,6 +6,7 @@ import {
     ActionIcon,
     Avatar,
     Box,
+    Button,
     Card,
     Container,
     FileButton,
@@ -16,12 +17,14 @@ import {
     Paper,
     Stack,
     Text,
+    TextInput,
     Transition,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconCamera, IconCheck, IconX } from '@tabler/icons-react';
+import { IconCamera, IconCheck, IconPencil, IconX } from '@tabler/icons-react';
 import {
     useDownloadProfilePicture,
+    useUpdateHeadline,
     // useDownloadProfilePicture,
     useUploadProfilePicture,
 } from 'app/_api/profile/queries';
@@ -30,11 +33,13 @@ import { useRef, useState } from 'react';
 
 interface ProfileHeaderProps {
     data: PersonalInfo;
+    headline: string;
 }
 
-export default function ProfileHeader({ data }: ProfileHeaderProps) {
+export default function ProfileHeader({ data, headline }: ProfileHeaderProps) {
     const [isUploading, setIsUploading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditingHeadline, setIsEditingHeadline] = useState(false);
     const resetRef = useRef<() => void>(null);
     const { mutate: uploadProfilePicture } = useUploadProfilePicture();
     const { data: profilePicture } = useDownloadProfilePicture(
@@ -97,6 +102,34 @@ export default function ProfileHeader({ data }: ProfileHeaderProps) {
                 resetRef.current();
             }
         }
+    };
+
+    const { mutate: updateHeadline } = useUpdateHeadline();
+    const [headlinedata, setHeadlinedata] = useState(headline);
+
+    const handleHeadlineUpdate = async () => {
+        await updateHeadline(headlinedata, {
+            onSuccess: () => {
+                notifications.show({
+                    title: 'Success',
+                    message: 'Headline updated successfully',
+                    color: 'green',
+                    icon: <IconCheck size={16} />,
+                });
+                setIsEditingHeadline(false);
+            },
+            onError: (error) => {
+                notifications.show({
+                    title: 'Error',
+                    message:
+                        error instanceof Error
+                            ? error.message
+                            : 'Failed to update headline',
+                    color: 'red',
+                    icon: <IconX size={16} />,
+                });
+            },
+        });
     };
 
     return (
@@ -275,10 +308,53 @@ export default function ProfileHeader({ data }: ProfileHeaderProps) {
                         </Transition>
                     </Stack>
                     <Text c={'dimmed'}>
-                        React | Nextjs | Javascript | Typescript | Redux |
-                        React-router | Nestjs | Shadcn | Mantine
+                        {isEditingHeadline ? (
+                            <Group>
+                                <TextInput
+                                    value={headlinedata}
+                                    onChange={(e) =>
+                                        setHeadlinedata(e.target.value)
+                                    }
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleHeadlineUpdate();
+                                        } else if (e.key === 'Escape') {
+                                            setIsEditingHeadline(false);
+                                            setHeadlinedata(headline);
+                                        }
+                                    }}
+                                    onBlur={handleHeadlineUpdate}
+                                    autoFocus
+                                    placeholder="Add a headline"
+                                    size="sm"
+                                    style={{ minWidth: '700px' }}
+                                />
+                                <Button
+                                    size="sm"
+                                    onClick={handleHeadlineUpdate}
+                                >
+                                    Save
+                                </Button>
+                            </Group>
+                        ) : (
+                            <Group align="center">
+                                <Text c="primary" className="cursor-pointer">
+                                    {headline || 'Add a headline'}
+                                </Text>
+                                <Button
+                                    mt={4}
+                                    leftSection={<IconPencil size={16} />}
+                                    size="sm"
+                                    variant="light"
+                                    className="cursor-pointer"
+                                    onClick={() => setIsEditingHeadline(true)}
+                                >
+                                    Edit
+                                </Button>
+                            </Group>
+                        )}
                     </Text>
-                    <Flex mt={'sm'} gap={'md'}>
+                    <Flex mt={'sm'} gap={'md'} hidden>
                         <Text c={'dimmed'}>Addis Ababa, Ethiopia</Text>
                         <Text c="primary" className="cursor-pointer">
                             Contact Info

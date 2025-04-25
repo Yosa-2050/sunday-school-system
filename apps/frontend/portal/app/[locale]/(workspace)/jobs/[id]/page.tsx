@@ -126,7 +126,7 @@ export default function JobDetailsPage() {
                 color: 'green',
             });
             // Redirect to applications page or show success state
-            router.push('/applications');
+            router.push('/jobs');
         },
         onError: (error) => {
             // Show error notification
@@ -228,14 +228,12 @@ export default function JobDetailsPage() {
                                 <Stack gap="xs">
                                     <Title order={5}>Application Status</Title>
                                     <Group>
-                                        <Badge
-                                            color={getStatusColor(
-                                                applicationStatus,
-                                            )}
-                                        >
-                                            {getStatusLabel(applicationStatus)}
-                                        </Badge>
-                                        <Text size="sm" color="dimmed">
+                                        {job?.applied ? (
+                                            <Badge>Applied</Badge>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        <Text size="sm" c="dimmed">
                                             Last saved 2 hours ago
                                         </Text>
                                     </Group>
@@ -338,10 +336,20 @@ export default function JobDetailsPage() {
                                                             size="sm"
                                                             color="dimmed"
                                                         >
-                                                            {job.salaryFrom.toLocaleString()}{' '}
-                                                            -{' '}
-                                                            {job.salaryTo.toLocaleString()}{' '}
-                                                            {job.currency}
+                                                            {(() => {
+                                                                if (
+                                                                    job?.salaryFrom &&
+                                                                    job?.salaryTo
+                                                                ) {
+                                                                    return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                                                }
+                                                                if (
+                                                                    job?.salaryFrom
+                                                                ) {
+                                                                    return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                                                }
+                                                                return 'N/A';
+                                                            })()}
                                                         </Text>
                                                     </Group>
                                                     <Group gap={4}>
@@ -920,7 +928,7 @@ export default function JobDetailsPage() {
                                                                 applyMutation.isPending
                                                             }
                                                         >
-                                                            Submit Application
+                                                            Apply Now
                                                         </Button>
                                                     </Flex>
                                                 )}

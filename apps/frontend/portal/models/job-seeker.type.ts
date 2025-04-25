@@ -11,9 +11,12 @@ export type JobSeeker = {
     isActive: boolean;
     bio: About;
     cv: string;
+    headline: string;
     coverLetter: string;
     experiance: Experience[];
+    __experiance__: Experience[];
     educationalHistory: Education[];
+    __educationalHistory__: Education[];
     skills: Skill[];
     profile: PersonalInfo;
 };

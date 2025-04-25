@@ -67,6 +67,7 @@ export type Filter = {
     categoryId?: string;
     organizationId?: string;
     cityId?: string;
+    countryId?: string;
     type?: string;
     experianceLevel?: string;
     salaryFrom?: number;
