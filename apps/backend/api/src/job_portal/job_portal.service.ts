@@ -282,6 +282,12 @@ export class JobPortalService {
             });
         }
 
+        if (filter.countryId) {
+            query.andWhere('job.countryId = :countryId', {
+                countryId: filter.countryId,
+            });
+        }
+
         if (filter.cityId) {
             query.andWhere('job.cityId = :cityId', {
                 cityId: filter.cityId,

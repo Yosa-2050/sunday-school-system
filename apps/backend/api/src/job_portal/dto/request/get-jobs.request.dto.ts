@@ -37,6 +37,12 @@ export class GetJobsRequestDto {
     @IsOptional()
     @IsUUID()
     @Transform(({ value }) => (value === '' ? undefined : value))
+    countryId?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsUUID()
+    @Transform(({ value }) => (value === '' ? undefined : value))
     cityId?: string;
 
     @ApiProperty()
