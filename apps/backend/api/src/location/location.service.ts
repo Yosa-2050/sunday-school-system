@@ -10,7 +10,7 @@ import { Country } from './entities/country.entity';
 
 export class LocationService {
     findById(id: string) {
-        return this.locationInfoRepo.findOneBy({id});
+        return this.locationInfoRepo.findOneBy({ id });
     }
     constructor(
         @InjectRepository(Country)
