@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateLocationInfoRequestDto } from './dto/request/create-location-info.request.dto';
@@ -15,4 +15,9 @@ export class LocationController {
     createLocation(@Body() request: CreateLocationInfoRequestDto) {
         return this.locationService.createLocationInfo(request);
     }
+
+     @Get(':id')
+        getById(@Param('id', new ParseUUIDPipe()) id: string) {
+            return this.locationService.findById(id);
+        }
 }

@@ -159,4 +159,8 @@ export class AddressService {
     findLocationById(id: string) {
         return this.locationRepo.findOneBy({ id });
     }
+
+    findAddressById(id: string) {
+        return this.addressRepo.findOneBy({ id });
+    }
 }

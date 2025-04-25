@@ -9,6 +9,9 @@ import { LocationInfo } from './entities/LocationInfo.entity';
 import { Country } from './entities/country.entity';
 
 export class LocationService {
+    findById(id: string) {
+        return this.locationInfoRepo.findOneBy({id});
+    }
     constructor(
         @InjectRepository(Country)
         private readonly coutryRepo: Repository<Country>,
