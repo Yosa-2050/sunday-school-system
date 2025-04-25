@@ -7,9 +7,10 @@ export const activateOrg = async (id: string) => {
     });
 };
 
-export const deactivateOrg = async (id: string) => {
+export const deactivateOrg = async (id: string, reason: string) => {
     return await fetcher(`/organization/deactivate/${id}/true`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ note: reason }),
     });
 };

@@ -7,9 +7,10 @@ export const activateUser = async (id: string) => {
     });
 };
 
-export const deactivateUser = async (id: string) => {
+export const deactivateUser = async (id: string, reason: string) => {
     return await fetcher(`/users/deactivate/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ note: reason }),
     });
 };

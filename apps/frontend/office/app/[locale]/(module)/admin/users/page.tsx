@@ -19,9 +19,10 @@ import {
     Table,
     TableScrollContainer,
     Text,
+    TextInput,
 } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import { notifications, showNotification } from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import {
     PER_PAGE,
     entityParamSchema,
@@ -35,8 +36,9 @@ import {
     EntitySearch,
 } from '@shega/ui';
 import { IconDotsVertical, IconDownload, IconX } from '@tabler/icons-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import Can from '@/components/Can';
 import { exportSelectedUsers } from 'app/[locale]/_api/users/export-selected-users';
 import { type Daum, fetchUsers } from 'app/[locale]/_api/users/fetch-user';
 import {
@@ -56,42 +58,64 @@ interface Filters {
 }
 
 const UsersPage = () => {
+    const queryClient = useQueryClient();
     const t = useTranslations('usersPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
     const [selection, setSelection] = useState<string[]>([]);
     const [opened, { open, close }] = useDisclosure(false);
     const [openedActivation, activationHandlers] = useDisclosure(false);
 
+    const [reason, setReason] = useState('');
+
     const [selectedUser, setSelectedUser] = useState<{
         id: string;
         fullName: string;
     } | null>(null);
 
-    const handleStatus = async (userId: string, currentStatus: boolean) => {
-        try {
-            if (currentStatus) {
-                await deactivateUser(userId);
-                showNotification({
-                    title: 'Deactivated',
-                    message: 'User has been deactivated.',
-                    color: 'green',
-                });
-            } else {
-                await activateUser(userId);
-                showNotification({
-                    title: 'Activated',
-                    message: 'User has been activated.',
-                    color: 'green',
-                });
-            }
-        } catch (error) {
-            showNotification({
-                title: 'Error',
-                message: 'An error occurred while updating the user status.',
+    const deactivateUserMutation = useMutation({
+        mutationFn: async ({
+            userId,
+            reason,
+        }: {
+            userId: string;
+            reason: string;
+        }) => await deactivateUser(userId, reason),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+            setReason('');
+            notifications.show({
+                title: 'Deactivation',
+                message: 'User has been successfully deactivated',
+                color: 'green',
+            });
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Deactivation',
+                message: 'An error occurred while deactivating the user',
                 color: 'red',
             });
-        }
-    };
+        },
+    });
+
+    const activateUserMutation = useMutation({
+        mutationFn: async (userId: string) => await activateUser(userId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+            notifications.show({
+                title: 'Activation',
+                message: 'User has been successfully activated',
+                color: 'green',
+            });
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Activation',
+                message: 'An error occurred while activating the user',
+                color: 'red',
+            });
+        },
+    });
 
     const [filters, setFilters] = useQueryState<Filters | null>('filters', {
         defaultValue: null,
@@ -444,7 +468,9 @@ const UsersPage = () => {
                                     />
                                 </Table.Th>
                                 <Table.Th>{t('table.status')}</Table.Th>
-                                <Table.Th>{t('table.actions')}</Table.Th>
+                                <Can roles={['super_admin']}>
+                                    <Table.Th>{t('table.actions')}</Table.Th>
+                                </Can>
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
@@ -495,48 +521,54 @@ const UsersPage = () => {
                                         </Pill>
                                     </Table.Td>
 
-                                    <Table.Td>
-                                        <Menu width={200}>
-                                            <Menu.Target>
-                                                <IconDotsVertical
-                                                    size={18}
-                                                    className="cursor-pointer"
-                                                />
-                                            </Menu.Target>
-                                            <Menu.Dropdown>
-                                                {user.isActive ? (
-                                                    <Menu.Item
-                                                        color="red"
-                                                        onClick={() => {
-                                                            setSelectedUser({
-                                                                id: user.id,
-                                                                fullName:
-                                                                    user.fullName ??
-                                                                    '',
-                                                            });
-                                                            open();
-                                                        }}
-                                                    >
-                                                        Deactivate
-                                                    </Menu.Item>
-                                                ) : (
-                                                    <Menu.Item
-                                                        onClick={() => {
-                                                            setSelectedUser({
-                                                                id: user.id,
-                                                                fullName:
-                                                                    user.fullName ??
-                                                                    '',
-                                                            });
-                                                            activationHandlers.open();
-                                                        }}
-                                                    >
-                                                        Activate
-                                                    </Menu.Item>
-                                                )}
-                                            </Menu.Dropdown>
-                                        </Menu>
-                                    </Table.Td>
+                                    <Can roles={['super_admin']}>
+                                        <Table.Td>
+                                            <Menu width={200}>
+                                                <Menu.Target>
+                                                    <IconDotsVertical
+                                                        size={18}
+                                                        className="cursor-pointer"
+                                                    />
+                                                </Menu.Target>
+                                                <Menu.Dropdown>
+                                                    {user.isActive ? (
+                                                        <Menu.Item
+                                                            color="red"
+                                                            onClick={() => {
+                                                                setSelectedUser(
+                                                                    {
+                                                                        id: user.id,
+                                                                        fullName:
+                                                                            user.fullName ??
+                                                                            '',
+                                                                    },
+                                                                );
+                                                                open();
+                                                            }}
+                                                        >
+                                                            Deactivate
+                                                        </Menu.Item>
+                                                    ) : (
+                                                        <Menu.Item
+                                                            onClick={() => {
+                                                                setSelectedUser(
+                                                                    {
+                                                                        id: user.id,
+                                                                        fullName:
+                                                                            user.fullName ??
+                                                                            '',
+                                                                    },
+                                                                );
+                                                                activationHandlers.open();
+                                                            }}
+                                                        >
+                                                            Activate
+                                                        </Menu.Item>
+                                                    )}
+                                                </Menu.Dropdown>
+                                            </Menu>
+                                        </Table.Td>
+                                    </Can>
                                 </Table.Tr>
                             ))}
                         </Table.Tbody>
@@ -547,16 +579,17 @@ const UsersPage = () => {
                             close();
                             setSelectedUser(null);
                         }}
-                        title="Organization Deactivation"
+                        title="User Deactivation"
                         centered
                     >
-                        <Text>
-                            Are you sure you want to deactivate{' '}
-                            <Text span fw={600}>
-                                {selectedUser?.fullName}{' '}
-                            </Text>
-                            ?
-                        </Text>
+                        <TextInput
+                            placeholder="Enter the reason for deactivation"
+                            label="Reason"
+                            description="Please provide a reason for deactivating this user."
+                            required
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
+                        />
 
                         <Group mt="xl" justify="flex-end">
                             <Button variant="default" onClick={close}>
@@ -564,11 +597,14 @@ const UsersPage = () => {
                             </Button>
                             <Button
                                 color="red"
+                                loading={deactivateUserMutation.isPending}
                                 onClick={async () => {
                                     if (selectedUser) {
-                                        await handleStatus(
-                                            selectedUser.id,
-                                            true,
+                                        await deactivateUserMutation.mutateAsync(
+                                            {
+                                                userId: selectedUser.id,
+                                                reason,
+                                            },
                                         );
                                         close();
                                         setSelectedUser(null);
@@ -585,7 +621,7 @@ const UsersPage = () => {
                             activationHandlers.close();
                             setSelectedUser(null);
                         }}
-                        title="Organization Deactivation"
+                        title="User Activation"
                         centered
                     >
                         <Text>
@@ -607,12 +643,12 @@ const UsersPage = () => {
                                 Cancel
                             </Button>
                             <Button
-                                color="red"
+                                // color="green"
+                                loading={activateUserMutation.isPending}
                                 onClick={async () => {
                                     if (selectedUser) {
-                                        await handleStatus(
+                                        await activateUserMutation.mutateAsync(
                                             selectedUser.id,
-                                            false,
                                         );
                                         activationHandlers.close();
                                         setSelectedUser(null);

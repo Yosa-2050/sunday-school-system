@@ -25,6 +25,8 @@ import {
     IconSchool,
     IconUser,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { getAddressById } from 'app/[locale]/_api/organizations/get-addresses';
 import parse from 'html-react-parser';
 import type { JobFormData } from './types';
 
@@ -42,6 +44,19 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
             day: 'numeric',
         });
     };
+
+    const country = useQuery({
+        queryFn: () => getAddressById(formData.countryId),
+        queryKey: ['country', formData.countryId],
+    });
+    const state = useQuery({
+        queryFn: () => getAddressById(formData.stateId),
+        queryKey: ['country', formData.stateId],
+    });
+    const city = useQuery({
+        queryFn: () => getAddressById(formData.cityId),
+        queryKey: ['country', formData.cityId],
+    });
 
     const formatSalary = () => {
         if (formData.salaryType === 'RANGE') {
@@ -83,8 +98,8 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                         variant="outline"
                                         leftSection={<IconMapPin size={14} />}
                                     >
-                                        {formData.cityId}, {formData.stateId},{' '}
-                                        {formData.countryId}
+                                        {city?.data?.name}, {state?.data?.name},{' '}
+                                        {country?.data?.name}
                                     </Badge>
                                     <Badge
                                         variant="outline"
