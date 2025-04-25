@@ -228,20 +228,12 @@ export default function JobDetailsPage() {
                                 <Stack gap="xs">
                                     <Title order={5}>Application Status</Title>
                                     <Group>
-                                        {job.applied ? (
+                                        {job?.applied ? (
                                             <Badge>Applied</Badge>
                                         ) : (
-                                            <Badge
-                                                color={getStatusColor(
-                                                    applicationStatus,
-                                                )}
-                                            >
-                                                {getStatusLabel(
-                                                    applicationStatus,
-                                                )}
-                                            </Badge>
+                                            <></>
                                         )}
-                                        <Text size="sm" color="dimmed">
+                                        <Text size="sm" c="dimmed">
                                             Last saved 2 hours ago
                                         </Text>
                                     </Group>
@@ -344,10 +336,20 @@ export default function JobDetailsPage() {
                                                             size="sm"
                                                             color="dimmed"
                                                         >
-                                                            {job.salaryFrom.toLocaleString()}{' '}
-                                                            -{' '}
-                                                            {job.salaryTo.toLocaleString()}{' '}
-                                                            {job.currency}
+                                                            {(() => {
+                                                                if (
+                                                                    job?.salaryFrom &&
+                                                                    job?.salaryTo
+                                                                ) {
+                                                                    return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                                                }
+                                                                if (
+                                                                    job?.salaryFrom
+                                                                ) {
+                                                                    return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                                                }
+                                                                return 'N/A';
+                                                            })()}
                                                         </Text>
                                                     </Group>
                                                     <Group gap={4}>

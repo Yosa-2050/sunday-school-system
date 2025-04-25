@@ -369,6 +369,13 @@ export const updateBio = async (bio: string): Promise<void> => {
     });
 };
 
+export const updateHeadline = async (headline: string): Promise<void> => {
+    await fetcher<void>('/job-seeker/detail', {
+        method: 'PATCH',
+        headers: { accept: '*/*' },
+        body: JSON.stringify({ headline }),
+    });
+};
 export const updateCoverLetter = async (coverLetter: string): Promise<void> => {
     await fetcher<void>('/job-seeker/detail', {
         method: 'PATCH',
@@ -382,6 +389,17 @@ export const useUpdateBio = () => {
 
     return useMutation({
         mutationFn: updateBio,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
+        },
+    });
+};
+
+export const useUpdateHeadline = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateHeadline,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
         },

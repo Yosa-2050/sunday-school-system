@@ -34,9 +34,10 @@ export default function ProfilePage() {
             bio: '',
         },
         cv: '',
+        headline: '',
         coverLetter: '',
         experiance: [],
-        __experience__: [],
+        __experiance__: [],
         educationalHistory: [],
         __educationalHistory__: [],
         skills: [],
@@ -94,7 +95,10 @@ export default function ProfilePage() {
 
     return (
         <AppShell>
-            <ProfileHeader data={displayData.profile} />
+            <ProfileHeader
+                data={displayData.profile}
+                headline={displayData.headline}
+            />
             <Box
                 bg="gray.0"
                 py="xl"
@@ -116,7 +120,6 @@ export default function ProfilePage() {
                                     gap="xs"
                                     style={{
                                         ...styles,
-                                        // padding: '1rem',
                                     }}
                                     className="flex-1"
                                 >
