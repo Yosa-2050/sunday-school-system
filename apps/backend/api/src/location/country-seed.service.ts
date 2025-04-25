@@ -7,6 +7,12 @@ import { Country } from './entities/country.entity';
 import { countrySeed } from './seeds/country.seed';
 import { ethiopiaRegionSeedData } from './seeds/region.ethiopia.seed';
 import { ethiopiaZoneSeedData } from './seeds/zone.ethiopia.seed';
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
+import * as fs from 'fs';
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
+import * as path from 'path';
+import csv from 'csv-parser';
+import { Continents } from './enums/continents.enum';
 
 @Injectable()
 export class CountrySeedService {
@@ -15,6 +21,48 @@ export class CountrySeedService {
         @InjectRepository(LocationInfo)
         private locationInfoRepo: Repository<LocationInfo>,
     ) {}
+
+    async seedCountryData2(){
+        const allCountries = await this.coutryRepo.find(); 
+        const filePath = path.join(process.cwd(), '/src/location/seeds/all-country.seed.csv');
+        const continentMap: Record<string, Continents> = {
+            'Africa': Continents.AFRICA,
+            'Europe': Continents.EUROPE,
+            'Asia': Continents.ASIA,
+            'South America': Continents.SouthAmerica,
+            'North America': Continents.NorthAmerica,
+            'Oceania': Continents.Australia,
+        };
+
+        const addCountries: Country[] = [];
+
+        return new Promise<void>((resolve, reject) => {
+            fs.createReadStream(filePath)
+              .pipe(csv())
+              .on('data', (row) => {
+                if (continentMap[row.region]) {
+                    const countriesSaved = allCountries.find(
+                        (x) => x.code === row['alpha-3'],
+                    );
+                    if (!countriesSaved) {
+                        addCountries.push(this.coutryRepo.create({
+                            name: row.name,
+                            code: row['alpha-3'],
+                            continent: continentMap[row.region],
+                            flag: '',
+                            phoneCode: row['country-code'] ? `+${row['country-code']}` : ''
+                          })
+                        );
+                    }  
+                }
+              })
+              .on('end', async () => {
+                await this.coutryRepo.save(addCountries);
+                resolve();
+              })
+              .on('error', (error) => reject(error));
+          });
+    }
 
     async seedCountryData(): Promise<void> {
         try {

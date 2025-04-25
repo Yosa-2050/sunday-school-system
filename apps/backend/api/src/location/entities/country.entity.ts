@@ -22,5 +22,5 @@ export class Country extends BaseModel {
     @Column()
     flag: string;
 
-    locationInfos: LocationInfo;
+    //locationInfos: LocationInfo;
 }

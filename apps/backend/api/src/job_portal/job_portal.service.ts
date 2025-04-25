@@ -44,6 +44,7 @@ import { Skills } from './entities/skills.entity';
 
 @Injectable()
 export class JobPortalService {
+    
     constructor(
         private organizationService: OrganizationService,
         @InjectRepository(JobSkills)
@@ -214,6 +215,17 @@ export class JobPortalService {
             })
             .filter((x) => x);
         return category;
+    }
+
+    async findOneForJobSeeker(id: string, applicantId: string) {
+        const job = await this.findOne(id);
+        if(!job){
+            throw new BadRequestException("Job not found");
+        }
+
+        const appliedJobs = await this.jobsApplied(applicantId);
+        const jobsApplied = appliedJobs.map((x) => x.job.id);
+        return new JobResponseDto(job, jobsApplied)
     }
 
     async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
