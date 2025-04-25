@@ -209,7 +209,7 @@ export class JobsService {
 
         const existingExperiance = await applicant.experiance;
 
-        if (existingExperiance.find((x) => x.id === experianceId)) {
+        if (!existingExperiance.find((x) => x.id === experianceId)) {
             throw new BadRequestException('Experiance not found');
         }
         const experiance = await this.experianceRepo.preload({
@@ -227,7 +227,7 @@ export class JobsService {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
         const educationHistory = await applicant.educationalHistory;
-        if (educationHistory.find((x) => x.id === historyId)) {
+        if (!educationHistory.find((x) => x.id === historyId)) {
             throw new BadRequestException('Educational history not found');
         }
 
@@ -253,7 +253,9 @@ export class JobsService {
         const experiance = existingExperiance.find(
             (x) => x.id === experianceId,
         );
-
+        if (!experiance) {
+            throw new BadRequestException('Experiance not found');
+        }
         const deleted = await this.experianceRepo.delete(experiance.id);
 
         return UtilityServices.EnsureDeleted(deleted, experianceId);
@@ -264,8 +266,11 @@ export class JobsService {
         const educationHistory = await applicant.educationalHistory;
 
         const history = educationHistory.find((x) => x.id === historyId);
+        if (!history) {
+            throw new BadRequestException('Educational history not found');
+        }
 
-        const deleted = await this.experianceRepo.delete(history.id);
+        const deleted = await this.educationalHistoryRepo.delete(history.id);
 
         return UtilityServices.EnsureDeleted(deleted, historyId);
     }
