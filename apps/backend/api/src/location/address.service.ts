@@ -104,7 +104,9 @@ export class AddressService {
         return this.countryRepo.findOneBy({ code: DefaultCountry });
     }
     findAllCountries() {
-        return this.countryRepo.find();
+        return this.countryRepo.find({order: {
+            name: 'ASC',
+          },});
     }
 
     findLocationInfoByParent(parentId: string) {
