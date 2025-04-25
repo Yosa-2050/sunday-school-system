@@ -65,7 +65,14 @@
         "jobListings": "Job Listings",
         "applyNow": "Apply",
         "keyword": "Keyword",
-        "experienceLevel": "Experience Level"
+        "experienceLevel": "Experience Level",
+        "applyFilters": "Apply Filters",
+        "filterJobs": "Filter Jobs",
+        "jobsFound": "jobs found",
+        "country": "Country",
+        "city": "City",
+        "noJobsFound": "No Jobs Found",
+        "searchAgain": "Search Again"
     },
     "header": {
         "title": "Job Portal",
@@ -76,7 +83,11 @@
         "jobs": "Jobs",
         "companies": "Companies",
         "contact": "Contact",
-        "about": "About"
+        "about": "About",
+        "myJobs": "My Jobs",
+        "reports": "Reports",
+        "messages": "Messages",
+        "findWork": "Find Work"
     },
     "user": {
         "login": "Login",

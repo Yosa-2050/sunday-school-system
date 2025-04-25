@@ -13,7 +13,9 @@ export type JobSeeker = {
     cv: string;
     coverLetter: string;
     experiance: Experience[];
+    __experience__: Experience[];
     educationalHistory: Education[];
+    __educationalHistory__: Education[];
     skills: Skill[];
     profile: PersonalInfo;
 };

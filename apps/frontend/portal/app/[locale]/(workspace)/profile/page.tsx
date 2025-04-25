@@ -36,7 +36,9 @@ export default function ProfilePage() {
         cv: '',
         coverLetter: '',
         experiance: [],
+        __experience__: [],
         educationalHistory: [],
+        __educationalHistory__: [],
         skills: [],
         profile: {
             id: '',
@@ -109,12 +111,12 @@ export default function ProfilePage() {
                         timingFunction="ease"
                     >
                         {(styles) => (
-                            <Flex>
+                            <Flex gap={'md'} align={'flex-start'}>
                                 <Stack
                                     gap="xs"
                                     style={{
                                         ...styles,
-                                        padding: '1rem',
+                                        // padding: '1rem',
                                     }}
                                     className="flex-1"
                                 >
@@ -137,7 +139,10 @@ export default function ProfilePage() {
                                     />
 
                                     <ExperienceSection
-                                        experiences={displayData.experiance}
+                                        experiences={
+                                            displayData.experiance ??
+                                            displayData.__experiance__
+                                        }
                                         onUpdate={(data) =>
                                             handleUpdateSection(
                                                 'experiance',
@@ -148,13 +153,14 @@ export default function ProfilePage() {
 
                                     <EducationSection
                                         education={
-                                            displayData.educationalHistory
+                                            displayData.educationalHistory ??
+                                            displayData.__educationalHistory__
                                         }
                                     />
 
                                     <CoverLetterSection />
                                 </Stack>
-                                <Stack className="mt-4" maw={'450px'}>
+                                <Stack maw={'450px'}>
                                     <SkillsSection
                                         skills={displayData.skills}
                                     />

@@ -126,7 +126,7 @@ export default function JobDetailsPage() {
                 color: 'green',
             });
             // Redirect to applications page or show success state
-            router.push('/applications');
+            router.push('/jobs');
         },
         onError: (error) => {
             // Show error notification
@@ -228,13 +228,19 @@ export default function JobDetailsPage() {
                                 <Stack gap="xs">
                                     <Title order={5}>Application Status</Title>
                                     <Group>
-                                        <Badge
-                                            color={getStatusColor(
-                                                applicationStatus,
-                                            )}
-                                        >
-                                            {getStatusLabel(applicationStatus)}
-                                        </Badge>
+                                        {job.applied ? (
+                                            <Badge>Applied</Badge>
+                                        ) : (
+                                            <Badge
+                                                color={getStatusColor(
+                                                    applicationStatus,
+                                                )}
+                                            >
+                                                {getStatusLabel(
+                                                    applicationStatus,
+                                                )}
+                                            </Badge>
+                                        )}
                                         <Text size="sm" color="dimmed">
                                             Last saved 2 hours ago
                                         </Text>
@@ -920,7 +926,7 @@ export default function JobDetailsPage() {
                                                                 applyMutation.isPending
                                                             }
                                                         >
-                                                            Submit Application
+                                                            Apply Now
                                                         </Button>
                                                     </Flex>
                                                 )}

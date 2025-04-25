@@ -257,7 +257,7 @@ export default function PersonalInfoSection({
                                                     const maxDate = new Date();
                                                     maxDate.setFullYear(
                                                         maxDate.getFullYear() -
-                                                            16,
+                                                            18,
                                                     );
                                                     return (
                                                         <DateInput

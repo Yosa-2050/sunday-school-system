@@ -105,7 +105,7 @@ export default function EducationSection({
 
                     {education?.length === 0 ? (
                         <Box
-                            p="md"
+                            p="xl"
                             style={{
                                 borderRadius: rem(8),
                                 backgroundColor: 'var(--mantine-color-gray-0)',

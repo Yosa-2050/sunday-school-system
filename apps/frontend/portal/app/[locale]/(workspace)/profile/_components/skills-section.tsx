@@ -2,6 +2,7 @@
 
 import type { Skill } from '@/lib/types';
 import {
+    Badge,
     Box,
     Button,
     Card,
@@ -30,7 +31,9 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
             <Card shadow="sm" withBorder>
                 <Stack gap="md">
                     <Group justify="space-between">
-                        <Title order={4}>Skills</Title>
+                        <Title order={4}>
+                            Skills <Badge>{skills.length}</Badge>
+                        </Title>
                         <Button
                             leftSection={<IconPlus size={16} />}
                             variant="light"
@@ -50,11 +53,21 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
                     ) : (
                         <Box>
                             <Flex gap="xs" wrap={'wrap'}>
-                                {skills.map((skill) => (
+                                {skills.slice(0, 5).map((skill) => (
                                     <Pill key={skill.id} size="lg" radius="xl">
                                         {skill.skill}
                                     </Pill>
                                 ))}
+                                {skills.length > 5 && (
+                                    <Pill
+                                        size="lg"
+                                        radius="xl"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => setIsModalOpen(true)}
+                                    >
+                                        +{skills.length - 5} more
+                                    </Pill>
+                                )}
                             </Flex>
                         </Box>
                     )}

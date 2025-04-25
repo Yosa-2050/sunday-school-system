@@ -3,7 +3,6 @@
 import { Footer } from '@/components/Footer';
 import { useRouter } from '@/i18n/routing';
 import {
-    Avatar,
     Badge,
     Box,
     Button,
@@ -11,6 +10,7 @@ import {
     Checkbox,
     Chip,
     Container,
+    Divider,
     Drawer,
     Grid,
     Group,
@@ -23,33 +23,25 @@ import {
     Text,
     TextInput,
     Title,
-    TypographyStylesProvider,
 } from '@mantine/core';
 import { useDebouncedCallback, useMediaQuery } from '@mantine/hooks';
-import {
-    PER_PAGE,
-    entityParamSchema,
-    entityParamSerializer,
-} from '@shega/shared';
+import { PER_PAGE, entityParamSchema } from '@shega/shared';
 import { EntityPagination, useAuth } from '@shega/ui';
 import {
-    IconBookmark,
     IconBriefcase,
-    IconClock,
-    IconCurrencyDollar,
     IconFilter,
     IconMapPin,
     IconSearch,
-    IconStar,
     IconX,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import type { Filter } from 'app/_api/jobs/fetch-jobs';
-import parse from 'html-react-parser';
+import { fetchCities, fetchCountries } from 'app/_api/location/fetch-countries';
 import { useLocale, useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
+import { JobCard } from './components/JobCard';
 
 // Types
 interface JobFilters {
@@ -229,6 +221,20 @@ const FilterSidebar = ({
 }: FilterSidebarProps) => {
     const t = useTranslations('jobListing');
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const { data: countries } = useQuery({
+        queryKey: ['countries'],
+        queryFn: () => fetchCountries(),
+    });
+
+    const countryCode = countries?.find(
+        (country) => country.id === filters.countryId,
+    )?.code;
+
+    const { data: cities } = useQuery({
+        queryKey: ['cities', countryCode],
+        queryFn: () => fetchCities(countryCode || ''),
+        enabled: !!countryCode,
+    });
 
     return (
         <Paper p="md" radius="lg" shadow="sm" className="sticky top-4">
@@ -254,7 +260,33 @@ const FilterSidebar = ({
 
                     <Box>
                         <Text size="sm" fw={500} mb="xs">
-                            {t('location')}
+                            {t('country')}
+                        </Text>
+                        <Select
+                            value={filters.countryId ?? ''}
+                            onChange={(value) =>
+                                setFilters({
+                                    ...filters,
+                                    countryId: value || '',
+                                    cityId: '',
+                                })
+                            }
+                            placeholder="Select Country"
+                            data={
+                                countries?.map((country) => ({
+                                    value: country.id,
+                                    label: country.name,
+                                })) || []
+                            }
+                            leftSection={<IconMapPin size={16} />}
+                            radius="md"
+                            searchable
+                            clearable
+                        />
+                    </Box>
+                    <Box>
+                        <Text size="sm" fw={500} mb="xs">
+                            {t('city')}
                         </Text>
                         <Select
                             value={filters.cityId ?? ''}
@@ -264,12 +296,18 @@ const FilterSidebar = ({
                                     cityId: value || '',
                                 })
                             }
-                            placeholder="Select location"
-                            data={LOCATIONS}
+                            placeholder="Select City"
+                            data={
+                                cities?.map((city) => ({
+                                    value: city.id,
+                                    label: city.name,
+                                })) || []
+                            }
                             leftSection={<IconMapPin size={16} />}
                             radius="md"
                             searchable
                             clearable
+                            disabled={!countryCode}
                         />
                     </Box>
 
@@ -284,7 +322,11 @@ const FilterSidebar = ({
                                     label={type.label}
                                     checked={filters.type === type.value}
                                     onChange={() =>
-                                        handleJobTypeChange(type.value)
+                                        handleJobTypeChange(
+                                            filters.type === type.value
+                                                ? ''
+                                                : type.value,
+                                        )
                                     }
                                     radius="md"
                                 />
@@ -305,7 +347,12 @@ const FilterSidebar = ({
                                         filters.experianceLevel === level.value
                                     }
                                     onChange={() =>
-                                        handleExperienceLevelChange(level.value)
+                                        handleExperienceLevelChange(
+                                            filters.experianceLevel ===
+                                                level.value
+                                                ? ''
+                                                : level.value,
+                                        )
                                     }
                                     radius="md"
                                 />
@@ -357,7 +404,7 @@ const FilterSidebar = ({
                 mt="md"
                 onClick={handleApplyFilters}
                 radius="md"
-                color="blue"
+                // color="blue"
                 leftSection={<IconFilter size={16} />}
             >
                 {t('applyFilters')}
@@ -424,39 +471,20 @@ export default function JobsPage() {
         }
     }, 300);
 
-    const handleApplyFilters = () => {
-        const updatedParams = {
-            ...entityParams,
-            p: 1,
-            s: filters.title || undefined,
-            location: filters.cityId || undefined,
-            type: filters.type || undefined,
-            experience: filters.experianceLevel || undefined,
-            salaryFrom: filters.salaryFrom || undefined,
-            salaryTo: filters.salaryTo || undefined,
-        };
-
-        setEntityParams(updatedParams);
-
-        setFilters((prev) => ({
-            ...prev,
-            pagination: {
-                ...prev.pagination,
-                page: 1,
-            },
-        }));
-    };
-
     useEffect(() => {
         if (!user) {
             router.push('/auth/login');
         }
     }, [user, router]);
 
-    const { data, isLoading, error } = useQuery({
-        queryKey: ['job-seeker-jbs', entityParamSerializer(entityParams)],
+    const { data, isLoading, error, refetch } = useQuery({
+        queryKey: ['job-seeker-jbs'],
         queryFn: () => fetchJobs(filters),
     });
+
+    const handleApplyFilters = () => {
+        refetch();
+    };
 
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
@@ -518,8 +546,30 @@ export default function JobsPage() {
 
                     <Grid.Col span={{ base: 12, md: 9 }}>
                         <Stack gap="md">
-                            <Card className="flex items-center space-between w-full">
-                                <Title order={2}>{t('jobListings')}</Title>
+                            <Card className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-0 shadow-sm">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="bg-primary/10 p-2.5 rounded-lg flex items-center justify-center">
+                                        <IconBriefcase
+                                            size={20}
+                                            className="text-primary"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Title
+                                            order={2}
+                                            className="text-gray-900 text-xl"
+                                        >
+                                            {t('jobListings')}
+                                        </Title>
+                                        <Text
+                                            size="xs"
+                                            c="dimmed"
+                                            className="mt-0.5"
+                                        >
+                                            {data?.total ?? 0} {t('jobsFound')}
+                                        </Text>
+                                    </div>
+                                </div>
                                 <Box className="md:hidden">
                                     <Drawer
                                         opened={opened}
@@ -547,10 +597,12 @@ export default function JobsPage() {
                                         </Box>
                                     </Drawer>
                                     <Button
-                                        leftSection={<IconFilter size={18} />}
+                                        leftSection={<IconFilter size={16} />}
                                         onClick={() => setOpened(true)}
                                         radius="md"
                                         variant="outline"
+                                        color="primary"
+                                        size="sm"
                                         fullWidth
                                     >
                                         {t('filterJobs')}
@@ -558,201 +610,14 @@ export default function JobsPage() {
                                 </Box>
                             </Card>
 
-                            {activeFilters > 0 && (
-                                <FilterChips
-                                    filters={filters}
-                                    setFilters={setFilters}
-                                />
-                            )}
+                            {/* {activeFilters > 0 && (
+                <FilterChips filters={filters} setFilters={setFilters} />
+              )} */}
 
                             <div className="grid grid-cols-1 gap-4">
                                 {data?.data && data.data.length > 0 ? (
                                     data.data.map((job) => (
-                                        <div
-                                            key={job.id}
-                                            className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden"
-                                        >
-                                            {/* Featured badge */}
-                                            {job.id === '1' && (
-                                                <div className="absolute top-0 right-0">
-                                                    <div className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-bl-lg flex items-center">
-                                                        <IconStar
-                                                            size={14}
-                                                            className="mr-1"
-                                                        />
-                                                        Featured
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            <div className="p-6">
-                                                <div className="flex items-start">
-                                                    <div className="flex-shrink-0 mr-4">
-                                                        <div className="w-12 h-12 rounded-lg flex items-center justify-center">
-                                                            <Avatar
-                                                                size="md"
-                                                                color="purple"
-                                                                radius="md"
-                                                                className="object-contain"
-                                                            >
-                                                                {job.organization?.name.slice(
-                                                                    0,
-                                                                    2,
-                                                                )}
-                                                            </Avatar>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex-1">
-                                                        <div className="flex flex-col md:flex-row md:justify-between md:items-start">
-                                                            <div>
-                                                                <Text
-                                                                    component="h3"
-                                                                    size="lg"
-                                                                    fw={600}
-                                                                    className="text-gray-900 hover:text-purple-600 transition-colors cursor-pointer"
-                                                                    onClick={() =>
-                                                                        router.push(
-                                                                            `/jobs/${job.id}`,
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    {job.title}
-                                                                </Text>
-                                                                <Text
-                                                                    size="sm"
-                                                                    fw={500}
-                                                                    c="dimmed"
-                                                                    className="mt-1"
-                                                                >
-                                                                    {
-                                                                        job
-                                                                            .organization
-                                                                            ?.name
-                                                                    }
-                                                                </Text>
-                                                            </div>
-                                                            <div className="mt-2 md:mt-0 text-sm text-gray-500 flex items-center">
-                                                                <IconClock
-                                                                    size={16}
-                                                                    className="mr-1 text-purple-500"
-                                                                />
-                                                                <Text size="sm">
-                                                                    {
-                                                                        job.createdAt
-                                                                    }
-                                                                </Text>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="mt-3 flex flex-wrap gap-y-2">
-                                                            <div className="flex items-center text-sm text-gray-500 mr-4">
-                                                                <IconMapPin
-                                                                    size={16}
-                                                                    className="mr-1 text-purple-500"
-                                                                />
-                                                                <Text size="sm">
-                                                                    Remote
-                                                                </Text>
-                                                            </div>
-                                                            <div className="flex items-center text-sm text-gray-500 mr-4">
-                                                                <IconBriefcase
-                                                                    size={16}
-                                                                    className="mr-1 text-purple-500"
-                                                                />
-                                                                <Text size="sm">
-                                                                    {job.type}
-                                                                </Text>
-                                                            </div>
-                                                            <div className="flex items-center text-sm text-gray-500">
-                                                                <IconCurrencyDollar
-                                                                    size={16}
-                                                                    className="mr-1 text-purple-500"
-                                                                />
-                                                                <Text size="sm">
-                                                                    {job.salaryFrom.toLocaleString()}{' '}
-                                                                    -{' '}
-                                                                    {job.salaryTo.toLocaleString()}{' '}
-                                                                    {
-                                                                        job.currency
-                                                                    }
-                                                                </Text>
-                                                            </div>
-                                                        </div>
-
-                                                        <Group gap="xs" mt="md">
-                                                            <Badge
-                                                                color="purple"
-                                                                variant="light"
-                                                                radius="sm"
-                                                            >
-                                                                {job.experienceLevel ||
-                                                                    'Any Experience'}
-                                                            </Badge>
-                                                        </Group>
-
-                                                        <Box mt="md">
-                                                            <TypographyStylesProvider>
-                                                                <Text
-                                                                    size="sm"
-                                                                    lineClamp={
-                                                                        2
-                                                                    }
-                                                                    className="text-gray-600"
-                                                                >
-                                                                    {parse(
-                                                                        job.description,
-                                                                    )}
-                                                                </Text>
-                                                            </TypographyStylesProvider>
-                                                        </Box>
-
-                                                        <div className="mt-4 flex flex-wrap gap-2">
-                                                            <Button
-                                                                variant="gradient"
-                                                                gradient={{
-                                                                    from: 'primary',
-                                                                    to: 'blue',
-                                                                }}
-                                                                radius="md"
-                                                                onClick={() =>
-                                                                    router.push(
-                                                                        `/jobs/${job.id}`,
-                                                                    )
-                                                                }
-                                                            >
-                                                                View Details
-                                                            </Button>
-                                                            <Button
-                                                                variant="outline"
-                                                                color="purple"
-                                                                radius="md"
-                                                            >
-                                                                Apply Now
-                                                            </Button>
-                                                            <Button
-                                                                variant="outline"
-                                                                color="gray"
-                                                                radius="md"
-                                                                leftSection={
-                                                                    <IconBookmark
-                                                                        size={
-                                                                            16
-                                                                        }
-                                                                    />
-                                                                }
-                                                                className="ml-auto"
-                                                            >
-                                                                Save
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Bottom border with gradient */}
-                                            <div className="h-1 w-full bg-gradient-to-r from-primary to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                                        </div>
+                                        <JobCard key={job.id} job={job} />
                                     ))
                                 ) : (
                                     <Card className="flex flex-col items-center justify-center p-12 bg-gradient-to-br from-gray-50 to-white border-0 animate-fade-in">
@@ -762,10 +627,10 @@ export default function JobsPage() {
                                                     size={56}
                                                     className="text-primary animate-bounce-slow"
                                                 />
-                                                <div className="absolute -top-2 -right-2 bg-blue-100 rounded-full p-2">
+                                                <div className="absolute -top-2 -right-2 bg-primary/10 rounded-full p-2">
                                                     <IconSearch
                                                         size={16}
-                                                        className="text-blue-600"
+                                                        className="text-primary"
                                                     />
                                                 </div>
                                             </div>
@@ -773,49 +638,29 @@ export default function JobsPage() {
                                         <Text
                                             size="2xl"
                                             fw={700}
-                                            className="text-gray-800 mb-3 text-center"
+                                            mb={'lg'}
+                                            className="text-gray-800 mb-3 text-center mb-4"
                                         >
                                             {t('noJobsFound')}
                                         </Text>
-                                        <Text
-                                            size="sm"
-                                            c="dimmed"
-                                            className="text-center max-w-md mb-8 leading-relaxed"
-                                        >
-                                            {t('noJobsFoundDescription')}
-                                        </Text>
+                                        <Divider my={'md'} />
                                         <div className="flex gap-4">
                                             <Button
                                                 variant="filled"
-                                                color="blue"
+                                                color="primary"
                                                 radius="xl"
                                                 size="md"
                                                 leftSection={
                                                     <IconFilter size={16} />
                                                 }
-                                                onClick={() => {
-                                                    setFilters({
-                                                        pagination: {
-                                                            page: 1,
-                                                            limit: PER_PAGE,
-                                                        },
-                                                        title: '',
-                                                        categoryId: '',
-                                                        organizationId: '',
-                                                        cityId: '',
-                                                        type: '',
-                                                        experianceLevel: '',
-                                                        salaryFrom: 0,
-                                                        salaryTo: 100000,
-                                                    });
-                                                }}
+                                                onClick={resetFilters}
                                                 className="hover:scale-105 transition-transform duration-200"
                                             >
                                                 {t('resetFilters')}
                                             </Button>
                                             <Button
                                                 variant="light"
-                                                color="gray"
+                                                color="primary"
                                                 radius="xl"
                                                 size="md"
                                                 leftSection={
@@ -895,7 +740,29 @@ function JobFilterSidebar({
 
                 <Paper p="md" radius="md" withBorder>
                     <Text size="sm" fw={600} mb="sm" c="blue.7">
-                        {t('location')}
+                        {t('country')}
+                    </Text>
+                    <Select
+                        value={filters.countryId || ''}
+                        onChange={(value) =>
+                            onFilterChange({
+                                ...filters,
+                                cityId: value || '',
+                            })
+                        }
+                        placeholder="Select country"
+                        data={LOCATIONS}
+                        leftSection={<IconMapPin size={16} stroke={1.5} />}
+                        radius="md"
+                        searchable
+                        clearable
+                        size="sm"
+                    />
+                </Paper>
+
+                <Paper p="md" radius="md" withBorder>
+                    <Text size="sm" fw={600} mb="sm" c="blue.7">
+                        {t('city')}
                     </Text>
                     <Select
                         value={filters.cityId || ''}
@@ -905,7 +772,7 @@ function JobFilterSidebar({
                                 cityId: value || '',
                             })
                         }
-                        placeholder="Select location"
+                        placeholder="Select city"
                         data={LOCATIONS}
                         leftSection={<IconMapPin size={16} stroke={1.5} />}
                         radius="md"
