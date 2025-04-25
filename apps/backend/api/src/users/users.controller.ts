@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExportWithQuesryRequestModel } from '@shega/Utilities/models/list-string.model';
+import { ExportWithQuesryRequestModel, StringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
@@ -115,12 +115,13 @@ export class UsersController {
     @Roles(UserRoleType.SuperAdmin)
     @Put('activate/:userId')
     activateUser(@Param('userId') userId: string) {
-        return this.usersService.setUserActivationStatus(userId, true);
+        return this.usersService.setUserActivationStatus(userId, true, "");
     }
 
     @Roles(UserRoleType.SuperAdmin)
     @Put('deactivate/:userId')
-    deactivateUser(@Param('userId') userId: string) {
-        return this.usersService.setUserActivationStatus(userId, false);
+    deactivateUser(@Param('userId') userId: string, 
+    @Body() dto: StringRequestModel) {
+        return this.usersService.setUserActivationStatus(userId, false, dto.note);
     }
 }

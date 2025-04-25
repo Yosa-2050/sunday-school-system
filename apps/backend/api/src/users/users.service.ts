@@ -157,10 +157,11 @@ export class UsersService {
         return `This action updates a #${id} user`;
     }
 
-    async setUserActivationStatus(id: string, isUserActive: boolean) {
+    async setUserActivationStatus(id: string, isUserActive: boolean, note: string) {
         const update = await this.userRepo.preload({
             id,
             isActive: isUserActive,
+            note: note
         });
         if (!update) {
             throw new BadRequestException('User not found');

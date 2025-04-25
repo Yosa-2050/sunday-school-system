@@ -397,6 +397,7 @@ export class OrganizationService {
         isOrgActive: boolean,
         isActivateProcess: boolean,
         isIncludeEmployees: string,
+        note: string
     ) {
         const isIncludeEmployeesBoolean = isIncludeEmployees === 'true';
         //activate/deactivate users if included employees in the request
@@ -420,6 +421,7 @@ export class OrganizationService {
                 this.usersService.setUserActivationStatus(
                     user.id,
                     isUserActive,
+                    note
                 );
             }
         }
@@ -428,6 +430,7 @@ export class OrganizationService {
         const update = await this.organizationRepo.preload({
             id: orgId,
             isActive: isOrgActive,
+            note: note
         });
         if (!update) {
             throw new BadRequestException('Organization not found');

@@ -172,6 +172,7 @@ export class OrganizationController {
             true,
             true,
             isIncludeEmployees,
+            ""
         );
     }
 
@@ -180,12 +181,14 @@ export class OrganizationController {
     deactivateUser(
         @Param('orgId') orgId: string,
         @Param('isIncludeEmployees') isIncludeEmployees: string,
+        @Body() dto: StringRequestModel,
     ) {
         return this.organizationService.setOrgActivationStatus(
             orgId,
             false,
             false,
             isIncludeEmployees,
+            dto.note
         );
     }
 }
