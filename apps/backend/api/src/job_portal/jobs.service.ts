@@ -33,7 +33,6 @@ import { JobApplication } from './entities/job-application.entity';
 import { JobPortalService } from './job_portal.service';
 
 export class JobsService {
-    
     constructor(
         private readonly documentService: DocumentService,
         private readonly profileService: ProfileService,
@@ -182,16 +181,16 @@ export class JobsService {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
         const history = this.educationalHistoryRepo.create(dto);
-        
+
         const fieldOfStudy = await this.jobPortalService.findCategoryById(
             dto.fieldOfStudyId,
         );
 
-        if(!fieldOfStudy){
-            throw new BadRequestException("Feild of history not found");
+        if (!fieldOfStudy) {
+            throw new BadRequestException('Feild of history not found');
         }
 
-        history.fieldOfStudy = fieldOfStudy; 
+        history.fieldOfStudy = fieldOfStudy;
         history.applicant = applicant;
 
         return this.educationalHistoryRepo.save(history);

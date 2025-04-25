@@ -88,7 +88,10 @@ export class JobSeekerController {
 
     @Get(':id')
     findOne(@Param('id', new ParseUUIDPipe()) id: string, @Request() req) {
-        return this.jobPortalService.findOneForJobSeeker(id, CurrentUser.getApplicantId(req));
+        return this.jobPortalService.findOneForJobSeeker(
+            id,
+            CurrentUser.getApplicantId(req),
+        );
     }
 
     @Post('jobs')
