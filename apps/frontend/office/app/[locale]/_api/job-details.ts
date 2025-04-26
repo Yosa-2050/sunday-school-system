@@ -41,10 +41,12 @@ export const addCategory = async (payload: {
     return response;
 };
 export const addRegion = async (payload: {
-    name: string;
-    isActive: boolean;
+    list: string[];
+    countryId: string;
+    parentId: string | null;
+    type: string;
 }) => {
-    const response = await fetcher('/address/locationByCountry/ETH/REGION', {
+    const response = await fetcher('/location', {
         method: 'POST',
         headers: { accept: '*/*' },
         body: JSON.stringify(payload),
@@ -74,7 +76,7 @@ export const fetchRegions = async (countryCode: string) => {
         type: string;
         isRoot: boolean;
         hasChild: boolean;
-    }[] = await fetcher('/address/locationByCountry/ETH/REGION', {
+    }[] = await fetcher(`/address/locationByCountry/${countryCode}/REGION`, {
         method: 'GET',
         headers: { accept: '*/*' },
     });
@@ -109,7 +111,15 @@ export const fetchCountries = async () => {
     if (!response) {
         throw new Error('Failed to fetch countries');
     }
-    return response as { id: string; name: string }[];
+    return response as { id: string; name: string; code: string }[];
+};
+
+export const fetchAddressById = async (id: string) => {
+    const response = await fetcher(`/address/${id}`, {
+        method: 'GET',
+        headers: { accept: '*/*' },
+    });
+    return response;
 };
 
 export const fetchSalaryFrequencyType = async () => {

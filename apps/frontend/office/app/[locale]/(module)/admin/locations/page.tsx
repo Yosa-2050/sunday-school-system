@@ -4,6 +4,7 @@ import NoData from '@/components/NoData';
 import { useRouter } from '@/i18n/routing';
 import {
     Button,
+    Card,
     Divider,
     Flex,
     Group,
@@ -11,17 +12,19 @@ import {
     Modal,
     Paper,
     ScrollArea,
+    Select,
     Table,
     Text,
     TextInput,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { PER_PAGE, entityParamSchema } from '@shega/shared';
 import { EntityPagination, EntitySearch } from '@shega/ui'; // Assuming EntityPagination is imported from the same place as in organizations page
 import { IconChevronRight } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     addRegion,
-    fetchCities,
+    fetchCountries,
     fetchRegions,
 } from 'app/[locale]/_api/job-details';
 import { useTranslations } from 'next-intl';
@@ -38,6 +41,7 @@ const LocationsPage = () => {
     const [newRegionName, setNewRegionName] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+
     const [entityParams, setEntityParams] = useQueryState(
         'regions',
         parseAsJson(entityParamSchema.parse).withDefault({
@@ -47,19 +51,41 @@ const LocationsPage = () => {
         }),
     ); // Pagination state
 
-    const { data: regions = [], isLoading: loadingRegions } = useQuery({
-        queryKey: ['regions', entityParams, searchTerm],
-        queryFn: () => fetchRegions('ETH'), // Pass search term to fetchRegions
+    const { data: countries = [], isLoading: loadingCountries } = useQuery({
+        queryKey: ['countries'],
+        queryFn: () => fetchCountries(),
     });
 
-    const { data: cities = [], isLoading: loadingCities } = useQuery({
-        queryKey: ['cities', selectedRegionId],
-        queryFn: () => fetchCities(selectedRegionId as string), // Type assertion to ensure selectedRegionId is treated as a string
-        enabled: selectedRegionId !== null, // Ensure the query is enabled only if selectedRegionId is not null
+    const [selectedCountry, setSelectedCountry] = useState<string | null>(
+        'ETH',
+    );
+
+    //   const { data: address = [], isLoading: loadingAddress } = useQuery({
+    //     queryKey: ["address", selectedCountry],
+    //     queryFn: () => fetchAddressById(selectedCountry as string),
+    //     enabled: selectedCountry !== null,
+    //   });
+
+    const { data: regions = [], isLoading: loadingRegions } = useQuery({
+        queryKey: ['regions', entityParams, searchTerm, selectedCountry],
+        queryFn: () => fetchRegions(selectedCountry as string), // Pass search term to fetchRegions\
+        enabled: selectedCountry !== null,
     });
 
     const mutation = useMutation({
-        mutationFn: () => addRegion({ name: newRegionName, isActive: true }),
+        mutationFn: () =>
+            addRegion({
+                list: [newRegionName],
+                countryId:
+                    countries.find(
+                        (country) => country.code === selectedCountry,
+                    )?.id ?? '',
+                parentId:
+                    countries.find(
+                        (country) => country.code === selectedCountry,
+                    )?.id ?? '',
+                type: 'REGION',
+            }),
         mutationKey: ['regions'],
         onSuccess: () => {
             queryClient.invalidateQueries({
@@ -67,6 +93,18 @@ const LocationsPage = () => {
             });
             setModalOpened(false);
             setNewRegionName('');
+            notifications.show({
+                title: t('success'),
+                message: t('regionAdded'),
+                color: 'green',
+            });
+        },
+        onError: () => {
+            notifications.show({
+                title: t('error'),
+                message: t('regionNotAdded'),
+                color: 'red',
+            });
         },
     });
 
@@ -84,6 +122,22 @@ const LocationsPage = () => {
 
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+            <Card>
+                <Select
+                    data={countries.map((country) => ({
+                        value: country.code,
+                        label: country.name,
+                    }))}
+                    searchable
+                    label="Select Country"
+                    placeholder="Select Country"
+                    value={selectedCountry}
+                    onChange={(value) => setSelectedCountry(value)}
+                    defaultValue={
+                        countries.find((country) => country.code === 'ETH')?.id
+                    }
+                />
+            </Card>
             <Flex align="center" justify="space-between" className="p-4">
                 <Text className="font-bold text-xl">{t('title')}</Text>
                 <Button variant="filled" onClick={() => setModalOpened(true)}>
@@ -105,7 +159,11 @@ const LocationsPage = () => {
                         setNewRegionName(event.currentTarget.value)
                     }
                 />
-                <Button onClick={handleAddRegion} mt="md">
+                <Button
+                    onClick={handleAddRegion}
+                    mt="md"
+                    loading={mutation.isPending}
+                >
                     {t('submit')}
                 </Button>
             </Modal>
@@ -162,7 +220,13 @@ const LocationsPage = () => {
                                                 variant="light"
                                                 onClick={() =>
                                                     router.push(
-                                                        `locations/${region.id}`,
+                                                        `locations/${region.id}/${
+                                                            countries.find(
+                                                                (country) =>
+                                                                    country.code ===
+                                                                    selectedCountry,
+                                                            )?.id ?? ''
+                                                        }`,
                                                     )
                                                 }
                                             >

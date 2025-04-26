@@ -332,7 +332,7 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                         </Stack>
 
                                         {formData.additionalInfo && (
-                                            <Stack>
+                                            <Stack hidden>
                                                 <Title
                                                     order={3}
                                                     className="mb-4"

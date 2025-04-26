@@ -7,6 +7,7 @@ import {
     Card,
     Divider,
     Flex,
+    Group,
     LoadingOverlay,
     Modal,
     Paper,
@@ -15,7 +16,8 @@ import {
     Text,
     TextInput,
 } from '@mantine/core';
-import { IconChevronRight } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
+import { IconArrowLeft, IconChevronRight } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addRegion, fetchCities } from 'app/[locale]/_api/job-details';
 import { useTranslations } from 'next-intl';
@@ -26,7 +28,8 @@ const CitiesPage = () => {
     const t = useTranslations('locationsPage');
     const queryClient = useQueryClient();
     const router = useRouter();
-    const { regionId } = useParams<{ regionId: string }>(); // Get regionId from the URL parameters
+    const { region } = useParams<{ region: [string, string] }>(); // Get regionId from the URL parameters
+    const [regionId, countryId] = region;
     const [newCityName, setNewCityName] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
 
@@ -37,12 +40,30 @@ const CitiesPage = () => {
     });
 
     const mutation = useMutation({
-        mutationFn: () => addRegion({ name: newCityName, isActive: true }),
+        mutationFn: () =>
+            addRegion({
+                list: [newCityName],
+                countryId,
+                parentId: regionId,
+                type: 'CITY',
+            }),
         mutationKey: ['cities'],
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['cities', regionId] });
             setModalOpened(false);
             setNewCityName('');
+            notifications.show({
+                title: t('success'),
+                message: t('cityAdded'),
+                color: 'green',
+            });
+        },
+        onError: () => {
+            notifications.show({
+                title: t('error'),
+                message: t('cityNotAdded'),
+                color: 'red',
+            });
         },
     });
 
@@ -57,7 +78,14 @@ const CitiesPage = () => {
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align={'center'} justify={'space-between'}>
-                <Text className="font-bold text-xl">{t('title')}</Text>
+                <Group>
+                    <IconArrowLeft
+                        size={16}
+                        onClick={() => router.back()}
+                        className="cursor-pointer"
+                    />
+                    <Text className="font-bold text-xl">{t('title')}</Text>
+                </Group>
                 <Button variant="filled" onClick={() => setModalOpened(true)}>
                     {t('addCity')}
                 </Button>
@@ -77,7 +105,11 @@ const CitiesPage = () => {
                         setNewCityName(event.currentTarget.value)
                     }
                 />
-                <Button onClick={handleAddCity} mt="md">
+                <Button
+                    onClick={handleAddCity}
+                    mt="md"
+                    loading={mutation.isPending}
+                >
                     {t('submit')}
                 </Button>
             </Modal>
