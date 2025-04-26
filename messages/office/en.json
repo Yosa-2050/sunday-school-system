@@ -309,7 +309,13 @@
         "addCity": "Add City",
         "cityName": "City Name",
         "selectedRegion": "Selected Region",
-        "noCities": "No cities found"
+        "noCities": "No cities found",
+        "success": "Success",
+        "error": "Error",
+        "cityAdded": "City added successfully",
+        "cityNotAdded": "Something went wrong while adding city",
+        "regionAdded": "Region added successfully",
+        "regionNotAdded": "Something went wrong while adding region"
     },
     "skillsPage": {
         "title": "Skills List",

@@ -229,15 +229,21 @@ const JobDetails = () => {
                                                 className="text-gray-500"
                                             />
                                             <Text className="font-medium">
-                                                Salary Range:
+                                                Salary:
                                             </Text>
                                             <Text>
-                                                {job.salaryFrom.toLocaleString()}{' '}
-                                                -{' '}
-                                                {job.salaryTo.toLocaleString()}{' '}
-                                                {job.currency}
-                                                {job.salaryFrequency &&
-                                                    ` (${job.salaryFrequency.replace('_', ' ')})`}
+                                                {(() => {
+                                                    if (
+                                                        job?.salaryFrom &&
+                                                        job?.salaryTo
+                                                    ) {
+                                                        return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                                    }
+                                                    if (job?.salaryFrom) {
+                                                        return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                                    }
+                                                    return 'N/A';
+                                                })()}
                                             </Text>
                                         </Group>
                                         <Group gap="sm">

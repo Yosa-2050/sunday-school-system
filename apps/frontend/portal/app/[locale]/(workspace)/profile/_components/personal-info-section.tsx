@@ -2,6 +2,7 @@
 
 import { personalInfoSchema } from '@/lib/schemas';
 import type { PersonalInfo } from '@/lib/types';
+import { formatDate } from '@/lib/utils';
 import type { Profile } from '@/models/job-seeker.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -148,6 +149,7 @@ export default function PersonalInfoSection({
                                                 label="First Name"
                                                 placeholder="Enter your first name"
                                                 withAsterisk
+                                                readOnly
                                                 size="md"
                                                 styles={{
                                                     input: {
@@ -175,6 +177,7 @@ export default function PersonalInfoSection({
                                                 placeholder="Enter your last name"
                                                 withAsterisk
                                                 size="md"
+                                                readOnly
                                                 styles={{
                                                     input: {
                                                         backgroundColor:
@@ -200,6 +203,7 @@ export default function PersonalInfoSection({
                                                 label="Middle Name"
                                                 placeholder="Enter your middle name"
                                                 withAsterisk
+                                                readOnly
                                                 size="md"
                                                 styles={{
                                                     input: {
@@ -444,7 +448,7 @@ export default function PersonalInfoSection({
                                                 <IconCalendar size={16} />
                                             </Box>
                                             <Text c="dimmed" size="sm">
-                                                {data.birthDate}
+                                                {formatDate(data.birthDate)}
                                             </Text>
                                         </Group>
 

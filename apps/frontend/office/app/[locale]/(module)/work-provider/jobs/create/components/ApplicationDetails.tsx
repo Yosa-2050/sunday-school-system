@@ -34,7 +34,7 @@ export const ApplicationDetails = ({
                 />
             </Grid.Col>
 
-            <Grid.Col span={{ base: 12 }}>
+            <Grid.Col span={{ base: 12 }} hidden>
                 <Controller
                     control={control}
                     name="additionalInfo"
