@@ -223,9 +223,9 @@ export class JobPortalService {
         }
 
         const appliedJobs = await this.jobsApplied(applicantId);
-        const jobsApplied = appliedJobs.map((x) => x.job.id);
+        const jobsApplied = appliedJobs?.find((x) => x.job.id === job.id);
 
-        return { ...job, applied: jobsApplied.length > 0 };
+        return { ...job, applied: !!jobsApplied };
     }
 
     async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
