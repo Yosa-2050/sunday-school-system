@@ -7,11 +7,11 @@ export type PersonalInfo = {
     firstName: string;
     middleName: string;
     lastName: string;
-    birthDate: string;
+    birthDate: string | null;
     gender: string;
     title: string;
     phoneNumber: string;
-    profile_picture_id: string;
+    profile_picture_id?: string;
 };
 
 export type About = {

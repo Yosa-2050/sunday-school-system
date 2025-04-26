@@ -106,5 +106,18 @@
         "rights": "© 2023 All rights reserved.",
         "privacy": "Privacy Policy",
         "terms": "Terms and Conditions"
+    },
+    "my-jobs": {
+        "title": "My Jobs",
+        "subtitle": "Here are the jobs you have applied for.",
+        "browse-jobs": "Browse Jobs",
+        "noApplications": "You haven't applied to any jobs yet.",
+        "findJobs": "Find Jobs",
+        "applied": "Applied",
+        "appliedJobs": "Applied Jobs",
+        "appliedJobsSubtitle": "Here are the jobs you have applied for.",
+        "appliedJobsTitle": "Applied Jobs",
+        "appliedJobsDescription": "Here are the jobs you have applied for.",
+        "appliedJobsButton": "Browse Jobs"
     }
 }

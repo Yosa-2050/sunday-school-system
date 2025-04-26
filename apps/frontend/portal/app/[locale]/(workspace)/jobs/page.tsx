@@ -38,7 +38,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import type { Filter } from 'app/_api/jobs/fetch-jobs';
 import { fetchCities, fetchCountries } from 'app/_api/location/fetch-countries';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
 import { JobCard } from './components/JobCard';
@@ -108,100 +108,6 @@ const calculateActiveFilters = (filters: Filter) => {
     return baseFilters + (hasSalaryFilter ? 1 : 0);
 };
 
-const FilterChips = ({
-    filters,
-    setFilters,
-}: {
-    filters: Filter;
-    setFilters: (filters: Filter) => void;
-}) => {
-    const salaryFrom = filters.salaryFrom ?? 0;
-    const salaryTo = filters.salaryTo ?? 0;
-    const hasSalaryFilter = salaryFrom > 0 || salaryTo < 100000;
-
-    return (
-        <Group gap="xs" wrap="wrap">
-            {filters.title && (
-                <Chip
-                    checked
-                    variant="light"
-                    radius="xl"
-                    onClick={() =>
-                        setFilters({
-                            ...filters,
-                            title: '',
-                        })
-                    }
-                >
-                    Keyword: {filters.title}
-                </Chip>
-            )}
-            {filters.cityId && (
-                <Chip
-                    checked
-                    variant="light"
-                    radius="xl"
-                    onClick={() =>
-                        setFilters({
-                            ...filters,
-                            cityId: '',
-                        })
-                    }
-                >
-                    Location: {filters.cityId}
-                </Chip>
-            )}
-            {filters.type && (
-                <Chip
-                    checked
-                    variant="light"
-                    radius="xl"
-                    onClick={() =>
-                        setFilters({
-                            ...filters,
-                            type: '',
-                        })
-                    }
-                >
-                    Job Type: {filters.type}
-                </Chip>
-            )}
-            {filters.experianceLevel && (
-                <Chip
-                    checked
-                    variant="light"
-                    radius="xl"
-                    onClick={() =>
-                        setFilters({
-                            ...filters,
-                            experianceLevel: '',
-                        })
-                    }
-                >
-                    Experience: {filters.experianceLevel}
-                </Chip>
-            )}
-            {hasSalaryFilter && (
-                <Chip
-                    checked
-                    variant="light"
-                    radius="xl"
-                    onClick={() =>
-                        setFilters({
-                            ...filters,
-                            salaryFrom: 0,
-                            salaryTo: 100000,
-                        })
-                    }
-                >
-                    Salary: {salaryFrom.toLocaleString()} -{' '}
-                    {salaryTo.toLocaleString()} ETB
-                </Chip>
-            )}
-        </Group>
-    );
-};
-
 interface FilterSidebarProps {
     filters: Filter;
     setFilters: (filters: Filter) => void;
@@ -237,8 +143,8 @@ const FilterSidebar = ({
     });
 
     return (
-        <Paper p="md" radius="lg" shadow="sm" className="sticky top-4">
-            <ScrollArea h={isMobile ? 400 : 700}>
+        <Box p="lg" className="bg-white sticky top-4">
+            <ScrollArea h={isMobile ? 450 : 700} aria-orientation="vertical">
                 <Stack gap="md">
                     <Box>
                         <Text size="sm" fw={500} mb="xs">
@@ -409,15 +315,13 @@ const FilterSidebar = ({
             >
                 {t('applyFilters')}
             </Button>
-        </Paper>
+        </Box>
     );
 };
 
 export default function JobsPage() {
     const { user } = useAuth();
-    const locale = useLocale();
     const t = useTranslations('jobListing');
-    const isMobile = useMediaQuery('(max-width: 768px)');
     const router = useRouter();
 
     const [entityParams, setEntityParams] = useQueryState(
@@ -546,7 +450,7 @@ export default function JobsPage() {
 
                     <Grid.Col span={{ base: 12, md: 9 }}>
                         <Stack gap="md">
-                            <Card className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-0 shadow-sm">
+                            <Box className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-0 border-b border-primary/20 bg-white">
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="bg-primary/10 p-2.5 rounded-lg flex items-center justify-center">
                                         <IconBriefcase
@@ -608,11 +512,7 @@ export default function JobsPage() {
                                         {t('filterJobs')}
                                     </Button>
                                 </Box>
-                            </Card>
-
-                            {/* {activeFilters > 0 && (
-                <FilterChips filters={filters} setFilters={setFilters} />
-              )} */}
+                            </Box>
 
                             <div className="grid grid-cols-1 gap-4">
                                 {data?.data && data.data.length > 0 ? (
