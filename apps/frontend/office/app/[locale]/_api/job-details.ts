@@ -115,7 +115,7 @@ export const fetchCountries = async () => {
 };
 
 export const fetchAddressById = async (id: string) => {
-    const response = await fetcher(`/address/${id}`, {
+    const response = await fetcher(`/location/${id}`, {
         method: 'GET',
         headers: { accept: '*/*' },
     });

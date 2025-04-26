@@ -16,7 +16,7 @@ import { mapEnumToOptions } from './utils';
 interface JobDetailsProps {
     employmentTypes: { data: Record<string, string> };
     workPlaceTypes: { data: Record<string, string> };
-    countries: { id: string; name: string }[];
+    countries: { id: string; name: string; code: string }[];
     regions: { id: string; name: string }[];
     cities: { id: string; name: string }[];
     salaryFrequencyTypes: { data: Record<string, string> };
@@ -136,7 +136,7 @@ export const JobDetails = ({
                                 label="Country"
                                 placeholder="Select country"
                                 data={countries.map((country) => ({
-                                    value: country.id,
+                                    value: country.code,
                                     label: country.name,
                                 }))}
                                 searchable
