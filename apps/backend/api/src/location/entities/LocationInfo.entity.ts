@@ -12,7 +12,7 @@ export class LocationInfo extends BaseModel {
     @Column()
     type: LocationType;
 
-    @ManyToOne(() => LocationInfo, { lazy: true })
+    @ManyToOne(() => LocationInfo, { lazy: true, nullable: true })
     parent: LocationInfo;
 
     @OneToMany(
@@ -30,7 +30,4 @@ export class LocationInfo extends BaseModel {
 
     @Column()
     isRoot: boolean;
-
-    @Column()
-    hasChild: boolean;
 }

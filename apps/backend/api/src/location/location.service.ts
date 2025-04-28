@@ -21,7 +21,7 @@ export class LocationService {
 
     async createLocationInfo(dto: CreateLocationInfoRequestDto) {
         const country = await this.coutryRepo.findOneBy({
-            code: dto.countryId,
+            id: dto.countryId,
         });
         if (!country) {
             throw new BadRequestException('County not found');
@@ -36,15 +36,21 @@ export class LocationService {
             const locationSaved = allLocation.find((x) => x.name === name);
 
             if (!locationSaved) {
-                const locationCreate = this.locationInfoRepo.create(location);
+                const locationCreate = this.locationInfoRepo.create();
+                locationCreate.name = name;
                 locationCreate.type = dto.type;
                 locationCreate.country = country;
+                locationCreate.isRoot = !!dto.parentId; 
                 addLocations.push(locationCreate);
             }
         }
         if (addLocations.length > 0) {
-            await this.locationInfoRepo.save(addLocations); // Seed new data
-            return UtilityServices.SuccessResponse();
+            const add = await this.locationInfoRepo.save(addLocations); // Seed new data
+            if(add){
+                return UtilityServices.SuccessResponse();
+            }
+            throw new BadRequestException("unable to add information");
         }
+        throw new BadRequestException("No information to be added");
     }
 }

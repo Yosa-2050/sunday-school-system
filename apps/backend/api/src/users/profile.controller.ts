@@ -78,7 +78,8 @@ export class ProfileController {
         if (
             (dto.role === UserRoleType.Administrator ||
                 dto.role === UserRoleType.SuperAdmin) &&
-            CurrentUser.getRole(req).toLowerCase() !== UserRoleType.SuperAdmin.toLowerCase()
+            CurrentUser.getRole(req).toLowerCase() !==
+                UserRoleType.SuperAdmin.toLowerCase()
         ) {
             throw new ForbiddenException('Unable to create an administrator');
         }
