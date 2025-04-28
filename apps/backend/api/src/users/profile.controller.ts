@@ -16,7 +16,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
-    ApiBearerAuth,
     ApiBody,
     ApiConsumes,
     ApiOperation,
@@ -41,7 +40,6 @@ import { UserRoleType, UserRoleValue } from './enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
 
-@ApiBearerAuth()
 @ApiTags('Profile')
 @Controller('profile')
 export class ProfileController {

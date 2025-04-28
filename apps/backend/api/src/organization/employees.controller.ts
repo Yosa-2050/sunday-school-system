@@ -1,11 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmployeesService } from './employees.service';
 
-@ApiBearerAuth()
 @ApiTags('employees')
 @Controller('employees')
 export class EmployeesController {

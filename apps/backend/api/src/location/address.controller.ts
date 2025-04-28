@@ -7,7 +7,7 @@ import {
     ParseUUIDPipe,
     Post,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -19,7 +19,6 @@ import { CreateLocationRequestDto } from './dto/request/create-locaiton.request.
 // biome-ignore lint/style/useImportType: <explanation>
 import { LocationType } from './enums/location-type.enums';
 
-@ApiBearerAuth()
 @ApiTags('address')
 @Controller('address')
 export class AddressController {
