@@ -378,9 +378,6 @@ export class JobPortalService {
         const existingApp = await this.jobApplicationRepo.findBy({
             applicants: { id },
         });
-        if (!existingApp) {
-            throw new BadRequestException('No applied jobs');
-        }
 
         return existingApp;
     }

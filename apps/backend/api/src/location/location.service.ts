@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import { CreateLocationInfoRequestDto } from './dto/request/create-location-info.request.dto';
 import { LocationInfo } from './entities/LocationInfo.entity';
 import { Country } from './entities/country.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { LocationType } from './enums/location-type.enums';
 
 export class LocationService {
     findById(id: string) {
@@ -21,7 +23,7 @@ export class LocationService {
 
     async createLocationInfo(dto: CreateLocationInfoRequestDto) {
         const country = await this.coutryRepo.findOneBy({
-            code: dto.countryId,
+            id: dto.countryId,
         });
         if (!country) {
             throw new BadRequestException('County not found');
@@ -36,15 +38,32 @@ export class LocationService {
             const locationSaved = allLocation.find((x) => x.name === name);
 
             if (!locationSaved) {
-                const locationCreate = this.locationInfoRepo.create(location);
+                const locationCreate = this.locationInfoRepo.create();
+                locationCreate.name = name;
                 locationCreate.type = dto.type;
                 locationCreate.country = country;
+                locationCreate.isRoot = !!dto.parentId;
                 addLocations.push(locationCreate);
             }
         }
         if (addLocations.length > 0) {
-            await this.locationInfoRepo.save(addLocations); // Seed new data
-            return UtilityServices.SuccessResponse();
+            const add = await this.locationInfoRepo.save(addLocations); // Seed new data
+            if (add) {
+                return UtilityServices.SuccessResponse();
+            }
+            throw new BadRequestException('unable to add information');
         }
+        throw new BadRequestException('No information to be added');
+    }
+
+    findLocationByCountry(countryCode: string, type: LocationType) {
+        return this.locationInfoRepo.findBy({
+            country: { code: countryCode },
+            type: type,
+        });
+    }
+
+    findLocationInfoByParent(parentId: string) {
+        return this.locationInfoRepo.findBy({ parent: { id: parentId } });
     }
 }

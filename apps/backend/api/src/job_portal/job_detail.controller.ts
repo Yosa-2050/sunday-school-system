@@ -8,13 +8,12 @@ import {
     Patch,
     Post,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUsingNameRequestDto } from './dto/request/create-name.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
 
-@ApiBearerAuth()
 @ApiTags('job-detail')
 @Controller('job-detail')
 export class JobDetailController {

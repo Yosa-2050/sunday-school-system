@@ -18,8 +18,6 @@ import { ContactDetails } from './entities/contact-details.entity';
 import { Country } from './entities/country.entity';
 import { Location } from './entities/location.entity';
 import { ContactType } from './enums/contact-type.enums';
-// biome-ignore lint/style/useImportType: <explanation>
-import { LocationType } from './enums/location-type.enums';
 import { DefaultCountry } from './enums/location.const';
 
 @Injectable()
@@ -111,19 +109,8 @@ export class AddressService {
         });
     }
 
-    findLocationInfoByParent(parentId: string) {
-        return this.locationInfoRepo.findBy({ parent: { id: parentId } });
-    }
-
     findLocationInfoById(id: string) {
         return this.locationInfoRepo.findOneBy({ id });
-    }
-
-    findLocationByCountry(countryCode: string, type: LocationType) {
-        return this.locationInfoRepo.findBy({
-            country: { code: countryCode },
-            type: type,
-        });
     }
 
     getLocationByRefernce(referenceId: string, referenceType: ReferenceType) {

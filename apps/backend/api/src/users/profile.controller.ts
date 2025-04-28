@@ -15,13 +15,7 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-    ApiBearerAuth,
-    ApiBody,
-    ApiConsumes,
-    ApiOperation,
-    ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
@@ -41,7 +35,6 @@ import { UserRoleType, UserRoleValue } from './enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
 
-@ApiBearerAuth()
 @ApiTags('Profile')
 @Controller('profile')
 export class ProfileController {
@@ -78,7 +71,8 @@ export class ProfileController {
         if (
             (dto.role === UserRoleType.Administrator ||
                 dto.role === UserRoleType.SuperAdmin) &&
-            CurrentUser.getRole(req) !== UserRoleType.SuperAdmin
+            CurrentUser.getRole(req).toLowerCase() !==
+                UserRoleType.SuperAdmin.toLowerCase()
         ) {
             throw new ForbiddenException('Unable to create an administrator');
         }
