@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import { CreateLocationInfoRequestDto } from './dto/request/create-location-info.request.dto';
 import { LocationInfo } from './entities/LocationInfo.entity';
 import { Country } from './entities/country.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { LocationType } from './enums/location-type.enums';
 
 export class LocationService {
     findById(id: string) {
@@ -53,4 +55,15 @@ export class LocationService {
         }
         throw new BadRequestException('No information to be added');
     }
+
+     findLocationByCountry(countryCode: string, type: LocationType) {
+            return this.locationInfoRepo.findBy({
+                country: { code: countryCode },
+                type: type,
+            });
+        }
+
+        findLocationInfoByParent(parentId: string) {
+            return this.locationInfoRepo.findBy({ parent: { id: parentId } });
+        }
 }
