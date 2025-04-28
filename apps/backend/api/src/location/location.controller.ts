@@ -19,8 +19,9 @@ import { AddressService } from './address.service';
 @ApiTags('location')
 @Controller('location')
 export class LocationController {
-    constructor(private readonly locationService: LocationService,
-        private readonly addressService: AddressService
+    constructor(
+        private readonly locationService: LocationService,
+        private readonly addressService: AddressService,
     ) {}
 
     @Post()
@@ -37,7 +38,6 @@ export class LocationController {
     getById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.locationService.findById(id);
     }
-
 
     @Get('locationByCountry/:countryCode/:type')
     GetLocationInfoByCountry(

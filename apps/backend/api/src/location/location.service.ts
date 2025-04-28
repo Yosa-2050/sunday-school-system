@@ -56,14 +56,14 @@ export class LocationService {
         throw new BadRequestException('No information to be added');
     }
 
-     findLocationByCountry(countryCode: string, type: LocationType) {
-            return this.locationInfoRepo.findBy({
-                country: { code: countryCode },
-                type: type,
-            });
-        }
+    findLocationByCountry(countryCode: string, type: LocationType) {
+        return this.locationInfoRepo.findBy({
+            country: { code: countryCode },
+            type: type,
+        });
+    }
 
-        findLocationInfoByParent(parentId: string) {
-            return this.locationInfoRepo.findBy({ parent: { id: parentId } });
-        }
+    findLocationInfoByParent(parentId: string) {
+        return this.locationInfoRepo.findBy({ parent: { id: parentId } });
+    }
 }
