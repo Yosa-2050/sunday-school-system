@@ -40,17 +40,17 @@ export class LocationService {
                 locationCreate.name = name;
                 locationCreate.type = dto.type;
                 locationCreate.country = country;
-                locationCreate.isRoot = !!dto.parentId; 
+                locationCreate.isRoot = !!dto.parentId;
                 addLocations.push(locationCreate);
             }
         }
         if (addLocations.length > 0) {
             const add = await this.locationInfoRepo.save(addLocations); // Seed new data
-            if(add){
+            if (add) {
                 return UtilityServices.SuccessResponse();
             }
-            throw new BadRequestException("unable to add information");
+            throw new BadRequestException('unable to add information');
         }
-        throw new BadRequestException("No information to be added");
+        throw new BadRequestException('No information to be added');
     }
 }

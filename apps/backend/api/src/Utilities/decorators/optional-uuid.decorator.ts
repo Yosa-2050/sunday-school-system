@@ -5,10 +5,10 @@ import { IsOptional, IsString, IsUUID } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export function OptionalUUID() {
-  return applyDecorators(
-    IsString(),
-    IsUUID(),
-    IsOptional(),
-    Transform(({ value }) => (value === '' ? undefined : value)),
-  );
+    return applyDecorators(
+        IsString(),
+        IsUUID(),
+        IsOptional(),
+        Transform(({ value }) => (value === '' ? undefined : value)),
+    );
 }
