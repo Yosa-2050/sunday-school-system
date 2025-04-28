@@ -111,7 +111,7 @@ export class ProfileService {
             const profile = await this.repo.findOneBy({
                 id: user?.profile?.id,
             });
-            const tt = { ...profile, roles: user.roles };
+            const tt = { ...profile, user: user };
             return tt;
         }
 
