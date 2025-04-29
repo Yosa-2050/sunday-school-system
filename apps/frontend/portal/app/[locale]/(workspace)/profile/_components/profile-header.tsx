@@ -43,7 +43,7 @@ export default function ProfileHeader({ data, headline }: ProfileHeaderProps) {
     const resetRef = useRef<() => void>(null);
     const { mutate: uploadProfilePicture } = useUploadProfilePicture();
     const { data: profilePicture } = useDownloadProfilePicture(
-        data.profile_picture_id,
+        data.profile_picture_id ?? '',
     );
 
     const handleFileSelect = async (file: File | null) => {

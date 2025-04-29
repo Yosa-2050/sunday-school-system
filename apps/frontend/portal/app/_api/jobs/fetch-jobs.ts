@@ -21,6 +21,7 @@ export type Response = {
         currency: string;
         createdAt: string;
         applied: boolean;
+        createdDate: string;
         organization: {
             id: string;
             isActive: boolean;

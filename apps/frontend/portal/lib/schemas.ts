@@ -4,7 +4,7 @@ export const personalInfoSchema = z.object({
     firstName: z.string().min(1, 'First name is required'),
     middleName: z.string().min(1, 'Middle name is required'),
     lastName: z.string().min(1, 'Last name is required'),
-    birthDate: z.string().min(1, 'Birth date is required'),
+    birthDate: z.string().nullable(),
     gender: z.string().min(1, 'Gender is required'),
     // marriageStatus: z.string().min(1, 'Marriage status is required'),
     title: z.string().min(1, 'Title is required'),
@@ -12,7 +12,6 @@ export const personalInfoSchema = z.object({
         .string()
         .min(1, 'Phone number is required')
         .regex(/^\+?[0-9\s\-()]{10,20}$/, 'Invalid phone number format'),
-    profile_picture_id: z.string().min(1, 'Profile picture ID is required'),
 });
 
 export const aboutSchema = z.object({

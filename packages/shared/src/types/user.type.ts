@@ -21,4 +21,15 @@ export type User = {
     roles: Record<string, string>; // Adjust based on the structure of roles
     role: 'administrator' | 'work_provider';
     organizationId: string | null;
+    user: {
+        id: string;
+        isActive: boolean;
+        email: string;
+        userName: string | null;
+        pwd_change_required: boolean;
+        email_confirmed: boolean;
+        note: string | null;
+        profile: Record<string, string>;
+        roles: Record<string, string>;
+    };
 };

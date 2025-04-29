@@ -3,11 +3,11 @@
 import type { ProfileData } from '@/lib/types';
 import {
     AppShell,
-    Box,
     Center,
     Container,
     Flex,
     Loader,
+    Paper,
     Stack,
     Text,
     Transition,
@@ -99,12 +99,13 @@ export default function ProfilePage() {
                 data={displayData.profile}
                 headline={displayData.headline}
             />
-            <Box
-                bg="gray.0"
+            <Paper
+                // bg="gray.0"
+                withBorder={false}
                 py="xl"
                 style={{
                     minHeight: 'calc(100vh - 200px)',
-                    background: 'linear-gradient(to bottom, #f8f9fa, #e9ecef)',
+                    //   background: "linear-gradient(to bottom, #f8f9fa, #e9ecef)",
                 }}
             >
                 <Container size="xl">
@@ -174,7 +175,7 @@ export default function ProfilePage() {
                         )}
                     </Transition>
                 </Container>
-            </Box>
+            </Paper>
         </AppShell>
     );
 }

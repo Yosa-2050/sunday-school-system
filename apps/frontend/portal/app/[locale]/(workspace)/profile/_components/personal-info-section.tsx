@@ -148,7 +148,6 @@ export default function PersonalInfoSection({
                                             <TextInput
                                                 label="First Name"
                                                 placeholder="Enter your first name"
-                                                withAsterisk
                                                 readOnly
                                                 size="md"
                                                 styles={{
@@ -175,7 +174,6 @@ export default function PersonalInfoSection({
                                             <TextInput
                                                 label="Last Name"
                                                 placeholder="Enter your last name"
-                                                withAsterisk
                                                 size="md"
                                                 readOnly
                                                 styles={{
@@ -202,7 +200,6 @@ export default function PersonalInfoSection({
                                             <TextInput
                                                 label="Middle Name"
                                                 placeholder="Enter your middle name"
-                                                withAsterisk
                                                 readOnly
                                                 size="md"
                                                 styles={{
@@ -229,7 +226,6 @@ export default function PersonalInfoSection({
                                             <TextInput
                                                 label="Phone Number"
                                                 placeholder="Enter your phone number"
-                                                withAsterisk
                                                 size="md"
                                                 styles={{
                                                     input: {
@@ -319,7 +315,6 @@ export default function PersonalInfoSection({
                                                     <Select
                                                         label="Gender"
                                                         placeholder="Select your gender"
-                                                        withAsterisk
                                                         size="md"
                                                         styles={{
                                                             input: {
@@ -365,7 +360,6 @@ export default function PersonalInfoSection({
                                                 <Select
                                                     label="Title"
                                                     placeholder="Select your title"
-                                                    withAsterisk
                                                     size="md"
                                                     styles={{
                                                         input: {
@@ -448,7 +442,9 @@ export default function PersonalInfoSection({
                                                 <IconCalendar size={16} />
                                             </Box>
                                             <Text c="dimmed" size="sm">
-                                                {formatDate(data.birthDate)}
+                                                {data.birthDate
+                                                    ? formatDate(data.birthDate)
+                                                    : 'Not set'}
                                             </Text>
                                         </Group>
 

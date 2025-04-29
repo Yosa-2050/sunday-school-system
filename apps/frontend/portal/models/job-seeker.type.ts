@@ -27,11 +27,11 @@ export interface Profile {
     middleName: string;
     lastName: string;
     // mothersFullName: string;
-    birthDate: string;
+    birthDate: string | null;
     // dobGregorian: string;
     gender: string;
     // marriageStatus: string;
     title: string;
     phoneNumber: string;
-    profile_picture_id: string;
+    profile_picture_id?: string;
 }

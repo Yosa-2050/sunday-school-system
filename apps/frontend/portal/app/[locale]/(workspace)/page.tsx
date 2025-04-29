@@ -13,7 +13,6 @@ import {
     Group,
     LoadingOverlay,
     Paper,
-    Select,
     Stack,
     Text,
     TextInput,
@@ -27,12 +26,7 @@ import {
     entityParamSerializer,
 } from '@shega/shared';
 import { useAuth } from '@shega/ui';
-import {
-    IconBriefcase,
-    IconCurrencyDollar,
-    IconMapPin,
-    IconSearch,
-} from '@tabler/icons-react';
+import { IconBriefcase, IconSearch } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import { useLocale, useTranslations } from 'next-intl';
@@ -94,7 +88,7 @@ export default function HomePage() {
         <>
             <div className="relative">
                 <div
-                    className="py-12 md:py-20 bg-cover bg-center relative h-[70vh]"
+                    className="py-12 md:py-24 bg-cover bg-center relative h-[70vh]"
                     style={{
                         backgroundImage:
                             "url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
@@ -113,56 +107,81 @@ export default function HomePage() {
                             </Text>
                         </Stack>
 
-                        <Group
+                        <Stack
                             gap="sm"
                             mt="lg"
-                            className="max-w-5xl bg-white rounded-lg p-2 shadow-lg border-none"
+                            className="max-w-5xl md:hidden"
+                            hiddenFrom="md"
                         >
-                            <TextInput
-                                size="lg"
-                                placeholder="Job title, keywords or organization"
-                                value={filters.keyword}
-                                onChange={(e) =>
-                                    setFilters({
-                                        ...filters,
-                                        keyword: e.target.value,
-                                    })
-                                }
-                                leftSection={<IconSearch size={24} />}
-                                className="flex-1 p-2"
-                                styles={{
-                                    input: {
-                                        border: 'none', // Target the input element directly
-                                    },
-                                }}
-                            />
-                            <Select
-                                size="lg"
-                                placeholder="All Location"
-                                data={[]}
-                                value={filters.location}
-                                onChange={(value) =>
-                                    setFilters({
-                                        ...filters,
-                                        location: value || '',
-                                    })
-                                }
-                                leftSection={<IconMapPin size={24} />}
-                                className="flex-1 p-2"
-                                styles={{
-                                    input: {
-                                        border: 'none', // Target the input element directly
-                                    },
-                                }}
-                            />
-                            <Button
-                                size="lg"
-                                className="border-none"
-                                onClick={() => handleSearch(filters.keyword)}
+                            <Paper withBorder p="sm" radius="lg" shadow="sm">
+                                <Group gap="sm">
+                                    <TextInput
+                                        size="lg"
+                                        placeholder="Job title, keywords or organization"
+                                        value={filters.keyword}
+                                        onChange={(e) =>
+                                            setFilters({
+                                                ...filters,
+                                                keyword: e.target.value,
+                                            })
+                                        }
+                                        leftSection={<IconSearch size={24} />}
+                                        className="flex-1"
+                                        variant="unstyled"
+                                    />
+                                    <Button
+                                        size="lg"
+                                        radius="lg"
+                                        onClick={() =>
+                                            handleSearch(filters.keyword)
+                                        }
+                                    >
+                                        Find Jobs
+                                    </Button>
+                                </Group>
+                            </Paper>
+                        </Stack>
+
+                        <Paper
+                            withBorder
+                            className="max-w-5xl hidden md:flex"
+                            mt="lg"
+                            visibleFrom="md"
+                        >
+                            <Group
+                                gap="sm"
+                                className="max-w-5xl rounded-lg p-2 shadow-lg border-none flex"
+                                wrap="nowrap"
                             >
-                                Find Jobs
-                            </Button>
-                        </Group>
+                                <TextInput
+                                    size="lg"
+                                    placeholder="Job title, keywords or organization"
+                                    value={filters.keyword}
+                                    onChange={(e) =>
+                                        setFilters({
+                                            ...filters,
+                                            keyword: e.target.value,
+                                        })
+                                    }
+                                    leftSection={<IconSearch size={24} />}
+                                    className="flex-1 p-2"
+                                    styles={{
+                                        input: {
+                                            border: 'none',
+                                        },
+                                    }}
+                                />
+                                <Button
+                                    size="lg"
+                                    className="border-none"
+                                    onClick={() =>
+                                        handleSearch(filters.keyword)
+                                    }
+                                >
+                                    Find Jobs
+                                </Button>
+                            </Group>
+                        </Paper>
 
                         {/* <Group gap="sm" mt="md">
               {[
@@ -185,28 +204,15 @@ export default function HomePage() {
                 </div>
             </div>
 
-            <Container size="xl" mt="md">
-                <Title className="text-2xl font-bold my-4" c="dimmed">
-                    Recent Jobs
-                </Title>
-                <Divider mb={'md'} />
-                <JobList filters={filters} />
-                {/* <Grid className="mt-3">
-                    <Grid.Col span={{ base: 12 }}>
-                        {isMobile && (
-                            <Button
-                                fullWidth
-                                leftSection={<IconFilter size={18} />}
-                                onClick={() => setOpened(true)}
-                                mb="md"
-                            >
-                                Filter Jobs
-                            </Button>
-                        )}
-                        <JobList filters={filters} />
-                    </Grid.Col>
-                </Grid> */}
-            </Container>
+            <Paper p="md" withBorder={false} className="border-none mt-4">
+                <Container size="xl">
+                    <Title className="text-2xl font-bold my-4" c="dimmed">
+                        Recent Jobs
+                    </Title>
+                    <Divider mb={'md'} />
+                    <JobList filters={filters} />
+                </Container>
+            </Paper>
 
             <Footer />
 
@@ -361,69 +367,5 @@ function JobList({ filters }: { filters: JobFilters }) {
                 </Button>
             </div>
         </div>
-    );
-}
-function JobFilterSidebar({
-    filters,
-    onFilterChange,
-}: {
-    filters: JobFilters;
-    onFilterChange: (filters: JobFilters) => void;
-}) {
-    const t = useTranslations('jobListing');
-
-    return (
-        <Paper p="md" radius="lg" shadow="sm" className="sticky top-4">
-            <Title order={4} mb="md" fw={600}>
-                {t('filterLabel')}
-            </Title>
-            <Stack gap="md">
-                <TextInput
-                    label={t('location')}
-                    value={filters.location}
-                    onChange={(e) =>
-                        onFilterChange({ ...filters, location: e.target.value })
-                    }
-                    placeholder="Enter location"
-                    leftSection={<IconMapPin size={16} />}
-                />
-                <TextInput
-                    label={t('jobType')}
-                    value={filters.jobType}
-                    onChange={(e) =>
-                        onFilterChange({ ...filters, jobType: e.target.value })
-                    }
-                    placeholder="Job type"
-                    leftSection={<IconBriefcase size={16} />}
-                />
-                <TextInput
-                    label={t('salaryRange')}
-                    value={filters.salaryRange}
-                    onChange={(e) =>
-                        onFilterChange({
-                            ...filters,
-                            salaryRange: e.target.value,
-                        })
-                    }
-                    placeholder="Salary range"
-                    leftSection={<IconCurrencyDollar size={16} />}
-                />
-                <Button
-                    variant="light"
-                    fullWidth
-                    onClick={() =>
-                        onFilterChange({
-                            location: '',
-                            jobType: '',
-                            salaryRange: '',
-                            experienceLevel: '',
-                            keyword: '',
-                        })
-                    }
-                >
-                    {t('resetFilters')}
-                </Button>
-            </Stack>
-        </Paper>
     );
 }

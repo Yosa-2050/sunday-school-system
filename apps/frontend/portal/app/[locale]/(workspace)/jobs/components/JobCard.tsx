@@ -4,6 +4,7 @@ import {
     Badge,
     Box,
     Button,
+    Card,
     Group,
     Text,
     TypographyStylesProvider,
@@ -32,14 +33,54 @@ interface JobCardProps {
         experienceLevel: string;
         description: string;
         applied?: boolean;
+        createdDate: string;
     };
 }
+
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+const getElapsedTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 60) {
+        return `${diffInSeconds} seconds ago`;
+    }
+
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) {
+        return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`;
+    }
+
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+        return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`;
+    }
+
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) {
+        return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
+    }
+
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    if (diffInWeeks < 4) {
+        return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`;
+    }
+
+    const diffInMonths = Math.floor(diffInDays / 30);
+    if (diffInMonths < 12) {
+        return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`;
+    }
+
+    const diffInYears = Math.floor(diffInMonths / 12);
+    return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`;
+};
 
 export function JobCard({ job }: JobCardProps) {
     const router = useRouter();
 
     return (
-        <div className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden">
+        <Card className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden">
             {/* Featured badge */}
             {job.id === '1' && (
                 <div className="absolute top-0 right-0">
@@ -50,75 +91,98 @@ export function JobCard({ job }: JobCardProps) {
                 </div>
             )}
 
-            <div className="p-6">
-                <div className="flex items-start">
-                    <div className="flex-shrink-0 mr-4">
-                        <div className="w-12 h-12 rounded-lg flex items-center justify-center">
+            <div className="p-4 md:p-6">
+                <div className="flex items-start gap-3 md:gap-4">
+                    <div className="flex-shrink-0">
+                        <div className="w-8 h-8 md:w-12 md:h-12 rounded-lg flex items-center justify-center">
                             <Avatar
                                 size="md"
+                                visibleFrom="md"
                                 color="primary"
                                 radius="md"
-                                className="object-contain"
+                            >
+                                {job.organization?.name.slice(0, 2)}
+                            </Avatar>
+                            <Avatar
+                                size="sm"
+                                hiddenFrom="md"
+                                color="primary"
+                                radius="md"
                             >
                                 {job.organization?.name.slice(0, 2)}
                             </Avatar>
                         </div>
                     </div>
 
-                    <div className="flex-1">
-                        <div className="flex flex-col md:flex-row md:justify-between md:items-start">
-                            <div>
+                    <div className="flex-1 min-w-0">
+                        <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-start">
+                            <div className="min-w-0">
                                 <Text
                                     component="h3"
-                                    size="lg"
-                                    fw={600}
-                                    className="text-gray-900 hover:text-primary transition-colors cursor-pointer"
+                                    size="sm"
+                                    visibleFrom="md"
+                                    className="text-gray-900 hover:text-primary transition-colors cursor-pointer line-clamp-2"
                                     onClick={() =>
                                         router.push(`/jobs/${job.id}`)
                                     }
                                 >
                                     {job.title}
                                 </Text>
-                                {job.applied && <Badge>Applied</Badge>}
                                 <Text
-                                    size="sm"
+                                    component="h3"
+                                    size="xs"
+                                    hiddenFrom="md"
+                                    className="text-gray-900 hover:text-primary transition-colors cursor-pointer line-clamp-2"
+                                    onClick={() =>
+                                        router.push(`/jobs/${job.id}`)
+                                    }
+                                >
+                                    {job.title}
+                                </Text>
+                                {job.applied && (
+                                    <Badge size="xs">Applied</Badge>
+                                )}
+                                <Text
+                                    size="xs"
                                     fw={500}
                                     c="dimmed"
-                                    className="mt-1"
+                                    className="mt-1 line-clamp-1"
                                 >
                                     {job.organization?.name}
                                 </Text>
                             </div>
-                            <div className="mt-2 md:mt-0 text-sm text-gray-500 flex items-center">
+                            <div className="text-xs text-gray-500 flex items-center">
                                 <IconClock
-                                    size={16}
+                                    size={14}
                                     className="mr-1 text-primary"
                                 />
-                                <Text size="sm">{job.createdAt}</Text>
+                                <Text size="xs">
+                                    {getElapsedTime(job.createdDate)}
+                                </Text>
                             </div>
                         </div>
 
-                        <div className="mt-3 flex flex-wrap gap-y-2">
-                            <div className="flex items-center text-sm text-gray-500 mr-4">
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            <div className="flex items-center text-xs text-gray-500">
                                 <IconMapPin
-                                    size={16}
+                                    size={14}
                                     className="mr-1 text-primary"
                                 />
-                                <Text size="sm">Remote</Text>
+                                <Text size="xs">Remote</Text>
                             </div>
-                            <div className="flex items-center text-sm text-gray-500 mr-4">
+                            <div className="flex items-center text-xs text-gray-500">
                                 <IconBriefcase
-                                    size={16}
+                                    size={14}
                                     className="mr-1 text-primary"
                                 />
-                                <Text size="sm">{job.type}</Text>
+                                <Text size="xs">{job.type}</Text>
                             </div>
-                            <div className="flex items-center text-sm text-gray-500">
+                            <div className="flex items-center text-xs text-gray-500">
                                 <IconCurrencyDollar
-                                    size={16}
+                                    size={14}
                                     className="mr-1 text-primary"
                                 />
-                                <Text size="sm">
+                                <Text size="xs">
                                     {job.salaryFrom.toLocaleString()} -{' '}
                                     {job.salaryTo.toLocaleString()}{' '}
                                     {job.currency}
@@ -126,16 +190,21 @@ export function JobCard({ job }: JobCardProps) {
                             </div>
                         </div>
 
-                        <Group gap="xs" mt="md">
-                            <Badge color="primary" variant="light" radius="sm">
+                        <Group gap="xs" mt="sm">
+                            <Badge
+                                color="primary"
+                                variant="light"
+                                radius="sm"
+                                size="xs"
+                            >
                                 {job.experienceLevel || 'Any Experience'}
                             </Badge>
                         </Group>
 
-                        <Box mt="md">
+                        <Box mt="sm">
                             <TypographyStylesProvider>
                                 <Text
-                                    size="sm"
+                                    size="xs"
                                     lineClamp={2}
                                     className="text-gray-600"
                                 >
@@ -144,37 +213,32 @@ export function JobCard({ job }: JobCardProps) {
                             </TypographyStylesProvider>
                         </Box>
 
-                        <div className="mt-4 flex flex-wrap gap-2">
+                        <div className="mt-3 flex flex-wrap gap-2">
                             <Button
                                 variant="gradient"
-                                gradient={{
-                                    from: 'primary',
-                                    to: 'blue',
-                                }}
-                                radius="md"
+                                gradient={{ from: 'primary', to: 'blue' }}
+                                radius="sm"
+                                size="xs"
+                                visibleFrom="md"
                                 onClick={() => router.push(`/jobs/${job.id}`)}
                             >
                                 View Details
                             </Button>
-                            {/* <Button variant="outline" color="primary" radius="md">
-                Apply Now
-              </Button> */}
-                            {/* <Button
-                variant="outline"
-                color="gray"
-                radius="md"
-                leftSection={<IconBookmark size={16} />}
-                className="ml-auto"
-              >
-                Save
-              </Button> */}
+                            <Button
+                                variant="gradient"
+                                gradient={{ from: 'primary', to: 'blue' }}
+                                radius="sm"
+                                size="xs"
+                                hiddenFrom="md"
+                                fullWidth
+                                onClick={() => router.push(`/jobs/${job.id}`)}
+                            >
+                                View Details
+                            </Button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Bottom border with gradient */}
-            {/* <div className="h-1 w-full bg-gradient-to-r from-primary to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" /> */}
-        </div>
+        </Card>
     );
 }

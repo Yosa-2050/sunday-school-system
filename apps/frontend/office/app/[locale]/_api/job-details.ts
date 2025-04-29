@@ -76,7 +76,7 @@ export const fetchRegions = async (countryCode: string) => {
         type: string;
         isRoot: boolean;
         hasChild: boolean;
-    }[] = await fetcher(`/address/locationByCountry/${countryCode}/REGION`, {
+    }[] = await fetcher(`/location/locationByCountry/${countryCode}/REGION`, {
         method: 'GET',
         headers: { accept: '*/*' },
     });
@@ -94,7 +94,7 @@ export const fetchCities = async (regionId: string) => {
     if (!regionId) {
         throw new Error('Region ID cannot be empty');
     }
-    const response = await fetcher(`/address/locationByParentId/${regionId}`, {
+    const response = await fetcher(`/location/locationByParentId/${regionId}`, {
         method: 'GET',
         headers: { accept: '*/*' },
     });
@@ -104,7 +104,7 @@ export const fetchCities = async (regionId: string) => {
 };
 
 export const fetchCountries = async () => {
-    const response = await fetcher('/address/countries', {
+    const response = await fetcher('/location/countries', {
         method: 'GET',
         headers: { accept: '*/*' },
     });
@@ -114,7 +114,7 @@ export const fetchCountries = async () => {
     return response as { id: string; name: string; code: string }[];
 };
 
-export const fetchAddressById = async (id: string) => {
+export const fetchlocationById = async (id: string) => {
     const response = await fetcher(`/location/${id}`, {
         method: 'GET',
         headers: { accept: '*/*' },
