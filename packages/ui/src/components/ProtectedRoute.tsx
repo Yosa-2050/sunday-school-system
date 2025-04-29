@@ -1,6 +1,6 @@
 'use client';
 
-import { LoadingOverlay } from '@mantine/core';
+import { LoadingOverlay, Paper } from '@mantine/core';
 import { COOKIE_ACCESS_TOKEN, isTokenExpired, logger } from '@shega/shared';
 import { deleteCookie, getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
@@ -51,7 +51,11 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         return <LoadingOverlay visible={true} />;
     }
 
-    return isAuthenticated ? <>{children}</> : null;
+    return isAuthenticated ? (
+        <Paper className="h-fit h-full" radius={0} withBorder={false}>
+            {children}
+        </Paper>
+    ) : null;
 };
 
 export { ProtectedRoute };

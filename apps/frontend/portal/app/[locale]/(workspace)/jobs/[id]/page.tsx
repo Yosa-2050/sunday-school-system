@@ -39,7 +39,6 @@ import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import {
-    IconAlertCircle,
     IconBuilding,
     IconCalendar,
     IconCheck,
@@ -54,46 +53,15 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { applyJobs } from 'app/_api/jobs/apply-job';
 import { fetchJobsById } from 'app/_api/jobs/fetch-job-id';
 import parse from 'html-react-parser';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-interface JobDescription {
-    id: string;
-    type: 'REQUIREMENTS' | 'RESPONSIBILITY' | 'BENEFITS';
-    description: string;
-    isActive: boolean;
-}
-
-interface JobSkill {
-    id: string;
-    isActive: boolean;
-    skill: string;
-}
-
-interface Job {
-    id: string;
-    title: string;
-    description: string;
-    organization: {
-        name: string;
-    };
-    type: string;
-    salaryFrom: number;
-    salaryTo: number;
-    currency: string;
-    workPlace?: string;
-    jobDescriptions?: JobDescription[];
-    jobSkills?: JobSkill[];
-}
-
 export default function JobDetailsPage() {
     const params = useParams<{ id: string }>();
-    const locale = useLocale();
     const t = useTranslations('jobListing');
     const isMobile = useMediaQuery('(max-width: 768px)');
     const router = useRouter();
-    const [isSaved, setIsSaved] = useState(false);
     const [activeTab, setActiveTab] = useState('overview');
     const [applicationProgress, setApplicationProgress] = useState(60);
     const { user } = useAuth();
@@ -185,77 +153,45 @@ export default function JobDetailsPage() {
         }
     };
 
-    const applicationStatus = 'in-progress';
-
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case 'not-started':
-                return 'Not Started';
-            case 'in-progress':
-                return 'In Progress';
-            case 'submitted':
-                return 'Submitted';
-            case 'under-review':
-                return 'Under Review';
-            default:
-                return 'Unknown';
-        }
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'not-started':
-                return 'gray';
-            case 'in-progress':
-                return 'orange';
-            case 'submitted':
-                return 'green';
-            case 'under-review':
-                return 'violet';
-            default:
-                return 'gray';
-        }
-    };
-
     return (
         <>
             <Container size="xl" py="xl">
                 {/* Application Status Bar */}
-                <Flex justify={'space-between'} align={'start'} gap="md">
-                    <Group gap={'md'}>
+                <Flex direction={{ base: 'column', md: 'row' }} gap="md">
+                    <Stack className="flex-1">
                         <Card className="w-full">
                             <Group justify={'space-between'}>
                                 <Stack gap="xs">
                                     <Title order={5}>Application Status</Title>
                                     <Group>
                                         {job?.applied ? (
-                                            <Badge>Applied</Badge>
+                                            <Badge size="xs">Applied</Badge>
                                         ) : (
                                             <></>
                                         )}
-                                        <Text size="sm" c="dimmed">
+                                        <Text size="xs" c="dimmed">
                                             Last saved 2 hours ago
                                         </Text>
                                     </Group>
                                 </Stack>
 
-                                <Stack gap="xs" w={200}>
+                                <Stack gap="xs" w={{ base: '100%', md: 200 }}>
                                     <Group justify={'space-between'}>
-                                        <Text size="sm">Progress</Text>
-                                        <Text size="sm">
+                                        <Text size="xs">Progress</Text>
+                                        <Text size="xs">
                                             {applicationProgress}%
                                         </Text>
                                     </Group>
                                     <Progress
                                         value={applicationProgress}
-                                        size="sm"
+                                        size="xs"
                                     />
                                 </Stack>
                             </Group>
                         </Card>
 
                         {/* Main Content */}
-                        <Card bg={'white'} className="!w-full">
+                        <Card className="!w-full">
                             <Tabs
                                 value={activeTab}
                                 onChange={(value) =>
@@ -263,35 +199,39 @@ export default function JobDetailsPage() {
                                 }
                             >
                                 <Tabs.List>
-                                    <Tabs.Tab value="overview">
+                                    <Tabs.Tab value="overview" size="xs">
                                         Overview
                                     </Tabs.Tab>
-                                    <Tabs.Tab value="application">
+                                    <Tabs.Tab value="application" size="xs">
                                         Application
                                     </Tabs.Tab>
                                 </Tabs.List>
 
                                 <Tabs.Panel value="overview" pt="md">
                                     <Stack gap="md">
-                                        <Group>
+                                        <Group wrap="nowrap">
                                             <Avatar
-                                                size="lg"
+                                                size={isMobile ? 'sm' : 'lg'}
                                                 radius="md"
                                                 src="/placeholder.svg"
                                                 alt="TechCorp Logo"
                                             />
                                             <Stack gap={0}>
-                                                <Title order={3}>
+                                                <Title
+                                                    visibleFrom="md"
+                                                    order={1}
+                                                    hiddenFrom="md"
+                                                >
                                                     {job.title}
                                                 </Title>
-                                                <Group gap="xs">
+                                                <Group gap="xs" wrap="wrap">
                                                     <Group gap={4}>
                                                         <IconBuilding
-                                                            size={16}
+                                                            size={14}
                                                             color="gray"
                                                         />
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             {
@@ -305,22 +245,27 @@ export default function JobDetailsPage() {
                                                         value={4.5}
                                                         fractions={2}
                                                         readOnly
+                                                        size="xs"
                                                     />
                                                     <Text
-                                                        size="sm"
+                                                        size="xs"
                                                         color="dimmed"
                                                     >
                                                         4.5 (126 reviews)
                                                     </Text>
                                                 </Group>
-                                                <Group gap="md" mt={4}>
+                                                <Group
+                                                    gap="md"
+                                                    mt={4}
+                                                    wrap="wrap"
+                                                >
                                                     <Group gap={4}>
                                                         <IconMapPin
-                                                            size={16}
+                                                            size={14}
                                                             color="gray"
                                                         />
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             {job.workPlace ||
@@ -329,11 +274,11 @@ export default function JobDetailsPage() {
                                                     </Group>
                                                     <Group gap={4}>
                                                         <IconCurrencyDollar
-                                                            size={16}
+                                                            size={14}
                                                             color="gray"
                                                         />
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             {(() => {
@@ -354,11 +299,11 @@ export default function JobDetailsPage() {
                                                     </Group>
                                                     <Group gap={4}>
                                                         <IconClock
-                                                            size={16}
+                                                            size={14}
                                                             color="gray"
                                                         />
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             {job.type}
@@ -366,11 +311,11 @@ export default function JobDetailsPage() {
                                                     </Group>
                                                     <Group gap={4}>
                                                         <IconCalendar
-                                                            size={16}
+                                                            size={14}
                                                             color="gray"
                                                         />
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             Posted 3 days ago
@@ -383,10 +328,14 @@ export default function JobDetailsPage() {
                                         <Stack gap="md">
                                             <Stack gap="xs">
                                                 <Group>
-                                                    <Title order={4}>
+                                                    <Title
+                                                        visibleFrom="md"
+                                                        order={4}
+                                                        hiddenFrom="md"
+                                                    >
                                                         Job Description
                                                     </Title>
-                                                    <Badge>New</Badge>
+                                                    <Badge size="xs">New</Badge>
                                                 </Group>
                                                 <TypographyStylesProvider>
                                                     <Box className="prose prose-stone max-w-none">
@@ -396,10 +345,14 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             <Stack gap="xs">
-                                                <Title order={4}>
+                                                <Title
+                                                    visibleFrom="md"
+                                                    order={4}
+                                                    hiddenFrom="md"
+                                                >
                                                     Requirements
                                                 </Title>
-                                                <List size="sm" color="dimmed">
+                                                <List size="xs" color="dimmed">
                                                     {job.jobDescriptions?.filter(
                                                         (desc) =>
                                                             desc.type ===
@@ -419,7 +372,7 @@ export default function JobDetailsPage() {
                                                                     icon={
                                                                         <IconCheck
                                                                             size={
-                                                                                16
+                                                                                14
                                                                             }
                                                                             color={
                                                                                 theme
@@ -436,7 +389,7 @@ export default function JobDetailsPage() {
                                                             ))
                                                     ) : (
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             No requirements
@@ -447,10 +400,14 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             <Stack gap="xs">
-                                                <Title order={4}>
+                                                <Title
+                                                    visibleFrom="md"
+                                                    order={4}
+                                                    hiddenFrom="md"
+                                                >
                                                     Responsibilities
                                                 </Title>
-                                                <List size="sm" color="dimmed">
+                                                <List size="xs" color="dimmed">
                                                     {job.jobDescriptions?.filter(
                                                         (desc) =>
                                                             desc.type ===
@@ -472,7 +429,7 @@ export default function JobDetailsPage() {
                                                                     icon={
                                                                         <IconCheck
                                                                             size={
-                                                                                16
+                                                                                14
                                                                             }
                                                                             color={
                                                                                 theme
@@ -489,7 +446,7 @@ export default function JobDetailsPage() {
                                                             ))
                                                     ) : (
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             No responsibilities
@@ -500,10 +457,14 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             <Stack gap="xs">
-                                                <Title order={4}>
+                                                <Title
+                                                    visibleFrom="md"
+                                                    order={4}
+                                                    hiddenFrom="md"
+                                                >
                                                     Benefits
                                                 </Title>
-                                                <List size="sm" color="dimmed">
+                                                <List size="xs" color="dimmed">
                                                     {job.jobDescriptions?.filter(
                                                         (desc) =>
                                                             desc.type ===
@@ -525,7 +486,7 @@ export default function JobDetailsPage() {
                                                                     icon={
                                                                         <IconCheck
                                                                             size={
-                                                                                16
+                                                                                14
                                                                             }
                                                                             color={
                                                                                 theme
@@ -542,7 +503,7 @@ export default function JobDetailsPage() {
                                                             ))
                                                     ) : (
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             No benefits provided
@@ -552,7 +513,11 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             <Stack gap="xs">
-                                                <Title order={4}>
+                                                <Title
+                                                    visibleFrom="md"
+                                                    order={4}
+                                                    hiddenFrom="md"
+                                                >
                                                     Skills & Expertise
                                                 </Title>
                                                 <Group gap="xs">
@@ -579,7 +544,7 @@ export default function JobDetailsPage() {
                                                             ))
                                                     ) : (
                                                         <Text
-                                                            size="sm"
+                                                            size="xs"
                                                             color="dimmed"
                                                         >
                                                             No skills provided
@@ -602,12 +567,17 @@ export default function JobDetailsPage() {
                                                 <Group
                                                     justify={'space-between'}
                                                 >
-                                                    <Title order={4}>
+                                                    <Title
+                                                        visibleFrom="md"
+                                                        order={4}
+                                                        hiddenFrom="md"
+                                                    >
                                                         Personal Information
                                                     </Title>
                                                     <Badge
                                                         color="green"
                                                         variant="light"
+                                                        size="xs"
                                                         leftSection={
                                                             <IconCheck
                                                                 size={12}
@@ -618,10 +588,13 @@ export default function JobDetailsPage() {
                                                     </Badge>
                                                 </Group>
 
-                                                <SimpleGrid cols={2}>
+                                                <SimpleGrid
+                                                    cols={{ base: 1, md: 2 }}
+                                                >
                                                     <TextInput
                                                         label="Full Name"
                                                         name="fullName"
+                                                        size="xs"
                                                         defaultValue={`${user?.firstName} ${user?.lastName}`}
                                                         readOnly
                                                     />
@@ -629,33 +602,31 @@ export default function JobDetailsPage() {
                                                         label="Email"
                                                         name="email"
                                                         type="email"
+                                                        size="xs"
                                                         defaultValue={
                                                             user?.updatedBy
                                                         }
                                                         readOnly
                                                     />
-                                                    {/* <TextInput
-                            label="Phone Number"
-                            name="phone"
-                            defaultValue="(555) 123-4567"
-                          />
-                          <TextInput
-                            label="Portfolio Website"
-                            name="portfolio"
-                            defaultValue="https://alexjohnson.dev"
-                          /> */}
                                                 </SimpleGrid>
                                             </Stack>
 
                                             {/* Experience */}
                                             <Stack gap="sm">
-                                                <Title order={4}>
+                                                <Title
+                                                    visibleFrom="md"
+                                                    order={4}
+                                                    hiddenFrom="md"
+                                                >
                                                     Experience & Preferences
                                                 </Title>
 
-                                                <SimpleGrid cols={2}>
+                                                <SimpleGrid
+                                                    cols={{ base: 1, md: 2 }}
+                                                >
                                                     <Select
                                                         label="Years of Experience"
+                                                        size="xs"
                                                         data={[
                                                             {
                                                                 value: '0-1 year',
@@ -682,6 +653,7 @@ export default function JobDetailsPage() {
                                                     />
                                                     <Select
                                                         label="Availability to Start"
+                                                        size="xs"
                                                         data={[
                                                             {
                                                                 value: 'immediately',
@@ -708,12 +680,17 @@ export default function JobDetailsPage() {
                                                     />
                                                 </SimpleGrid>
 
-                                                <SimpleGrid cols={2}>
+                                                <SimpleGrid
+                                                    cols={{ base: 1, md: 2 }}
+                                                >
                                                     <Stack gap="sm">
-                                                        <Text size="sm">
+                                                        <Text size="xs">
                                                             Willing to Relocate?
                                                         </Text>
-                                                        <Radio.Group defaultValue="no">
+                                                        <Radio.Group
+                                                            defaultValue="no"
+                                                            size="xs"
+                                                        >
                                                             <Stack gap="xs">
                                                                 <Radio
                                                                     value="yes"
@@ -733,6 +710,7 @@ export default function JobDetailsPage() {
                                                     <TextInput
                                                         label="Salary Expectation"
                                                         name="salaryExpectation"
+                                                        size="xs"
                                                         defaultValue="$90,000 - $120,000"
                                                     />
                                                 </SimpleGrid>
@@ -748,13 +726,17 @@ export default function JobDetailsPage() {
                                                 <Group
                                                     justify={'space-between'}
                                                 >
-                                                    <Title order={4}>
+                                                    <Title
+                                                        visibleFrom="md"
+                                                        order={4}
+                                                        hiddenFrom="md"
+                                                    >
                                                         Documents
                                                     </Title>
                                                     <Tooltip label="Upload your resume and any other relevant documents. Accepted formats: PDF, DOC, DOCX. Maximum 5MB per file.">
-                                                        <ActionIcon>
+                                                        <ActionIcon size="xs">
                                                             <IconHelp
-                                                                size={16}
+                                                                size={14}
                                                             />
                                                         </ActionIcon>
                                                     </Tooltip>
@@ -790,14 +772,14 @@ export default function JobDetailsPage() {
                                                                 <Group>
                                                                     <IconFileText
                                                                         size={
-                                                                            20
+                                                                            16
                                                                         }
                                                                         color="gray"
                                                                     />
                                                                     <Stack
                                                                         gap={0}
                                                                     >
-                                                                        <Text size="sm">
+                                                                        <Text size="xs">
                                                                             {
                                                                                 file.name
                                                                             }
@@ -816,6 +798,7 @@ export default function JobDetailsPage() {
                                                                         <Badge
                                                                             color="green"
                                                                             variant="light"
+                                                                            size="xs"
                                                                         >
                                                                             Primary
                                                                             Resume
@@ -825,7 +808,7 @@ export default function JobDetailsPage() {
                                                                 <Button
                                                                     variant="subtle"
                                                                     color="red"
-                                                                    size="sm"
+                                                                    size="xs"
                                                                 >
                                                                     Remove
                                                                 </Button>
@@ -842,6 +825,7 @@ export default function JobDetailsPage() {
                                                         }
                                                         accept=".pdf,.doc,.docx"
                                                         description="Attach additional documents (optional)"
+                                                        size="xs"
                                                     />
                                                 </Stack>
                                             </Stack>
@@ -851,32 +835,26 @@ export default function JobDetailsPage() {
                                                 <Group
                                                     justify={'space-between'}
                                                 >
-                                                    <Title order={4}>
-                                                        Cover Letter{' '}
-                                                        <Text
-                                                            span
-                                                            color="dimmed"
-                                                            size="sm"
-                                                        >
-                                                            (Optional)
-                                                        </Text>
-                                                    </Title>
-                                                    <Badge
-                                                        color="orange"
-                                                        variant="light"
-                                                        leftSection={
-                                                            <IconAlertCircle
-                                                                size={12}
-                                                            />
-                                                        }
+                                                    <Title
+                                                        visibleFrom="md"
+                                                        order={4}
+                                                        hiddenFrom="md"
                                                     >
-                                                        Recommended
-                                                    </Badge>
+                                                        Cover Letter
+                                                    </Title>
+                                                    <Text
+                                                        span
+                                                        color="dimmed"
+                                                        size="xs"
+                                                    >
+                                                        (Optional)
+                                                    </Text>
                                                 </Group>
                                                 <Textarea
                                                     placeholder="Tell us why you're interested in this position and what makes you a great fit..."
                                                     minRows={6}
                                                     name="coverLetter"
+                                                    size="xs"
                                                 />
                                                 <Text size="xs" color="dimmed">
                                                     Adding a personalized cover
@@ -897,14 +875,14 @@ export default function JobDetailsPage() {
                                                             to our{' '}
                                                             <Anchor
                                                                 href="#"
-                                                                size="sm"
+                                                                size="xs"
                                                             >
                                                                 Privacy Policy
                                                             </Anchor>{' '}
                                                             and{' '}
                                                             <Anchor
                                                                 href="#"
-                                                                size="sm"
+                                                                size="xs"
                                                             >
                                                                 Terms of Service
                                                             </Anchor>
@@ -912,6 +890,7 @@ export default function JobDetailsPage() {
                                                     }
                                                     defaultChecked
                                                     required
+                                                    size="xs"
                                                 />
                                             )}
 
@@ -921,6 +900,7 @@ export default function JobDetailsPage() {
                                                         <Button
                                                             w={'50%'}
                                                             type="submit"
+                                                            size="xs"
                                                             loading={
                                                                 applyMutation.isPending
                                                             }
@@ -938,31 +918,30 @@ export default function JobDetailsPage() {
                                 </Tabs.Panel>
                             </Tabs>
                         </Card>
-                    </Group>
+                    </Stack>
 
                     {/* Sidebar */}
                     <Box
-                        style={{
-                            flex: 1,
-                            minWidth: 400,
-                            width: 400,
-                            maxWidth: 400,
-                        }}
+                        w={{ base: '100%', md: 400 }}
+                        miw={{ base: '100%', md: 400 }}
+                        maw={{ base: '100%', md: 400 }}
+                        flex={1}
                     >
                         <Stack gap="lg">
                             <Card>
                                 <Stack gap="sm">
-                                    <Title order={5}>
+                                    <Title order={4}>
                                         Application Progress
                                     </Title>
                                     <Stack gap="xs">
                                         <Group justify={'space-between'}>
-                                            <Text size="sm">
+                                            <Text size="xs">
                                                 Profile Information
                                             </Text>
                                             <Badge
                                                 color="green"
                                                 variant="light"
+                                                size="xs"
                                                 leftSection={
                                                     <IconCheck size={12} />
                                                 }
@@ -971,10 +950,11 @@ export default function JobDetailsPage() {
                                             </Badge>
                                         </Group>
                                         <Group justify={'space-between'}>
-                                            <Text size="sm">Resume/CV</Text>
+                                            <Text size="xs">Resume/CV</Text>
                                             <Badge
                                                 color="green"
                                                 variant="light"
+                                                size="xs"
                                                 leftSection={
                                                     <IconCheck size={12} />
                                                 }
@@ -983,12 +963,13 @@ export default function JobDetailsPage() {
                                             </Badge>
                                         </Group>
                                         <Group justify={'space-between'}>
-                                            <Text size="sm">
+                                            <Text size="xs">
                                                 Experience Details
                                             </Text>
                                             <Badge
                                                 color="green"
                                                 variant="light"
+                                                size="xs"
                                                 leftSection={
                                                     <IconCheck size={12} />
                                                 }
@@ -997,19 +978,21 @@ export default function JobDetailsPage() {
                                             </Badge>
                                         </Group>
                                         <Group justify={'space-between'}>
-                                            <Text size="sm">Cover Letter</Text>
+                                            <Text size="xs">Cover Letter</Text>
                                             <Badge
                                                 color="orange"
                                                 variant="light"
+                                                size="xs"
                                             >
                                                 Missing
                                             </Badge>
                                         </Group>
                                         <Group justify={'space-between'}>
-                                            <Text size="sm">Preferences</Text>
+                                            <Text size="xs">Preferences</Text>
                                             <Badge
                                                 color="green"
                                                 variant="light"
+                                                size="xs"
                                                 leftSection={
                                                     <IconCheck size={12} />
                                                 }
@@ -1021,6 +1004,7 @@ export default function JobDetailsPage() {
                                     <Button
                                         variant="outline"
                                         fullWidth
+                                        size="xs"
                                         onClick={() =>
                                             setActiveTab('application')
                                         }
@@ -1032,12 +1016,11 @@ export default function JobDetailsPage() {
 
                             <Card>
                                 <Stack gap="sm">
-                                    <Title order={5}>
+                                    <Title order={4}>
                                         Organization Details
                                     </Title>
-                                    <Group gap="md">
+                                    <Group gap="md" wrap="nowrap">
                                         <Avatar
-                                            size="lg"
                                             radius="md"
                                             src="/placeholder.svg"
                                             alt="Company Logo"
@@ -1046,7 +1029,7 @@ export default function JobDetailsPage() {
                                             <Title order={4}>
                                                 {job.organization?.name}
                                             </Title>
-                                            <Text size="sm" color="dimmed">
+                                            <Text size="xs" color="dimmed">
                                                 Technology · 500-1000 employees
                                                 · Founded 2010
                                             </Text>
@@ -1055,8 +1038,9 @@ export default function JobDetailsPage() {
                                                     value={4.5}
                                                     fractions={2}
                                                     readOnly
+                                                    size="xs"
                                                 />
-                                                <Text size="sm" color="dimmed">
+                                                <Text size="xs" color="dimmed">
                                                     4.5 (126 reviews)
                                                 </Text>
                                             </Group>
@@ -1065,7 +1049,11 @@ export default function JobDetailsPage() {
 
                                     <Divider my="sm" />
 
-                                    <Button variant="outline" fullWidth>
+                                    <Button
+                                        variant="outline"
+                                        fullWidth
+                                        size="xs"
+                                    >
                                         View company profile
                                     </Button>
                                 </Stack>
@@ -1073,7 +1061,7 @@ export default function JobDetailsPage() {
 
                             <Card>
                                 <Stack gap="sm">
-                                    <Title order={5}>Similar Jobs</Title>
+                                    <Title order={4}>Similar Jobs</Title>
                                     {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                                     {[1, 2, 3].map((job) => (
                                         <Stack
@@ -1084,7 +1072,7 @@ export default function JobDetailsPage() {
                                                 borderBottom: '1px solid #eee',
                                             }}
                                         >
-                                            <Anchor size="sm">
+                                            <Anchor size="xs">
                                                 {job === 1
                                                     ? 'Frontend Developer'
                                                     : // biome-ignore lint/nursery/noNestedTernary: <explanation>
@@ -1106,7 +1094,7 @@ export default function JobDetailsPage() {
                                                           : 'AppWorks Co.'}
                                                 </Text>
                                             </Group>
-                                            <Group gap="sm">
+                                            <Group gap="sm" wrap="wrap">
                                                 <Group gap={4}>
                                                     <IconMapPin
                                                         size={14}
@@ -1142,12 +1130,16 @@ export default function JobDetailsPage() {
                                                     </Text>
                                                 </Group>
                                             </Group>
-                                            <Badge variant="outline">
+                                            <Badge variant="outline" size="xs">
                                                 90% match
                                             </Badge>
                                         </Stack>
                                     ))}
-                                    <Button variant="outline" fullWidth>
+                                    <Button
+                                        variant="outline"
+                                        fullWidth
+                                        size="xs"
+                                    >
                                         View more jobs
                                     </Button>
                                 </Stack>
@@ -1155,9 +1147,9 @@ export default function JobDetailsPage() {
 
                             <Card>
                                 <Stack gap="sm">
-                                    <Title order={5}>Application Tips</Title>
+                                    <Title order={4}>Application Tips</Title>
                                     <Stack gap="xs">
-                                        <Text size="sm" fw={500}>
+                                        <Text size="xs" fw={500}>
                                             Highlight Relevant Skills
                                         </Text>
                                         <Text size="xs" color="dimmed">
@@ -1168,7 +1160,7 @@ export default function JobDetailsPage() {
                                         </Text>
                                     </Stack>
                                     <Stack gap="xs">
-                                        <Text size="sm" fw={500}>
+                                        <Text size="xs" fw={500}>
                                             Personalize Your Application
                                         </Text>
                                         <Text size="xs" color="dimmed">
@@ -1178,7 +1170,7 @@ export default function JobDetailsPage() {
                                         </Text>
                                     </Stack>
                                     <Stack gap="xs">
-                                        <Text size="sm" fw={500}>
+                                        <Text size="xs" fw={500}>
                                             Follow Up
                                         </Text>
                                         <Text size="xs" color="dimmed">

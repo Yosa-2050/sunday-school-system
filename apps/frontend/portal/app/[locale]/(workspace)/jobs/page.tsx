@@ -3,19 +3,16 @@
 import { Footer } from '@/components/Footer';
 import { useRouter } from '@/i18n/routing';
 import {
-    Badge,
     Box,
     Button,
     Card,
     Checkbox,
-    Chip,
     Container,
     Divider,
     Drawer,
     Grid,
     Group,
     LoadingOverlay,
-    Paper,
     RangeSlider,
     ScrollArea,
     Select,
@@ -32,7 +29,6 @@ import {
     IconFilter,
     IconMapPin,
     IconSearch,
-    IconX,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
@@ -143,8 +139,8 @@ const FilterSidebar = ({
     });
 
     return (
-        <Box p="lg" className="bg-white sticky top-4">
-            <ScrollArea h={isMobile ? 450 : 700} aria-orientation="vertical">
+        <Card p="lg" className=" sticky top-2" withBorder={false}>
+            <ScrollArea h={isMobile ? '70vh' : 700} aria-orientation="vertical">
                 <Stack gap="md">
                     <Box>
                         <Text size="sm" fw={500} mb="xs">
@@ -315,7 +311,7 @@ const FilterSidebar = ({
             >
                 {t('applyFilters')}
             </Button>
-        </Box>
+        </Card>
     );
 };
 
@@ -435,7 +431,7 @@ export default function JobsPage() {
         <>
             <Container size="xl" py="xl">
                 <Grid>
-                    <Grid.Col span={{ base: 12, md: 3 }}>
+                    <Grid.Col span={{ base: 12, md: 3 }} visibleFrom="md">
                         <FilterSidebar
                             filters={filters}
                             setFilters={setFilters}
@@ -450,7 +446,10 @@ export default function JobsPage() {
 
                     <Grid.Col span={{ base: 12, md: 9 }}>
                         <Stack gap="md">
-                            <Box className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-0 border-b border-primary/20 bg-white">
+                            <Card
+                                className="flex items-center justify-between w-full p-4"
+                                withBorder={false}
+                            >
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="bg-primary/10 p-2.5 rounded-lg flex items-center justify-center">
                                         <IconBriefcase
@@ -483,36 +482,33 @@ export default function JobsPage() {
                                         size="sm"
                                         padding="md"
                                     >
-                                        <Box py="md">
-                                            <Title order={3} mb="lg">
-                                                {t('filters')}
-                                            </Title>
-                                            <JobFilterSidebar
+                                        <Grid.Col
+                                            span={{ base: 12, md: 3 }}
+                                            hiddenFrom="md"
+                                        >
+                                            <FilterSidebar
                                                 filters={filters}
-                                                onFilterChange={setFilters}
-                                                onJobTypeChange={
+                                                setFilters={setFilters}
+                                                handleJobTypeChange={
                                                     handleJobTypeChange
                                                 }
-                                                onExperienceLevelChange={
+                                                handleExperienceLevelChange={
                                                     handleExperienceLevelChange
                                                 }
-                                                onReset={resetFilters}
+                                                handleSearch={handleSearch}
+                                                handleApplyFilters={
+                                                    handleApplyFilters
+                                                }
                                             />
-                                        </Box>
+                                        </Grid.Col>
                                     </Drawer>
-                                    <Button
-                                        leftSection={<IconFilter size={16} />}
+                                    <IconFilter
+                                        size={20}
+                                        className="text-primary"
                                         onClick={() => setOpened(true)}
-                                        radius="md"
-                                        variant="outline"
-                                        color="primary"
-                                        size="sm"
-                                        fullWidth
-                                    >
-                                        {t('filterJobs')}
-                                    </Button>
+                                    />
                                 </Box>
-                            </Box>
+                            </Card>
 
                             <div className="grid grid-cols-1 gap-4">
                                 {data?.data && data.data.length > 0 ? (
@@ -598,191 +594,5 @@ export default function JobsPage() {
 
             <Footer />
         </>
-    );
-}
-
-function JobFilterSidebar({
-    filters,
-    onFilterChange,
-    onJobTypeChange,
-    onExperienceLevelChange,
-    onReset,
-}: {
-    filters: Filter;
-    onFilterChange: (filters: Filter) => void;
-    onJobTypeChange: (value: string) => void;
-    onExperienceLevelChange: (value: string) => void;
-    onReset: () => void;
-}) {
-    const t = useTranslations('jobListing');
-
-    return (
-        <ScrollArea h={500} scrollbarSize={6}>
-            <Stack gap="lg" p="xs">
-                <Paper p="md" radius="md" withBorder>
-                    <Text size="sm" fw={600} mb="sm" c="blue.7">
-                        {t('keyword')}
-                    </Text>
-                    <TextInput
-                        value={filters.title || ''}
-                        onChange={(e) =>
-                            onFilterChange({
-                                ...filters,
-                                title: e.target.value,
-                            })
-                        }
-                        placeholder="Search jobs..."
-                        leftSection={<IconSearch size={16} stroke={1.5} />}
-                        radius="md"
-                        size="sm"
-                    />
-                </Paper>
-
-                <Paper p="md" radius="md" withBorder>
-                    <Text size="sm" fw={600} mb="sm" c="blue.7">
-                        {t('country')}
-                    </Text>
-                    <Select
-                        value={filters.countryId || ''}
-                        onChange={(value) =>
-                            onFilterChange({
-                                ...filters,
-                                cityId: value || '',
-                            })
-                        }
-                        placeholder="Select country"
-                        data={LOCATIONS}
-                        leftSection={<IconMapPin size={16} stroke={1.5} />}
-                        radius="md"
-                        searchable
-                        clearable
-                        size="sm"
-                    />
-                </Paper>
-
-                <Paper p="md" radius="md" withBorder>
-                    <Text size="sm" fw={600} mb="sm" c="blue.7">
-                        {t('city')}
-                    </Text>
-                    <Select
-                        value={filters.cityId || ''}
-                        onChange={(value) =>
-                            onFilterChange({
-                                ...filters,
-                                cityId: value || '',
-                            })
-                        }
-                        placeholder="Select city"
-                        data={LOCATIONS}
-                        leftSection={<IconMapPin size={16} stroke={1.5} />}
-                        radius="md"
-                        searchable
-                        clearable
-                        size="sm"
-                    />
-                </Paper>
-
-                <Paper p="md" radius="md" withBorder>
-                    <Text size="sm" fw={600} mb="sm" c="blue.7">
-                        {t('jobType')}
-                    </Text>
-                    <Group gap="xs" wrap="wrap">
-                        {JOB_TYPES.map((type) => (
-                            <Chip
-                                key={type.value}
-                                checked={filters.type === type.value}
-                                onChange={() => onJobTypeChange(type.value)}
-                                radius="md"
-                                variant="filled"
-                                color={
-                                    filters.type === type.value
-                                        ? 'blue'
-                                        : 'gray'
-                                }
-                                size="sm"
-                            >
-                                {type.label}
-                            </Chip>
-                        ))}
-                    </Group>
-                </Paper>
-
-                <Paper p="md" radius="md" withBorder>
-                    <Text size="sm" fw={600} mb="sm" c="blue.7">
-                        {t('experienceLevel')}
-                    </Text>
-                    <Group gap="xs" wrap="wrap">
-                        {EXPERIENCE_LEVELS.map((level) => (
-                            <Chip
-                                key={level.value}
-                                checked={
-                                    filters.experianceLevel === level.value
-                                }
-                                onChange={() =>
-                                    onExperienceLevelChange(level.value)
-                                }
-                                radius="md"
-                                variant="filled"
-                                color={
-                                    filters.experianceLevel === level.value
-                                        ? 'blue'
-                                        : 'gray'
-                                }
-                                size="sm"
-                            >
-                                {level.label}
-                            </Chip>
-                        ))}
-                    </Group>
-                </Paper>
-
-                <Paper p="md" radius="md" withBorder>
-                    <Group justify="space-between" mb="sm">
-                        <Text size="sm" fw={600} c="blue.7">
-                            {t('salaryRange')}
-                        </Text>
-                        <Badge radius="sm" color="blue">
-                            {(filters.salaryFrom || 0).toLocaleString()} -{' '}
-                            {(filters.salaryTo || 0).toLocaleString()} ETB
-                        </Badge>
-                    </Group>
-                    <RangeSlider
-                        value={[filters.salaryFrom || 0, filters.salaryTo || 0]}
-                        onChange={(value) =>
-                            onFilterChange({
-                                ...filters,
-                                salaryFrom: value[0],
-                                salaryTo: value[1],
-                            })
-                        }
-                        min={0}
-                        max={100000}
-                        step={1000}
-                        radius="md"
-                        color="blue"
-                        marks={[
-                            { value: 0, label: '0' },
-                            { value: 25000, label: '25K' },
-                            { value: 50000, label: '50K' },
-                            { value: 75000, label: '75K' },
-                            { value: 100000, label: '100K+' },
-                        ]}
-                    />
-                </Paper>
-
-                <Group mt="md" gap="sm">
-                    <Button
-                        variant="filled"
-                        fullWidth
-                        onClick={onReset}
-                        radius="md"
-                        color="gray"
-                        leftSection={<IconX size={16} />}
-                    >
-                        {t('resetFilters')}
-                    </Button>
-                </Group>
-            </Stack>
-        </ScrollArea>
     );
 }

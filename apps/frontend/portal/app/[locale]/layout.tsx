@@ -1,3 +1,4 @@
+import { ColorSchemeScript } from '@mantine/core';
 import { logger } from '@shega/shared';
 import { AuthProvider } from '@shega/ui';
 import { getUserAction } from 'app/_api/get-user-action';
@@ -12,7 +13,7 @@ import QueryProviders from 'providers/Query.provider';
 
 import type { ReactNode } from 'react';
 import { cn } from 'utility/cn';
-import { generateColors, lightenHexColor } from 'utility/colors';
+import { generateColors } from 'utility/colors';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -43,7 +44,7 @@ export default async function RootLayout({
     const styles: Record<string, string> = {
         '--primary-color-default': defaultTheme,
         '--primary-radius': '8px',
-        backgroundColor: lightenHexColor(defaultTheme, 98) || '#004c4c',
+        color: 'var(--mantine-color-text)',
     };
 
     colorArray.forEach((color, index) => {
@@ -51,8 +52,11 @@ export default async function RootLayout({
     });
     return (
         <html lang="en">
+            <head>
+                <ColorSchemeScript />
+            </head>
             <body
-                className={cn('h-screen w-full', inter.className)}
+                className={cn(' w-full', inter.className)}
                 style={styles}
                 suppressHydrationWarning={true}
             >

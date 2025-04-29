@@ -31,7 +31,7 @@ export function UserMenu() {
     return (
         <Menu shadow="md" width={280}>
             <Menu.Target>
-                <Group gap="xs" className="cursor-pointer">
+                <Group gap="xs" className="cursor-pointer" visibleFrom="md">
                     <Avatar
                         size={isMobile ? 'sm' : 'md'}
                         radius="xl"
@@ -46,7 +46,7 @@ export function UserMenu() {
                                 {user.firstName} {user.middleName}
                             </Text>
                             <Text size="xs" c="dimmed">
-                                {user?.updatedBy}
+                                {user?.user?.email}
                             </Text>
                         </div>
                     )}

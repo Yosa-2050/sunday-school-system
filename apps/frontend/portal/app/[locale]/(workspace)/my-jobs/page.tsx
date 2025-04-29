@@ -5,6 +5,7 @@ import {
     Badge,
     Box,
     Button,
+    Card,
     Container,
     Grid,
     Group,
@@ -73,8 +74,8 @@ export default function MyJobsPage() {
     });
 
     return (
-        <Container size="xl" className="py-8">
-            <Stack gap="xl">
+        <Container size="xl" className="py-8 !h-full">
+            <Stack gap="xl" h="100%">
                 <Group justify="space-between" align="center">
                     <div>
                         <Title order={2} className="text-gray-900">
@@ -93,7 +94,7 @@ export default function MyJobsPage() {
                     </Button>
                 </Group>
 
-                <Paper
+                <Card
                     withBorder
                     p="md"
                     className="relative min-h-[400px]"
@@ -108,8 +109,8 @@ export default function MyJobsPage() {
                     <Tabs value={activeTab} onChange={setActiveTab}>
                         <Tabs.List>
                             <Tabs.Tab value="all">All Applications</Tabs.Tab>
-                            <Tabs.Tab value="PENDING">Pending</Tabs.Tab>
-                            <Tabs.Tab value="APPROVED">Approved</Tabs.Tab>
+                            <Tabs.Tab value="PENDING">Application</Tabs.Tab>
+                            <Tabs.Tab value="APPROVED">Contract</Tabs.Tab>
                             <Tabs.Tab value="SHORTLISTED">Shortlisted</Tabs.Tab>
                             <Tabs.Tab value="REJECTED">Rejected</Tabs.Tab>
                         </Tabs.List>
@@ -144,7 +145,7 @@ export default function MyJobsPage() {
                             />
                         </Tabs.Panel>
                     </Tabs>
-                </Paper>
+                </Card>
             </Stack>
         </Container>
     );

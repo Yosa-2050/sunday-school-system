@@ -45,8 +45,13 @@ const baseTheme = ({
     return {
         defaultRadius: radius ?? '8px',
         primaryColor: 'primary',
-        primaryShade: 9,
+        primaryShade: {
+            light: 8,
+            dark: 9,
+        },
         fontFamily: 'var(--font-inter)',
+        white: '#FEFEFE',
+
         headings: {
             fontFamily: 'var(--font-inter)',
         },
@@ -93,6 +98,7 @@ const baseTheme = ({
             Paper: {
                 defaultProps: {
                     withBorder: true,
+                    radius: 'none',
                 },
             },
             Input: {
