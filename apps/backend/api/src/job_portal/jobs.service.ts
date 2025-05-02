@@ -8,6 +8,7 @@ import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.rep
 import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
+import { instanceToPlain } from 'class-transformer';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -31,7 +32,6 @@ import { Experiance } from './entities/experiance.entity';
 import { JobApplication } from './entities/job-application.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-import { instanceToPlain } from 'class-transformer';
 
 export class JobsService {
     constructor(
