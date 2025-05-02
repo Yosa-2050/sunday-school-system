@@ -8,6 +8,7 @@ import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.rep
 import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
+import { instanceToPlain } from 'class-transformer';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -106,7 +107,9 @@ export class JobsService {
             throw new BadRequestException('No applied jobs');
         }
 
-        return existingApp;
+        return instanceToPlain(existingApp, {
+            groups: ['internal'], // will include createdAt
+        });
     }
 
     async jobsAppliedByJobId(id: string) {
