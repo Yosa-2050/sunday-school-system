@@ -8,6 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import {
@@ -37,6 +39,8 @@ export class UsersService {
         private userRoleRepo: Repository<UserRoles>,
         @Inject(PasswordService) private passwordService: PasswordService,
         private readonly queryBuilderService: QueryBuilderService,
+        @Inject(NotificationService)
+        private notificationService: NotificationService,
     ) {}
 
     async createMainAdministrator(createUserDto: CreateUserDto) {
@@ -162,15 +166,114 @@ export class UsersService {
         isUserActive: boolean,
         note: string,
     ) {
-        const update = await this.userRepo.preload({
+        const updatedUser = await this.userRepo.preload({
             id,
             isActive: isUserActive,
             note: note,
         });
-        if (!update) {
+        if (!updatedUser) {
             throw new BadRequestException('User not found');
         }
-        return this.userRepo.save(update);
+
+        //prepare email template
+        let emailTemplate = null;
+        const user = await this.findById(updatedUser.id);
+        //for activate
+        if (isUserActive) {
+            emailTemplate = await this.notificationService.getTemplate(
+                'userActivateEmailTemplate',
+                {
+                    firstName: user.profile.firstName,
+                    email: user.email,
+                    //  url:'',
+                },
+                {
+                    fullName: `${user.profile.firstName} ${user.profile.middleName} ${user.profile.lastName}`,
+                },
+            );
+        }
+        //for deactivate
+        if (!isUserActive) {
+            emailTemplate = await this.notificationService.getTemplate(
+                'userDeactivateEmailTemplate',
+                {
+                    firstName: user.profile.firstName,
+                    email: user.email,
+                    reasonForDeactivate: note,
+                },
+                {
+                    fullName: `${user.profile.firstName} ${user.profile.middleName} ${user.profile.lastName}`,
+                },
+            );
+        }
+
+        //send email
+        this.notificationService.send({
+            channel: NotificationChannel.Email,
+            content: emailTemplate.content,
+            to: user.email,
+            subject: emailTemplate.subject,
+            reference: user.id,
+        });
+
+        return this.userRepo.save(updatedUser);
+    }
+
+    async setUserActivationStatusFromOrg(
+        id: string,
+        isUserActive: boolean,
+        organizationName: string,
+        note: string,
+    ) {
+        const updatedUser = await this.userRepo.preload({
+            id,
+            isActive: isUserActive,
+            note: note,
+        });
+        if (!updatedUser) {
+            throw new BadRequestException('User not found');
+        }
+
+        //prepare email template
+        let emailTemplate = null;
+        const user = await this.findById(updatedUser.id);
+        //for activate
+        if (isUserActive) {
+            emailTemplate = await this.notificationService.getTemplate(
+                'orgActivateEmailTemplate',
+                {
+                    contactPerson: user.profile.firstName,
+                },
+                {
+                    organizationName: organizationName,
+                },
+            );
+        }
+        //for deactivate
+        if (!isUserActive) {
+            emailTemplate = await this.notificationService.getTemplate(
+                'orgDeactivateEmailTemplate',
+                {
+                    contactPerson: user.profile.firstName,
+                    reasonFordeactivate: note,
+                },
+                {
+                    organizationName: organizationName,
+                },
+            );
+        }
+
+        //send email
+        //TODO: In future, we will send an email to the contact person from multiple employees in specific organization
+        this.notificationService.send({
+            channel: NotificationChannel.Email,
+            content: emailTemplate.content,
+            to: user.email,
+            subject: emailTemplate.subject,
+            reference: user.id,
+        });
+
+        return this.userRepo.save(updatedUser);
     }
 
     remove(id: string) {

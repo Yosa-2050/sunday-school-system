@@ -400,6 +400,7 @@ export class OrganizationService {
         note: string,
     ) {
         const isIncludeEmployeesBoolean = isIncludeEmployees === 'true';
+        const org = await this.organizationRepo.findOneBy({ id: orgId });
         //activate/deactivate users if included employees in the request
         if (isIncludeEmployeesBoolean) {
             const isUserActive = isActivateProcess;
@@ -418,9 +419,10 @@ export class OrganizationService {
             }
 
             for (const user of users) {
-                this.usersService.setUserActivationStatus(
+                this.usersService.setUserActivationStatusFromOrg(
                     user.id,
                     isUserActive,
+                    org.name,
                     note,
                 );
             }
