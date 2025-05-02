@@ -31,6 +31,7 @@ import { Experiance } from './entities/experiance.entity';
 import { JobApplication } from './entities/job-application.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+import { instanceToPlain } from 'class-transformer';
 
 export class JobsService {
     constructor(
@@ -106,7 +107,9 @@ export class JobsService {
             throw new BadRequestException('No applied jobs');
         }
 
-        return existingApp;
+        return instanceToPlain(existingApp, {
+            groups: ['internal'], // will include createdAt
+        });
     }
 
     async jobsAppliedByJobId(id: string) {
