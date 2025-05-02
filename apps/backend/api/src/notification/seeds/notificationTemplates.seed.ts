@@ -3,9 +3,13 @@ import { getForgotPwdEmailTemplate } from './templates/forgotPwdEmailTemplate';
 import { getJobApplicationEmailTemplate } from './templates/jobApplicationEmailTemplate';
 import { getJobPostApprovedEmailTemplate } from './templates/jobPostApprovedEmailTemplate';
 import { getJobPostDeclinedEmailTemplate } from './templates/jobPostDeclinedEmailTemplate';
+import { getOrgActivateEmailTemplate } from './templates/orgActivateEmailTemplate';
+import { getOrgDeactivateEmailTemplate } from './templates/orgDeactivateEmailTemplate';
 import { getOrgRegistrationApprovedEmailTemplate } from './templates/orgRegistrationApprovedEmailTemplate';
 import { getOrgRegistrationDeclinedEmailTemplate } from './templates/orgRegistrationDeclinedEmailTemplate';
 import { getSignupEmailTemplate } from './templates/signupEmailTemplate';
+import { getUserActivateEmailTemplate } from './templates/userActivateEmailTemplate';
+import { getUserDeactivateEmailTemplate } from './templates/userDeactivateEmailTemplate';
 
 export const NotificationTemplatesSeedData = [
     {
@@ -54,6 +58,32 @@ export const NotificationTemplatesSeedData = [
         content: getCleanedHtmlString(
             getOrgRegistrationDeclinedEmailTemplate(),
         ),
+    },
+
+    {
+        channelType: NotificationChannel.Email,
+        templateName: 'userActivateEmailTemplate',
+        subject: 'Account Activation - {{fullName}}',
+        content: getCleanedHtmlString(getUserActivateEmailTemplate()),
+    },
+    {
+        channelType: NotificationChannel.Email,
+        templateName: 'userDeactivateEmailTemplate',
+        subject: 'Account Deactivation - {{fullName}}',
+        content: getCleanedHtmlString(getUserDeactivateEmailTemplate()),
+    },
+
+    {
+        channelType: NotificationChannel.Email,
+        templateName: 'orgActivateEmailTemplate',
+        subject: ' Account Activation - {{organizationName}}',
+        content: getCleanedHtmlString(getOrgActivateEmailTemplate()),
+    },
+    {
+        channelType: NotificationChannel.Email,
+        templateName: 'orgDeactivateEmailTemplate',
+        subject: ' Account Deactivation - {{organizationName}}',
+        content: getCleanedHtmlString(getOrgDeactivateEmailTemplate()),
     },
 ];
 

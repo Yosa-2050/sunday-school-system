@@ -163,7 +163,7 @@ export class OrganizationController {
 
     @Roles(UserRoleType.SuperAdmin)
     @Put('activate/:orgId/:isIncludeEmployees')
-    activateUser(
+    activateOrganization(
         @Param('orgId') orgId: string,
         @Param('isIncludeEmployees') isIncludeEmployees: string,
     ) {
@@ -178,7 +178,7 @@ export class OrganizationController {
 
     @Roles(UserRoleType.SuperAdmin)
     @Put('deactivate/:orgId/:isIncludeEmployees')
-    deactivateUser(
+    deactivateOrganization(
         @Param('orgId') orgId: string,
         @Param('isIncludeEmployees') isIncludeEmployees: string,
         @Body() dto: StringRequestModel,
