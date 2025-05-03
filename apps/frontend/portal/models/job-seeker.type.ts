@@ -29,9 +29,9 @@ export interface Profile {
     // mothersFullName: string;
     birthDate: string | null;
     // dobGregorian: string;
-    gender: string;
+    gender: string | null;
     // marriageStatus: string;
-    title: string;
-    phoneNumber: string;
+    title: string | null;
+    phoneNumber: string | null;
     profile_picture_id?: string;
 }

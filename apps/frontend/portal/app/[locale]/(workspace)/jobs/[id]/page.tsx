@@ -10,14 +10,13 @@ import {
     Box,
     Button,
     Card,
-    Checkbox,
     Container,
     Divider,
-    FileInput,
     Flex,
     Group,
     List,
     LoadingOverlay,
+    Modal,
     Paper,
     Progress,
     Radio,
@@ -35,6 +34,7 @@ import {
     useMantineTheme,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
 import { useAuth } from '@shega/ui';
@@ -47,11 +47,14 @@ import {
     IconFileText,
     IconHelp,
     IconMapPin,
-    IconUpload,
 } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { applyJobs } from 'app/_api/jobs/apply-job';
 import { fetchJobsById } from 'app/_api/jobs/fetch-job-id';
+import {
+    useDownloadProfilePicture,
+    useJobSeekerDetails,
+} from 'app/_api/profile/queries';
 import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
@@ -66,6 +69,8 @@ export default function JobDetailsPage() {
     const [applicationProgress, setApplicationProgress] = useState(60);
     const { user } = useAuth();
     const theme = useMantineTheme();
+    const [opened, { open, close }] = useDisclosure(false);
+    const [cvUrl, setCvUrl] = useState<string | null>(null);
 
     const {
         data: job,
@@ -81,6 +86,12 @@ export default function JobDetailsPage() {
         },
         enabled: !!params.id,
     });
+    const {
+        data: jobSeekerData,
+        isLoading: isJobSeekerDetailLoading,
+        error: jobSeekerError,
+    } = useJobSeekerDetails();
+    const { data: cv } = useDownloadProfilePicture(jobSeekerData?.cv ?? '');
 
     const applyMutation = useMutation({
         mutationFn: () => applyJobs(params.id),
@@ -122,6 +133,12 @@ export default function JobDetailsPage() {
             router.push('/auth/login');
         }
     }, [user, router]);
+
+    const handleViewResume = (file: Blob) => {
+        const url = URL.createObjectURL(file);
+        setCvUrl(url);
+        open();
+    };
 
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
@@ -345,11 +362,7 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             <Stack gap="xs">
-                                                <Title
-                                                    visibleFrom="md"
-                                                    order={4}
-                                                    hiddenFrom="md"
-                                                >
+                                                <Title order={4}>
                                                     Requirements
                                                 </Title>
                                                 <List size="xs" color="dimmed">
@@ -400,11 +413,7 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             <Stack gap="xs">
-                                                <Title
-                                                    visibleFrom="md"
-                                                    order={4}
-                                                    hiddenFrom="md"
-                                                >
+                                                <Title order={4}>
                                                     Responsibilities
                                                 </Title>
                                                 <List size="xs" color="dimmed">
@@ -457,11 +466,7 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             <Stack gap="xs">
-                                                <Title
-                                                    visibleFrom="md"
-                                                    order={4}
-                                                    hiddenFrom="md"
-                                                >
+                                                <Title order={4}>
                                                     Benefits
                                                 </Title>
                                                 <List size="xs" color="dimmed">
@@ -513,11 +518,7 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             <Stack gap="xs">
-                                                <Title
-                                                    visibleFrom="md"
-                                                    order={4}
-                                                    hiddenFrom="md"
-                                                >
+                                                <Title order={4}>
                                                     Skills & Expertise
                                                 </Title>
                                                 <Group gap="xs">
@@ -726,11 +727,7 @@ export default function JobDetailsPage() {
                                                 <Group
                                                     justify={'space-between'}
                                                 >
-                                                    <Title
-                                                        visibleFrom="md"
-                                                        order={4}
-                                                        hiddenFrom="md"
-                                                    >
+                                                    <Title order={4}>
                                                         Documents
                                                     </Title>
                                                     <Tooltip label="Upload your resume and any other relevant documents. Accepted formats: PDF, DOC, DOCX. Maximum 5MB per file.">
@@ -746,17 +743,11 @@ export default function JobDetailsPage() {
                                                     {[
                                                         {
                                                             id: 1,
-                                                            name: 'Alex_Johnson_Resume.pdf',
+                                                            name: 'CV',
                                                             size: '1.2 MB',
                                                             type: 'resume',
                                                             uploaded: true,
-                                                        },
-                                                        {
-                                                            id: 2,
-                                                            name: 'Portfolio_2023.pdf',
-                                                            size: '3.7 MB',
-                                                            type: 'portfolio',
-                                                            uploaded: true,
+                                                            file: cv,
                                                         },
                                                     ].map((file) => (
                                                         <Paper
@@ -769,7 +760,20 @@ export default function JobDetailsPage() {
                                                                     'space-between'
                                                                 }
                                                             >
-                                                                <Group>
+                                                                <Group
+                                                                    style={{
+                                                                        cursor: 'pointer',
+                                                                    }}
+                                                                    onClick={() => {
+                                                                        if (
+                                                                            cv
+                                                                        ) {
+                                                                            handleViewResume(
+                                                                                cv,
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                >
                                                                     <IconFileText
                                                                         size={
                                                                             16
@@ -805,33 +809,23 @@ export default function JobDetailsPage() {
                                                                         </Badge>
                                                                     )}
                                                                 </Group>
-                                                                <Button
-                                                                    variant="subtle"
-                                                                    color="red"
-                                                                    size="xs"
-                                                                >
-                                                                    Remove
-                                                                </Button>
                                                             </Group>
                                                         </Paper>
                                                     ))}
 
-                                                    <FileInput
-                                                        placeholder="Drop files here or click to upload"
-                                                        leftSection={
-                                                            <IconUpload
-                                                                size={14}
-                                                            />
-                                                        }
-                                                        accept=".pdf,.doc,.docx"
-                                                        description="Attach additional documents (optional)"
-                                                        size="xs"
-                                                    />
+                                                    {/* <FileInput
+                            placeholder="Drop files here or click to upload"
+                            leftSection={<IconUpload size={14} />}
+                            accept=".pdf,.doc,.docx"
+                            description="Attach additional documents (optional)"
+                            size="xs"
+                            hidden
+                          /> */}
                                                 </Stack>
                                             </Stack>
 
                                             {/* Cover Letter */}
-                                            <Stack gap="sm">
+                                            <Stack gap="sm" hidden>
                                                 <Group
                                                     justify={'space-between'}
                                                 >
@@ -865,34 +859,27 @@ export default function JobDetailsPage() {
                                             </Stack>
 
                                             {/* Legal */}
-                                            {!job?.applied && (
-                                                <Checkbox
-                                                    label={
-                                                        <>
-                                                            I agree to the terms
-                                                            and conditions. By
-                                                            applying, you agree
-                                                            to our{' '}
-                                                            <Anchor
-                                                                href="#"
-                                                                size="xs"
-                                                            >
-                                                                Privacy Policy
-                                                            </Anchor>{' '}
-                                                            and{' '}
-                                                            <Anchor
-                                                                href="#"
-                                                                size="xs"
-                                                            >
-                                                                Terms of Service
-                                                            </Anchor>
-                                                        </>
-                                                    }
-                                                    defaultChecked
-                                                    required
-                                                    size="xs"
-                                                />
-                                            )}
+                                            {/* {!job?.applied && (
+                        <Checkbox
+                          label={
+                            <>
+                              I agree to the terms and conditions. By applying,
+                              you agree to our{" "}
+                              <Anchor href="/legal/privacy" size="xs">
+                                Privacy Policy
+                              </Anchor>{" "}
+                              and{" "}
+                              <Anchor href="/legal/terms" size="xs">
+                                Terms of Service
+                              </Anchor>
+                            </>
+                          }
+                          defaultChecked
+                          required
+                          size="xs"
+                          hidden
+                        />
+                      )} */}
 
                                             <Group grow>
                                                 {!job?.applied && (
@@ -1008,6 +995,7 @@ export default function JobDetailsPage() {
                                         onClick={() =>
                                             setActiveTab('application')
                                         }
+                                        hidden
                                     >
                                         Continue Application
                                     </Button>
@@ -1053,6 +1041,7 @@ export default function JobDetailsPage() {
                                         variant="outline"
                                         fullWidth
                                         size="xs"
+                                        hidden
                                     >
                                         View company profile
                                     </Button>
@@ -1139,13 +1128,14 @@ export default function JobDetailsPage() {
                                         variant="outline"
                                         fullWidth
                                         size="xs"
+                                        hidden
                                     >
                                         View more jobs
                                     </Button>
                                 </Stack>
                             </Card>
 
-                            <Card>
+                            <Card hidden>
                                 <Stack gap="sm">
                                     <Title order={4}>Application Tips</Title>
                                     <Stack gap="xs">
@@ -1186,6 +1176,26 @@ export default function JobDetailsPage() {
             </Container>
 
             <Footer />
+
+            <Modal
+                opened={opened}
+                onClose={close}
+                title="View Resume"
+                size="xl"
+                centered
+            >
+                {cvUrl && (
+                    <iframe
+                        src={cvUrl}
+                        style={{
+                            width: '100%',
+                            height: '80vh',
+                            border: 'none',
+                        }}
+                        title="Resume Preview"
+                    />
+                )}
+            </Modal>
         </>
     );
 }

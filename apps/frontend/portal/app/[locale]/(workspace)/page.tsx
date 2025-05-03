@@ -273,7 +273,7 @@ function JobList({ filters }: { filters: JobFilters }) {
                     radius="md"
                     shadow="sm"
                     padding={isMobile ? 'sm' : 'lg'}
-                    className="hover:shadow-lg transition-shadow duration-300 border border-gray-200"
+                    className="hover:shadow-lg transition-shadow duration-300 border border-gray-200 max-h-[300px] overflow-hidden"
                 >
                     <Group justify="space-between" align="flex-start">
                         <Group gap="sm">
@@ -326,9 +326,21 @@ function JobList({ filters }: { filters: JobFilters }) {
                         <div
                             // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                             dangerouslySetInnerHTML={{
-                                __html: job.description,
+                                __html: job.description.replace(
+                                    /<[^>]+>/g,
+                                    ' ',
+                                ), // Remove HTML tags
                             }}
-                            className="line-clamp-2 text-sm text-gray-600"
+                            className="text-sm text-gray-600"
+                            style={{
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxHeight: '3em', // Fallback for line clamp
+                                lineHeight: '1.5em',
+                            }}
                         />
                     </TypographyStylesProvider>
 

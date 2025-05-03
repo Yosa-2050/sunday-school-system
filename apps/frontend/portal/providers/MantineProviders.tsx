@@ -151,7 +151,7 @@ const baseTheme = ({
                 styles: {
                     body: {
                         paddingTop: 16,
-                        backgroundColor,
+                        // backgroundColor,
                     },
                 },
             },

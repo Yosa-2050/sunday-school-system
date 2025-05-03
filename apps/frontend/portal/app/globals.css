@@ -85,13 +85,9 @@
 }
 
 :root[data-mantine-color-scheme="light"] {
-    --mantine-color-body: var(--color-primary-9) !important;
+    --mantine-color-body: var(--color-gray-50) !important;
 }
 
-body[data-mantine-color-scheme="light"] {
-    background-color: var(--primary-color-2) !important;
-}
-
-body[data-mantine-color-scheme="dark"] {
+:root[data-mantine-color-scheme="dark"] {
     background-color: var(--mantine-color-body) !important;
 }

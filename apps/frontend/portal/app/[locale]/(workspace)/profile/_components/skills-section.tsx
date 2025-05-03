@@ -2,9 +2,9 @@
 
 import type { Skill } from '@/lib/types';
 import {
+    ActionIcon,
     Badge,
     Box,
-    Button,
     Card,
     Divider,
     Flex,
@@ -34,14 +34,16 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
                         <Title order={4}>
                             Skills <Badge>{skills.length}</Badge>
                         </Title>
-                        <Button
-                            leftSection={<IconPlus size={16} />}
+                        <ActionIcon
                             variant="light"
-                            size="sm"
+                            color="blue"
+                            size="lg"
+                            radius="xl"
                             onClick={handleAddSkills}
+                            aria-label="Add Skills"
                         >
-                            Add
-                        </Button>
+                            <IconPlus size={18} />
+                        </ActionIcon>
                     </Group>
 
                     <Divider />

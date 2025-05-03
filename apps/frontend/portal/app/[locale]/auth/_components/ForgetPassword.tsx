@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Anchor,
     Button,
+    Card,
     Container,
     Group,
     Paper,
@@ -73,38 +74,42 @@ export default function ForgetPassword() {
     };
 
     return (
-        <Container size={420} my={40}>
-            <Title ta="center">{t('forgotPassword.title')}</Title>
-            <Text color="dimmed" size="sm" ta="center" mt={5}>
-                {t('forgotPassword.subtitle')}
-            </Text>
+        <Container size={'sm'} my={40}>
+            <Card>
+                <Title ta="center">{t('forgotPassword.title')}</Title>
+                <Text color="dimmed" size="sm" ta="center" mt={5}>
+                    {t('forgotPassword.subtitle')}
+                </Text>
 
-            <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <TextInput
-                        label={t('forgotPassword.emailLabel')}
-                        placeholder={t('forgotPassword.emailPlaceholder')}
-                        required
-                        error={errors.username ? errors.username.message : null}
-                        {...register('username')}
-                    />
+                <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <TextInput
+                            label={t('forgotPassword.emailLabel')}
+                            placeholder={t('forgotPassword.emailPlaceholder')}
+                            required
+                            error={
+                                errors.username ? errors.username.message : null
+                            }
+                            {...register('username')}
+                        />
 
-                    <Group justify="space-between" mt="lg">
-                        <Anchor href="/auth/login" size="sm">
-                            {t('forgotPassword.backToLogin')}
-                        </Anchor>
-                    </Group>
+                        <Group justify="space-between" mt="lg">
+                            <Anchor href="/auth/login" size="sm">
+                                {t('forgotPassword.backToLogin')}
+                            </Anchor>
+                        </Group>
 
-                    <Button
-                        fullWidth
-                        mt="xl"
-                        type="submit"
-                        loading={mutation.isPending}
-                    >
-                        {t('forgotPassword.sendResetLink')}
-                    </Button>
-                </form>
-            </Paper>
+                        <Button
+                            fullWidth
+                            mt="xl"
+                            type="submit"
+                            loading={mutation.isPending}
+                        >
+                            {t('forgotPassword.sendResetLink')}
+                        </Button>
+                    </form>
+                </Paper>
+            </Card>
         </Container>
     );
 }

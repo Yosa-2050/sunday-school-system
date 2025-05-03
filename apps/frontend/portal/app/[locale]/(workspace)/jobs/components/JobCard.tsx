@@ -26,11 +26,12 @@ interface JobCardProps {
             name: string;
         };
         createdAt: string;
+        postedDate: string | null;
         type: string;
         salaryFrom: number;
         salaryTo: number;
         currency: string;
-        experienceLevel: string;
+        experianceLevel: string;
         description: string;
         applied?: boolean;
         createdDate: string;
@@ -80,7 +81,7 @@ export function JobCard({ job }: JobCardProps) {
     const router = useRouter();
 
     return (
-        <Card className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden">
+        <Card className="group" shadow="sm">
             {/* Featured badge */}
             {job.id === '1' && (
                 <div className="absolute top-0 right-0">
@@ -157,7 +158,9 @@ export function JobCard({ job }: JobCardProps) {
                                     className="mr-1 text-primary"
                                 />
                                 <Text size="xs">
-                                    {getElapsedTime(job.createdDate)}
+                                    {job?.postedDate
+                                        ? getElapsedTime(job.postedDate)
+                                        : getElapsedTime(job.createdDate)}
                                 </Text>
                             </div>
                         </div>
@@ -197,7 +200,7 @@ export function JobCard({ job }: JobCardProps) {
                                 radius="sm"
                                 size="xs"
                             >
-                                {job.experienceLevel || 'Any Experience'}
+                                {job.experianceLevel || 'Any Experience'}
                             </Badge>
                         </Group>
 
@@ -208,7 +211,12 @@ export function JobCard({ job }: JobCardProps) {
                                     lineClamp={2}
                                     className="text-gray-600"
                                 >
-                                    {parse(job.description)}
+                                    {parse(
+                                        job.description.replace(
+                                            /<[^>]+>/g,
+                                            ' ',
+                                        ),
+                                    )}
                                 </Text>
                             </TypographyStylesProvider>
                         </Box>
