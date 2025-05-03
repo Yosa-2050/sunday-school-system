@@ -4,6 +4,8 @@ import {
     NotImplementedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DateService } from '@shega/Utilities/date.service';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -41,8 +43,6 @@ import { JobDescription } from './entities/job-description.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { DateService } from '@shega/Utilities/date.service';
 
 @Injectable()
 export class JobPortalService {
