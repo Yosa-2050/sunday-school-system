@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import {
     BaseEntity,
     Column,
@@ -24,8 +24,7 @@ export abstract class BaseModel extends BaseEntity {
     @Column({ nullable: true })
     updatedBy: string;
 
-    @Exclude()
-    @Expose({ groups: ['internal'] })
+    //@Exclude()
     @Column({ nullable: true })
     createdAt: Date;
 
