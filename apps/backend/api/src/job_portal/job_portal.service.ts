@@ -69,7 +69,7 @@ export class JobPortalService {
         private readonly passwordService: PasswordService,
         private readonly profileService: ProfileService,
         private readonly notificationService: NotificationService,
-        private readonly dateService: DateService
+        private readonly dateService: DateService,
     ) {}
 
     async createJobSeeker(dto: CreateBasicUserDto) {
@@ -464,7 +464,10 @@ export class JobPortalService {
         const updatedJob = await this.jobRepo.update(id, {
             status,
             notes: note,
-            postedDate: status === ApprovalType.Approved ? this.dateService.getCurrentDate() : null
+            postedDate:
+                status === ApprovalType.Approved
+                    ? this.dateService.getCurrentDate()
+                    : null,
         });
 
         const result = UtilityServices.EnsureUpdated(updatedJob, id);
