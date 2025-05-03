@@ -595,7 +595,7 @@ export const useWorkplaceTypes = () => {
     });
 };
 
-const updateProfile = (data: Profile, id: string) => {
+const updateProfile = (data: Partial<Profile>, id: string) => {
     return fetcher(`/profile/${id}`, {
         body: JSON.stringify(data),
         method: 'PATCH',
@@ -606,7 +606,7 @@ export const useUpdateProfile = (id: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data: Profile) => updateProfile(data, id),
+        mutationFn: (data: Partial<Profile>) => updateProfile(data, id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
         },

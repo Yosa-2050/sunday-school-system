@@ -4,10 +4,10 @@ import { useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Anchor,
-    Box,
     Button,
     Flex,
     Group,
+    Paper,
     PasswordInput,
     Stack,
     Text,
@@ -124,7 +124,7 @@ const Login = () => {
     };
 
     return (
-        <Box className="flex items-center justify-center bg-white shadow rounded w-full md:w-1/2">
+        <Paper className="flex items-center justify-center  shadow rounded w-full md:w-1/2">
             <div className="relative w-full p-8">
                 <Flex direction={'column'} align="center">
                     <Title className="text-xl text-start">{t('title')}</Title>
@@ -177,7 +177,7 @@ const Login = () => {
                     </Stack>
                 </form>
             </div>
-        </Box>
+        </Paper>
     );
 };
 

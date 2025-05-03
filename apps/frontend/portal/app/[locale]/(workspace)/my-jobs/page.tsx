@@ -24,6 +24,7 @@ import { useState } from 'react';
 interface JobApplication {
     id: string;
     status: string;
+    createdAt: string;
     job: {
         id: string;
         title: string;
@@ -40,7 +41,7 @@ interface JobApplication {
 export default function MyJobsPage() {
     const t = useTranslations('my-jobs');
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<string | null>('all');
+    const [activeTab, setActiveTab] = useState<string | null>('PENDING');
 
     const { data, isLoading } = useQuery({
         queryKey: ['applied-jobs'],
@@ -78,9 +79,7 @@ export default function MyJobsPage() {
             <Stack gap="xl" h="100%">
                 <Group justify="space-between" align="center">
                     <div>
-                        <Title order={2} className="text-gray-900">
-                            {t('title')}
-                        </Title>
+                        <Title order={2}>{t('title')}</Title>
                         <Text c="dimmed" size="sm" mt={4}>
                             {t('subtitle')}
                         </Text>
@@ -108,26 +107,12 @@ export default function MyJobsPage() {
 
                     <Tabs value={activeTab} onChange={setActiveTab}>
                         <Tabs.List>
-                            <Tabs.Tab value="all">All Applications</Tabs.Tab>
                             <Tabs.Tab value="PENDING">Application</Tabs.Tab>
-                            <Tabs.Tab value="APPROVED">Contract</Tabs.Tab>
                             <Tabs.Tab value="SHORTLISTED">Shortlisted</Tabs.Tab>
                             <Tabs.Tab value="REJECTED">Rejected</Tabs.Tab>
                         </Tabs.List>
 
-                        <Tabs.Panel value="all" pt="md">
-                            <ApplicationsList
-                                applications={filteredApplications}
-                            />
-                        </Tabs.Panel>
-
                         <Tabs.Panel value="PENDING" pt="md">
-                            <ApplicationsList
-                                applications={filteredApplications}
-                            />
-                        </Tabs.Panel>
-
-                        <Tabs.Panel value="APPROVED" pt="md">
                             <ApplicationsList
                                 applications={filteredApplications}
                             />
@@ -207,10 +192,7 @@ function ApplicationsList({
                             <Group justify="space-between" align="flex-start">
                                 <div className="flex-1">
                                     <Group justify="space-between" mb="xs">
-                                        <Title
-                                            order={4}
-                                            className="text-gray-900"
-                                        >
+                                        <Title order={4}>
                                             {application.job.title}
                                         </Title>
                                         <Badge
@@ -238,9 +220,11 @@ function ApplicationsList({
                                     </Group>
                                     <Text size="sm" c="dimmed">
                                         Applied on:{' '}
-                                        {new Date(
-                                            application.job.postedDate || '',
-                                        ).toLocaleDateString()}
+                                        {application.createdAt
+                                            ? new Date(
+                                                  application.createdAt || '',
+                                              ).toLocaleDateString()
+                                            : 'N/A'}
                                     </Text>
                                 </div>
                                 <Button

@@ -87,8 +87,8 @@ export function HeaderMenu() {
             href={item.href}
             className={`px-3 py-2 transition-colors duration-200 ${
                 isActive(item)
-                    ? 'border-b-2 border-[var(--primary-color-5)] text-[var(--primary-color-text)] font-medium'
-                    : 'text-gray-600 hover:border-b-2 hover:border-[var(--primary-color-1)] hover:text-[var(--primary-color-text)]'
+                    ? 'border-b-2 border-[var(--primary-color-5)] font-medium'
+                    : ' hover:border-b-2 hover:border-[var(--primary-color-1)] '
             }`}
             onClick={close}
         >

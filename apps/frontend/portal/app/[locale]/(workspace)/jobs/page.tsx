@@ -13,8 +13,8 @@ import {
     Grid,
     Group,
     LoadingOverlay,
+    Pagination,
     RangeSlider,
-    ScrollArea,
     Select,
     Stack,
     Text,
@@ -23,42 +23,31 @@ import {
 } from '@mantine/core';
 import { useDebouncedCallback, useMediaQuery } from '@mantine/hooks';
 import { PER_PAGE, entityParamSchema } from '@shega/shared';
-import { EntityPagination, useAuth } from '@shega/ui';
+import { useAuth } from '@shega/ui';
 import {
     IconBriefcase,
     IconFilter,
     IconMapPin,
     IconSearch,
+    IconX,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import type { Filter } from 'app/_api/jobs/fetch-jobs';
 import { fetchCities, fetchCountries } from 'app/_api/location/fetch-countries';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
+import { cn } from 'utility/cn';
 import { JobCard } from './components/JobCard';
-
-// Types
-interface JobFilters {
-    location: string;
-    jobType: string[];
-    salaryRange: [number, number];
-    experienceLevel: string[];
-    keyword: string;
-}
-
-interface JobType {
-    value: string;
-    label: string;
-}
 
 interface ExperienceLevel {
     value: string;
     label: string;
 }
 
-const JOB_TYPES: JobType[] = [
+const JOB_TYPES = [
     { value: 'FULL_TIME', label: 'Full-time' },
     { value: 'PART_TIME', label: 'Part-time' },
     { value: 'CONTRACT', label: 'Contract' },
@@ -69,19 +58,6 @@ const EXPERIENCE_LEVELS: ExperienceLevel[] = [
     { value: 'ENTRY', label: 'Entry Level' },
     { value: 'MID', label: 'Mid Level' },
     { value: 'SENIOR', label: 'Senior Level' },
-];
-
-const LOCATIONS = [
-    'Addis Ababa',
-    'Remote',
-    'Dire Dawa',
-    'Hawassa',
-    'Gondar',
-    'Mekelle',
-    'Adama',
-    'Jimma',
-    'Bahir Dar',
-    'Other',
 ];
 
 const calculateActiveFilters = (filters: Filter) => {
@@ -121,6 +97,7 @@ const FilterSidebar = ({
     handleSearch,
     handleApplyFilters,
 }: FilterSidebarProps) => {
+    const searchParam = useSearchParams();
     const t = useTranslations('jobListing');
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { data: countries } = useQuery({
@@ -139,179 +116,215 @@ const FilterSidebar = ({
     });
 
     return (
-        <Card p="lg" className=" sticky top-2" withBorder={false}>
-            <ScrollArea h={isMobile ? '70vh' : 700} aria-orientation="vertical">
-                <Stack gap="md">
-                    <Box>
-                        <Text size="sm" fw={500} mb="xs">
-                            {t('keyword')}
-                        </Text>
-                        <TextInput
-                            value={filters.title ?? ''}
-                            onChange={(e) =>
-                                setFilters({
-                                    ...filters,
-                                    title: e.target.value,
-                                })
-                            }
-                            placeholder="Search jobs..."
-                            leftSection={<IconSearch size={16} />}
-                            radius="md"
-                        />
-                    </Box>
+        <Box className="sticky top-24" hidden={isMobile}>
+            <Card p="lg" withBorder={false} w={300}>
+                <Box
+                    h={isMobile ? '70vh' : 700}
+                    aria-orientation="vertical"
+                    className="overflow-x-hidden"
+                >
+                    <Stack gap="md">
+                        <Box>
+                            <Text size="sm" fw={500} mb="xs">
+                                {t('keyword')}
+                            </Text>
+                            <TextInput
+                                value={filters.title ?? ''}
+                                onChange={(e) =>
+                                    setFilters({
+                                        ...filters,
+                                        title: e.target.value,
+                                    })
+                                }
+                                placeholder="Search jobs..."
+                                leftSection={<IconSearch size={16} />}
+                                radius="md"
+                            />
+                        </Box>
 
-                    <Box>
-                        <Text size="sm" fw={500} mb="xs">
-                            {t('country')}
-                        </Text>
-                        <Select
-                            value={filters.countryId ?? ''}
-                            onChange={(value) =>
-                                setFilters({
-                                    ...filters,
-                                    countryId: value || '',
-                                    cityId: '',
-                                })
-                            }
-                            placeholder="Select Country"
-                            data={
-                                countries?.map((country) => ({
-                                    value: country.id,
-                                    label: country.name,
-                                })) || []
-                            }
-                            leftSection={<IconMapPin size={16} />}
-                            radius="md"
-                            searchable
-                            clearable
-                        />
-                    </Box>
-                    <Box>
-                        <Text size="sm" fw={500} mb="xs">
-                            {t('city')}
-                        </Text>
-                        <Select
-                            value={filters.cityId ?? ''}
-                            onChange={(value) =>
-                                setFilters({
-                                    ...filters,
-                                    cityId: value || '',
-                                })
-                            }
-                            placeholder="Select City"
-                            data={
-                                cities?.map((city) => ({
-                                    value: city.id,
-                                    label: city.name,
-                                })) || []
-                            }
-                            leftSection={<IconMapPin size={16} />}
-                            radius="md"
-                            searchable
-                            clearable
-                            disabled={!countryCode}
-                        />
-                    </Box>
+                        <Box>
+                            <Text size="sm" fw={500} mb="xs">
+                                {t('country')}
+                            </Text>
+                            <Select
+                                value={filters.countryId ?? ''}
+                                onChange={(value) =>
+                                    setFilters({
+                                        ...filters,
+                                        countryId: value || '',
+                                        cityId: '',
+                                    })
+                                }
+                                placeholder="Select Country"
+                                data={
+                                    countries?.map((country) => ({
+                                        value: country.id,
+                                        label: country.name,
+                                    })) || []
+                                }
+                                leftSection={<IconMapPin size={16} />}
+                                radius="md"
+                                searchable
+                                clearable
+                            />
+                        </Box>
+                        <Box>
+                            <Text size="sm" fw={500} mb="xs">
+                                {t('city')}
+                            </Text>
+                            <Select
+                                value={filters.cityId ?? ''}
+                                onChange={(value) =>
+                                    setFilters({
+                                        ...filters,
+                                        cityId: value || '',
+                                    })
+                                }
+                                placeholder="Select City"
+                                data={
+                                    cities?.map((city) => ({
+                                        value: city.id,
+                                        label: city.name,
+                                    })) || []
+                                }
+                                leftSection={<IconMapPin size={16} />}
+                                radius="md"
+                                searchable
+                                clearable
+                                disabled={!countryCode}
+                            />
+                        </Box>
 
-                    <Box>
-                        <Text size="sm" fw={500} mb="xs">
-                            {t('jobType')}
-                        </Text>
-                        <Stack gap="xs">
-                            {JOB_TYPES.map((type) => (
-                                <Checkbox
-                                    key={type.value}
-                                    label={type.label}
-                                    checked={filters.type === type.value}
-                                    onChange={() =>
-                                        handleJobTypeChange(
-                                            filters.type === type.value
-                                                ? ''
-                                                : type.value,
-                                        )
-                                    }
-                                    radius="md"
-                                />
-                            ))}
-                        </Stack>
-                    </Box>
+                        <Box>
+                            <Text size="sm" fw={500} mb="xs">
+                                {t('jobType')}
+                            </Text>
+                            <Stack gap="xs">
+                                {JOB_TYPES.map((type) => (
+                                    <Checkbox
+                                        key={type.value}
+                                        label={type.label}
+                                        checked={filters.type === type.value}
+                                        onChange={() =>
+                                            handleJobTypeChange(
+                                                filters.type === type.value
+                                                    ? ''
+                                                    : type.value,
+                                            )
+                                        }
+                                        radius="md"
+                                    />
+                                ))}
+                            </Stack>
+                        </Box>
 
-                    <Box>
-                        <Text size="sm" fw={500} mb="xs">
-                            {t('experienceLevel')}
-                        </Text>
-                        <Stack gap="xs">
-                            {EXPERIENCE_LEVELS.map((level) => (
-                                <Checkbox
-                                    key={level.value}
-                                    label={level.label}
-                                    checked={
-                                        filters.experianceLevel === level.value
-                                    }
-                                    onChange={() =>
-                                        handleExperienceLevelChange(
+                        <Box>
+                            <Text size="sm" fw={500} mb="xs">
+                                {t('experienceLevel')}
+                            </Text>
+                            <Stack gap="xs">
+                                {EXPERIENCE_LEVELS.map((level) => (
+                                    <Checkbox
+                                        key={level.value}
+                                        label={level.label}
+                                        checked={
                                             filters.experianceLevel ===
-                                                level.value
-                                                ? ''
-                                                : level.value,
-                                        )
-                                    }
-                                    radius="md"
-                                />
-                            ))}
-                        </Stack>
-                    </Box>
+                                            level.value
+                                        }
+                                        onChange={() =>
+                                            handleExperienceLevelChange(
+                                                filters.experianceLevel ===
+                                                    level.value
+                                                    ? ''
+                                                    : level.value,
+                                            )
+                                        }
+                                        radius="md"
+                                    />
+                                ))}
+                            </Stack>
+                        </Box>
 
-                    <Box>
-                        <Group justify="space-between" mb="xs">
-                            <Text size="sm" fw={500}>
-                                {t('salaryRange')}
-                            </Text>
-                            <Text size="xs" c="dimmed">
-                                {(filters.salaryFrom ?? 0).toLocaleString()} -{' '}
-                                {(filters.salaryTo ?? 0).toLocaleString()} ETB
-                            </Text>
-                        </Group>
-                        <RangeSlider
-                            value={[
-                                filters.salaryFrom ?? 0,
-                                filters.salaryTo ?? 0,
-                            ]}
-                            onChange={(value) =>
-                                setFilters({
-                                    ...filters,
-                                    salaryFrom: value[0],
-                                    salaryTo: value[1],
-                                })
-                            }
-                            min={0}
-                            max={100000}
-                            step={1000}
-                            radius="md"
-                            marks={[
-                                { value: 0, label: '0' },
-                                { value: 25000, label: '25K' },
-                                { value: 50000, label: '50K' },
-                                { value: 75000, label: '75K' },
-                                { value: 100000, label: '100K+' },
-                            ]}
-                        />
-                    </Box>
-                </Stack>
-            </ScrollArea>
+                        <Box>
+                            <Group justify="space-between" mb="xs">
+                                <Text size="sm" fw={500}>
+                                    {t('salaryRange')}
+                                </Text>
+                                <Text size="xs" c="dimmed">
+                                    {(filters.salaryFrom ?? 0).toLocaleString()}{' '}
+                                    - {(filters.salaryTo ?? 0).toLocaleString()}{' '}
+                                    ETB
+                                </Text>
+                            </Group>
+                            <RangeSlider
+                                size={'xs'}
+                                value={[
+                                    filters.salaryFrom ?? 0,
+                                    filters.salaryTo ?? 0,
+                                ]}
+                                onChange={(value) =>
+                                    setFilters({
+                                        ...filters,
+                                        salaryFrom: value[0],
+                                        salaryTo: value[1],
+                                    })
+                                }
+                                min={0}
+                                max={100000}
+                                step={1000}
+                                radius="md"
+                                marks={[
+                                    { value: 0, label: '0' },
+                                    { value: 25000, label: '25K' },
+                                    { value: 50000, label: '50K' },
+                                    { value: 75000, label: '75K' },
+                                    { value: 100000, label: '100K+' },
+                                ]}
+                            />
+                        </Box>
+                    </Stack>
+                </Box>
 
-            <Button
-                variant="filled"
-                fullWidth
-                mt="md"
-                onClick={handleApplyFilters}
-                radius="md"
-                // color="blue"
-                leftSection={<IconFilter size={16} />}
-            >
-                {t('applyFilters')}
-            </Button>
-        </Card>
+                <Group grow>
+                    <Button
+                        variant="outline"
+                        fullWidth
+                        mt="md"
+                        onClick={() => {
+                            setFilters({
+                                pagination: {
+                                    page: 1,
+                                    limit: PER_PAGE,
+                                },
+                                title: '',
+                                categoryId: '',
+                                organizationId: '',
+                                cityId: '',
+                                type: '',
+                                experianceLevel: '',
+                                salaryFrom: 0,
+                                salaryTo: 100000,
+                            });
+                            handleApplyFilters();
+                        }}
+                        radius="md"
+                        leftSection={<IconX size={16} />}
+                    >
+                        {t('resetFilters')}
+                    </Button>
+                    <Button
+                        variant="filled"
+                        fullWidth
+                        mt="md"
+                        onClick={handleApplyFilters}
+                        radius="md"
+                        leftSection={<IconFilter size={16} />}
+                    >
+                        {t('applyFilters')}
+                    </Button>
+                </Group>
+            </Card>
+        </Box>
     );
 };
 
@@ -319,6 +332,12 @@ export default function JobsPage() {
     const { user } = useAuth();
     const t = useTranslations('jobListing');
     const router = useRouter();
+    const searchParam = useSearchParams();
+    const [opened, setOpened] = useState(false);
+    const { data, isLoading, error, refetch } = useQuery({
+        queryKey: ['job-seeker-jbs'],
+        queryFn: () => fetchJobs(filters),
+    });
 
     const [entityParams, setEntityParams] = useQueryState(
         'job-seeker-jbs',
@@ -343,7 +362,7 @@ export default function JobsPage() {
         salaryTo: 100000,
     });
 
-    const [opened, setOpened] = useState(false);
+    const [shouldApplyFilters, setShouldApplyFilters] = useState(false);
 
     const handleSearch = useDebouncedCallback((term: string | null) => {
         if (term) {
@@ -356,6 +375,7 @@ export default function JobsPage() {
                     page: 1,
                 },
             }));
+            setShouldApplyFilters(true);
         } else {
             const updatedParams = { ...entityParams };
             updatedParams.s = undefined;
@@ -368,6 +388,7 @@ export default function JobsPage() {
                     page: 1,
                 },
             }));
+            setShouldApplyFilters(true);
         }
     }, 300);
 
@@ -377,10 +398,35 @@ export default function JobsPage() {
         }
     }, [user, router]);
 
-    const { data, isLoading, error, refetch } = useQuery({
-        queryKey: ['job-seeker-jbs'],
-        queryFn: () => fetchJobs(filters),
-    });
+    // biome-ignore lint/correctness/useExhaustiveDependencies(searchParam): intentional
+    // biome-ignore lint/correctness/useExhaustiveDependencies(searchParam.get): intentional
+    useEffect(() => {
+        const initialFilters = {
+            pagination: {
+                page: 1,
+                limit: PER_PAGE,
+            },
+            title: searchParam.get('search') || '',
+            categoryId: '',
+            organizationId: '',
+            cityId: '',
+            type: '',
+            experianceLevel: '',
+            salaryFrom: 0,
+            salaryTo: 100000,
+        };
+
+        setFilters(initialFilters);
+        setShouldApplyFilters(true);
+    }, []);
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies(a): <explanation>
+    useEffect(() => {
+        if (shouldApplyFilters) {
+            handleApplyFilters();
+            setShouldApplyFilters(false);
+        }
+    }, [shouldApplyFilters]);
 
     const handleApplyFilters = () => {
         refetch();
@@ -393,8 +439,6 @@ export default function JobsPage() {
     if (error) {
         return <Text color="red">Error loading jobs</Text>;
     }
-
-    const activeFilters = calculateActiveFilters(filters);
 
     const handleJobTypeChange = (value: string) => {
         setFilters((prev) => ({
@@ -427,11 +471,34 @@ export default function JobsPage() {
         });
     };
 
+    const perPage = PER_PAGE;
+    const total = data?.total ?? 0;
+    const totalPages = Math.ceil(total / perPage);
+    const currentPage = filters.pagination.page;
+    const from = (currentPage - 1) * perPage + 1;
+    const to = Math.min(currentPage * perPage, total);
+    const hideCounter = false;
+
+    const createPageURL = (page: number) => {
+        setFilters((prev) => ({
+            ...prev,
+            pagination: {
+                ...prev.pagination,
+                page,
+            },
+        }));
+        setShouldApplyFilters(true);
+    };
+
     return (
         <>
             <Container size="xl" py="xl">
                 <Grid>
-                    <Grid.Col span={{ base: 12, md: 3 }} visibleFrom="md">
+                    <Grid.Col
+                        span={{ base: 12, md: 3 }}
+                        visibleFrom="md"
+                        // className="sticky top-0"
+                    >
                         <FilterSidebar
                             filters={filters}
                             setFilters={setFilters}
@@ -450,23 +517,20 @@ export default function JobsPage() {
                                 className="flex items-center justify-between w-full p-4"
                                 withBorder={false}
                             >
-                                <div className="flex items-center justify-between gap-3">
-                                    <div className="bg-primary/10 p-2.5 rounded-lg flex items-center justify-center">
+                                <div className="flex items-center justify-between gap-3 w-full">
+                                    <div className="bg-primary/10 p-2.5 rounded-lg flex items-center justify-center gap-1">
                                         <IconBriefcase
-                                            size={20}
+                                            size={25}
                                             className="text-primary"
                                         />
-                                    </div>
-                                    <div>
-                                        <Title
-                                            order={2}
-                                            className="text-gray-900 text-xl"
-                                        >
+                                        <Title order={2} className=" text-xl">
                                             {t('jobListings')}
                                         </Title>
+                                    </div>
+                                    <div>
                                         <Text
                                             size="xs"
-                                            c="dimmed"
+                                            c={'dimmed'}
                                             className="mt-0.5"
                                         >
                                             {data?.total ?? 0} {t('jobsFound')}
@@ -516,8 +580,8 @@ export default function JobsPage() {
                                         <JobCard key={job.id} job={job} />
                                     ))
                                 ) : (
-                                    <Card className="flex flex-col items-center justify-center p-12 bg-gradient-to-br from-gray-50 to-white border-0 animate-fade-in">
-                                        <div className="bg-white p-8 rounded-full mb-8 shadow-lg transform hover:scale-105 transition-transform duration-300">
+                                    <Card shadow="sm">
+                                        <div className=" p-8 rounded-full mb-8 shadow-lg transform hover:scale-105 transition-transform duration-300">
                                             <div className="relative">
                                                 <IconBriefcase
                                                     size={56}
@@ -583,15 +647,30 @@ export default function JobsPage() {
                                 )}
                             </div>
 
-                            <EntityPagination
-                                entity="job-seeker-jbs"
-                                total={data?.total ?? 0}
-                            />
+                            <Box
+                                className={cn(
+                                    'flex items-center mt-6',
+                                    hideCounter
+                                        ? 'justify-center'
+                                        : 'justify-between',
+                                )}
+                            >
+                                <Box className="px-2">
+                                    {from} to {to} of {total} results
+                                </Box>
+                                {total >= perPage ? (
+                                    <Pagination
+                                        size="sm"
+                                        total={totalPages}
+                                        value={currentPage}
+                                        onChange={createPageURL}
+                                    />
+                                ) : null}
+                            </Box>
                         </Stack>
                     </Grid.Col>
                 </Grid>
             </Container>
-
             <Footer />
         </>
     );

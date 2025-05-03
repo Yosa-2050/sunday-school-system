@@ -54,7 +54,7 @@ export default function PersonalInfoSection({
         defaultValues: data,
     });
 
-    const onSubmit = (formData: PersonalInfo) => {
+    const onSubmit = (formData: Partial<PersonalInfo>) => {
         updateProfile(formData);
         setIsEditing(false);
     };
@@ -152,8 +152,6 @@ export default function PersonalInfoSection({
                                                 size="md"
                                                 styles={{
                                                     input: {
-                                                        backgroundColor:
-                                                            '#f8f9fa',
                                                         '&:focus': {
                                                             boxShadow:
                                                                 '0 0 0 3px rgba(34,139,230,0.1)',
@@ -178,8 +176,6 @@ export default function PersonalInfoSection({
                                                 readOnly
                                                 styles={{
                                                     input: {
-                                                        backgroundColor:
-                                                            '#f8f9fa',
                                                         '&:focus': {
                                                             boxShadow:
                                                                 '0 0 0 3px rgba(34,139,230,0.1)',
@@ -204,8 +200,6 @@ export default function PersonalInfoSection({
                                                 size="md"
                                                 styles={{
                                                     input: {
-                                                        backgroundColor:
-                                                            '#f8f9fa',
                                                         '&:focus': {
                                                             boxShadow:
                                                                 '0 0 0 3px rgba(34,139,230,0.1)',
@@ -229,8 +223,6 @@ export default function PersonalInfoSection({
                                                 size="md"
                                                 styles={{
                                                     input: {
-                                                        backgroundColor:
-                                                            '#f8f9fa',
                                                         '&:focus': {
                                                             boxShadow:
                                                                 '0 0 0 3px rgba(34,139,230,0.1)',
@@ -267,8 +259,6 @@ export default function PersonalInfoSection({
                                                             hideOutsideDates
                                                             styles={{
                                                                 input: {
-                                                                    backgroundColor:
-                                                                        '#f8f9fa',
                                                                     '&:focus': {
                                                                         boxShadow:
                                                                             '0 0 0 3px rgba(34,139,230,0.1)',
@@ -318,8 +308,6 @@ export default function PersonalInfoSection({
                                                         size="md"
                                                         styles={{
                                                             input: {
-                                                                backgroundColor:
-                                                                    '#f8f9fa',
                                                                 '&:focus': {
                                                                     boxShadow:
                                                                         '0 0 0 3px rgba(34,139,230,0.1)',
@@ -363,8 +351,6 @@ export default function PersonalInfoSection({
                                                     size="md"
                                                     styles={{
                                                         input: {
-                                                            backgroundColor:
-                                                                '#f8f9fa',
                                                             '&:focus': {
                                                                 boxShadow:
                                                                     '0 0 0 3px rgba(34,139,230,0.1)',
@@ -421,7 +407,7 @@ export default function PersonalInfoSection({
                                         style={{ borderRadius: '8px' }}
                                     >
                                         <Text size="sm" c="blue.7" fw={500}>
-                                            {data.title}
+                                            {data.title ?? 'Not set'}
                                         </Text>
                                     </Box>
                                 </Group>
@@ -433,7 +419,7 @@ export default function PersonalInfoSection({
                                                 <IconUser size={16} />
                                             </Box>
                                             <Text c="dimmed" size="sm">
-                                                {data.gender}
+                                                {data.gender ?? 'Not set'}
                                             </Text>
                                         </Group>
 
@@ -453,7 +439,9 @@ export default function PersonalInfoSection({
                                                 <IconPhone size={16} />
                                             </Box>
                                             <Text c="dimmed" size="sm">
-                                                {data.phoneNumber}
+                                                {data.phoneNumber
+                                                    ? data.phoneNumber
+                                                    : 'Not set'}
                                             </Text>
                                         </Group>
                                     </Group>

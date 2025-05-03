@@ -9,7 +9,7 @@ export type FetchJob = {
 
 export type Response = {
     data: Array<{
-        experienceLevel: string;
+        experianceLevel: string;
         id: string;
         isActive: boolean;
         title: string;
@@ -22,6 +22,7 @@ export type Response = {
         createdAt: string;
         applied: boolean;
         createdDate: string;
+        postedDate: string | null;
         organization: {
             id: string;
             isActive: boolean;

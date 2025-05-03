@@ -90,15 +90,17 @@ export default function EducationSection({
                                 Education
                             </Title>
                         </Group>
-                        <Button
-                            leftSection={<IconPlus size={16} />}
+
+                        <ActionIcon
                             variant="light"
-                            size="sm"
-                            onClick={handleAddEducation}
+                            color="blue"
+                            size="lg"
                             radius="xl"
+                            onClick={handleAddEducation}
+                            aria-label="Add experience"
                         >
-                            Add Education
-                        </Button>
+                            <IconPlus size={18} />
+                        </ActionIcon>
                     </Group>
 
                     <Divider />
@@ -108,7 +110,7 @@ export default function EducationSection({
                             p="xl"
                             style={{
                                 borderRadius: rem(8),
-                                backgroundColor: 'var(--mantine-color-gray-0)',
+                                // backgroundColor: 'var(--mantine-color-gray-0)',
                             }}
                         >
                             <Text c="dimmed" ta="center" fs="italic">

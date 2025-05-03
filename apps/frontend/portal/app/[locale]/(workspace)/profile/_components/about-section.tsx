@@ -4,6 +4,7 @@ import { aboutSchema } from '@/lib/schemas';
 import type { About } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+    ActionIcon,
     Box,
     Button,
     Card,
@@ -13,12 +14,14 @@ import {
     Text,
     Textarea,
     Title,
+    rem,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
     IconCheck,
     IconDeviceFloppy,
     IconPencil,
+    IconPlus,
     IconX,
 } from '@tabler/icons-react';
 import { useUpdateBio } from 'app/_api/profile/queries';
@@ -79,40 +82,63 @@ export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
             <Stack gap="md">
                 <Group justify="space-between">
                     <Title order={4}>About</Title>
-                    {isEditing ? (
-                        <Group>
-                            <Button
-                                leftSection={<IconX size={16} />}
-                                variant="light"
-                                color="red"
-                                size="sm"
-                                onClick={() => {
-                                    reset(data);
-                                    setIsEditing(false);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                leftSection={<IconDeviceFloppy size={16} />}
+                    {(() => {
+                        if (isEditing) {
+                            return (
+                                <Group>
+                                    <Button
+                                        leftSection={<IconX size={16} />}
+                                        variant="light"
+                                        color="red"
+                                        size="sm"
+                                        onClick={() => {
+                                            reset(data);
+                                            setIsEditing(false);
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        leftSection={
+                                            <IconDeviceFloppy size={16} />
+                                        }
+                                        variant="light"
+                                        color="blue"
+                                        size="sm"
+                                        onClick={handleSubmit(onSubmit)}
+                                    >
+                                        Save
+                                    </Button>
+                                </Group>
+                            );
+                        }
+
+                        if (data.bio) {
+                            return (
+                                <Button
+                                    leftSection={<IconPencil size={16} />}
+                                    variant="light"
+                                    size="sm"
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    Edit
+                                </Button>
+                            );
+                        }
+
+                        return (
+                            <ActionIcon
                                 variant="light"
                                 color="blue"
-                                size="sm"
-                                onClick={handleSubmit(onSubmit)}
+                                size="lg"
+                                radius="xl"
+                                onClick={() => setIsEditing(true)}
+                                aria-label="Add experience"
                             >
-                                Save
-                            </Button>
-                        </Group>
-                    ) : (
-                        <Button
-                            leftSection={<IconPencil size={16} />}
-                            variant="light"
-                            size="sm"
-                            onClick={() => setIsEditing(true)}
-                        >
-                            Edit
-                        </Button>
-                    )}
+                                <IconPlus size={18} />
+                            </ActionIcon>
+                        );
+                    })()}
                 </Group>
 
                 <Divider />
@@ -158,9 +184,17 @@ export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
                         )}
                     </>
                 ) : (
-                    <Text style={{ whiteSpace: 'pre-wrap' }}>
-                        No bio provided. Click edit to add your bio.
-                    </Text>
+                    <Box
+                        p="xl"
+                        style={{
+                            borderRadius: rem(8),
+                            //   backgroundColor: "var(--mantine-color-gray-0)",
+                        }}
+                    >
+                        <Text c="dimmed" ta="center" fs="italic">
+                            No bio provided. Click edit to add your bio.
+                        </Text>
+                    </Box>
                 )}
             </Stack>
         </Card>

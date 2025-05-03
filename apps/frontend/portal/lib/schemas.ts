@@ -5,13 +5,16 @@ export const personalInfoSchema = z.object({
     middleName: z.string().min(1, 'Middle name is required'),
     lastName: z.string().min(1, 'Last name is required'),
     birthDate: z.string().nullable(),
-    gender: z.string().min(1, 'Gender is required'),
+    gender: z.string().nullable(),
     // marriageStatus: z.string().min(1, 'Marriage status is required'),
-    title: z.string().min(1, 'Title is required'),
+    title: z.string().nullable(),
     phoneNumber: z
         .string()
-        .min(1, 'Phone number is required')
-        .regex(/^\+?[0-9\s\-()]{10,20}$/, 'Invalid phone number format'),
+        .nullish()
+        .refine(
+            (val) => !val || /^\+?[1-9]\d{1,14}$/.test(val),
+            'Invalid phone number format.',
+        ),
 });
 
 export const aboutSchema = z.object({

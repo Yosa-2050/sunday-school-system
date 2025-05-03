@@ -103,14 +103,27 @@ export default function ResumeSection() {
                 <Stack gap="md">
                     <Group justify="space-between">
                         <Title order={4}>Resume</Title>
-                        <Button
-                            leftSection={<IconPlus size={16} />}
-                            variant="light"
-                            size="sm"
-                            onClick={handleAddCV}
-                        >
-                            {jobSeeker?.cv ? 'Update' : 'Add'} CV
-                        </Button>
+                        {jobSeeker?.cv ? (
+                            <Button
+                                leftSection={<IconPlus size={16} />}
+                                variant="light"
+                                size="sm"
+                                onClick={handleAddCV}
+                            >
+                                Update CV
+                            </Button>
+                        ) : (
+                            <ActionIcon
+                                variant="light"
+                                color="blue"
+                                size="lg"
+                                radius="xl"
+                                onClick={handleAddCV}
+                                aria-label="Upload resume"
+                            >
+                                <IconPlus size={18} />
+                            </ActionIcon>
+                        )}
                     </Group>
 
                     <Divider />

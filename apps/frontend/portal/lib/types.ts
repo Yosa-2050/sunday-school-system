@@ -8,9 +8,9 @@ export type PersonalInfo = {
     middleName: string;
     lastName: string;
     birthDate: string | null;
-    gender: string;
-    title: string;
-    phoneNumber: string;
+    gender: string | null;
+    title: string | null;
+    phoneNumber: string | null;
     profile_picture_id?: string;
 };
 

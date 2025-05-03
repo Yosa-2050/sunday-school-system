@@ -1,7 +1,7 @@
 import { fetcher } from '@shega/shared';
 
 export const fetchCountries = async () => {
-    const response = await fetcher('/address/countries', {
+    const response = await fetcher('/location/countries', {
         method: 'GET',
         headers: { accept: '*/*' },
     });
@@ -15,7 +15,7 @@ export const fetchCities = async (code: string) => {
     if (!code) {
         throw new Error('Region ID cannot be empty');
     }
-    const response = await fetcher(`/address/locationByCountry/${code}/CITY`, {
+    const response = await fetcher(`/location/locationByCountry/${code}/CITY`, {
         method: 'GET',
         headers: { accept: '*/*' },
     });

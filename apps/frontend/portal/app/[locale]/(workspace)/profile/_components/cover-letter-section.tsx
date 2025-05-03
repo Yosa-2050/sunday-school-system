@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    ActionIcon,
     Box,
     Button,
     Card,
@@ -10,12 +11,14 @@ import {
     Text,
     Textarea,
     Title,
+    rem,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
     IconCheck,
     IconDeviceFloppy,
     IconPencil,
+    IconPlus,
     IconX,
 } from '@tabler/icons-react';
 import {
@@ -80,43 +83,67 @@ export default function CoverLetterSection() {
             <Stack gap="md">
                 <Group justify="space-between">
                     <Title order={4}>Cover Letter</Title>
-                    {isEditing ? (
-                        <Group>
-                            <Button
-                                leftSection={<IconX size={16} />}
-                                variant="light"
-                                color="red"
-                                size="sm"
-                                onClick={() => {
-                                    reset({
-                                        coverLetter:
-                                            jobSeeker?.coverLetter ?? '',
-                                    });
-                                    setIsEditing(false);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                leftSection={<IconDeviceFloppy size={16} />}
+                    {(() => {
+                        if (isEditing) {
+                            return (
+                                <Group>
+                                    <Button
+                                        leftSection={<IconX size={16} />}
+                                        variant="light"
+                                        color="red"
+                                        size="sm"
+                                        onClick={() => {
+                                            reset({
+                                                coverLetter:
+                                                    jobSeeker?.coverLetter ??
+                                                    '',
+                                            });
+                                            setIsEditing(false);
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        leftSection={
+                                            <IconDeviceFloppy size={16} />
+                                        }
+                                        variant="light"
+                                        color="blue"
+                                        size="sm"
+                                        onClick={handleSubmit(onSubmit)}
+                                    >
+                                        Save
+                                    </Button>
+                                </Group>
+                            );
+                        }
+
+                        if (jobSeeker?.coverLetter) {
+                            return (
+                                <Button
+                                    leftSection={<IconPencil size={16} />}
+                                    variant="light"
+                                    size="sm"
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    Edit
+                                </Button>
+                            );
+                        }
+
+                        return (
+                            <ActionIcon
                                 variant="light"
                                 color="blue"
-                                size="sm"
-                                onClick={handleSubmit(onSubmit)}
+                                size="lg"
+                                radius="xl"
+                                onClick={() => setIsEditing(true)}
+                                aria-label="Add experience"
                             >
-                                Save
-                            </Button>
-                        </Group>
-                    ) : (
-                        <Button
-                            leftSection={<IconPencil size={16} />}
-                            variant="light"
-                            size="sm"
-                            onClick={() => setIsEditing(true)}
-                        >
-                            Edit
-                        </Button>
-                    )}
+                                <IconPlus size={18} />
+                            </ActionIcon>
+                        );
+                    })()}
                 </Group>
 
                 <Divider />
@@ -158,10 +185,18 @@ export default function CoverLetterSection() {
                         )}
                     </>
                 ) : (
-                    <Text style={{ whiteSpace: 'pre-wrap' }}>
-                        No cover letter provided. Click edit to add your cover
-                        letter.
-                    </Text>
+                    <Box
+                        p="xl"
+                        style={{
+                            borderRadius: rem(8),
+                            // backgroundColor: 'var(--mantine-color-gray-0)',
+                        }}
+                    >
+                        <Text c="dimmed" ta="center" fs="italic">
+                            No cover letter provided. Click edit to add your
+                            cover letter.
+                        </Text>
+                    </Box>
                 )}
             </Stack>
         </Card>

@@ -164,7 +164,7 @@ export default function ProfilePage() {
 
                                     <CoverLetterSection />
                                 </Stack>
-                                <Stack maw={'450px'}>
+                                <Stack maw={'450px'} w={'450px'}>
                                     <SkillsSection
                                         skills={displayData.skills}
                                     />

@@ -207,7 +207,7 @@ export default function ExperienceSection({
                     p="xl"
                     style={{
                         borderRadius: rem(8),
-                        backgroundColor: 'var(--mantine-color-gray-0)',
+                        // backgroundColor: 'var(--mantine-color-gray-0)',
                     }}
                 >
                     <Text c="dimmed" ta="center" fs="italic">

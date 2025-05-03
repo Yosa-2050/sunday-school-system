@@ -50,16 +50,18 @@ export default async function RootLayout({
     colorArray.forEach((color, index) => {
         styles[`--primary-color-${index}`] = color;
     });
+
     return (
-        <html lang="en">
+        <html
+            lang="en"
+            style={styles}
+            className={cn(' w-full', inter.className)}
+            suppressHydrationWarning={true}
+        >
             <head>
                 <ColorSchemeScript />
             </head>
-            <body
-                className={cn(' w-full', inter.className)}
-                style={styles}
-                suppressHydrationWarning={true}
-            >
+            <body>
                 <NuqsAdapter>
                     <NextIntlClientProvider messages={messages}>
                         <QueryProviders>
@@ -70,6 +72,7 @@ export default async function RootLayout({
                                 <AuthProvider
                                     user={user ? { ...user, role } : undefined}
                                 >
+                                    {/* <OnlineStatusHeader /> */}
                                     {children}
                                 </AuthProvider>
                             </MantineThemeProvider>
