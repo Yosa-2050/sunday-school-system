@@ -4,6 +4,8 @@ import {
     NotImplementedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DateService } from '@shega/Utilities/date.service';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -67,6 +69,7 @@ export class JobPortalService {
         private readonly passwordService: PasswordService,
         private readonly profileService: ProfileService,
         private readonly notificationService: NotificationService,
+        private readonly dateService: DateService,
     ) {}
 
     async createJobSeeker(dto: CreateBasicUserDto) {
@@ -298,7 +301,7 @@ export class JobPortalService {
         let jobsApplied: string[] = null;
         if (applicantId) {
             const appliedJobs = await this.jobsApplied(applicantId);
-            jobsApplied = appliedJobs.map((x) => x.job.id);
+            jobsApplied = appliedJobs.map((x) => x.job?.id);
         }
 
         const [data, total] = await query
@@ -461,6 +464,10 @@ export class JobPortalService {
         const updatedJob = await this.jobRepo.update(id, {
             status,
             notes: note,
+            postedDate:
+                status === ApprovalType.Approved
+                    ? this.dateService.getCurrentDate()
+                    : null,
         });
 
         const result = UtilityServices.EnsureUpdated(updatedJob, id);
