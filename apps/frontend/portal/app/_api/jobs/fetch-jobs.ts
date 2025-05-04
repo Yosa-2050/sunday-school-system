@@ -85,10 +85,36 @@ export interface Pagination {
 }
 
 export const fetchJobs = async (data: Filter) => {
+    const cleanedData = Object.entries(data).reduce(
+        (acc, [key, value]) => {
+            if (key === 'pagination') {
+                acc[key] = Object.entries(value).reduce(
+                    (pAcc, [pKey, pValue]) => {
+                        if (
+                            pValue !== undefined &&
+                            pValue !== null &&
+                            pValue !== ''
+                        ) {
+                            pAcc[pKey] = pValue;
+                        }
+                        return pAcc;
+                    },
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    {} as Record<string, any>,
+                );
+            } else if (value !== undefined && value !== null && value !== '') {
+                acc[key] = value;
+            }
+            return acc;
+        },
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        {} as Record<string, any>,
+    );
+
     const response = await fetcher('/job-seeker/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(cleanedData),
     });
 
     return response as Response;

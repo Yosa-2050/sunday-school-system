@@ -182,24 +182,6 @@ export default function HomePage() {
                                 </Button>
                             </Group>
                         </Paper>
-
-                        {/* <Group gap="sm" mt="md">
-              {[
-                "Designer",
-                "Developer",
-                "Tester",
-                "Writing",
-                "Project Manager",
-              ].map((keyword) => (
-                <Anchor
-                  key={keyword}
-                  href="#"
-                  className="text-gray-200 hover:text-white text-sm"
-                >
-                  {keyword}
-                </Anchor>
-              ))}
-            </Group> */}
                     </Container>
                 </div>
             </div>
@@ -215,20 +197,6 @@ export default function HomePage() {
             </Paper>
 
             <Footer />
-
-            {/* <Drawer
-                opened={opened}
-                onClose={() => setOpened(false)}
-                title="Filter Jobs"
-                position="right"
-                size="sm"
-                padding="md"
-            >
-                <JobFilterSidebar
-                    filters={filters}
-                    onFilterChange={setFilters}
-                />
-            </Drawer> */}
         </>
     );
 }
@@ -317,8 +285,15 @@ function JobList({ filters }: { filters: JobFilters }) {
                             {job.type}
                         </Badge>
                         <Badge color="teal" variant="light">
-                            {job.salaryFrom.toLocaleString()} -{' '}
-                            {job.salaryTo.toLocaleString()} {job.currency}
+                            {(() => {
+                                if (job?.salaryFrom && job?.salaryTo) {
+                                    return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                }
+                                if (job?.salaryFrom) {
+                                    return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                }
+                                return 'N/A';
+                            })()}
                         </Badge>
                     </Group>
 

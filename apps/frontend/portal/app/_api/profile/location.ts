@@ -30,7 +30,7 @@ export type EnumValue = {
 
 // API functions
 export const fetchCountries = async (): Promise<Country[]> => {
-    const response = await fetcher<Country[]>('/address/countries', {
+    const response = await fetcher<Country[]>('/location/countries', {
         method: 'GET',
         headers: { accept: '*/*' },
     });
@@ -48,7 +48,7 @@ export const fetchRegions = async (countryCode: string): Promise<Region[]> => {
     }
 
     const response = await fetcher<Region[]>(
-        `/address/locationByCountry/${countryCode}/REGION`,
+        `/location/locationByCountry/${countryCode}/REGION`,
         {
             method: 'GET',
             headers: { accept: '*/*' },
@@ -64,7 +64,7 @@ export const fetchCities = async (regionId: string): Promise<City[]> => {
     }
 
     const response = await fetcher<City[]>(
-        `/address/locationByParentId/${regionId}`,
+        `/location/locationByParentId/${regionId}`,
         {
             method: 'GET',
             headers: { accept: '*/*' },
