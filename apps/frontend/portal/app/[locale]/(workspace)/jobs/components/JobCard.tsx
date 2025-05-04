@@ -186,9 +186,15 @@ export function JobCard({ job }: JobCardProps) {
                                     className="mr-1 text-primary"
                                 />
                                 <Text size="xs">
-                                    {job.salaryFrom.toLocaleString()} -{' '}
-                                    {job.salaryTo.toLocaleString()}{' '}
-                                    {job.currency}
+                                    {(() => {
+                                        if (job?.salaryFrom && job?.salaryTo) {
+                                            return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                        }
+                                        if (job?.salaryFrom) {
+                                            return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                        }
+                                        return 'N/A';
+                                    })()}
                                 </Text>
                             </div>
                         </div>
