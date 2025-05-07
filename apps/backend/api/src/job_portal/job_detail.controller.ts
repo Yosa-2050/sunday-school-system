@@ -79,7 +79,7 @@ export class JobDetailController {
     }
 
     @Get('categoriesById/:id')
-    categoriesById(@Param('parentId', new ParseUUIDPipe()) id: string) {
+    categoriesById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.jobPortalService.findCategoryById(id);
     }
 }
