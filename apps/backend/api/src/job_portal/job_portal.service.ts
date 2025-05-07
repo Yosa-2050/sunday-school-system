@@ -43,6 +43,7 @@ import { JobDescription } from './entities/job-description.entity';
 import { JobSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Skills } from './entities/skills.entity';
+import { SalaryType } from './enums/salary-type.enum';
 
 @Injectable()
 export class JobPortalService {
@@ -155,6 +156,7 @@ export class JobPortalService {
         job.postedBy = employeeOrg;
         job.organization = organization;
         job.status = ApprovalType.Waiting_Approval;
+        job.salaryTo = job.salaryType === SalaryType.Fixed ? job.salaryFrom : dto.salaryTo;
         return this.jobRepo.save(job);
     }
 
@@ -303,7 +305,7 @@ export class JobPortalService {
             const appliedJobs = await this.jobsApplied(applicantId);
             jobsApplied = appliedJobs.map((x) => x.job?.id);
         }
-
+        //const queryStr = query.getSql();
         const [data, total] = await query
             .skip((filter.pagination.page - 1) * filter.pagination.limit)
             .take(filter.pagination.limit)
@@ -562,7 +564,7 @@ export class JobPortalService {
             await this.jobDescriptionRepo.delete({ job: { id: id } });
             await this.jobDescriptionRepo.save(description);
         }
-
+        updateJob.salaryTo = updateJob.salaryType === SalaryType.Fixed ? updateJob.salaryFrom : updateJob.salaryTo;
         const updated = await this.jobRepo.update(id, updateJob);
 
         return UtilityServices.EnsureUpdated(updated, id);
