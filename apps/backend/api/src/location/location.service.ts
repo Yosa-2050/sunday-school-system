@@ -33,9 +33,11 @@ export class LocationService {
             type: dto.type,
         }); // Get existing data
 
-        const parent = await this.locationInfoRepo.findOneBy({id: dto.parentId});
+        const parent = await this.locationInfoRepo.findOneBy({
+            id: dto.parentId,
+        });
 
-        if(dto.parentId && !parent){
+        if (dto.parentId && !parent) {
             throw new BadRequestException('Parent location not found');
         }
         const addLocations: LocationInfo[] = [];
