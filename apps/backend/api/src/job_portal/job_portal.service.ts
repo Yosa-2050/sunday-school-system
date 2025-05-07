@@ -156,7 +156,8 @@ export class JobPortalService {
         job.postedBy = employeeOrg;
         job.organization = organization;
         job.status = ApprovalType.Waiting_Approval;
-        job.salaryTo = job.salaryType === SalaryType.Fixed ? job.salaryFrom : dto.salaryTo;
+        job.salaryTo =
+            job.salaryType === SalaryType.Fixed ? job.salaryFrom : dto.salaryTo;
         return this.jobRepo.save(job);
     }
 
@@ -564,7 +565,10 @@ export class JobPortalService {
             await this.jobDescriptionRepo.delete({ job: { id: id } });
             await this.jobDescriptionRepo.save(description);
         }
-        updateJob.salaryTo = updateJob.salaryType === SalaryType.Fixed ? updateJob.salaryFrom : updateJob.salaryTo;
+        updateJob.salaryTo =
+            updateJob.salaryType === SalaryType.Fixed
+                ? updateJob.salaryFrom
+                : updateJob.salaryTo;
         const updated = await this.jobRepo.update(id, updateJob);
 
         return UtilityServices.EnsureUpdated(updated, id);
