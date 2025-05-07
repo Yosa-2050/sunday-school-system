@@ -23,7 +23,7 @@ export class ResendImpl implements IEmailService {
             subject,
             html: content,
         });
-        if (resp?.data.id) {
+        if (resp?.data?.id) {
             return true;
         }
         return false;
