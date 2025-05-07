@@ -32,6 +32,14 @@ export class LocationService {
             country: { id: dto.countryId },
             type: dto.type,
         }); // Get existing data
+
+        const parent = await this.locationInfoRepo.findOneBy({
+            id: dto.parentId,
+        });
+
+        if (dto.parentId && !parent) {
+            throw new BadRequestException('Parent location not found');
+        }
         const addLocations: LocationInfo[] = [];
         for (let i = 0; i < dto.list.length; i++) {
             const name = dto.list[i];
@@ -39,6 +47,7 @@ export class LocationService {
 
             if (!locationSaved) {
                 const locationCreate = this.locationInfoRepo.create();
+                locationCreate.parent = parent;
                 locationCreate.name = name;
                 locationCreate.type = dto.type;
                 locationCreate.country = country;
