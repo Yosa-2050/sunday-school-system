@@ -2,7 +2,14 @@
 
 import { useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Group, PasswordInput, Stack, Title } from '@mantine/core';
+import {
+    Button,
+    Group,
+    Paper,
+    PasswordInput,
+    Stack,
+    Title,
+} from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { changePassword } from 'app/_api/auth/sign-up';
@@ -91,7 +98,7 @@ const ChangePassword = ({ userId }: { userId: string }) => {
     const isButtonDisabled = !(newPasswordValue && confirmPasswordValue);
 
     return (
-        <Box className="flex w-1/2 items-center justify-center bg-white">
+        <Paper className="flex items-center justify-center  shadow rounded w-full md:w-1/2">
             <div className="relative w-full p-8">
                 <Stack>
                     <Title order={2} ta="center" mb={'lg'}>
@@ -104,6 +111,18 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                                 placeholder="Enter your old password"
                                 {...register('oldPassword')}
                                 error={errors.oldPassword?.message}
+                                styles={{
+                                    input: {
+                                        borderColor: 'rgba(204, 204, 204, 1)',
+                                        '&:focus, &:focus-within': {
+                                            borderColor:
+                                                'rgba(19, 158, 123, 1)',
+                                            outline: 'none',
+                                            boxShadow:
+                                                '0 0 0 1px rgba(19, 158, 123, 1)',
+                                        },
+                                    },
+                                }}
                             />
                             <PasswordInput
                                 label={t('newPassword')}
@@ -143,6 +162,7 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                             />
                             <Group w={'100%'} justify="center" mt={'lg'}>
                                 <Button
+                                    fullWidth
                                     type="submit"
                                     loading={isPending}
                                     disabled={isButtonDisabled}
@@ -155,7 +175,7 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                     </form>
                 </Stack>
             </div>
-        </Box>
+        </Paper>
     );
 };
 

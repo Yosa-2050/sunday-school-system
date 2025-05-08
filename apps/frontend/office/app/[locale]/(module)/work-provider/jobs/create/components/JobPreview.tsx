@@ -27,7 +27,9 @@ import {
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { getAddressById } from 'app/[locale]/_api/organizations/get-addresses';
+import { getCategoriesById } from 'app/[locale]/_api/organizations/get-categories';
 import parse from 'html-react-parser';
+import { useEffect, useState } from 'react';
 import type { JobFormData } from './types';
 
 interface JobPreviewProps {
@@ -51,12 +53,30 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
     });
     const state = useQuery({
         queryFn: () => getAddressById(formData.stateId),
-        queryKey: ['country', formData.stateId],
+        queryKey: ['state', formData.stateId],
     });
     const city = useQuery({
         queryFn: () => getAddressById(formData.cityId),
-        queryKey: ['country', formData.cityId],
+        queryKey: ['city', formData.cityId],
     });
+
+    const [categoryNames, setCategoryNames] = useState<string[]>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const names = await Promise.all(
+                formData.catagories.map(async (id: string) => {
+                    const result = await getCategoriesById(id);
+                    return result.name;
+                }),
+            );
+            setCategoryNames(names);
+        };
+
+        if (formData.catagories?.length) {
+            fetchCategories();
+        }
+    }, [formData.catagories]);
 
     const formatSalary = () => {
         if (formData.salaryType === 'RANGE') {
@@ -153,8 +173,8 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                 </Tabs.List>
                                 <Box p="xl">
                                     <Tabs.Panel value="description">
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
+                                        <Stack className="mb-4">
+                                            <Title order={3}>
                                                 Job Description
                                             </Title>
                                             <Paper p="md" withBorder>
@@ -166,8 +186,8 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                             </Paper>
                                         </Stack>
 
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
+                                        <Stack className="mb-4">
+                                            <Title order={3}>
                                                 Requirements
                                             </Title>
                                             <Paper p="md" withBorder>
@@ -206,8 +226,8 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                             </Paper>
                                         </Stack>
 
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
+                                        <Stack className="mb-4">
+                                            <Title order={3}>
                                                 Responsibilities
                                             </Title>
                                             <Paper p="md" withBorder>
@@ -246,10 +266,8 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                             </Paper>
                                         </Stack>
 
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
-                                                Benefits
-                                            </Title>
+                                        <Stack className="mb-4">
+                                            <Title order={3}>Benefits</Title>
                                             <Paper p="md" withBorder>
                                                 <List>
                                                     {formData.jobDescriptions
@@ -291,8 +309,8 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                             </Paper>
                                         </Stack>
 
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
+                                        <Stack className="mb-4">
+                                            <Title order={3}>
                                                 Skills & Expertise
                                             </Title>
                                             <Paper p="md" withBorder>
@@ -311,19 +329,17 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                             </Paper>
                                         </Stack>
 
-                                        <Stack>
-                                            <Title order={3} className="mb-4">
-                                                Categories
-                                            </Title>
+                                        <Stack className="mb-4">
+                                            <Title order={3}>Categories</Title>
                                             <Paper p="md" withBorder>
                                                 <Group gap="xs">
-                                                    {formData.catagories.map(
-                                                        (category) => (
+                                                    {categoryNames.map(
+                                                        (name) => (
                                                             <Badge
-                                                                key={category}
+                                                                key={name}
                                                                 variant="outline"
                                                             >
-                                                                {category}
+                                                                {name}
                                                             </Badge>
                                                         ),
                                                     )}
@@ -333,10 +349,7 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
 
                                         {formData.additionalInfo && (
                                             <Stack hidden>
-                                                <Title
-                                                    order={3}
-                                                    className="mb-4"
-                                                >
+                                                <Title order={3}>
                                                     Additional Information
                                                 </Title>
                                                 <Paper p="md" withBorder>

@@ -18,7 +18,7 @@ export const jobSchema = z
             .min(3, { message: 'Job title must be at least 3 characters' }),
         description: z
             .string({ required_error: 'Description is required' })
-            .min(30, { message: 'Description must be at least 30 characters' }),
+            .min(37, { message: 'Description must be at least 30 characters' }),
         type: z.enum(['FULL_TIME', 'PART_TIME', 'Contract', 'Internship'], {
             required_error: 'Job type is required',
             message:

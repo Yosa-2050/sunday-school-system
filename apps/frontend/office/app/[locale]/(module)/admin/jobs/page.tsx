@@ -186,8 +186,8 @@ const JobsList = () => {
                             { value: '', label: t('allCategories') },
                             { value: 'FULL_TIME', label: 'Full Time' },
                             { value: 'PART_TIME', label: 'Part Time' },
-                            { value: 'CONTRACT', label: 'Contract' },
-                            { value: 'INTERNSHIP', label: 'Internship' },
+                            { value: 'Contract', label: 'Contract' },
+                            { value: 'Internship', label: 'Internship' },
                         ]}
                         mode="select"
                         field="type"
