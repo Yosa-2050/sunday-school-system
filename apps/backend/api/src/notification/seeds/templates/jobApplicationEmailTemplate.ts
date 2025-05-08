@@ -21,7 +21,7 @@ export function getJobApplicationEmailTemplate() {
           Dear {{jobSeekerName}},
         </p>
         <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; ">
-          We appreciate your interest in the {{jobTitle}} position at {{companyName}} and for submitting your application on {{applicationDate}}.      
+          We appreciate your interest in the <b>{{jobTitle}}</b> position at <b>{{companyName}}</b> and for submitting your application on <b>{{applicationDate}}</b>.      
         </p>
         
         <div style="display: flex; flex-direction: column;">
@@ -30,15 +30,15 @@ export function getJobApplicationEmailTemplate() {
           </p>
 
           <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 5px 0;">
-           The hiring team at the company will review your application. If your qualifications align with their needs, they may reach out to you for the next steps, such as an interview.          
+            The company's hiring team will review your application. If your qualifications align with their needs, they may contact you for the next steps, such as an interview.
          </p>
                                  
           <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 0;">
-            In the meantime, you can log in to your Shega Jobs account to check the status of your application or explore more opportunities.       
+             In the meantime, you can log in to your <b>Shega Jobs</b> account to check the status of your application or explore more opportunities.      
          </p>
          
            <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 5px 0;">
-            We’re excited to assist you in your job search, and we’ll keep you updated on any further progress.
+            We are excited to help you with your job search and will keep you updated on any further progress.
           </p>
    
         </div>
