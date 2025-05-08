@@ -6,6 +6,8 @@ import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import type { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
 import { instanceToPlain } from 'class-transformer';
@@ -48,6 +50,7 @@ export class JobsService {
         private readonly experianceRepo: Repository<Experiance>,
         @InjectRepository(EducationHistory)
         private readonly educationalHistoryRepo: Repository<EducationHistory>,
+        private readonly notificationService: NotificationService,
     ) {}
 
     async getApplicantDetail(id: string) {
@@ -78,7 +81,38 @@ export class JobsService {
         application.job = job;
         application.applicants = applicant;
 
-        return this.jobApplicantRepo.save(application);
+        const savedJobApplication = this.jobApplicantRepo.save(application);
+        if (savedJobApplication) {
+            //send email
+            const dateToday = new Date();
+            const jobApplicationEmailTemplate =
+                await this.notificationService.getTemplate(
+                    'jobApplicationEmailTemplate',
+                    {
+                        jobSeekerName: applicant.profile.firstName,
+                        jobTitle: job.title,
+                        companyName: job.organization.name,
+                        applicationDate: dateToday.toLocaleDateString(),
+                    },
+                    {
+                        jobTitle: job.title,
+                        companyName: job.organization.name,
+                    },
+                );
+
+            const user = await this.profileService.findUserByProfileId(
+                applicant.profile.id,
+            );
+
+            this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: jobApplicationEmailTemplate.content,
+                to: user.email,
+                subject: jobApplicationEmailTemplate.subject,
+                reference: user.id,
+            });
+        }
+        return savedJobApplication;
     }
     private async FindApplicantOrThrow(applicantId: string) {
         const applicant = await this.applicantRepo.findOneBy({
