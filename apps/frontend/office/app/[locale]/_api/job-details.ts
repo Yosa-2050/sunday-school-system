@@ -49,7 +49,10 @@ export const addRegion = async (payload: {
     const response = await fetcher('/location', {
         method: 'POST',
         headers: { accept: '*/*' },
-        body: JSON.stringify({ ...payload, parentId: null }),
+        body: JSON.stringify({
+            ...payload,
+            parentId: payload.type === 'REGION' ? null : payload.parentId,
+        }),
     });
     return response;
 };
