@@ -49,7 +49,7 @@ export const addRegion = async (payload: {
     const response = await fetcher('/location', {
         method: 'POST',
         headers: { accept: '*/*' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, parentId: null }),
     });
     return response;
 };
@@ -119,7 +119,14 @@ export const fetchlocationById = async (id: string) => {
         method: 'GET',
         headers: { accept: '*/*' },
     });
-    return response;
+    return response as {
+        id: string;
+        isActive: boolean;
+        name: string;
+        type: string;
+        isRoot: boolean;
+        hasChild: boolean;
+    };
 };
 
 export const fetchSalaryFrequencyType = async () => {

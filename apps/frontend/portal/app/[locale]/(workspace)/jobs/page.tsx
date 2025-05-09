@@ -298,7 +298,7 @@ export default function JobsPage() {
                                             size="2xl"
                                             fw={700}
                                             mb={'lg'}
-                                            className="text-gray-800 mb-3 text-center mb-4"
+                                            className="text-gray-800 text-center mb-4"
                                         >
                                             {t('noJobsFound')}
                                         </Text>

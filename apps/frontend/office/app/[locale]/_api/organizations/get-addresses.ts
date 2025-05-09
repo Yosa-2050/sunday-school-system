@@ -1,7 +1,7 @@
 import { fetcher } from '@shega/shared';
 
 export const getAddressById = async (id: string) => {
-    const response = await fetcher(`/address/${id}`, {
+    const response = await fetcher(`/location/${id}`, {
         method: 'GET',
     });
 

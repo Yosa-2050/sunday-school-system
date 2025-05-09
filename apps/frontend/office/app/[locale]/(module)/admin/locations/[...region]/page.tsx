@@ -19,7 +19,11 @@ import {
 import { notifications } from '@mantine/notifications';
 import { IconArrowLeft, IconChevronRight } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { addRegion, fetchCities } from 'app/[locale]/_api/job-details';
+import {
+    addRegion,
+    fetchCities,
+    fetchlocationById,
+} from 'app/[locale]/_api/job-details';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -33,6 +37,12 @@ const CitiesPage = () => {
     const [newCityName, setNewCityName] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
 
+    //get location by id
+    const { data: regionData } = useQuery({
+        queryKey: ['region', regionId],
+        queryFn: () => fetchlocationById(regionId as string), // Ensure regionId is a string
+        enabled: !!regionId,
+    });
     const { data: cities = [], isLoading: loadingCities } = useQuery({
         queryKey: ['cities', regionId],
         queryFn: () => fetchCities(regionId as string), // Ensure regionId is a string
@@ -123,7 +133,7 @@ const CitiesPage = () => {
                             {t('selectedRegion')}
                         </Text>
                         <Text>
-                            {t('regionName')}: {regionId}
+                            {t('regionName')}: {regionData?.name}
                         </Text>
                     </Card>
                     <ScrollArea>

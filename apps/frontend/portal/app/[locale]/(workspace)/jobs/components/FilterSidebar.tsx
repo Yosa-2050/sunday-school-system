@@ -27,7 +27,7 @@ interface ExperienceLevel {
 const JOB_TYPES = [
     { value: 'FULL_TIME', label: 'Full-time' },
     { value: 'PART_TIME', label: 'Part-time' },
-    { value: 'CONTRACT', label: 'Contract' },
+    { value: 'Contract', label: 'Contract' },
     { value: 'INTERNSHIP', label: 'Internship' },
 ];
 
