@@ -18,7 +18,9 @@ export default function PageWrapper({
 }): JSX.Element {
     const t = useTranslations('auth.pageWrapper');
     const role = getCookie('role');
-    const autoplay = useRef(Autoplay({ delay: 4000 }));
+    const autoplay = useRef(
+        Autoplay({ delay: 4000, stopOnInteraction: false, active: true }),
+    );
 
     const { user } = useAuth();
 

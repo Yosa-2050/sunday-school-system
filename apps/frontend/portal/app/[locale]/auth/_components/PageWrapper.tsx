@@ -20,7 +20,9 @@ export default function PageWrapper({
     const role = getCookie('role');
     const router = useRouter();
     const locale = useLocale();
-    const autoplay = useRef(Autoplay({ delay: 4000 }));
+    const autoplay = useRef(
+        Autoplay({ delay: 4000, stopOnInteraction: false, active: true }),
+    );
 
     const { user } = useAuth();
 
