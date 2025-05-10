@@ -583,7 +583,7 @@ export class JobPortalService {
     }
 
     findJobByProgram(id: string) {
-        return this.jobRepo.findOneBy({ program: {id} });
+        return this.jobRepo.findOneBy({ program: { id } });
     }
 
     async update(id: string, dto: UpdateJobPortalDto, organizationId: string) {
