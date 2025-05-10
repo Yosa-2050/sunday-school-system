@@ -5,8 +5,11 @@ import {
 } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JwtService } from '@nestjs/jwt';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobsService } from '@shega/job_portal/jobs.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { MentorshipService } from '@shega/job_portal/mentorship.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
@@ -44,6 +47,7 @@ export class AuthService {
         private organizationService: OrganizationService,
         private clasService: ClsService,
         private jobService: JobsService,
+        private mentorService: MentorshipService,
     ) {}
 
     async validateUser(
@@ -87,8 +91,13 @@ export class AuthService {
                     user.profile.id,
                 );
                 break;
+            case UserRoleType.Mentor:
+                details = await this.mentorService.getMentorshipDetail(
+                    user.profile.id,
+                );
+                break;
             default:
-                throw new BadRequestException('Role is not found');
+                throw new UnauthorizedException();
         }
         const payload: UserResponsePayload = {
             email: user.email,
@@ -145,7 +154,7 @@ export class AuthService {
                 success: 'true',
             };
         }
-        throw new BadRequestException('User not found');
+        throw new EntityNotFoundException('User');
     }
     async validateResetPassword(req: ValidateResteRequestDto) {
         const user = await this.usersService.findOneUser(

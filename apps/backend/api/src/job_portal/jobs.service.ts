@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
@@ -32,7 +33,7 @@ import { ApplicantSkills } from './entities/applicants-skills.entity';
 import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
 import { Experiance } from './entities/experiance.entity';
-import { JobApplication } from './entities/job-application.entity';
+import { Applications } from './entities/job-application.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
 
@@ -43,8 +44,8 @@ export class JobsService {
         private readonly jobPortalService: JobPortalService,
         @InjectRepository(Applicants)
         private applicantRepo: Repository<Applicants>,
-        @InjectRepository(JobApplication)
-        private jobApplicantRepo: Repository<JobApplication>,
+        @InjectRepository(Applications)
+        private jobApplicantRepo: Repository<Applications>,
         @InjectRepository(ApplicantSkills)
         private readonly applicantSkillRepo: Repository<ApplicantSkills>,
         @InjectRepository(Experiance)
@@ -66,20 +67,20 @@ export class JobsService {
         return userDetails;
     }
 
-    async apply(jobId: string, applicantId: string) {
+    async apply(programId: string, applicantId: string) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
         const existingApp = await this.jobApplicantRepo.findOneBy({
-            job: { id: jobId },
+            program: { id: programId },
             applicants: { id: applicant.id },
         });
         if (existingApp) {
             throw new BadRequestException('Already applied for the job');
         }
 
-        const job = await this.jobPortalService.findOne(jobId);
+        const program = await this.jobPortalService.findOneProgram(programId);
 
         const application = this.jobApplicantRepo.create();
-        application.job = job;
+        application.program = program;
         application.applicants = applicant;
 
         const savedJobApplication = this.jobApplicantRepo.save(application);
@@ -120,7 +121,7 @@ export class JobsService {
             id: applicantId,
         });
         if (!applicant) {
-            throw new BadRequestException('Applicant not found');
+            throw new EntityNotFoundException('JobApplication');
         }
         return applicant;
     }
@@ -149,7 +150,7 @@ export class JobsService {
 
     async jobsAppliedByJobId(id: string) {
         const existingApp = await this.jobApplicantRepo.findOneBy({
-            job: { id },
+            program: { id },
         });
         if (!existingApp) {
             throw new BadRequestException('No applied jobs');
@@ -229,7 +230,7 @@ export class JobsService {
         );
 
         if (!fieldOfStudy) {
-            throw new BadRequestException('Feild of history not found');
+            throw new EntityNotFoundException('Category');
         }
 
         history.fieldOfStudy = fieldOfStudy;
@@ -248,7 +249,7 @@ export class JobsService {
         const existingExperiance = await applicant.experiance;
 
         if (!existingExperiance.find((x) => x.id === experianceId)) {
-            throw new BadRequestException('Experiance not found');
+            throw new EntityNotFoundException('Experiance');
         }
         const experiance = await this.experianceRepo.preload({
             id: experianceId,
@@ -266,14 +267,14 @@ export class JobsService {
 
         const educationHistory = await applicant.educationalHistory;
         if (!educationHistory.find((x) => x.id === historyId)) {
-            throw new BadRequestException('Educational history not found');
+            throw new EntityNotFoundException('EducationalHistory');
         }
 
         const fieldOfStudy = await this.jobPortalService.findCategoryById(
             dto.fieldOfStudyId,
         );
         if (!fieldOfStudy) {
-            throw new BadRequestException('Category doestnt exists');
+            throw new EntityNotFoundException('Category');
         }
         const history = await this.educationalHistoryRepo.preload({
             id: historyId,
@@ -292,7 +293,7 @@ export class JobsService {
             (x) => x.id === experianceId,
         );
         if (!experiance) {
-            throw new BadRequestException('Experiance not found');
+            throw new EntityNotFoundException('Experiance');
         }
         const deleted = await this.experianceRepo.delete(experiance.id);
 
@@ -305,7 +306,7 @@ export class JobsService {
 
         const history = educationHistory.find((x) => x.id === historyId);
         if (!history) {
-            throw new BadRequestException('Educational history not found');
+            throw new EntityNotFoundException('EducationalHistory');
         }
 
         const deleted = await this.educationalHistoryRepo.delete(history.id);
@@ -320,9 +321,7 @@ export class JobsService {
         });
 
         if (!applicant) {
-            throw new BadRequestException(
-                `Applicant with ID ${applicantId} not found`,
-            );
+            throw new EntityNotFoundException('Applicant');
         }
 
         return applicant;

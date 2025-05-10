@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+    OptionalEnum,
+    OptionalUUID,
+} from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { JobDescriptionType } from '@shega/job_portal/enums/job-description-type.enum';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
@@ -8,7 +12,6 @@ import {
     IsNumber,
     IsOptional,
     IsString,
-    IsUUID,
     ValidateNested,
 } from 'class-validator';
 import { CurrencyType } from '../../enums/currency-type.enum';
@@ -29,7 +32,7 @@ export class JobDescriptionDto {
     type: JobDescriptionType;
 }
 
-export class CreateJobPortalDto {
+export class ProgramRequestDto {
     @ApiProperty()
     @IsString()
     title: string;
@@ -40,63 +43,24 @@ export class CreateJobPortalDto {
     description?: string;
 
     @ApiProperty()
-    @IsEnum(EmploymentType)
-    @IsOptional()
-    @Transform(({ value }) => (value === '' ? undefined : value))
-    type?: EmploymentType;
+    @OptionalUUID()
+    countryId?: string;
 
     @ApiProperty()
-    @IsEnum(CurrencyType)
-    @IsOptional()
-    @Transform(({ value }) => (value === '' ? undefined : value))
-    currency?: CurrencyType;
-
-    @ApiProperty()
-    @IsNumber()
-    @IsOptional()
-    salaryFrom?: number;
-
-    @ApiProperty()
-    @IsNumber()
-    @IsOptional()
-    salaryTo?: number;
-
-    @ApiProperty()
-    @IsEnum(SalaryType)
-    @Transform(({ value }) => (value === '' ? undefined : value))
-    @IsOptional()
-    salaryType?: SalaryType; //fixed, negotiable
-
-    @ApiProperty()
-    @IsEnum(SalaryFrequencyType)
-    @Transform(({ value }) => (value === '' ? undefined : value))
-    @IsOptional()
-    salaryFrequency?: SalaryFrequencyType;
-
-    @ApiProperty()
-    @IsEnum(WorkPlaceType)
-    @Transform(({ value }) => (value === '' ? undefined : value))
-    @IsOptional()
-    workPlace?: WorkPlaceType;
-
-    @ApiProperty()
-    @IsString()
-    @IsUUID()
-    @IsOptional()
-    @Transform(({ value }) => (value === '' ? undefined : value))
+    @OptionalUUID()
     stateId?: string;
 
     @ApiProperty()
-    @IsString()
-    @IsUUID()
-    @IsOptional()
-    @Transform(({ value }) => (value === '' ? undefined : value))
+    @OptionalUUID()
     cityId?: string;
 
     @ApiProperty()
-    @IsEnum(ExperianceLevelType)
-    @Transform(({ value }) => (value === '' ? undefined : value))
+    @IsNumber()
     @IsOptional()
+    numberOfApplicants?: number;
+
+    @ApiProperty()
+    @OptionalEnum(ExperianceLevelType)
     experianceLevel?: ExperianceLevelType;
 
     @ApiProperty()
@@ -105,13 +69,15 @@ export class CreateJobPortalDto {
     experiance?: number;
 
     @ApiProperty()
+    @OptionalEnum(WorkPlaceType)
+    workPlace?: WorkPlaceType;
+
+    @ApiProperty()
     @IsOptional()
     deadline?: Date;
 
     @ApiProperty()
-    @IsEnum(EducationalRequirmentType)
-    @Transform(({ value }) => (value === '' ? undefined : value))
-    @IsOptional()
+    @OptionalEnum(EducationalRequirmentType)
     educationalRequirment?: EducationalRequirmentType;
 
     @ApiProperty()
@@ -134,4 +100,32 @@ export class CreateJobPortalDto {
     @ApiProperty()
     @IsBoolean()
     isPublished: boolean;
+}
+
+export class CreateJobPortalDto extends ProgramRequestDto {
+    @ApiProperty()
+    @OptionalEnum(EmploymentType)
+    type?: EmploymentType;
+
+    @ApiProperty()
+    @OptionalEnum(CurrencyType)
+    currency?: CurrencyType;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    salaryFrom?: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    salaryTo?: number;
+
+    @ApiProperty()
+    @OptionalEnum(SalaryType)
+    salaryType?: SalaryType; //fixed, negotiable
+
+    @ApiProperty()
+    @OptionalEnum(SalaryFrequencyType)
+    salaryFrequency?: SalaryFrequencyType;
 }

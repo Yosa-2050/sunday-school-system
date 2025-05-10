@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
@@ -52,7 +53,7 @@ export class ProfileService {
             return profile;
         }
 
-        throw new BadRequestException('No user');
+        throw new EntityNotFoundException('User');
     }
 
     async createNewUserProfileQDE(
@@ -86,7 +87,7 @@ export class ProfileService {
             return profile;
         }
 
-        throw new BadRequestException('No user');
+        throw new EntityNotFoundException('User');
     }
 
     async createProfilePic(profileId: string, file: Express.Multer.File) {
@@ -115,7 +116,7 @@ export class ProfileService {
             return tt;
         }
 
-        throw new BadRequestException();
+        throw new EntityNotFoundException('User');
     }
 
     async findOne(id: string) {
@@ -149,7 +150,7 @@ export class ProfileService {
         const profile = await this.findOne(id);
 
         if (!profile) {
-            throw new BadRequestException('profile not found');
+            throw new EntityNotFoundException('Profile');
         }
 
         Object.assign(profile, attrs);
@@ -160,7 +161,7 @@ export class ProfileService {
         const profile = await this.findOne(id);
 
         if (!profile) {
-            throw new BadRequestException('profile not found');
+            throw new EntityNotFoundException('Profile');
         }
 
         return this.repo.remove(profile);

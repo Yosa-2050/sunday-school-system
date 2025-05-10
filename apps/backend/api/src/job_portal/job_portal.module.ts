@@ -10,38 +10,47 @@ import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
 import { EducationHistory } from './entities/educational-history.entity';
 import { Experiance } from './entities/experiance.entity';
-import { JobApplication } from './entities/job-application.entity';
-import { JobCategory } from './entities/job-category.entity';
-import { JobDescription } from './entities/job-description.entity';
-import { JobSkills } from './entities/job-skills.entity';
+import { Applications } from './entities/job-application.entity';
+import { ProgramCategory } from './entities/job-category.entity';
+import { ProgramDescription } from './entities/job-description.entity';
+import { ProgramSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
+import { Mentors } from './entities/mentor.entity';
+import { Mentorship } from './entities/mentorship.entity';
+import { Programs } from './entities/programs.entity';
 import { Skills } from './entities/skills.entity';
 import { JobDetailController } from './job_detail.controller';
 import { JobPortalController } from './job_portal.controller';
 import { JobPortalService } from './job_portal.service';
 import { JobSeekerController } from './job_seeker.controller';
 import { JobsService } from './jobs.service';
+import { MentorshipController } from './mentorship.controller';
+import { MentorshipService } from './mentorship.service';
 
 @Module({
     controllers: [
         JobPortalController,
         JobSeekerController,
         JobDetailController,
+        MentorshipController,
     ],
-    providers: [JobPortalService, JobsService],
+    providers: [JobPortalService, JobsService, MentorshipService],
     imports: [
         TypeOrmModule.forFeature([
             Jobs,
-            JobSkills,
-            JobCategory,
+            ProgramSkills,
+            ProgramCategory,
             Category,
             Skills,
             Applicants,
-            JobApplication,
+            Applications,
             ApplicantSkills,
             EducationHistory,
             Experiance,
-            JobDescription,
+            ProgramDescription,
+            Programs,
+            Mentors,
+            Mentorship,
         ]),
         OrganizationModule,
         DocumentModule,
@@ -49,6 +58,6 @@ import { JobsService } from './jobs.service';
         UsersModule,
         NotificationModule,
     ],
-    exports: [JobPortalService, JobsService],
+    exports: [JobPortalService, JobsService, MentorshipService],
 })
 export class JobPortalModule {}

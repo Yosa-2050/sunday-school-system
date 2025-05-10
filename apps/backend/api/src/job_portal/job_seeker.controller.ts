@@ -17,6 +17,8 @@ import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
@@ -48,6 +50,12 @@ export class JobSeekerController {
         private readonly jobPortalService: JobPortalService,
         private readonly jobsService: JobsService,
     ) {}
+
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
+    @Post('newUser')
+    createNewUser(@Body() dto: CreateBasicUserDto) {
+        return this.jobPortalService.createJobSeeker(dto);
+    }
 
     @Post('upload/cv')
     @ApiConsumes('multipart/form-data')

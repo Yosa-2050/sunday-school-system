@@ -7,6 +7,7 @@ export class GetOrganizationListResponseDto {
     createdBy: string;
     createdDate: string;
     id: string;
+    status: string;
 
     constructor(org: Organization) {
         this.createdBy = org.createdBy;
@@ -14,5 +15,6 @@ export class GetOrganizationListResponseDto {
         this.isActive = org.isActive;
         this.name = org.name;
         this.id = org.id;
+        this.status = org.status;
     }
 }

@@ -3,6 +3,7 @@ export enum UserRoleType {
     JobSeeker = 'JOB_SEEKER',
     Administrator = 'ADMINISTRATOR',
     WorkProvider = 'WORK_PROVIDER',
+    Mentor = 'MENTOR',
 }
 export function validateEmployeeRole(value: string): boolean {
     const validEmployee: string[] = [UserRoleType.JobSeeker];
@@ -29,6 +30,10 @@ export function UserRoleValue(value: string) {
             break;
         case UserRoleType.WorkProvider.toString():
             retVal.value = 'Work provider';
+            retVal.url = process.env.OFFICE_URL;
+            break;
+        case UserRoleType.Mentor.toString():
+            retVal.value = 'Mentor';
             retVal.url = process.env.OFFICE_URL;
             break;
     }

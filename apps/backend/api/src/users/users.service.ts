@@ -5,6 +5,7 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
@@ -66,7 +67,7 @@ export class UsersService {
     async UpdatePassword(updatePwdDto: updatePasswordRequest) {
         const user = await this.findById(updatePwdDto.id);
         if (!user) {
-            throw new BadRequestException('Email doesnt exists');
+            throw new EntityNotFoundException('User');
         }
         const pass = await this.passwordService.hashPassword(
             updatePwdDto.password,
@@ -231,7 +232,7 @@ export class UsersService {
             note: note,
         });
         if (!updatedUser) {
-            throw new BadRequestException('User not found');
+            throw new EntityNotFoundException('User');
         }
 
         //prepare email template

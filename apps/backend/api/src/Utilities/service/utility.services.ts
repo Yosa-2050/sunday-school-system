@@ -10,7 +10,19 @@ export class UtilityServices {
                 `Update with ID ${id} failed, please contact your administrator`,
             );
         }
-        return UtilityServices.SuccessResponse();
+        return UtilityServices.SuccessResponse(id);
+    }
+    static EnsureMultipleUpdateds(
+        result1: UpdateResult,
+        result2: UpdateResult,
+        id: string,
+    ) {
+        if (result1.affected === 0 && result2.affected === 0) {
+            throw new BadRequestException(
+                `Update with ID ${id} failed, please contact your administrator`,
+            );
+        }
+        return UtilityServices.SuccessResponse(id);
     }
 
     static EnsureDeleted(result: DeleteResult, id: string) {
@@ -22,8 +34,16 @@ export class UtilityServices {
         return UtilityServices.SuccessResponse();
     }
 
-    static SuccessResponse() {
+    static EnsureCreated(id: string) {
+        if (!id) {
+            throw new BadRequestException('Unable to create');
+        }
+        return UtilityServices.SuccessResponse(id);
+    }
+
+    static SuccessResponse(id?: string) {
         return {
+            data: id,
             sucess: 'true',
         };
     }

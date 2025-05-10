@@ -6,6 +6,7 @@ export class UserDetails {
     employeeId?: string;
     employeeOrgId?: string;
     applicantId?: string;
+    mentorId?: string;
     profileId: string;
     userId: string;
     email: string;

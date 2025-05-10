@@ -2,8 +2,9 @@
 import * as fs from 'fs';
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as path from 'path';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import csv from 'csv-parser';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
@@ -104,7 +105,7 @@ export class CountrySeedService {
                     code: seedData.countryCode,
                 });
                 if (!country) {
-                    throw new BadRequestException('County not found');
+                    throw new EntityNotFoundException('County');
                 }
                 const allLocation = await this.locationInfoRepo.findBy({
                     country: { code: seedData.countryCode },
@@ -146,7 +147,7 @@ export class CountrySeedService {
                     code: mainData.countryCode,
                 });
                 if (!country) {
-                    throw new BadRequestException('County not found');
+                    throw new EntityNotFoundException('County');
                 }
                 const seedDataArray = mainData.data;
                 for (let y = 0; y < seedDataArray.length; y++) {

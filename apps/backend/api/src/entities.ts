@@ -4,11 +4,14 @@ import { Applicants } from './job_portal/entities/applicants.entity';
 import { Category } from './job_portal/entities/category.entity';
 import { EducationHistory } from './job_portal/entities/educational-history.entity';
 import { Experiance } from './job_portal/entities/experiance.entity';
-import { JobApplication } from './job_portal/entities/job-application.entity';
-import { JobCategory } from './job_portal/entities/job-category.entity';
-import { JobDescription } from './job_portal/entities/job-description.entity';
-import { JobSkills } from './job_portal/entities/job-skills.entity';
+import { Applications } from './job_portal/entities/job-application.entity';
+import { ProgramCategory } from './job_portal/entities/job-category.entity';
+import { ProgramDescription } from './job_portal/entities/job-description.entity';
+import { ProgramSkills } from './job_portal/entities/job-skills.entity';
 import { Jobs } from './job_portal/entities/jobs.entity';
+import { Mentors } from './job_portal/entities/mentor.entity';
+import { Mentorship } from './job_portal/entities/mentorship.entity';
+import { Programs } from './job_portal/entities/programs.entity';
 import { Skills } from './job_portal/entities/skills.entity';
 import { LocationInfo } from './location/entities/LocationInfo.entity';
 import { ContactDetails } from './location/entities/contact-details.entity';
@@ -41,15 +44,18 @@ export const AppEntities = [
     LocationInfo,
     Notification,
     Jobs,
-    JobCategory,
-    JobSkills,
+    ProgramCategory,
+    ProgramSkills,
     Category,
     Skills,
     Applicants,
-    JobApplication,
+    Applications,
     NotificationTemplate,
     ApplicantSkills,
     EducationHistory,
     Experiance,
-    JobDescription,
+    ProgramDescription,
+    Programs,
+    Mentors,
+    Mentorship,
 ];
