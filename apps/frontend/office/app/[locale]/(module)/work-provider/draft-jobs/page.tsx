@@ -68,7 +68,7 @@ const JobsList = () => {
             p: 1,
             pp: PER_PAGE,
             o: [{ f: 'createdAt', d: 'desc' }],
-            f: [{ f: 'isPublished', v: 'false', o: 'eq' }],
+            f: [{ f: 'program.isPublished', v: 'false', o: 'eq' }],
         }),
     );
 
