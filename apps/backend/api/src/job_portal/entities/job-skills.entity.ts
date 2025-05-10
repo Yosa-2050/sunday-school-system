@@ -1,13 +1,13 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { Jobs } from './jobs.entity';
+import { Programs } from './programs.entity';
 
 @Entity()
-export class JobSkills extends BaseModel {
-    @ManyToOne(() => Jobs, {
+export class ProgramSkills extends BaseModel {
+    @ManyToOne(() => Programs, {
         nullable: false,
     })
-    job: Jobs;
+    program: Programs;
 
     @Column()
     skill: string;

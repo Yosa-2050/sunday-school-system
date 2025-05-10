@@ -1,7 +1,6 @@
 import {
     Body,
     Controller,
-    Delete,
     Get,
     Param,
     ParseUUIDPipe,
@@ -21,8 +20,6 @@ import {
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Response } from 'express';
@@ -41,12 +38,6 @@ export class JobPortalController {
         private readonly jobPortalService: JobPortalService,
         private readonly documentService: DocumentService,
     ) {}
-
-    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
-    @Post('newUser')
-    createNewUser(@Body() dto: CreateBasicUserDto) {
-        return this.jobPortalService.createJobSeeker(dto);
-    }
 
     @Roles(UserRoleType.WorkProvider)
     @Post()
@@ -122,7 +113,7 @@ export class JobPortalController {
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Patch('approve/:id')
     approveJob(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.jobPortalService.jobApproval(id, ApprovalType.Approved);
+        return this.jobPortalService.programApproval(id, ApprovalType.Approved);
     }
 
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
@@ -131,7 +122,7 @@ export class JobPortalController {
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: StringRequestModel,
     ) {
-        return this.jobPortalService.jobApproval(
+        return this.jobPortalService.programApproval(
             id,
             ApprovalType.Declined,
             dto?.note,
@@ -143,6 +134,7 @@ export class JobPortalController {
         return this.jobPortalService.findOne(id);
     }
 
+    @Roles(UserRoleType.WorkProvider)
     @Patch(':id')
     update(
         @Param('id') id: string,
@@ -154,10 +146,5 @@ export class JobPortalController {
             updateJobPortalDto,
             CurrentUser.getOrganizationId(req),
         );
-    }
-
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.jobPortalService.remove(+id);
     }
 }

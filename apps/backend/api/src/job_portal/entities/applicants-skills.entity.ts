@@ -9,6 +9,7 @@ export class ApplicantSkills extends BaseModel {
         nullable: false,
     })
     applicant: Applicants;
+
     @Column()
     skill: string;
 }

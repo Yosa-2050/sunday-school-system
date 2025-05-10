@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
@@ -68,7 +69,7 @@ export class OrganizationService {
     ) {
         const org = await this.organizationRepo.findOneBy({ id });
         if (!org) {
-            throw new BadRequestException('Organization not found');
+            throw new EntityNotFoundException('Organization');
         }
 
         const updatedOrg = await this.organizationRepo.update(
@@ -147,7 +148,7 @@ export class OrganizationService {
     async addBranch(request: AddOrganizationBranchDto, orgId: string) {
         const org = await this.organizationRepo.findOneBy({ id: orgId });
         if (!org) {
-            throw new BadRequestException('Organization not found');
+            throw new EntityNotFoundException('Organization');
         }
         const branch = this.branchRepo.create();
         branch.name = request.branchName;
@@ -222,7 +223,7 @@ export class OrganizationService {
             id: organizationId,
         });
         if (!organization) {
-            throw new BadRequestException('Organization not found');
+            throw new EntityNotFoundException('Organization');
         }
         return organization;
     }
@@ -230,7 +231,7 @@ export class OrganizationService {
     async findOne(id: string) {
         const organization = await this.organizationRepo.findOneBy({ id: id });
         if (!organization) {
-            throw new BadRequestException('Organization not found');
+            throw new EntityNotFoundException('Organization');
         }
         const contactDetails = await this.addressService.getContactByRefernce(
             organization.id,
@@ -275,7 +276,7 @@ export class OrganizationService {
             const branches = await org?.branches;
             branch = branches?.find((x) => x.id === request.branchId);
             if (!branch) {
-                throw new BadRequestException('Branch not found');
+                throw new EntityNotFoundException('Branch');
             }
         }
         const person = this.employeeOrgRepo.create();
@@ -365,6 +366,7 @@ export class OrganizationService {
         empOrg.type = EmployeeType.Administrator;
         empOrg.organization = await this.organizationRepo.create({
             name: dto.organizationName,
+            status: ApprovalType.New,
         });
 
         const saved = await this.employeeOrgRepo.save(empOrg);
@@ -435,7 +437,7 @@ export class OrganizationService {
             note: note,
         });
         if (!update) {
-            throw new BadRequestException('Organization not found');
+            throw new EntityNotFoundException('Organization');
         }
         return this.organizationRepo.save(update);
     }

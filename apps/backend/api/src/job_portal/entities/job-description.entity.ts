@@ -2,14 +2,14 @@ import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobDescriptionType } from '../enums/job-description-type.enum';
-import { Jobs } from './jobs.entity';
+import { Programs } from './programs.entity';
 
 @Entity()
-export class JobDescription extends BaseModel {
-    @ManyToOne(() => Jobs, {
+export class ProgramDescription extends BaseModel {
+    @ManyToOne(() => Programs, {
         nullable: false,
     })
-    job: Jobs;
+    program: Programs;
 
     @Column()
     description: string;

@@ -1,12 +1,8 @@
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import { Readable } from 'stream';
-import {
-    BadRequestException,
-    Inject,
-    Injectable,
-    NotImplementedException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { stringify } from 'csv-stringify';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express, Response } from 'express';
@@ -55,7 +51,7 @@ export class DocumentService {
             const file = await this.documentService.download(doc.filePath);
             return { doc, file };
         }
-        throw new BadRequestException('File not found');
+        throw new EntityNotFoundException('Document');
     }
 
     findDocumentsByReferenceId(referenceId: string): Promise<Document[]> {

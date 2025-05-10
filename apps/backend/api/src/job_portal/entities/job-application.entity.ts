@@ -8,16 +8,16 @@ import {
 } from 'typeorm';
 import { ApplicationStatus } from '../enums/job-application-status.enum';
 import { Applicants } from './applicants.entity';
-import { Jobs } from './jobs.entity';
+import { Programs } from './programs.entity';
 
 @Entity()
-export class JobApplication extends BaseModel {
+export class Applications extends BaseModel {
     @ManyToOne(
-        () => Jobs,
-        (job) => job.applications,
+        () => Programs,
+        (program) => program.applications,
         { onDelete: 'CASCADE', eager: true },
     )
-    job: Jobs;
+    program: Programs;
 
     @ManyToOne(
         () => Applicants,

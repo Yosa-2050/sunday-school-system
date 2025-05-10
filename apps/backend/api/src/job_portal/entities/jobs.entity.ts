@@ -1,38 +1,19 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
-import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
-import { Country } from '@shega/location/entities/country.entity';
 import { EmployeeOrganization } from '@shega/organization/entities/employee-organization.entity';
 import { Organization } from '@shega/organization/entities/organization.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CurrencyType } from '../enums/currency-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '../enums/employment-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { SalaryFrequencyType } from '../enums/salary-frequency-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { SalaryType } from '../enums/salary-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { WorkPlaceType } from '../enums/work-place-type.enum';
-import { JobApplication } from './job-application.entity';
-import { JobCategory } from './job-category.entity';
-import { JobDescription } from './job-description.entity';
-import { JobSkills } from './job-skills.entity';
+import { Programs } from './programs.entity';
 
 @Entity()
 export class Jobs extends BaseModel {
-    @Column()
-    title: string;
-
-    @Column({ nullable: true })
-    description: string;
-
     @Column({ nullable: true })
     type: EmploymentType;
 
@@ -43,70 +24,13 @@ export class Jobs extends BaseModel {
     salaryTo: number;
 
     @Column({ nullable: true })
-    salaryType: SalaryType; //fixed, negotiable
+    salaryType: SalaryType;
 
     @Column({ nullable: true })
     salaryFrequency: SalaryFrequencyType;
 
     @Column({ nullable: true })
-    status: ApprovalType;
-
-    @Column({ nullable: true })
-    workPlace: WorkPlaceType;
-
-    @Column({ nullable: true })
     currency: CurrencyType;
-
-    @ManyToOne(() => Country, { eager: true, nullable: true })
-    country: Country;
-
-    @ManyToOne(() => LocationInfo, { eager: true, nullable: true })
-    state: LocationInfo;
-
-    @ManyToOne(() => LocationInfo, { eager: true, nullable: true })
-    city: LocationInfo;
-
-    @Column({ nullable: true })
-    experianceLevel: ExperianceLevelType;
-
-    @Column({ nullable: true })
-    experiance: number;
-
-    @Column({ nullable: true, type: 'timestamp with time zone' })
-    deadline: Date;
-
-    @Column({ nullable: true })
-    educationalRequirment: EducationalRequirmentType;
-
-    @Column({ nullable: true })
-    notes: string;
-
-    @OneToMany(
-        () => JobSkills,
-        (skill) => skill.job,
-        { cascade: true, onUpdate: 'CASCADE' },
-    )
-    jobSkills: JobSkills[];
-
-    @OneToMany(
-        () => JobCategory,
-        (category) => category.job,
-        { cascade: true, onUpdate: 'CASCADE' },
-    )
-    jobCategory: JobCategory[];
-
-    @OneToMany(
-        () => JobDescription,
-        (description) => description.job,
-        { cascade: true, onUpdate: 'CASCADE' },
-    )
-    jobDescriptions: JobDescription[];
-
-    @Column({ default: false })
-    isPublished: boolean;
-
-    @Column({ nullable: true, type: 'timestamp with time zone' })
-    postedDate: Date;
 
     @ManyToOne(() => Organization, { eager: true, nullable: false })
     organization: Organization;
@@ -114,9 +38,11 @@ export class Jobs extends BaseModel {
     @ManyToOne(() => EmployeeOrganization, { eager: true, nullable: true })
     postedBy: EmployeeOrganization;
 
-    @OneToMany(
-        () => JobApplication,
-        (application) => application.job,
-    )
-    applications: JobApplication[];
+    @JoinColumn()
+    @OneToOne(() => Programs, {
+        eager: true,
+        cascade: true,
+        onUpdate: 'NO ACTION',
+    })
+    program: Programs;
 }

@@ -3,6 +3,14 @@ import { BadRequestException } from '@nestjs/common';
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CurrentUser {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static getMentorId(req: any): string {
+        const mentorId = req?.user?.details?.mentorId;
+        if (!mentorId) {
+            throw new BadRequestException('Unable to find mentor id');
+        }
+        return mentorId;
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     static getRole(req: any): string {
         return req?.user?.role;
     }

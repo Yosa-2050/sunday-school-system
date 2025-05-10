@@ -1,5 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
@@ -61,7 +62,7 @@ export class EmployeesService {
         if (employee) {
             return employee;
         }
-        throw new BadRequestException('Employee not found');
+        throw new EntityNotFoundException('Employee');
     }
 
     update(id: number, updateEmployeeDto: UpdateEmployeeDto) {

@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
@@ -26,7 +27,7 @@ export class LocationService {
             id: dto.countryId,
         });
         if (!country) {
-            throw new BadRequestException('County not found');
+            throw new EntityNotFoundException('County');
         }
         const allLocation = await this.locationInfoRepo.findBy({
             country: { id: dto.countryId },

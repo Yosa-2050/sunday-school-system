@@ -1,9 +1,12 @@
 import {
     BadRequestException,
+    ForbiddenException,
     Injectable,
     NotImplementedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityOperationNotAllowedException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notallowed.exception';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DateService } from '@shega/Utilities/date.service';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
@@ -29,7 +32,10 @@ import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateJobPortalDto } from './dto/request/create-job_portal.dto';
+import {
+    CreateJobPortalDto,
+    ProgramRequestDto,
+} from './dto/request/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -37,11 +43,12 @@ import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
 import { JobResponseDto } from './dto/response/jobs.response.dto';
 import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
-import { JobApplication } from './entities/job-application.entity';
-import { JobCategory } from './entities/job-category.entity';
-import { JobDescription } from './entities/job-description.entity';
-import { JobSkills } from './entities/job-skills.entity';
+import { Applications } from './entities/job-application.entity';
+import { ProgramCategory } from './entities/job-category.entity';
+import { ProgramDescription } from './entities/job-description.entity';
+import { ProgramSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
+import { Programs } from './entities/programs.entity';
 import { Skills } from './entities/skills.entity';
 import { SalaryType } from './enums/salary-type.enum';
 
@@ -49,22 +56,24 @@ import { SalaryType } from './enums/salary-type.enum';
 export class JobPortalService {
     constructor(
         private organizationService: OrganizationService,
-        @InjectRepository(JobSkills)
-        private jobSkillsRepo: Repository<JobSkills>,
-        @InjectRepository(JobCategory)
-        private jobCategoryRepo: Repository<JobCategory>,
-        @InjectRepository(JobDescription)
-        private jobDescriptionRepo: Repository<JobDescription>,
+        @InjectRepository(ProgramSkills)
+        private jobSkillsRepo: Repository<ProgramSkills>,
+        @InjectRepository(ProgramCategory)
+        private jobCategoryRepo: Repository<ProgramCategory>,
+        @InjectRepository(ProgramDescription)
+        private jobDescriptionRepo: Repository<ProgramDescription>,
         @InjectRepository(Jobs)
         private jobRepo: Repository<Jobs>,
+        @InjectRepository(Programs)
+        private programRepo: Repository<Programs>,
         @InjectRepository(Category)
         private categoryRepo: Repository<Category>,
         @InjectRepository(Skills)
         private skillRepo: Repository<Skills>,
         @InjectRepository(Applicants)
         private applicationRepo: Repository<Applicants>,
-        @InjectRepository(JobApplication)
-        private jobApplicationRepo: Repository<JobApplication>,
+        @InjectRepository(Applications)
+        private jobApplicationRepo: Repository<Applications>,
         private readonly queryBuilderService: QueryBuilderService,
         private readonly addressService: AddressService,
         private readonly passwordService: PasswordService,
@@ -143,66 +152,79 @@ export class JobPortalService {
 
         const category = await this.GetCategories(dto);
         if (category?.length > 0) {
-            job.jobCategory = category;
+            job.program.jobCategory = category;
         }
         if (skills?.length > 0) {
-            job.jobSkills = skills;
+            job.program.jobSkills = skills;
         }
 
         if (descriptions?.length > 0) {
-            job.jobDescriptions = descriptions;
+            job.program.jobDescriptions = descriptions;
         }
 
         job.postedBy = employeeOrg;
         job.organization = organization;
-        job.status = ApprovalType.Waiting_Approval;
+        job.program.status = ApprovalType.Waiting_Approval;
         job.salaryTo =
             job.salaryType === SalaryType.Fixed ? job.salaryFrom : dto.salaryTo;
-        return this.jobRepo.save(job);
+        const jobCreated = await this.jobRepo.save(job);
+        return UtilityServices.EnsureCreated(jobCreated.id);
     }
 
     private async GetJob(dto: CreateJobPortalDto) {
         const job = this.jobRepo.create(dto);
-
-        job.country = await this.addressService.findDefaultCountry();
-        job.state = dto.stateId
-            ? await this.addressService.findLocationInfoById(dto.stateId)
-            : null;
-        job.city = dto.cityId
-            ? await this.addressService.findLocationInfoById(dto.cityId)
-            : null;
+        const program = await this.GetProgram(dto);
+        job.program = program;
 
         return job;
     }
 
-    private GetSkills(dto: CreateJobPortalDto, job: Jobs = null) {
+    public async GetProgram(dto: ProgramRequestDto) {
+        const program = this.programRepo.create(dto);
+
+        program.country = dto.countryId
+            ? await this.addressService.findCountryById(dto.countryId)
+            : null;
+        program.state = dto.stateId
+            ? await this.addressService.findLocationInfoById(dto.stateId)
+            : null;
+        program.city = dto.cityId
+            ? await this.addressService.findLocationInfoById(dto.cityId)
+            : null;
+        return program;
+    }
+
+    public GetSkills(dto: ProgramRequestDto, program: Programs = null) {
         return dto.skills
             ?.map((skill) => {
                 const jobSkill = this.jobSkillsRepo.create();
                 jobSkill.skill = skill;
-                if (job) {
-                    jobSkill.job = job;
+                if (program) {
+                    jobSkill.program = program;
                 }
                 return jobSkill;
             })
             .filter((x) => x);
     }
 
-    private GetDescriptions(dto: CreateJobPortalDto, job: Jobs = null) {
+    public GetDescriptions(dto: ProgramRequestDto, program: Programs = null) {
         return dto.jobDescriptions
             ?.map((desc) => {
                 const jobDescription = this.jobDescriptionRepo.create();
                 jobDescription.description = desc.description;
                 jobDescription.type = desc.type;
-                if (job) {
-                    jobDescription.job = job;
+                if (program) {
+                    jobDescription.program = program;
                 }
                 return jobDescription;
             })
             .filter((x) => x);
     }
 
-    private async GetCategories(dto: CreateJobPortalDto, job: Jobs = null) {
+    public async GetCategories(
+        dto: ProgramRequestDto,
+        program: Programs = null,
+    ) {
         const categories = await this.categoryRepo.find();
 
         const category = dto.catagories
@@ -213,8 +235,8 @@ export class JobPortalService {
                 }
                 const jobCategory = this.jobCategoryRepo.create();
                 jobCategory.category = newCatagory;
-                if (job) {
-                    jobCategory.job = job;
+                if (program) {
+                    jobCategory.program = program;
                 }
                 return jobCategory;
             })
@@ -225,11 +247,13 @@ export class JobPortalService {
     async findOneForJobSeeker(id: string, applicantId: string) {
         const job = await this.findOne(id);
         if (!job) {
-            throw new BadRequestException('Job not found');
+            throw new EntityNotFoundException('Job');
         }
 
         const appliedJobs = await this.jobsApplied(applicantId);
-        const jobsApplied = appliedJobs?.find((x) => x.job.id === job.id);
+        const jobsApplied = appliedJobs?.find(
+            (x) => x.program.id === job.program.id,
+        );
 
         return { ...job, applied: !!jobsApplied };
     }
@@ -304,7 +328,7 @@ export class JobPortalService {
         let jobsApplied: string[] = null;
         if (applicantId) {
             const appliedJobs = await this.jobsApplied(applicantId);
-            jobsApplied = appliedJobs.map((x) => x.job?.id);
+            jobsApplied = appliedJobs.map((x) => x.program?.id);
         }
         //const queryStr = query.getSql();
         const [data, total] = await query
@@ -336,7 +360,7 @@ export class JobPortalService {
         const queryString = entityParamSerializer({
             ...deserialized,
             f: [
-                { f: 'isPublished', v: 'true', o: 'eq' },
+                { f: 'program.isPublished', v: 'true', o: 'eq' },
                 ...(deserialized.f ?? []),
             ],
         });
@@ -349,6 +373,10 @@ export class JobPortalService {
             {
                 relation: 'entity.postedBy',
                 alias: 'postedBy',
+            },
+            {
+                relation: 'entity.program',
+                alias: 'program',
             },
         ];
 
@@ -367,7 +395,7 @@ export class JobPortalService {
         let jobsApplied: string[] = null;
         if (applicantId) {
             const appliedJobs = await this.jobsApplied(applicantId);
-            jobsApplied = appliedJobs.map((x) => x.job.id);
+            jobsApplied = appliedJobs.map((x) => x.program.id);
         }
         const jobsList = jobs.map(
             (job) => new JobResponseDto(job, jobsApplied),
@@ -397,8 +425,8 @@ export class JobPortalService {
         const deserialized = entityParamDeserializer(paginationDto);
 
         const searchableColumns = [
-            'jobs.title',
-            'jobs.description',
+            'program.title',
+            'program.description',
             'organization.name',
         ];
 
@@ -406,10 +434,12 @@ export class JobPortalService {
             ...deserialized,
             f: [
                 { f: 'organization.id', v: organizationId, o: 'eq' }, // Uncommented filter
-                isOnlyDraft ? { f: 'isPublished', v: 'false', o: 'eq' } : {},
+                isOnlyDraft
+                    ? { f: 'program.isPublished', v: 'false', o: 'eq' }
+                    : {},
                 isOnlyPublished
                     ? {
-                          f: 'isPublished',
+                          f: 'program.isPublished',
                           v: isOnlyPublished.toString(),
                           o: 'eq',
                       }
@@ -426,6 +456,10 @@ export class JobPortalService {
             {
                 relation: 'entity.postedBy',
                 alias: 'postedBy',
+            },
+            {
+                relation: 'entity.program',
+                alias: 'program',
             },
         ];
 
@@ -454,26 +488,30 @@ export class JobPortalService {
         return jobsList;
     }
 
-    async jobApproval(id: string, status: ApprovalType, note = '') {
-        const job = await this.jobRepo.findOneBy({ id });
-        if (!job?.isPublished) {
-            throw new BadRequestException('Job is not published');
+    async programApproval(id: string, status: ApprovalType, note = '') {
+        const program = await this.programRepo.findOneBy({ id });
+        if (!program) {
+            throw new EntityNotFoundException('program');
         }
-        if (job?.status !== ApprovalType.Waiting_Approval) {
-            throw new BadRequestException(
-                'Job is not on waiting approval status',
-            );
+        if (!program?.isPublished) {
+            throw new ForbiddenException('Program is not published');
+        }
+        if (program?.status !== ApprovalType.Waiting_Approval) {
+            throw new EntityOperationNotAllowedException('Program', 'Approve');
         }
         const updatedJob = await this.jobRepo.update(id, {
-            status,
-            notes: note,
-            postedDate:
-                status === ApprovalType.Approved
-                    ? this.dateService.getCurrentDate()
-                    : null,
+            program: {
+                status,
+                notes: note,
+                postedDate:
+                    status === ApprovalType.Approved
+                        ? this.dateService.getCurrentDate()
+                        : null,
+            },
         });
 
         const result = UtilityServices.EnsureUpdated(updatedJob, id);
+        const job = await this.jobRepo.findOneBy({ program: { id } });
         if (result.sucess === 'true') {
             let emailTemplate = null;
 
@@ -482,11 +520,11 @@ export class JobPortalService {
                     'jobPostApprovedEmailTemplate',
                     {
                         employerName: job.postedBy.employee.profile.firstName,
-                        jobTitle: job.title,
+                        jobTitle: job.program.title,
                         organizationName: job.organization.name,
                     },
                     {
-                        jobTitle: job.title,
+                        jobTitle: job.program.title,
                     },
                 );
             }
@@ -496,12 +534,12 @@ export class JobPortalService {
                     'jobPostDeclinedEmailTemplate',
                     {
                         employerName: job.postedBy.employee.profile.firstName,
-                        jobTitle: job.title,
+                        jobTitle: job.program.title,
                         organizationName: job.organization.name,
                         reasonForDecline: note,
                     },
                     {
-                        jobTitle: job.title,
+                        jobTitle: job.program.title,
                     },
                 );
             }
@@ -525,11 +563,27 @@ export class JobPortalService {
         throw new NotImplementedException();
     }
 
-    findOne(id: string) {
-        return this.jobRepo.findOne({
-            where: { id },
-            relations: ['jobCategory', 'jobSkills', 'jobDescriptions'],
-        });
+    async findOne(id: string) {
+        const job = await this.jobRepo
+            .createQueryBuilder('job')
+            .leftJoinAndSelect('job.program', 'program')
+            .leftJoinAndSelect('program.jobCategory', 'jobCategory')
+            .leftJoinAndSelect('program.jobSkills', 'jobSkills')
+            .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
+            .where('job.id = :id', { id })
+            .getOne();
+        if (!job) {
+            throw new EntityNotFoundException('Job');
+        }
+        return job;
+    }
+
+    findOneProgram(id: string) {
+        return this.programRepo.findOneBy({ id });
+    }
+
+    findJobByProgram(id: string) {
+        return this.jobRepo.findOneBy({ program: { id } });
     }
 
     async update(id: string, dto: UpdateJobPortalDto, organizationId: string) {
@@ -539,39 +593,44 @@ export class JobPortalService {
         });
 
         if (!job) {
-            throw new BadRequestException('Job not found');
+            throw new EntityNotFoundException('Job not found');
         }
 
         const createDto: CreateJobPortalDto = {
             ...dto,
-            title: dto.title ?? job.title,
-            isPublished: dto.isPublished ?? job.isPublished,
+            title: dto.title ?? job.program.title,
+            isPublished: dto.isPublished ?? job.program.isPublished,
         };
         const updateJob = await this.GetJob(createDto);
-        const skills = await this.GetSkills(createDto, job);
+        const skills = await this.GetSkills(createDto, job.program);
         if (skills && skills.length > 0) {
-            await this.jobSkillsRepo.delete({ job: { id: id } });
+            await this.jobSkillsRepo.delete({ program: { id: id } });
             await this.jobSkillsRepo.save(skills);
         }
 
-        const categories = await this.GetCategories(createDto, job);
+        const categories = await this.GetCategories(createDto, job.program);
         if (categories && categories.length > 0) {
-            await this.jobCategoryRepo.delete({ job: { id: id } });
+            await this.jobCategoryRepo.delete({ program: { id: id } });
             await this.jobCategoryRepo.save(categories);
         }
 
-        const description = await this.GetDescriptions(createDto, job);
+        const description = await this.GetDescriptions(createDto, job.program);
         if (description && description.length > 0) {
-            await this.jobDescriptionRepo.delete({ job: { id: id } });
+            await this.jobDescriptionRepo.delete({ program: { id: id } });
             await this.jobDescriptionRepo.save(description);
         }
+        const { program, ...jobDetail } = updateJob;
+        const updatedProg = await this.programRepo.update(
+            job.program.id,
+            program,
+        );
+        const updated = await this.jobRepo.update(id, jobDetail);
         updateJob.salaryTo =
             updateJob.salaryType === SalaryType.Fixed
                 ? updateJob.salaryFrom
                 : updateJob.salaryTo;
-        const updated = await this.jobRepo.update(id, updateJob);
 
-        return UtilityServices.EnsureUpdated(updated, id);
+        return UtilityServices.EnsureMultipleUpdateds(updated, updatedProg, id);
     }
 
     remove(id: number) {
@@ -581,7 +640,7 @@ export class JobPortalService {
     async getCategoriesByParentId(id: string) {
         const category = await this.categoryRepo.findOneBy({ id });
         if (!category) {
-            throw new BadRequestException('Category not found');
+            throw new EntityNotFoundException('Category');
         }
 
         return category.childs;
@@ -620,7 +679,7 @@ export class JobPortalService {
     async addCategoriesByParentId(id: string, name: string) {
         const category = await this.categoryRepo.findOneBy({ id });
         if (!category) {
-            throw new BadRequestException('Category not found');
+            throw new EntityNotFoundException('Category');
         }
 
         const childCategory = this.categoryRepo.create();
@@ -658,7 +717,7 @@ export class JobPortalService {
             name,
         });
         if (!update) {
-            throw new BadRequestException('Skill not found');
+            throw new EntityNotFoundException('Skill');
         }
         return this.skillRepo.save(update);
     }
@@ -668,7 +727,7 @@ export class JobPortalService {
             name,
         });
         if (!update) {
-            throw new BadRequestException('Category not found');
+            throw new EntityNotFoundException('Category');
         }
         return this.categoryRepo.save(update);
     }

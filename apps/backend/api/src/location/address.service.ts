@@ -101,6 +101,11 @@ export class AddressService {
     findDefaultCountry() {
         return this.countryRepo.findOneBy({ code: DefaultCountry });
     }
+
+    findCountryById(id: string) {
+        return this.countryRepo.findOneBy({ id });
+    }
+
     findAllCountries() {
         return this.countryRepo.find({
             order: {

@@ -1,4 +1,3 @@
-import { Inject } from '@nestjs/common';
 import { Exclude } from 'class-transformer';
 import {
     BaseEntity,
@@ -6,13 +5,8 @@ import {
     DeleteDateColumn,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DateService } from '../date.service';
 
 export abstract class BaseModel extends BaseEntity {
-    constructor(@Inject(DateService) private dateService: DateService) {
-        super();
-    }
-
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
