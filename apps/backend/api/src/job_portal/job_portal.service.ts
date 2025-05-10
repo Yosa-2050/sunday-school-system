@@ -5,6 +5,8 @@ import {
     NotImplementedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityOperationNotAllowedException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notallowed.exception';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DateService } from '@shega/Utilities/date.service';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
@@ -49,8 +51,6 @@ import { Jobs } from './entities/jobs.entity';
 import { Programs } from './entities/programs.entity';
 import { Skills } from './entities/skills.entity';
 import { SalaryType } from './enums/salary-type.enum';
-import { EntityOperationNotAllowedException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notallowed.exception';
-import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 
 @Injectable()
 export class JobPortalService {
