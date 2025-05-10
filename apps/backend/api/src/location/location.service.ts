@@ -31,6 +31,7 @@ export class LocationService {
         }
         const allLocation = await this.locationInfoRepo.findBy({
             country: { id: dto.countryId },
+            parent: {id: dto.parentId},
             type: dto.type,
         }); // Get existing data
 
@@ -44,7 +45,7 @@ export class LocationService {
         const addLocations: LocationInfo[] = [];
         for (let i = 0; i < dto.list.length; i++) {
             const name = dto.list[i];
-            const locationSaved = allLocation.find((x) => x.name === name);
+            const locationSaved = allLocation.find((x) => x.name === name && parent.id === dto.parentId);
 
             if (!locationSaved) {
                 const locationCreate = this.locationInfoRepo.create();
