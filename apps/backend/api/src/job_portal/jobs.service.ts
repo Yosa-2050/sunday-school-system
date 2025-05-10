@@ -77,10 +77,10 @@ export class JobsService {
             throw new BadRequestException('Already applied for the job');
         }
 
-        const program = await this.jobPortalService.findOneProgram(programId);
+        const job = await this.jobPortalService.findJobByProgram(programId);
 
         const application = this.jobApplicantRepo.create();
-        application.program = program;
+        application.program = job.program;
         application.applicants = applicant;
 
         const savedJobApplication = this.jobApplicantRepo.save(application);
@@ -92,12 +92,12 @@ export class JobsService {
                     'jobApplicationEmailTemplate',
                     {
                         jobSeekerName: applicant.profile.firstName,
-                        jobTitle: job.title,
+                        jobTitle: job.program.title,
                         companyName: job.organization.name,
                         applicationDate: dateToday.toLocaleDateString(),
                     },
                     {
-                        jobTitle: job.title,
+                        jobTitle: job.program.title,
                         companyName: job.organization.name,
                     },
                 );

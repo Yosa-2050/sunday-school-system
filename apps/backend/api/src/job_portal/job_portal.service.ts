@@ -582,6 +582,10 @@ export class JobPortalService {
         return this.programRepo.findOneBy({ id });
     }
 
+    findJobByProgram(id: string) {
+        return this.jobRepo.findOneBy({ program: {id} });
+    }
+
     async update(id: string, dto: UpdateJobPortalDto, organizationId: string) {
         const job = await this.jobRepo.findOneBy({
             id,

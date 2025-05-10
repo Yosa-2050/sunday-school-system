@@ -54,7 +54,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             errorCode = null;
             errors = null;
         } else {
-            console.log(exception);
+            //console.log(exception);
         }
 
         const apiResDto = new ApiResponseDto<string>(
