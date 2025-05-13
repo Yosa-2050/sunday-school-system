@@ -382,8 +382,8 @@ export class JobPortalService {
         ];
 
         const searchableColumns = [
-            'entity.title',
-            'entity.description',
+            'program.title',
+            'program.description',
             'organization.name',
         ];
 
