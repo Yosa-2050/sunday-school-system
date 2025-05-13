@@ -80,7 +80,6 @@ export class JobPortalService {
         private readonly profileService: ProfileService,
         private readonly notificationService: NotificationService,
         private readonly dateService: DateService,
-
     ) {}
 
     async createJobSeeker(dto: CreateBasicUserDto) {
@@ -744,12 +743,15 @@ export class JobPortalService {
     }
 
     async jobsAppliedByProgramId(jobId: string, organizationId: string) {
-        const job = await this.jobRepo.findOneBy({id: jobId, organization : {id: organizationId}});
-        if(!job){
-            throw new EntityNotFoundException("Job");
+        const job = await this.jobRepo.findOneBy({
+            id: jobId,
+            organization: { id: organizationId },
+        });
+        if (!job) {
+            throw new EntityNotFoundException('Job');
         }
         const existingApp = await this.jobApplicationRepo.findOneBy({
-            program: { id:  job.program.id },
+            program: { id: job.program.id },
         });
         if (!existingApp) {
             throw new EntityNotFoundException('No applied jobs');

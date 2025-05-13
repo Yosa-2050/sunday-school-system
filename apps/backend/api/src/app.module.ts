@@ -78,8 +78,8 @@ import { GlobalExceptionFilter } from './Utilities/ExceptionHandlers/exception.f
             useClass: TransformInterceptor,
         },
         {
-          provide: APP_FILTER,
-          useClass: GlobalExceptionFilter,
+            provide: APP_FILTER,
+            useClass: GlobalExceptionFilter,
         },
     ],
     exports: [RequestContextService],
