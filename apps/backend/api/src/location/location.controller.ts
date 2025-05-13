@@ -47,6 +47,14 @@ export class LocationController {
         return this.locationService.findLocationByCountry(countryCode, type);
     }
 
+    @Get('locationByCountryId/:countryId/:type')
+    GetLocationInfoByCountryId(
+        @Param('countryId', new ParseUUIDPipe()) countryId: string,
+        @Param('type') type: LocationType,
+    ) {
+        return this.locationService.findLocationByCountryId(countryId, type);
+    }
+
     @Get('locationByParentId/:parentId')
     GetLocationInfoByParent(
         @Param('parentId', new ParseUUIDPipe()) parentId: string,

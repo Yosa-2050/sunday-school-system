@@ -76,6 +76,13 @@ export class LocationService {
         });
     }
 
+    findLocationByCountryId(id: string, type: LocationType) {
+        return this.locationInfoRepo.findBy({
+            country: { id: id },
+            type: type,
+        });
+    }
+
     findLocationInfoByParent(parentId: string) {
         return this.locationInfoRepo.findBy({ parent: { id: parentId } });
     }
