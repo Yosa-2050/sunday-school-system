@@ -6,6 +6,7 @@ import {
     ForbiddenException,
     HttpException,
     HttpStatus,
+    Logger,
     UnauthorizedException,
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
@@ -18,6 +19,7 @@ import { ErrorCodes } from './error-codes';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
+    constructor(private readonly logger: Logger) {}
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
@@ -54,6 +56,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             errorCode = null;
             errors = null;
         } else {
+            this.logger.error(exception);
             //console.log(exception);
         }
 

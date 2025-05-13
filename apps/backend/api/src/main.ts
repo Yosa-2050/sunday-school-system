@@ -8,7 +8,6 @@ import { GlobalExceptionFilter } from './Utilities/ExceptionHandlers/exception.f
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
-    app.useGlobalFilters(new GlobalExceptionFilter());
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,

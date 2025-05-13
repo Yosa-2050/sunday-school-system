@@ -245,14 +245,14 @@ export class JobPortalService {
     }
 
     async findOneForJobSeeker(id: string, applicantId: string) {
-        const job = await this.findOne(id);
+        const job = await this.findOneByJobId(id);
         if (!job) {
             throw new EntityNotFoundException('Job');
         }
 
         const appliedJobs = await this.jobsApplied(applicantId);
         const jobsApplied = appliedJobs?.find(
-            (x) => x.program.id === job.program.id,
+            (x) => x.program.id === job.programId,
         );
 
         return { ...job, applied: !!jobsApplied };
@@ -260,24 +260,25 @@ export class JobPortalService {
 
     async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
         const query = this.jobRepo.createQueryBuilder('job');
-        query.orderBy('job.postedDate', 'DESC');
+        query.leftJoinAndSelect('job.program', 'program');
         query.leftJoinAndSelect('job.organization', 'organization');
-        query.andWhere('job.status = :status', {
+        query.orderBy('program.postedDate', 'DESC');
+        query.andWhere('program.status = :status', {
             status: ApprovalType.Approved,
         });
-        query.andWhere('job.isPublished = :isPublished', {
+        query.andWhere('program.isPublished = :isPublished', {
             isPublished: true,
         });
 
         if (filter.title) {
-            query.andWhere('LOWER(job.title) LIKE LOWER(:title)', {
+            query.andWhere('LOWER(program.title) LIKE LOWER(:title)', {
                 title: `%${filter.title}%`,
             });
         }
 
         if (filter.categoryId) {
             query
-                .leftJoin('job.jobCategory', 'category')
+                .leftJoin('program.jobCategory', 'category')
                 .andWhere('category.id = :categoryId', {
                     categoryId: filter.categoryId,
                 });
@@ -563,7 +564,7 @@ export class JobPortalService {
         throw new NotImplementedException();
     }
 
-    async findOne(id: string) {
+    async findOneByJobId(id: string) {
         const job = await this.jobRepo
             .createQueryBuilder('job')
             .leftJoinAndSelect('job.program', 'program')
@@ -575,7 +576,16 @@ export class JobPortalService {
         if (!job) {
             throw new EntityNotFoundException('Job');
         }
-        return job;
+
+        const { program, ...restOfJob } = job;
+
+        const flattenedJob = {
+            ...restOfJob,
+            jobId: job?.id,
+            programId: program?.id,
+            ...(program ?? {}),
+        };
+        return flattenedJob;
     }
 
     findOneProgram(id: string) {
@@ -730,5 +740,23 @@ export class JobPortalService {
             throw new EntityNotFoundException('Category');
         }
         return this.categoryRepo.save(update);
+    }
+
+    async jobsAppliedByProgramId(jobId: string, organizationId: string) {
+        const job = await this.jobRepo.findOneBy({
+            id: jobId,
+            organization: { id: organizationId },
+        });
+        if (!job) {
+            throw new EntityNotFoundException('Job');
+        }
+        const existingApp = await this.jobApplicationRepo.findOneBy({
+            program: { id: job.program.id },
+        });
+        if (!existingApp) {
+            throw new EntityNotFoundException('No applied jobs');
+        }
+
+        return existingApp;
     }
 }

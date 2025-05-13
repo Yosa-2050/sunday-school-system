@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
 import { SharedModule } from 'shared/shared.module';
+import { GlobalExceptionFilter } from './Utilities/ExceptionHandlers/exception.filter';
 import { DateService } from './Utilities/date.service';
 import { BaseModelSubscriber } from './Utilities/interceptor/base-model-subscriber';
 import { TransformInterceptor } from './Utilities/interceptor/transform-interceptor';
@@ -62,6 +63,7 @@ import { OrganizationModule } from './organization/organization.module';
         BaseModelSubscriber,
         RequestContextService,
         AppService,
+        Logger,
         {
             provide: APP_GUARD,
             useClass: JwtAuthGuard,
@@ -75,10 +77,10 @@ import { OrganizationModule } from './organization/organization.module';
             provide: APP_INTERCEPTOR,
             useClass: TransformInterceptor,
         },
-        // {
-        //   provide: APP_FILTER,
-        //   useClass: QueryFailedFilter,
-        // },
+        {
+            provide: APP_FILTER,
+            useClass: GlobalExceptionFilter,
+        },
     ],
     exports: [RequestContextService],
 })
