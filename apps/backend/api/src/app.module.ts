@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
 import { SharedModule } from 'shared/shared.module';
@@ -17,6 +17,7 @@ import { AppEntities } from './entities';
 import { JobPortalModule } from './job_portal/job_portal.module';
 import { AppModules } from './modules';
 import { OrganizationModule } from './organization/organization.module';
+import { GlobalExceptionFilter } from './Utilities/ExceptionHandlers/exception.filter';
 
 @Module({
     imports: [
@@ -62,6 +63,7 @@ import { OrganizationModule } from './organization/organization.module';
         BaseModelSubscriber,
         RequestContextService,
         AppService,
+        Logger,
         {
             provide: APP_GUARD,
             useClass: JwtAuthGuard,
@@ -75,10 +77,10 @@ import { OrganizationModule } from './organization/organization.module';
             provide: APP_INTERCEPTOR,
             useClass: TransformInterceptor,
         },
-        // {
-        //   provide: APP_FILTER,
-        //   useClass: QueryFailedFilter,
-        // },
+        {
+          provide: APP_FILTER,
+          useClass: GlobalExceptionFilter,
+        },
     ],
     exports: [RequestContextService],
 })

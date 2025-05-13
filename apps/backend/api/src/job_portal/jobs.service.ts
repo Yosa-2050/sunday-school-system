@@ -147,8 +147,7 @@ export class JobsService {
             groups: ['internal'], // will include createdAt
         });
     }
-
-    async jobsAppliedByJobId(id: string) {
+    async jobsAppliedByProgramId(id: string) {
         const existingApp = await this.jobApplicantRepo.findOneBy({
             program: { id },
         });

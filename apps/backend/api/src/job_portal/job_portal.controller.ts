@@ -129,9 +129,15 @@ export class JobPortalController {
         );
     }
 
+    @Roles(UserRoleType.WorkProvider)
+    @Get('applications/:jobId')
+    findAppliedPrograms(@Request() req, @Param('jobId', new ParseUUIDPipe()) id: string) {
+        return this.jobPortalService.jobsAppliedByProgramId(id, CurrentUser.getOrganizationId(req));
+    }
+
     @Get(':id')
-    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.jobPortalService.findOne(id);
+    findJobById(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.jobPortalService.findOneByJobId(id);
     }
 
     @Roles(UserRoleType.WorkProvider)
