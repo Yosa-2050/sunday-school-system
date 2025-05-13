@@ -4,6 +4,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
 import { SharedModule } from 'shared/shared.module';
+import { GlobalExceptionFilter } from './Utilities/ExceptionHandlers/exception.filter';
 import { DateService } from './Utilities/date.service';
 import { BaseModelSubscriber } from './Utilities/interceptor/base-model-subscriber';
 import { TransformInterceptor } from './Utilities/interceptor/transform-interceptor';
@@ -17,7 +18,6 @@ import { AppEntities } from './entities';
 import { JobPortalModule } from './job_portal/job_portal.module';
 import { AppModules } from './modules';
 import { OrganizationModule } from './organization/organization.module';
-import { GlobalExceptionFilter } from './Utilities/ExceptionHandlers/exception.filter';
 
 @Module({
     imports: [
