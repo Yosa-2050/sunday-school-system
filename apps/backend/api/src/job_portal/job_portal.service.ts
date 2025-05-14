@@ -571,6 +571,10 @@ export class JobPortalService {
             .leftJoinAndSelect('program.jobCategory', 'jobCategory')
             .leftJoinAndSelect('program.jobSkills', 'jobSkills')
             .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
+            .leftJoinAndSelect('program.city', 'city')
+            .leftJoinAndSelect('program.country', 'country')
+            .leftJoinAndSelect('program.state', 'state')
+            .leftJoinAndSelect('job.organization', 'organization')
             .where('job.id = :id', { id })
             .getOne();
         if (!job) {
