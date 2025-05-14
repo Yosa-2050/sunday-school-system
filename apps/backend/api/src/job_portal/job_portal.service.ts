@@ -502,11 +502,11 @@ export class JobPortalService {
         }
         const updatedJob = await this.programRepo.update(id, {
             status,
-                notes: note,
-                postedDate:
-                    status === ApprovalType.Approved
-                        ? this.dateService.getCurrentDate()
-                        : null,
+            notes: note,
+            postedDate:
+                status === ApprovalType.Approved
+                    ? this.dateService.getCurrentDate()
+                    : null,
         });
 
         const result = UtilityServices.EnsureUpdated(updatedJob, id);
