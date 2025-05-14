@@ -27,5 +27,5 @@ export const AllEnums = {
     WorkPlaceType,
     CommitmentType,
     MentorshipType,
-    ExperianceLevelType
+    ExperianceLevelType,
 };

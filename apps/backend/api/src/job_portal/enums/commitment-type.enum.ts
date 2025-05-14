@@ -1,5 +1,5 @@
 export enum CommitmentType {
-    HoursPerDay = "HoursPerDay",
-    HoursPerWeek = "HoursPerWeek",
-    HoursPerMonth = "HoursPerMonth",
+    HoursPerDay = 'HoursPerDay',
+    HoursPerWeek = 'HoursPerWeek',
+    HoursPerMonth = 'HoursPerMonth',
 }

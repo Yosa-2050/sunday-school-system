@@ -56,11 +56,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         ) {
             errorCode = null;
             errors = null;
-        } else if (exception instanceof NotFoundException || exception?.status === 400 ){
+        } else if (
+            exception instanceof NotFoundException ||
+            exception?.status === 400
+        ) {
             errorCode = ErrorCodes.NOT_FOUND;
             errors = null;
-        } 
-        else {
+        } else {
             this.logger.error(exception);
             errors = [exception];
             //console.log(exception);
