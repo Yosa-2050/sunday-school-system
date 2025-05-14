@@ -9,6 +9,9 @@ import { Gender } from './profile-gender.enum';
 import { MarriageStatus } from './profile-marriagestatus.enum';
 import { Title } from './profile-title.enum';
 import { UserRoleType } from './user-role.enum';
+import { CommitmentType } from '@shega/job_portal/enums/commitment-type.enum';
+import { MentorshipType } from '@shega/job_portal/enums/mentorship-type.enum';
+import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
 
 export const AllEnums = {
     LoginBy,
@@ -22,4 +25,7 @@ export const AllEnums = {
     SalaryFrequencyType,
     SalaryType,
     WorkPlaceType,
+    CommitmentType,
+    MentorshipType,
+    ExperianceLevelType
 };
