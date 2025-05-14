@@ -500,15 +500,13 @@ export class JobPortalService {
         if (program?.status !== ApprovalType.Waiting_Approval) {
             throw new EntityOperationNotAllowedException('Program', 'Approve');
         }
-        const updatedJob = await this.jobRepo.update(id, {
-            program: {
-                status,
-                notes: note,
-                postedDate:
-                    status === ApprovalType.Approved
-                        ? this.dateService.getCurrentDate()
-                        : null,
-            },
+        const updatedJob = await this.programRepo.update(id, {
+            status,
+            notes: note,
+            postedDate:
+                status === ApprovalType.Approved
+                    ? this.dateService.getCurrentDate()
+                    : null,
         });
 
         const result = UtilityServices.EnsureUpdated(updatedJob, id);
