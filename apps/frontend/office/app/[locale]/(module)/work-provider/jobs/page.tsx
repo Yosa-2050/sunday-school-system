@@ -139,7 +139,7 @@ const JobsList = () => {
                         { value: 'DECLINED', label: 'Declined' },
                     ]}
                     mode="select"
-                    field="status"
+                    field="program.status"
                 />
             </Group>
 

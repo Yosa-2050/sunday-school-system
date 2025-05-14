@@ -93,6 +93,31 @@ export const fetchRegions = async (countryCode: string) => {
     }[];
 };
 
+export const fetchRegionsId = async (countryid: string) => {
+    if (!countryid) {
+        throw new Error('Country code cannot be empty');
+    }
+    const response: {
+        id: string;
+        isActive: boolean;
+        name: string;
+        type: string;
+        isRoot: boolean;
+        hasChild: boolean;
+    }[] = await fetcher(`/location/locationByCountryId/${countryid}/REGION`, {
+        method: 'GET',
+        headers: { accept: '*/*' },
+    });
+    return response as {
+        id: string;
+        isActive: boolean;
+        name: string;
+        type: string;
+        isRoot: boolean;
+        hasChild: boolean;
+    }[];
+};
+
 export const fetchCities = async (regionId: string) => {
     if (!regionId) {
         throw new Error('Region ID cannot be empty');

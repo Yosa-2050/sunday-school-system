@@ -136,7 +136,7 @@ export const JobDetails = ({
                                 label="Country"
                                 placeholder="Select country"
                                 data={countries.map((country) => ({
-                                    value: country.code,
+                                    value: country.id,
                                     label: country.name,
                                 }))}
                                 searchable

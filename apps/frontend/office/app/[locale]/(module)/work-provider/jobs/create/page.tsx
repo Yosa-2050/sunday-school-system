@@ -17,7 +17,7 @@ import {
     fetchCategories,
     fetchCities,
     fetchCountries,
-    fetchRegions,
+    fetchRegionsId,
     fetchSkills,
 } from 'app/[locale]/_api/job-details';
 import {
@@ -137,7 +137,7 @@ export default function PostJobPage() {
             if (!selectedCountry) {
                 return Promise.resolve([]);
             }
-            return fetchRegions(selectedCountry);
+            return fetchRegionsId(selectedCountry);
         },
         enabled: !!selectedCountry,
     });
