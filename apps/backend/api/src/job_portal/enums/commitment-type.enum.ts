@@ -1,1 +1,5 @@
-export enum CommitmentType {}
+export enum CommitmentType {
+    HoursPerDay = 'HoursPerDay',
+    HoursPerWeek = 'HoursPerWeek',
+    HoursPerMonth = 'HoursPerMonth',
+}

@@ -1,5 +1,8 @@
+import { CommitmentType } from '@shega/job_portal/enums/commitment-type.enum';
 import { EducationalRequirmentType } from '@shega/job_portal/enums/education-requirment-type.enum';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
+import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
+import { MentorshipType } from '@shega/job_portal/enums/mentorship-type.enum';
 import { SalaryFrequencyType } from '@shega/job_portal/enums/salary-frequency-type.enum';
 import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 import { WorkPlaceType } from '@shega/job_portal/enums/work-place-type.enum';
@@ -22,4 +25,7 @@ export const AllEnums = {
     SalaryFrequencyType,
     SalaryType,
     WorkPlaceType,
+    CommitmentType,
+    MentorshipType,
+    ExperianceLevelType,
 };

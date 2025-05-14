@@ -1,4 +1,7 @@
 export enum ErrorCodes {
+    //Not found
+    NOT_FOUND = 400,
+
     //Bad request exceptions
     ENTITY_NOT_FOUND = 1000,
     OPERATION_NOT_ALLOWED = 1001,

@@ -7,6 +7,7 @@ import {
     HttpException,
     HttpStatus,
     Logger,
+    NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
@@ -55,8 +56,15 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         ) {
             errorCode = null;
             errors = null;
+        } else if (
+            exception instanceof NotFoundException ||
+            exception?.status === 400
+        ) {
+            errorCode = ErrorCodes.NOT_FOUND;
+            errors = null;
         } else {
             this.logger.error(exception);
+            errors = [exception];
             //console.log(exception);
         }
 
