@@ -110,8 +110,8 @@ export class JobSeekerController {
         );
     }
 
-    @Post('apply/:jobId')
-    apply(@Request() req, @Param('jobId', new ParseUUIDPipe()) jobId: string) {
+    @Post('apply/:programId')
+    apply(@Request() req, @Param('programId', new ParseUUIDPipe()) jobId: string) {
         return this.jobsService.apply(jobId, CurrentUser.getApplicantId(req));
     }
 

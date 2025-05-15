@@ -51,6 +51,11 @@ import { Jobs } from './entities/jobs.entity';
 import { Programs } from './entities/programs.entity';
 import { Skills } from './entities/skills.entity';
 import { SalaryType } from './enums/salary-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ApplicationStatus } from './enums/job-application-status.enum';
+import { JobApplicantsResponseDto } from './dto/response/job-applicants.response.dto';
 
 @Injectable()
 export class JobPortalService {
@@ -747,21 +752,44 @@ export class JobPortalService {
         return this.categoryRepo.save(update);
     }
 
-    async jobsAppliedByProgramId(jobId: string, organizationId: string) {
+    async jobsAppliedByJobId(jobId: string, organizationId: string, paginated: PaginationDto, status: ApplicationStatus) {
         const job = await this.jobRepo.findOneBy({
             id: jobId,
-            organization: { id: organizationId },
+            //organization: { id: organizationId },
         });
         if (!job) {
             throw new EntityNotFoundException('Job');
         }
-        const existingApp = await this.jobApplicationRepo.findOneBy({
-            program: { id: job.program.id },
-        });
-        if (!existingApp) {
-            throw new EntityNotFoundException('No applied jobs');
+        const programId = job.program.id;
+        const query = this.jobApplicationRepo.createQueryBuilder('applications')
+            .leftJoinAndSelect('applications.program', 'program')
+            .leftJoinAndSelect('applications.applicants', 'applicants')
+            .leftJoinAndSelect('applicants.profile', 'profile')
+            .skip((paginated.page - 1) * paginated.limit)
+            .take(paginated.limit)
+            .orderBy('applications.createdAt', 'DESC');
+
+        query.andWhere('program.id = :programId', { programId });
+
+        if (status) {
+            query.andWhere('applications.status = :status', { status });
         }
 
-        return existingApp;
+        if (paginated.search) {
+            query.andWhere(
+            `LOWER(CONCAT(profile.firstName, ' ', profile.lastName)) LIKE :search`,
+            { search: `%${paginated.search.toLowerCase()}%` },
+            );
+        }
+
+        const [data, total] = await query.getManyAndCount();
+       
+        const applicants = data.map((app) => new JobApplicantsResponseDto(app));;
+        return new PaginatedResponseDto<JobApplicantsResponseDto[]>(
+            applicants,
+            total,
+            paginated.page,
+            paginated.limit,
+        );
     }
 }

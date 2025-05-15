@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { StatusType } from '../enums/status-type.enum';
+import { OptionalEnum } from '../decorators/optional-uuid.decorator';
 
 export class PaginationDto {
     @ApiProperty()
-    @IsEnum(StatusType)
-    @IsOptional()
+    @OptionalEnum(StatusType)
     status: StatusType;
 
     @ApiProperty()
@@ -30,7 +30,7 @@ export class PaginationDto {
     @Transform(({ value }) => (value === 0 ? 10 : value))
     limit?: number = 10;
 
-    skip() {
+    skip(): number {
         return (this.page - 1) * this.limit;
     }
 }

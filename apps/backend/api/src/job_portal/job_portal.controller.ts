@@ -30,6 +30,8 @@ import { CreateJobPortalDto } from './dto/request/create-job_portal.dto';
 import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { GetJobApplicationsRequestDto } from './dto/request/get-job-applications.request.dto';
 
 @ApiTags('job-portal')
 @Controller('job-portal')
@@ -130,14 +132,17 @@ export class JobPortalController {
     }
 
     @Roles(UserRoleType.WorkProvider)
-    @Get('applications/:jobId')
+    @Post('applications/:jobId')
     findAppliedPrograms(
         @Request() req,
         @Param('jobId', new ParseUUIDPipe()) id: string,
+        @Body() request: GetJobApplicationsRequestDto
     ) {
-        return this.jobPortalService.jobsAppliedByProgramId(
+        return this.jobPortalService.jobsAppliedByJobId(
             id,
             CurrentUser.getOrganizationId(req),
+            request.pagination,
+            request.status
         );
     }
 
