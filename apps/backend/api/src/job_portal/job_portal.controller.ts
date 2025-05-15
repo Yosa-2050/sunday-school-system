@@ -26,12 +26,12 @@ import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/request/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { GetJobApplicationsRequestDto } from './dto/request/get-job-applications.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { GetJobApplicationsRequestDto } from './dto/request/get-job-applications.request.dto';
 
 @ApiTags('job-portal')
 @Controller('job-portal')

@@ -10,6 +10,8 @@ import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exce
 // biome-ignore lint/style/useImportType: <explanation>
 import { DateService } from '@shega/Utilities/date.service';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
@@ -40,6 +42,7 @@ import {
 import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
+import { JobApplicantsResponseDto } from './dto/response/job-applicants.response.dto';
 import { JobResponseDto } from './dto/response/jobs.response.dto';
 import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
@@ -50,12 +53,9 @@ import { ProgramSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Programs } from './entities/programs.entity';
 import { Skills } from './entities/skills.entity';
-import { SalaryType } from './enums/salary-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ApplicationStatus } from './enums/job-application-status.enum';
-import { JobApplicantsResponseDto } from './dto/response/job-applicants.response.dto';
+import { SalaryType } from './enums/salary-type.enum';
 
 @Injectable()
 export class JobPortalService {

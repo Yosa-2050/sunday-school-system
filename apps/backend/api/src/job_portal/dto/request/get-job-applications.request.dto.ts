@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ApplicationStatus } from '@shega/job_portal/enums/job-application-status.enum';
 import { OptionalEnum } from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { ApplicationStatus } from '@shega/job_portal/enums/job-application-status.enum';
 import { Type } from 'class-transformer';
 import {
     IsDefined,
