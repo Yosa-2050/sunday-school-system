@@ -7,13 +7,15 @@ import { Controller, useForm } from 'react-hook-form';
 
 interface DeclineModalProps {
     close: () => void;
+    programId: string;
 }
 
 interface FormData {
     note: string;
+    programId?: string;
 }
 
-function DeclineModal({ close }: DeclineModalProps) {
+function DeclineModal({ close, programId }: DeclineModalProps) {
     const params = useParams();
     const jobId = params.id as string;
     const router = useRouter();
@@ -32,13 +34,19 @@ function DeclineModal({ close }: DeclineModalProps) {
 
     const { mutate: declineJobMutate, isPending: isDeclinePending } =
         useMutation({
-            mutationFn: async (data: FormData) =>
-                await declineJob(jobId, data.note),
+            mutationFn: async ({ note, programId }: FormData) => {
+                if (!programId) {
+                    throw new Error(
+                        'Program ID is required to decline the job.',
+                    );
+                }
+                return await declineJob(programId, note); // use programId instead of jobId
+            },
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['job', jobId] });
                 router.push('/admin/jobs');
                 notifications.show({
-                    title: 'Job Decline',
+                    title: 'Job Declined',
                     message: 'The job has been successfully declined',
                     color: 'green',
                 });
@@ -53,7 +61,19 @@ function DeclineModal({ close }: DeclineModalProps) {
         });
 
     const onSubmit = (data: FormData) => {
-        declineJobMutate(data);
+        if (!programId) {
+            notifications.show({
+                title: 'Error',
+                message: 'Program ID is not available.',
+                color: 'red',
+            });
+            return;
+        }
+
+        declineJobMutate({
+            note: data.note,
+            programId,
+        });
     };
 
     return (
