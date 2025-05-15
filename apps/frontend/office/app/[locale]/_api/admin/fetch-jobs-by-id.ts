@@ -22,6 +22,7 @@ export interface JobSkill {
 export interface JobDetailsViewProps {
     id: string;
     isActive: boolean;
+    programId: string;
     title: string;
     description: string;
     type: string;

@@ -11,7 +11,7 @@ export type CreateUsers = {
 
 export const createUsers = async (data: CreateUsers) => {
     const response: CreateUsers[] = await fetcher(
-        data.role === 'JOB_SEEKER' ? '/job-portal/newUser' : '/profile/new',
+        data.role === 'JOB_SEEKER' ? '/job-seeker/newUser' : '/profile/new',
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

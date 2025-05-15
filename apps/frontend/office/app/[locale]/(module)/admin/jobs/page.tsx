@@ -86,7 +86,7 @@ const JobsList = () => {
             p: 1,
             pp: PER_PAGE,
             o: [
-                { f: 'status', d: 'desc' },
+                { f: 'program.status', d: 'desc' },
                 { f: 'createdAt', d: 'asc' },
             ],
         }),
@@ -204,11 +204,11 @@ const JobsList = () => {
                             { value: 'DECLINED', label: 'Declined' },
                         ]}
                         defaultOrder={[
-                            { f: 'status', d: 'desc' },
+                            { f: 'program.status', d: 'desc' },
                             { f: 'createdAt', d: 'asc' },
                         ]}
                         mode="select"
-                        field="status"
+                        field="program.status"
                     />
                     <Button
                         variant="light"
