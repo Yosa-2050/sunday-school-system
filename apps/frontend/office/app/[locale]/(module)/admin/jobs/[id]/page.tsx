@@ -57,9 +57,17 @@ const JobDetails = () => {
 
     const { mutate: approveJobMutate, isPending: isApprovingJob } = useMutation(
         {
-            mutationFn: async () => await approveJob(jobId),
+            // mutationFn: async () => await approveJob(jobId),
+            mutationFn: async () => {
+                if (!job?.programId) {
+                    throw new Error('Program ID is not available.');
+                }
+                return await approveJob(job.programId);
+            },
             onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ['job', jobId] });
+                queryClient.invalidateQueries({
+                    queryKey: ['job', job?.programId],
+                });
                 router.push('/admin/jobs');
                 notifications.show({
                     title: 'Job Approved',

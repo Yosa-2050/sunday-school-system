@@ -130,17 +130,29 @@ const DraftJobEdit = () => {
                       ? new Date(job.deadline)
                       : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
                   educationalRequirment: job.educationalRequirment,
-                  skills: job.jobSkills.map((skill) => skill.skill),
-                  catagories: job.jobCategory.map((cat) => cat.category.id),
+                  // skills: job.jobSkills.map((skill) => skill.skill),
+                  skills: job.jobSkills?.map((skill) => skill.skill) ?? [],
+
+                  // catagories: job.jobCategory.map((cat) => cat.category.id),
+                  catagories:
+                      job.jobCategory
+                          ?.map((cat) => cat.category?.id)
+                          .filter(Boolean) ?? [],
+
                   isPublished: false,
                   contactEmail: '',
                   applicationUrl: '',
                   additionalInfo: job.notes || '',
+                  // jobDescriptions:
+                  //   job.jobDescriptions?.map((desc) => ({
+                  //     description: desc.description,
+                  //     type: desc.type as JobDescriptionType,
+                  //   })) || [],
                   jobDescriptions:
                       job.jobDescriptions?.map((desc) => ({
                           description: desc.description,
                           type: desc.type as JobDescriptionType,
-                      })) || [],
+                      })) ?? [],
               }
             : undefined,
         mode: 'onChange',
