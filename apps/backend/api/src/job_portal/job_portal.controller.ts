@@ -26,6 +26,8 @@ import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateJobPortalDto } from './dto/request/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { GetJobApplicationsRequestDto } from './dto/request/get-job-applications.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -130,14 +132,17 @@ export class JobPortalController {
     }
 
     @Roles(UserRoleType.WorkProvider)
-    @Get('applications/:jobId')
+    @Post('applications/:jobId')
     findAppliedPrograms(
         @Request() req,
         @Param('jobId', new ParseUUIDPipe()) id: string,
+        @Body() request: GetJobApplicationsRequestDto,
     ) {
-        return this.jobPortalService.jobsAppliedByProgramId(
+        return this.jobPortalService.jobsAppliedByJobId(
             id,
             CurrentUser.getOrganizationId(req),
+            request.pagination,
+            request.status,
         );
     }
 

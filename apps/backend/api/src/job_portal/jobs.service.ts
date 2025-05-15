@@ -79,6 +79,10 @@ export class JobsService {
 
         const job = await this.jobPortalService.findJobByProgram(programId);
 
+        if (!job) {
+            throw new EntityNotFoundException('Job');
+        }
+
         const application = this.jobApplicantRepo.create();
         application.program = job.program;
         application.applicants = applicant;
@@ -114,7 +118,7 @@ export class JobsService {
                 reference: user.id,
             });
         }
-        return savedJobApplication;
+        return UtilityServices.SuccessResponse();
     }
     private async FindApplicantOrThrow(applicantId: string) {
         const applicant = await this.applicantRepo.findOneBy({

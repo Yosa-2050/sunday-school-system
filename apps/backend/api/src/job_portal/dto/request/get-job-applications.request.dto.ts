@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OptionalEnum } from '@shega/Utilities/decorators/optional-uuid.decorator';
-import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { ApplicationStatus } from '@shega/job_portal/enums/job-application-status.enum';
 import { Type } from 'class-transformer';
 import {
     IsDefined,
@@ -10,10 +10,10 @@ import {
     ValidateNested,
 } from 'class-validator';
 
-export class GetJobsByStatusRequestDto {
+export class GetJobApplicationsRequestDto {
     @ApiProperty()
-    @OptionalEnum(ApprovalType)
-    status: ApprovalType;
+    @OptionalEnum(ApplicationStatus)
+    status: ApplicationStatus;
 
     @ApiProperty()
     @IsDefined()
