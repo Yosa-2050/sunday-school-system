@@ -79,8 +79,8 @@ export class JobsService {
 
         const job = await this.jobPortalService.findJobByProgram(programId);
 
-        if(!job){
-            throw new EntityNotFoundException("Job");
+        if (!job) {
+            throw new EntityNotFoundException('Job');
         }
 
         const application = this.jobApplicantRepo.create();

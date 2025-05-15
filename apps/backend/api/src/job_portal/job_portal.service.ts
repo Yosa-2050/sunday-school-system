@@ -752,7 +752,12 @@ export class JobPortalService {
         return this.categoryRepo.save(update);
     }
 
-    async jobsAppliedByJobId(jobId: string, organizationId: string, paginated: PaginationDto, status: ApplicationStatus) {
+    async jobsAppliedByJobId(
+        jobId: string,
+        organizationId: string,
+        paginated: PaginationDto,
+        status: ApplicationStatus,
+    ) {
         const job = await this.jobRepo.findOneBy({
             id: jobId,
             //organization: { id: organizationId },
@@ -761,7 +766,8 @@ export class JobPortalService {
             throw new EntityNotFoundException('Job');
         }
         const programId = job.program.id;
-        const query = this.jobApplicationRepo.createQueryBuilder('applications')
+        const query = this.jobApplicationRepo
+            .createQueryBuilder('applications')
             .leftJoinAndSelect('applications.program', 'program')
             .leftJoinAndSelect('applications.applicants', 'applicants')
             .leftJoinAndSelect('applicants.profile', 'profile')
@@ -777,14 +783,14 @@ export class JobPortalService {
 
         if (paginated.search) {
             query.andWhere(
-            `LOWER(CONCAT(profile.firstName, ' ', profile.lastName)) LIKE :search`,
-            { search: `%${paginated.search.toLowerCase()}%` },
+                `LOWER(CONCAT(profile.firstName, ' ', profile.lastName)) LIKE :search`,
+                { search: `%${paginated.search.toLowerCase()}%` },
             );
         }
 
         const [data, total] = await query.getManyAndCount();
-       
-        const applicants = data.map((app) => new JobApplicantsResponseDto(app));;
+
+        const applicants = data.map((app) => new JobApplicantsResponseDto(app));
         return new PaginatedResponseDto<JobApplicantsResponseDto[]>(
             applicants,
             total,

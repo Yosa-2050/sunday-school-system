@@ -1,10 +1,10 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { Applications } from "@shega/job_portal/entities/job-application.entity";
+import { Applications } from '@shega/job_portal/entities/job-application.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ApplicationStatus } from "@shega/job_portal/enums/job-application-status.enum";
+import { ApplicationStatus } from '@shega/job_portal/enums/job-application-status.enum';
 
-export class JobApplicantsResponseDto{
-    constructor(res: Applications){
+export class JobApplicantsResponseDto {
+    constructor(res: Applications) {
         this.firstName = res.applicants.profile.firstName;
         this.lastName = res.applicants.profile.lastName;
         this.middleName = res.applicants.profile.middleName;
