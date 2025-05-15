@@ -511,7 +511,7 @@ const JobDetails = () => {
                 centered
                 size="md"
             >
-                <DeclineModal close={close} />
+                <DeclineModal close={close} programId={job.programId} />
             </Modal>
         </Container>
     );
