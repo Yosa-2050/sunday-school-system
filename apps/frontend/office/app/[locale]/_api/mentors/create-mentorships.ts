@@ -2,30 +2,30 @@ import { fetcher } from '@shega/shared';
 import type { JobDescriptionType } from 'app/[locale]/(module)/mentor/mentorship/create/components/shcema/job-schema';
 
 export type CreateMentorship = {
-  title: string
-  description: string
-  countryId: string
-  stateId: string
-  cityId: string
-  numberOfApplicants?: number
-  experianceLevel: string;
-  experiance: number
-  workPlace: string
-  deadline: Date;
-  educationalRequirment: string
-  skills: string[]
-  catagories: string[]
-  jobDescriptions: { type: JobDescriptionType; description: string; }[]
-  isPublished: boolean
-  mentorshipType:  string;
-  commitment: string
-  duration: number
-  audience?: string
-}
+    title: string;
+    description: string;
+    countryId: string;
+    stateId: string;
+    cityId: string;
+    numberOfApplicants?: number;
+    experianceLevel: string;
+    experiance: number;
+    workPlace: string;
+    deadline: Date;
+    educationalRequirment: string;
+    skills: string[];
+    catagories: string[];
+    jobDescriptions: { type: JobDescriptionType; description: string }[];
+    isPublished: boolean;
+    mentorshipType: string;
+    commitment: string;
+    duration: number;
+    audience?: string;
+};
 
 export interface JobDescription {
-  description: string
-  type: string
+    description: string;
+    type: string;
 }
 
 export const createMentorship = async (data: CreateMentorship) => {

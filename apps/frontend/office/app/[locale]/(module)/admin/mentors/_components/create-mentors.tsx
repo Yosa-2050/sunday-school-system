@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -14,7 +14,10 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconXboxX } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createMentors, type CreateMentorsProps } from 'app/[locale]/_api/mentors/create-mentorship';
+import {
+    type CreateMentorsProps,
+    createMentors,
+} from 'app/[locale]/_api/mentors/create-mentorship';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -31,7 +34,7 @@ export function CreateMentors() {
             .string()
             .min(1, t('validation.emailRequired'))
             .email(t('validation.invalidEmail'))
-            .nonempty(t('validation.emailRequired'))
+            .nonempty(t('validation.emailRequired')),
     });
 
     const queryClient = useQueryClient();
@@ -132,7 +135,6 @@ export function CreateMentors() {
                                 },
                             }}
                         />
-
 
                         <Group justify="flex-end" mt="md" w={'100%'}>
                             <Button

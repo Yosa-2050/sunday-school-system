@@ -15,9 +15,15 @@ import { fetchEnum } from 'app/[locale]/_api/enum';
 import {
     fetchCategories,
     fetchCities,
-    fetchCountries, fetchRegionsByCountryId,
-    fetchSkills
+    fetchCountries,
+    fetchRegionsByCountryId,
+    fetchSkills,
 } from 'app/[locale]/_api/job-details';
+import {
+    type CreateMentorship,
+    createMentorship,
+    saveMentorshipDraft,
+} from 'app/[locale]/_api/mentors/create-mentorships';
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -26,12 +32,10 @@ import { JobDetails } from './components/JobDetails';
 import { JobPreview } from './components/JobPreview';
 import { JobRequirements } from './components/JobRequirements';
 import { jobSchema } from './components/shcema/job-schema';
-import { type CreateMentorship, createMentorship, saveMentorshipDraft } from 'app/[locale]/_api/mentors/create-mentorships';
 
 export default function PostJobPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
-    
 
     const [active, setActive] = useState(0);
     const [formSubmitted, setFormSubmitted] = useState(false);
@@ -58,10 +62,10 @@ export default function PostJobPage() {
             'countryId',
             'stateId',
             'cityId',
-            "commitment",
-            "duration",
-            "audience",
-            "numberOfApplicants",
+            'commitment',
+            'duration',
+            'audience',
+            'numberOfApplicants',
         ],
         1: [
             'catagories',
@@ -105,7 +109,6 @@ export default function PostJobPage() {
         queryKey: ['workPlaceTypes'],
         queryFn: () => fetchEnum('WorkPlaceType'),
     });
-  
 
     const { data: educationalRequirmentType = { data: {} } } = useQuery({
         queryKey: ['educationalRequirmentType'],
@@ -179,9 +182,6 @@ export default function PostJobPage() {
         },
     });
 
-
-    
-
     const onSubmit = (data: CreateMentorship) => {
         const organizationId = getCookie('organization_id')?.toString();
         if (!organizationId) {
@@ -230,8 +230,6 @@ export default function PostJobPage() {
         // If moving from the third step to the preview step, validate all fields
         if (active === 2) {
             const isValid = await trigger();
-
-          
 
             if (!isValid) {
                 return; // Don't proceed if validation fails

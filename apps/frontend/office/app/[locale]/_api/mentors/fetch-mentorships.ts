@@ -75,10 +75,12 @@ export interface Pagination {
     limit: number;
 }
 
-export const fetchMentorships = async (payload: string): Promise<JobsResponse> => {
+export const fetchMentorships = async (
+    payload: string,
+): Promise<JobsResponse> => {
     const response: JobsResponse = await fetcher('/mentorship/byStatus', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
     });
 
     return response;

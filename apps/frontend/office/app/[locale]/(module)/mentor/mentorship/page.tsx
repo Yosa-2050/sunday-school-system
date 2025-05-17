@@ -98,8 +98,6 @@ const JobsList = () => {
         return <Text color="red">Error loading Mentorships</Text>;
     }
 
-   
-
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align="center" justify="space-between" className="p-4">

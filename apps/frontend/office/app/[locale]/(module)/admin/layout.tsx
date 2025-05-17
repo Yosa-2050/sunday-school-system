@@ -11,7 +11,6 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
         redirect({ href: '/auth/login', locale });
     }
 
-   
     return <>{children}</>; // Ensure hooks are not skipped
 };
 

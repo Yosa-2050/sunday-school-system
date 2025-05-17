@@ -23,19 +23,24 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import {
     PER_PAGE,
     entityParamSchema,
-    entityParamSerializer
+    entityParamSerializer,
 } from '@shega/shared';
 import { EntityColumn, EntitySearch } from '@shega/ui';
 import { IconDotsVertical, IconDownload } from '@tabler/icons-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { fetchMentorship } from 'app/[locale]/_api/mentors/fetch-mentorship';
+import {
+    useActivateMentors,
+    useApproveMentors,
+    useDeactivateMutation,
+    useDeclineMentors,
+} from 'app/[locale]/_api/mentors/udpate-mentorship-status';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useCallback, useState } from 'react';
 import { CreateMentors } from './_components/create-mentors';
-import { fetchMentorship } from 'app/[locale]/_api/mentors/fetch-mentorship';
-import { useActivateMentors, useApproveMentors, useDeactivateMutation, useDeclineMentors } from 'app/[locale]/_api/mentors/udpate-mentorship-status';
 
 const MentorshipPage = () => {
     const queryClient = useQueryClient();
@@ -52,7 +57,6 @@ const MentorshipPage = () => {
         name: string;
     } | null>(null);
 
-    
     const [entityParams] = useQueryState(
         'mentors',
         parseAsJson(entityParamSchema.parse).withDefault({
@@ -62,11 +66,20 @@ const MentorshipPage = () => {
         }),
     );
     const [selection, setSelection] = useState<string[]>([]);
-    const deactivateUserMutation = useDeactivateMutation({ id: selectedUser?.id || '', reason });
-    const activateUserMutation = useActivateMentors({ id: selectedUser?.id || '' });
-    const approvedMentorsMutation = useApproveMentors({ id: selectedUser?.id || '' });
-    const declinedMentorsMutation = useDeclineMentors({ id: selectedUser?.id || '', note });
-
+    const deactivateUserMutation = useDeactivateMutation({
+        id: selectedUser?.id || '',
+        reason,
+    });
+    const activateUserMutation = useActivateMentors({
+        id: selectedUser?.id || '',
+    });
+    const approvedMentorsMutation = useApproveMentors({
+        id: selectedUser?.id || '',
+    });
+    const declinedMentorsMutation = useDeclineMentors({
+        id: selectedUser?.id || '',
+        note,
+    });
 
     // Fetch users using TanStack Query
     const { data, isLoading, error } = useQuery({
@@ -130,8 +143,6 @@ const MentorshipPage = () => {
 
     const mentorship = data ?? [];
 
-    
-
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align="center" justify="space-between" className="p-4">
@@ -186,7 +197,9 @@ const MentorshipPage = () => {
                             withBorder
                         >
                             <Flex justify="space-between" align="center">
-                                <Text fw={500}>{`${user.profile?.firstName} ${user.profile?.middleName} ${user.profile.lastName}`}</Text>
+                                <Text
+                                    fw={500}
+                                >{`${user.profile?.firstName} ${user.profile?.middleName} ${user.profile.lastName}`}</Text>
                             </Flex>
                             <Divider my="xs" />
                             <Text size="xs" c="dimmed">
@@ -245,7 +258,7 @@ const MentorshipPage = () => {
                         </Table.Thead>
                         <Table.Tbody>
                             {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
-{mentorship.map((user) => (
+                            {mentorship.map((user) => (
                                 <Table.Tr key={user.id}>
                                     <Table.Td>
                                         <Checkbox
@@ -269,18 +282,18 @@ const MentorshipPage = () => {
                                         className={
                                             user.status === 'APPROVED'
                                                 ? 'text-green-600'
-                                                // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                                : user.status === 'New'
-                                                ? 'text-yellow-600'
-                                                : 'text-red-600'
+                                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                                  user.status === 'New'
+                                                  ? 'text-yellow-600'
+                                                  : 'text-red-600'
                                         }
                                     >
                                         {user.status === 'APPROVED'
                                             ? t('status.approved')
-                                            // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                            : user.status === 'New'
-                                            ? t('status.new')
-                                            : t('status.decline')}
+                                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                              user.status === 'New'
+                                              ? t('status.new')
+                                              : t('status.decline')}
                                     </Table.Td>
                                     <Can roles={['super_admin']}>
                                         <Table.Td>
@@ -292,67 +305,77 @@ const MentorshipPage = () => {
                                                     />
                                                 </Menu.Target>
                                                 <Menu.Dropdown>
-                                                    
                                                     {user.status === 'New' && (
                                                         <>
-                                                        <Menu.Item
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        name: user.profile.lastName,
-                                                                    },
-                                                                );
-                                                                activationHandlers.open();
-                                                            }}
-                                                        >
-                                                            Approve
-                                                        </Menu.Item>
-                                                    <Menu.Item  onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        name: user.profile.lastName,
-                                                                    },
-                                                                );
-                                                                open();
-                                                            }}
-                                                             color='red'>
+                                                            <Menu.Item
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            name: user
+                                                                                .profile
+                                                                                .lastName,
+                                                                        },
+                                                                    );
+                                                                    activationHandlers.open();
+                                                                }}
+                                                            >
+                                                                Approve
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            name: user
+                                                                                .profile
+                                                                                .lastName,
+                                                                        },
+                                                                    );
+                                                                    open();
+                                                                }}
+                                                                color="red"
+                                                            >
                                                                 Decline
-                                                    </Menu.Item>
-                                                    </>
-                                                    ) }
-                                                    {user.status === 'APPROVED' && (user.isActive  ? (
-                                                        <Menu.Item
-                                                            color="red"
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        name: user.profile.firstName,
-                                                                    },
-                                                                );
-                                                                open();
-                                                            }}
-                                                        >
-                                                            Deactivate
-                                                        </Menu.Item>
-                                                    ) : (
-                                                        <Menu.Item
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        name: user.profile.lastName,
-                                                                    },
-                                                                );
-                                                                activationHandlers.open();
-                                                            }}
-                                                           
-                                                        >
-                                                            Activate
-                                                        </Menu.Item>
-                                                    ))}
+                                                            </Menu.Item>
+                                                        </>
+                                                    )}
+                                                    {user.status ===
+                                                        'APPROVED' &&
+                                                        (user.isActive ? (
+                                                            <Menu.Item
+                                                                color="red"
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            name: user
+                                                                                .profile
+                                                                                .firstName,
+                                                                        },
+                                                                    );
+                                                                    open();
+                                                                }}
+                                                            >
+                                                                Deactivate
+                                                            </Menu.Item>
+                                                        ) : (
+                                                            <Menu.Item
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            name: user
+                                                                                .profile
+                                                                                .lastName,
+                                                                        },
+                                                                    );
+                                                                    activationHandlers.open();
+                                                                }}
+                                                            >
+                                                                Activate
+                                                            </Menu.Item>
+                                                        ))}
                                                 </Menu.Dropdown>
                                             </Menu>
                                         </Table.Td>
@@ -388,8 +411,7 @@ const MentorshipPage = () => {
                                 loading={deactivateUserMutation.isPending}
                                 onClick={async () => {
                                     if (selectedUser) {
-                                        await deactivateUserMutation.mutateAsync(
-                                        );
+                                        await deactivateUserMutation.mutateAsync();
                                         close();
                                         setSelectedUser(null);
                                     }
@@ -430,8 +452,7 @@ const MentorshipPage = () => {
                                 loading={activateUserMutation.isPending}
                                 onClick={async () => {
                                     if (selectedUser) {
-                                        await activateUserMutation.mutateAsync(
-                                        );
+                                        await activateUserMutation.mutateAsync();
                                         activationHandlers.close();
                                         setSelectedUser(null);
                                     }
@@ -441,7 +462,7 @@ const MentorshipPage = () => {
                             </Button>
                         </Group>
                     </Modal>
-                     <Modal
+                    <Modal
                         opened={openedActivation}
                         onClose={() => {
                             activationHandlers.close();
@@ -472,8 +493,7 @@ const MentorshipPage = () => {
                                 loading={approvedMentorsMutation.isPending}
                                 onClick={async () => {
                                     if (selectedUser) {
-                                        await approvedMentorsMutation.mutateAsync(
-                                        );
+                                        await approvedMentorsMutation.mutateAsync();
                                         activationHandlers.close();
                                         setSelectedUser(null);
                                     }
@@ -510,8 +530,7 @@ const MentorshipPage = () => {
                                 loading={declinedMentorsMutation.isPending}
                                 onClick={async () => {
                                     if (selectedUser) {
-                                        await declinedMentorsMutation.mutateAsync(
-                                        );
+                                        await declinedMentorsMutation.mutateAsync();
                                         close();
                                         setSelectedUser(null);
                                     }

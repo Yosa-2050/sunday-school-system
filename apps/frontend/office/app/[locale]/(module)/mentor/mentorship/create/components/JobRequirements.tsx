@@ -15,6 +15,8 @@ import {
     Title,
 } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchEnum } from 'app/[locale]/_api/enum';
 import {
     type JSXElementConstructor,
     type ReactElement,
@@ -26,8 +28,6 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { JobDescriptionType } from './shcema/job-schema';
 import type { JobFormData } from './types';
 import { mapEnumToOptions } from './utils';
-import { useQuery } from '@tanstack/react-query';
-import { fetchEnum } from 'app/[locale]/_api/enum';
 
 interface JobRequirementsProps {
     categories: { id: string; name: string }[];
@@ -57,11 +57,11 @@ export const JobRequirements = ({
     } | null>(null);
 
     //fetch audience as experience level
-    const experienceLevel = useQuery( {
-                        queryKey: ['audience'],
-                        queryFn: () => fetchEnum('ExperianceLevelType'),
-                        enabled: true,
-                    },)
+    const experienceLevel = useQuery({
+        queryKey: ['audience'],
+        queryFn: () => fetchEnum('ExperianceLevelType'),
+        enabled: true,
+    });
 
     const jobDescriptions = watch('jobDescriptions') || [];
 
@@ -289,7 +289,7 @@ export const JobRequirements = ({
                                 label="Experience Level"
                                 placeholder="Select experience level"
                                 data={mapEnumToOptions(
-                                    experienceLevel.data?.data ?? {}
+                                    experienceLevel.data?.data ?? {},
                                 )}
                                 value={field.value}
                                 onChange={field.onChange}

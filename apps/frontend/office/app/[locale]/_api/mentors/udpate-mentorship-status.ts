@@ -17,24 +17,22 @@ const deactivateMentors = async (id: string, reason: string) => {
     });
 };
 
-
 const approveMentors = async (id: string) => {
     return await fetcher(`/mentorship/approve/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
     });
-}
+};
 
-const declineMentors = async (id: string,note: string) => {
+const declineMentors = async (id: string, note: string) => {
     return await fetcher(`/mentorship/decline/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({note}),
-    })
-}
+        body: JSON.stringify({ note }),
+    });
+};
 
-
-const useActivateMentors = ({id}: {id: string}) => {
+const useActivateMentors = ({ id }: { id: string }) => {
     const queryClient = useQueryClient();
     const activateMentorsMutation = useMutation({
         mutationFn: async () => {
@@ -46,20 +44,23 @@ const useActivateMentors = ({id}: {id: string}) => {
                 title: 'Success',
                 message: 'Mentor has been successfully activated',
                 color: 'green',
-            })
+            });
         },
         onError: () => {
             notifications.show({
                 title: 'Error',
                 message: 'An error occurred while activating the mentor',
                 color: 'red',
-            })
-        }
-    })
+            });
+        },
+    });
     return activateMentorsMutation;
-}
+};
 
-const useDeactivateMutation = ({id, reason}: {id: string,reason:string}) => {
+const useDeactivateMutation = ({
+    id,
+    reason,
+}: { id: string; reason: string }) => {
     const queryClient = useQueryClient();
     const deactivateMentorsMutation = useMutation({
         mutationFn: async () => {
@@ -71,21 +72,20 @@ const useDeactivateMutation = ({id, reason}: {id: string,reason:string}) => {
                 title: 'Success',
                 message: 'Mentor has been successfully deactivated',
                 color: 'green',
-            })
+            });
         },
         onError: () => {
             notifications.show({
                 title: 'Error',
                 message: 'An error occurred while deactivating the mentor',
                 color: 'red',
-            })
-        }
-    })
+            });
+        },
+    });
     return deactivateMentorsMutation;
-}
+};
 
-
-const useApproveMentors = ({id}: {id: string}) => {
+const useApproveMentors = ({ id }: { id: string }) => {
     const queryClient = useQueryClient();
     const approveMentorsMutation = useMutation({
         mutationFn: async () => {
@@ -97,25 +97,24 @@ const useApproveMentors = ({id}: {id: string}) => {
                 title: 'Success',
                 message: 'Mentor has been successfully approved',
                 color: 'green',
-            })
+            });
         },
         onError: () => {
             notifications.show({
                 title: 'Error',
                 message: 'An error occurred while approving the mentor',
                 color: 'red',
-            })
-        }
-    })
+            });
+        },
+    });
     return approveMentorsMutation;
-}
+};
 
-
-const useDeclineMentors = ({id,note}: {id: string; note: string}) => {
+const useDeclineMentors = ({ id, note }: { id: string; note: string }) => {
     const queryClient = useQueryClient();
     const declineMentorsMutation = useMutation({
         mutationFn: async () => {
-            return await declineMentors(id,note);
+            return await declineMentors(id, note);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['mentors'] });
@@ -123,23 +122,22 @@ const useDeclineMentors = ({id,note}: {id: string; note: string}) => {
                 title: 'Success',
                 message: 'Mentor has been successfully declined',
                 color: 'green',
-            })
+            });
         },
         onError: () => {
             notifications.show({
                 title: 'Error',
                 message: 'An error occurred while declining the mentor',
                 color: 'red',
-            })
-        }
-    })
+            });
+        },
+    });
     return declineMentorsMutation;
-}
-
+};
 
 export {
     useActivateMentors,
     useDeactivateMutation,
     useApproveMentors,
-    useDeclineMentors
-}
+    useDeclineMentors,
+};

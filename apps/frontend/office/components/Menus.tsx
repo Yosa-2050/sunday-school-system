@@ -148,7 +148,7 @@ export const Menus = (): MenuTree[] => {
                 },
             ],
         },
-         {
+        {
             label: t('mentorship'),
             icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
             link: '/mentor/mentorship',

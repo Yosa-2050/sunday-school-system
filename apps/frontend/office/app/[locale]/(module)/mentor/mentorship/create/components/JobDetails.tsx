@@ -5,15 +5,15 @@ import {
     NumberInput,
     Select,
     Stack,
-    TextInput
+    TextInput,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
+import { useQueries } from '@tanstack/react-query';
+import { fetchEnum } from 'app/[locale]/_api/enum';
 import { Controller, useFormContext } from 'react-hook-form';
 import type { JobFormData } from './types';
 import { mapEnumToOptions } from './utils';
-import { useQueries } from '@tanstack/react-query';
-import { fetchEnum } from 'app/[locale]/_api/enum';
 
 interface JobDetailsProps {
     employmentTypes: { data: Record<string, string> };
@@ -28,7 +28,7 @@ export const JobDetails = ({
     workPlaceTypes,
     countries,
     regions,
-    cities
+    cities,
 }: JobDetailsProps) => {
     const {
         register,
@@ -40,32 +40,35 @@ export const JobDetails = ({
 
     const icon = <IconCalendar size={18} stroke={1.5} />;
 
-    const [commitment,audience,mentorshipType] = useQueries({
-            queries: [
-                {
-                    queryKey: ['commitment'],
-                    queryFn: () => fetchEnum('CommitmentType'),
-                    enabled: true,
-                },
-                {
-                    queryKey: ['audience'],
-                    queryFn: () => fetchEnum('ExperianceLevelType'),
-                    enabled: true,
-                },
-                {
-                    queryKey: ['mentorshipType'],
-                    queryFn: () => fetchEnum('MentorshipType'),
-                    enabled: true,
-                }
-            ]
-        })
-
+    const [commitment, audience, mentorshipType] = useQueries({
+        queries: [
+            {
+                queryKey: ['commitment'],
+                queryFn: () => fetchEnum('CommitmentType'),
+                enabled: true,
+            },
+            {
+                queryKey: ['audience'],
+                queryFn: () => fetchEnum('ExperianceLevelType'),
+                enabled: true,
+            },
+            {
+                queryKey: ['mentorshipType'],
+                queryFn: () => fetchEnum('MentorshipType'),
+                enabled: true,
+            },
+        ],
+    });
 
     const selectedCountry = watch('countryId');
     const selectedState = watch('stateId');
 
-    if(commitment.isLoading || audience.isLoading || mentorshipType.isLoading){
-        return <LoadingOverlay visible />
+    if (
+        commitment.isLoading ||
+        audience.isLoading ||
+        mentorshipType.isLoading
+    ) {
+        return <LoadingOverlay visible />;
     }
 
     return (
@@ -89,11 +92,25 @@ export const JobDetails = ({
                             <Select
                                 label="Mentorship Type"
                                 placeholder="Select mentorship type"
-                                data={mapEnumToOptions(mentorshipType.data?.data ?? {})}
-                                value={mapEnumToOptions(mentorshipType.data?.data ?? {})[field.value]?.value}
+                                data={mapEnumToOptions(
+                                    mentorshipType.data?.data ?? {},
+                                )}
+                                value={
+                                    mapEnumToOptions(
+                                        mentorshipType.data?.data ?? {},
+                                    )[field.value]?.value
+                                }
                                 onChange={(value) =>
                                     field.onChange(
-                                        value ? mapEnumToOptions(mentorshipType.data?.data ?? {}).findIndex(item => item.value === value) : -1
+                                        value
+                                            ? mapEnumToOptions(
+                                                  mentorshipType.data?.data ??
+                                                      {},
+                                              ).findIndex(
+                                                  (item) =>
+                                                      item.value === value,
+                                              )
+                                            : -1,
                                     )
                                 }
                                 error={errors.mentorshipType?.message}
@@ -220,13 +237,11 @@ export const JobDetails = ({
                         )}
                     />
                 </Grid.Col>
-
-                
             </Grid>
 
             <Divider my="md" />
-                    <Grid>
-                        <Grid.Col span={{ base: 12, sm: 6 }}>
+            <Grid>
+                <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
                         name="commitment"
                         control={control}
@@ -234,7 +249,9 @@ export const JobDetails = ({
                             <Select
                                 label="Commitment Type"
                                 placeholder="Enter commitment type"
-                                data={mapEnumToOptions(commitment.data?.data ?? {})}
+                                data={mapEnumToOptions(
+                                    commitment.data?.data ?? {},
+                                )}
                                 value={field.value}
                                 onChange={field.onChange}
                                 error={errors.commitment?.message}
@@ -272,7 +289,9 @@ export const JobDetails = ({
                             <Select
                                 label="Target Audience"
                                 placeholder="Enter Target Audience"
-                                data={mapEnumToOptions(audience.data?.data ?? {})}
+                                data={mapEnumToOptions(
+                                    audience.data?.data ?? {},
+                                )}
                                 value={field.value}
                                 onChange={field.onChange}
                                 error={errors.commitment?.message}
@@ -300,8 +319,7 @@ export const JobDetails = ({
                         )}
                     />
                 </Grid.Col>
-                    </Grid>
+            </Grid>
         </Stack>
     );
 };
-

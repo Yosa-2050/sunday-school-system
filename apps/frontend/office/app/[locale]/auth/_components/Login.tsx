@@ -86,7 +86,7 @@ const Login = () => {
                             ...user,
                             role: data.role as
                                 | 'administrator'
-                                | 'work_provider' 
+                                | 'work_provider'
                                 | 'super_admin'
                                 | 'mentor',
                             id: user.id ?? '',
@@ -98,8 +98,7 @@ const Login = () => {
                             router.push('/work-provider/jobs');
                         } else if (data.role === 'super_admin') {
                             router.push('/admin/dashboard');
-                        }
-                        else if (data.role === 'mentor') {
+                        } else if (data.role === 'mentor') {
                             router.push('/mentor/dashboard');
                         }
                         setCookie('role', data.role);
