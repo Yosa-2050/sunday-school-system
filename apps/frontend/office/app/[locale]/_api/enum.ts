@@ -29,7 +29,10 @@ type EnumType =
     | 'EmploymentType'
     | 'SalaryFrequencyType'
     | 'SalaryType'
-    | 'WorkPlaceType';
+    | 'WorkPlaceType'
+    | 'MentorshipType'
+    | 'CommitmentType'
+    | 'ExperianceLevelType';
 
 export const fetchEnum = async (
     enumType: EnumType,

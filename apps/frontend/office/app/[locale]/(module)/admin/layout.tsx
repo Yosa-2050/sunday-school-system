@@ -11,10 +11,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
         redirect({ href: '/auth/login', locale });
     }
 
-    if (role === 'work_provider') {
-        redirect({ href: '/work-provider/jobs', locale });
-    }
-
+   
     return <>{children}</>; // Ensure hooks are not skipped
 };
 

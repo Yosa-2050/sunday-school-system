@@ -92,6 +92,30 @@ export const fetchRegions = async (countryCode: string) => {
         hasChild: boolean;
     }[];
 };
+export const fetchRegionsByCountryId = async (countryCode: string) => {
+    if (!countryCode) {
+        throw new Error('Country code cannot be empty');
+    }
+    const response: {
+        id: string;
+        isActive: boolean;
+        name: string;
+        type: string;
+        isRoot: boolean;
+        hasChild: boolean;
+    }[] = await fetcher(`/location/locationByCountryId/${countryCode}/REGION`, {
+        method: 'GET',
+        headers: { accept: '*/*' },
+    });
+    return response as {
+        id: string;
+        isActive: boolean;
+        name: string;
+        type: string;
+        isRoot: boolean;
+        hasChild: boolean;
+    }[];
+};
 
 export const fetchRegionsId = async (countryid: string) => {
     if (!countryid) {

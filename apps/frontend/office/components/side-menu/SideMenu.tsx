@@ -15,7 +15,7 @@ export type MenuTree = {
     isExternal?: string;
     children?: MenuTree[];
     pathMatch?: number;
-    role: 'super_admin' | 'administrator' | 'work_provider';
+    role: 'super_admin' | 'administrator' | 'work_provider' | 'mentor';
 };
 
 type MenuItemProps = {

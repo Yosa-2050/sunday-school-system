@@ -33,6 +33,18 @@ export const Menus = (): MenuTree[] => {
             role: 'administrator',
         },
         {
+            label: t('mentors'),
+            icon: <IconBuilding stroke={1.4} size={20} />,
+            link: '/admin/mentors',
+            role: 'administrator',
+        },
+        {
+            label: t('mentorship'),
+            icon: <IconBuilding stroke={1.4} size={20} />,
+            link: '/admin/mentorships',
+            role: 'administrator',
+        },
+        {
             label: t('job-explorer'),
             icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
             link: '/admin/jobs',
@@ -94,6 +106,18 @@ export const Menus = (): MenuTree[] => {
             role: 'super_admin',
         },
         {
+            label: t('mentors'),
+            icon: <IconBuilding stroke={1.4} size={20} />,
+            link: '/admin/mentors',
+            role: 'super_admin',
+        },
+        {
+            label: t('mentorship'),
+            icon: <IconBuilding stroke={1.4} size={20} />,
+            link: '/admin/mentorships',
+            role: 'super_admin',
+        },
+        {
             label: t('job-explorer'),
             icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
             link: '/admin/jobs',
@@ -123,6 +147,18 @@ export const Menus = (): MenuTree[] => {
                     role: 'super_admin',
                 },
             ],
+        },
+         {
+            label: t('mentorship'),
+            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            link: '/mentor/mentorship',
+            role: 'mentor',
+        },
+        {
+            label: t('draft-mentorship'),
+            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            link: '/mentor/draft',
+            role: 'mentor',
         },
     ];
 };
