@@ -91,10 +91,16 @@ export default function JobDetailsPage() {
         isLoading: isJobSeekerDetailLoading,
         error: jobSeekerError,
     } = useJobSeekerDetails();
+
     const { data: cv } = useDownloadProfilePicture(jobSeekerData?.cv ?? '');
 
     const applyMutation = useMutation({
-        mutationFn: () => applyJobs(params.id),
+        mutationFn: () => {
+            if (!job?.programId) {
+                throw new Error('Missing program ID');
+            }
+            return applyJobs(job.programId);
+        },
         onSuccess: () => {
             // Update application status and progress
             setApplicationProgress(100);
