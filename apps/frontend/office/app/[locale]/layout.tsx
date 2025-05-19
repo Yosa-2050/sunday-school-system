@@ -5,7 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-import { NuqsAdapter } from 'nuqs/adapters/next';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
 
