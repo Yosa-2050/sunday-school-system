@@ -1,17 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+    OptionalEnum,
+    OptionalUUID,
+} from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
     IsDefined,
-    IsEnum,
     IsNotEmptyObject,
     IsNumber,
     IsObject,
     IsOptional,
     IsString,
-    IsUUID,
     ValidateNested,
 } from 'class-validator';
 
@@ -22,39 +24,27 @@ export class GetJobsRequestDto {
     title?: string;
 
     @ApiProperty()
-    @IsOptional()
-    @IsUUID()
-    @Transform(({ value }) => (value === '' ? undefined : value))
+    @OptionalUUID()
     categoryId?: string;
 
     @ApiProperty()
-    @IsOptional()
-    @IsUUID()
-    @Transform(({ value }) => (value === '' ? undefined : value))
+    @OptionalUUID()
     organizationId?: string;
 
     @ApiProperty()
-    @IsOptional()
-    @IsUUID()
-    @Transform(({ value }) => (value === '' ? undefined : value))
+    @OptionalUUID()
     countryId?: string;
 
     @ApiProperty()
-    @IsOptional()
-    @IsUUID()
-    @Transform(({ value }) => (value === '' ? undefined : value))
+    @OptionalUUID()
     cityId?: string;
 
     @ApiProperty()
-    @IsEnum(EmploymentType)
-    @IsOptional()
-    @Transform(({ value }) => (value === '' ? undefined : value))
+    @OptionalEnum(EmploymentType)
     type?: EmploymentType;
 
     @ApiProperty()
-    @IsEnum(ExperianceLevelType)
-    @Transform(({ value }) => (value === '' ? undefined : value))
-    @IsOptional()
+    @OptionalEnum(ExperianceLevelType)
     experianceLevel?: ExperianceLevelType;
 
     @ApiProperty()
