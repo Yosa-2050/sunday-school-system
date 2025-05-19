@@ -19,10 +19,10 @@ import {
 import Image from 'next/image';
 
 import Logo from '../public/logo.svg';
+import { ColorSchemeControl } from './ColorSchema';
 import { Menus } from './Menus';
 import UserProfile from './UserProfile';
 import { SideMenu } from './side-menu/SideMenu';
-import { ColorSchemeControl } from './ColorSchema';
 
 interface ShellProps {
     role: 'administrator' | 'work_provider';

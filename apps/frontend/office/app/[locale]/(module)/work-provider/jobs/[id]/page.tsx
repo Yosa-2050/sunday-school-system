@@ -70,7 +70,7 @@ export default function JobDetailsPage() {
         queryFn: () =>
             fetchApplicants(
                 { status: '', pagination: { page: 1, limit: 10, search: '' } },
-                jobId
+                jobId,
             ),
     });
 
@@ -810,75 +810,109 @@ export default function JobDetailsPage() {
                         </Card>
 
                         {/* Recent Applicants Card */}
-                        {job?.status === "APPROVED" &&<Card withBorder radius="md">
-                            <Card.Section withBorder p="md" bg="gray.0">
-                                <Group justify="space-between">
-                                    <Group>
-                                        <IconUsers
-                                            size={20}
-                                            color={theme.colors.gray[6]}
-                                        />
-                                        <Title order={2}>
-                                            Applicants
-                                        </Title>
+                        {job?.status === 'APPROVED' && (
+                            <Card withBorder radius="md">
+                                <Card.Section withBorder p="md" bg="gray.0">
+                                    <Group justify="space-between">
+                                        <Group>
+                                            <IconUsers
+                                                size={20}
+                                                color={theme.colors.gray[6]}
+                                            />
+                                            <Title order={2}>Applicants</Title>
+                                        </Group>
                                     </Group>
-                                </Group>
-                                <Text c="gray.6">
-                                    Candidates who applied for this
-                                    position
-                                </Text>
-                            </Card.Section>
-                            <Card.Section>
-                                {applicants.length === 0 ? (
-                                    <Text c="dimmed">No applicants</Text>
-                                ) : (
-                                    <Table>
-                                        <thead>
-                                            <tr>
-                                                <th>Avatar</th>
-                                                <th>Candidate</th>
-                                                <th>Applied</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-                                            {applicants.data?.map((applicant: any, index: number) => (
-                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-<tr key={index}>
-                                                    <td>
-                                                        <Avatar>{applicant?.initial}</Avatar>
-                                                    </td>
-                                                    <td>
-                                                        <Text fw={500}>{applicant?.name}</Text>
-                                                    </td>
-                                                    <td>
-                                                        <Text size="sm" c="dimmed">
-                                                            Applied {applicant?.daysAgo} day
-                                                            {applicant?.daysAgo > 1 ? 's' : ''} ago
-                                                        </Text>
-                                                    </td>
-                                                    <td>
-                                                        <Group gap={4}>
-                                                            <ActionIcon>
-                                                                <IconMail size={16} />
-                                                            </ActionIcon>
-                                                            <ActionIcon>
-                                                                <IconDownload size={16} />
-                                                            </ActionIcon>
-                                                            <ActionIcon>
-                                                                <IconCircleCheck size={16} />
-                                                            </ActionIcon>
-                                                        </Group>
-                                                    </td>
+                                    <Text c="gray.6">
+                                        Candidates who applied for this position
+                                    </Text>
+                                </Card.Section>
+                                <Card.Section>
+                                    {applicants.length === 0 ? (
+                                        <Text c="dimmed">No applicants</Text>
+                                    ) : (
+                                        <Table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Avatar</th>
+                                                    <th>Candidate</th>
+                                                    <th>Applied</th>
+                                                    <th>Actions</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </Table>
-                                )}
-                            </Card.Section>
-                        </Card>
-                            }
+                                            </thead>
+                                            <tbody>
+                                                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                                                {applicants.data?.map(
+                                                    (
+                                                        applicant: any,
+                                                        index: number,
+                                                    ) => (
+                                                        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                                        <tr key={index}>
+                                                            <td>
+                                                                <Avatar>
+                                                                    {
+                                                                        applicant?.initial
+                                                                    }
+                                                                </Avatar>
+                                                            </td>
+                                                            <td>
+                                                                <Text fw={500}>
+                                                                    {
+                                                                        applicant?.name
+                                                                    }
+                                                                </Text>
+                                                            </td>
+                                                            <td>
+                                                                <Text
+                                                                    size="sm"
+                                                                    c="dimmed"
+                                                                >
+                                                                    Applied{' '}
+                                                                    {
+                                                                        applicant?.daysAgo
+                                                                    }{' '}
+                                                                    day
+                                                                    {applicant?.daysAgo >
+                                                                    1
+                                                                        ? 's'
+                                                                        : ''}{' '}
+                                                                    ago
+                                                                </Text>
+                                                            </td>
+                                                            <td>
+                                                                <Group gap={4}>
+                                                                    <ActionIcon>
+                                                                        <IconMail
+                                                                            size={
+                                                                                16
+                                                                            }
+                                                                        />
+                                                                    </ActionIcon>
+                                                                    <ActionIcon>
+                                                                        <IconDownload
+                                                                            size={
+                                                                                16
+                                                                            }
+                                                                        />
+                                                                    </ActionIcon>
+                                                                    <ActionIcon>
+                                                                        <IconCircleCheck
+                                                                            size={
+                                                                                16
+                                                                            }
+                                                                        />
+                                                                    </ActionIcon>
+                                                                </Group>
+                                                            </td>
+                                                        </tr>
+                                                    ),
+                                                )}
+                                            </tbody>
+                                        </Table>
+                                    )}
+                                </Card.Section>
+                            </Card>
+                        )}
                     </Stack>
                 </Grid.Col>
 

@@ -26,12 +26,12 @@ import {
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import type { z } from 'zod';
 import { ApplicationDetails } from './components/ApplicationDetails';
 import { JobDetails } from './components/JobDetails';
 import { JobPreview } from './components/JobPreview';
 import { JobRequirements } from './components/JobRequirements';
 import { jobSchema } from './components/shcema/job-schema';
-import type { z } from 'zod';
 
 export default function PostJobPage() {
     const router = useRouter();
@@ -194,7 +194,7 @@ export default function PostJobPage() {
             });
             return;
         }
-    
+
         // Ensure mentorshipType is always a string
         jobMutation.mutate({
             ...data,

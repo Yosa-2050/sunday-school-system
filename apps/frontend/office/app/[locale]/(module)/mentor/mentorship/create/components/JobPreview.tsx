@@ -19,9 +19,10 @@ import {
     IconBriefcase,
     IconBuilding,
     IconCalendar,
-    IconCircleCheck, IconMapPin,
+    IconCircleCheck,
+    IconMapPin,
     IconSchool,
-    IconUser
+    IconUser,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { getAddressById } from 'app/[locale]/_api/organizations/get-addresses';
@@ -76,8 +77,6 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
         }
     }, [formData.catagories]);
 
-    
-
     return (
         <Container size="xl" py="xl" px="md">
             {/* Header Section */}
@@ -119,7 +118,7 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                     >
                                         {formData.mentorshipType}
                                     </Badge>
-                                    
+
                                     <Badge
                                         variant="outline"
                                         leftSection={<IconUser size={14} />}

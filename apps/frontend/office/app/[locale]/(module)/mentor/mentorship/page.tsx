@@ -168,7 +168,6 @@ const JobsList = () => {
                             >
                                 {job.program.status}
                             </Badge>
-                            
                         </Card>
                     ))}
                 </Stack>
@@ -196,9 +195,7 @@ const JobsList = () => {
                                             ? `${job.program.title.substring(0, 15)}...`
                                             : job.program.title}
                                     </Table.Td>
-                                    <Table.Td>
-                                        {job.program.workPlace}
-                                    </Table.Td>
+                                    <Table.Td>{job.program.workPlace}</Table.Td>
                                     <Table.Td>
                                         {job.program.educationalRequirment}
                                     </Table.Td>
@@ -210,13 +207,15 @@ const JobsList = () => {
                                         <span
                                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                                 statusStyles[
-                                                    job.program.status as keyof typeof statusStyles
+                                                    job.program
+                                                        .status as keyof typeof statusStyles
                                                 ] || 'bg-yellow-300'
                                             } text-white`}
                                             autoCapitalize="none"
                                         >
                                             {statusText[
-                                                job.program.status as keyof typeof statusText
+                                                job.program
+                                                    .status as keyof typeof statusText
                                             ] || job.program.status}
                                         </span>
                                     </Table.Td>
