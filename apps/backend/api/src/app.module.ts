@@ -47,7 +47,7 @@ import { OrganizationModule } from './organization/organization.module';
                 password: configService.get('POSTGRES_PASSWORD'),
                 database: configService.get('POSTGRES_DATABASE'),
                 entities: AppEntities,
-                synchronize: false,
+                synchronize: true,
             }),
             inject: [ConfigService],
         }),

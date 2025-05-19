@@ -1,11 +1,12 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CommitmentType } from '../enums/commitment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { MentorshipType } from '../enums/mentorship-type.enum';
+import { Mentors } from './mentor.entity';
 import { Programs } from './programs.entity';
 
 @Entity()
@@ -22,6 +23,14 @@ export class Mentorship extends BaseModel {
     @Column({ nullable: true })
     audience: ExperianceLevelType;
 
-    @OneToOne(() => Programs, { eager: true, cascade: true })
+    @ManyToOne(() => Mentors, { eager: true, nullable: true })
+    mentor: Mentors;
+
+    @JoinColumn()
+    @OneToOne(() => Programs, {
+        eager: true,
+        cascade: true,
+        onUpdate: 'NO ACTION',
+    })
     program: Programs;
 }
