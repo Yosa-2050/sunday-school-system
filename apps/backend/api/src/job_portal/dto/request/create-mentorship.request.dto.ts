@@ -7,11 +7,17 @@ import { IsNumber, IsOptional } from 'class-validator';
 import { ProgramRequestDto } from './create-job_portal.dto';
 
 export class CreateMentorShipProgramRequestDto extends ProgramRequestDto {
-    @ApiProperty()
+    @ApiProperty({
+        example: MentorshipType.Group,
+        description: 'Group mentorship',
+    })
     @OptionalEnum(MentorshipType)
     mentorshipType: MentorshipType;
 
-    @ApiProperty()
+    @ApiProperty({
+        example: CommitmentType.HoursPerDay,
+        description: 'Hours per day',
+    })
     @OptionalEnum(CommitmentType)
     commitment: CommitmentType;
 
@@ -20,7 +26,10 @@ export class CreateMentorShipProgramRequestDto extends ProgramRequestDto {
     @IsOptional()
     duration: number;
 
-    @ApiProperty()
+    @ApiProperty({
+        example: ExperianceLevelType.Entry,
+        description: 'Enty level',
+    })
     @OptionalEnum(ExperianceLevelType)
     audience: ExperianceLevelType;
 }

@@ -516,6 +516,19 @@ export class JobPortalService {
 
         const result = UtilityServices.EnsureUpdated(updatedJob, id);
         const job = await this.jobRepo.findOneBy({ program: { id } });
+        if (job) {
+            await this.SendJobApprovedNotification(job, result, status, note);
+        }
+
+        return result;
+    }
+
+    private async SendJobApprovedNotification(
+        job: Jobs,
+        result: { data: string; sucess: string },
+        status: ApprovalType,
+        note: string,
+    ) {
         if (result.sucess === 'true') {
             let emailTemplate = null;
 
@@ -559,8 +572,6 @@ export class JobPortalService {
                 reference: user.id,
             });
         }
-
-        return result;
     }
 
     findAll() {

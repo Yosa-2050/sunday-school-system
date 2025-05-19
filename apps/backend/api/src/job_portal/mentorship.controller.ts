@@ -5,6 +5,7 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Query,
     Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -45,9 +46,24 @@ export class MentorshipController {
     }
 
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
-    @Post('/all')
-    findAll(@Body() dto: { q: string }) {
+    @Post('/allMentors')
+    findAllMentors(@Body() dto: { q: string }) {
         return this.mentorshipService.findAllPaginated(dto.q);
+    }
+
+    @Roles(UserRoleType.Mentor)
+    @Post('/allPrograms')
+    findAllPrograms(
+        @Request() req,
+        @Body() dto: { q: string },
+        @Query('published') published: boolean,
+    ) {
+        return this.mentorshipService.getAllByMentorPaginated(
+            dto.q,
+            CurrentUser.getMentorId(req),
+            !published,
+            published,
+        );
     }
 
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)

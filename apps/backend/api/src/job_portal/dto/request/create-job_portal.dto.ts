@@ -27,7 +27,10 @@ export class JobDescriptionDto {
     @IsString()
     description: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        example: JobDescriptionType.Benefits,
+        description: 'benefits of the job',
+    })
     @IsEnum(JobDescriptionType)
     type: JobDescriptionType;
 }
@@ -59,7 +62,10 @@ export class ProgramRequestDto {
     @IsOptional()
     numberOfApplicants?: number;
 
-    @ApiProperty()
+    @ApiProperty({
+        example: ExperianceLevelType.Entry,
+        description: 'Entry level experiance',
+    })
     @OptionalEnum(ExperianceLevelType)
     experianceLevel?: ExperianceLevelType;
 
@@ -68,7 +74,10 @@ export class ProgramRequestDto {
     @IsOptional()
     experiance?: number;
 
-    @ApiProperty()
+    @ApiProperty({
+        example: WorkPlaceType.Remote,
+        description: 'Remote workplace',
+    })
     @OptionalEnum(WorkPlaceType)
     workPlace?: WorkPlaceType;
 
@@ -76,7 +85,10 @@ export class ProgramRequestDto {
     @IsOptional()
     deadline?: Date;
 
-    @ApiProperty()
+    @ApiProperty({
+        example: EducationalRequirmentType.Diplom,
+        description: 'Diplom educational',
+    })
     @OptionalEnum(EducationalRequirmentType)
     educationalRequirment?: EducationalRequirmentType;
 

@@ -30,9 +30,71 @@ import { Mentors } from './entities/mentor.entity';
 import { Mentorship } from './entities/mentorship.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 
 @Injectable()
 export class MentorshipService {
+    async getAllByMentorPaginated(
+        paginationDto: string,
+        mentorId: string,
+        isOnlyDraft?: boolean,
+        isOnlyPublished?: boolean,
+    ) {
+        const deserialized = entityParamDeserializer(paginationDto);
+
+        const searchableColumns = [
+            'program.title',
+            'program.description',
+            'organization.name',
+        ];
+
+        const queryString = entityParamSerializer({
+            ...deserialized,
+            f: [
+                { f: 'mentor.id', v: mentorId, o: 'eq' }, // Uncommented filter
+                isOnlyDraft
+                    ? { f: 'program.isPublished', v: 'false', o: 'eq' }
+                    : {},
+                isOnlyPublished
+                    ? {
+                          f: 'program.isPublished',
+                          v: isOnlyPublished.toString(),
+                          o: 'eq',
+                      }
+                    : {},
+                ...(deserialized.f ?? []),
+            ],
+        });
+
+        const joinOptions = [
+            {
+                relation: 'entity.mentor',
+                alias: 'mentor',
+            },
+            {
+                relation: 'entity.program',
+                alias: 'program',
+            },
+        ];
+
+        const { data: mentors, total } =
+            await this.queryBuilderService.buildQuery(
+                this.mentorshipRepo,
+                queryString,
+                joinOptions,
+                searchableColumns,
+            );
+
+        //const jobsList = jobs.map((org) => new JobResponseDto(org));
+
+        return new PaginatedResponseDto<Mentorship[]>(
+            mentors,
+            total,
+            deserialized.p,
+            deserialized.pp,
+        );
+    }
+
     async findAllPaginated(dto: string, exportList = false) {
         // Convert PaginationDto to the format expected by QueryBuilderService
         const { p, pp, s, f, o } = entityParamDeserializer(dto);
@@ -139,7 +201,7 @@ export class MentorshipService {
     async create(mentorId: string, dto: CreateMentorShipProgramRequestDto) {
         const mentor = await this.mentorsRepo.findOneBy({ id: mentorId });
 
-        if (mentor.status !== ApprovalType.Approved) {
+        if (mentor?.status !== ApprovalType.Approved) {
             throw new BadRequestException(
                 'Mentor is not approved, please contact your administrator',
             );
@@ -162,6 +224,7 @@ export class MentorshipService {
         }
 
         mentorShip.program.status = ApprovalType.Waiting_Approval;
+        mentorShip.mentor = mentor;
         const jobCreated = await this.mentorshipRepo.save(mentorShip);
         return UtilityServices.EnsureCreated(jobCreated.id);
     }
