@@ -296,7 +296,7 @@ export class JobPortalService {
         }
 
         if (filter.experianceLevel) {
-            query.andWhere('job.experianceLevel = :experianceLevel', {
+            query.andWhere('program.experianceLevel = :experianceLevel', {
                 experianceLevel: filter.experianceLevel,
             });
         }
@@ -320,13 +320,13 @@ export class JobPortalService {
         }
 
         if (filter.countryId) {
-            query.andWhere('job.countryId = :countryId', {
+            query.andWhere('program.countryId = :countryId', {
                 countryId: filter.countryId,
             });
         }
 
         if (filter.cityId) {
-            query.andWhere('job.cityId = :cityId', {
+            query.andWhere('program.cityId = :cityId', {
                 cityId: filter.cityId,
             });
         }

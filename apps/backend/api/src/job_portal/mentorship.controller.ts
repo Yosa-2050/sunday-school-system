@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Get,
     Param,
     ParseUUIDPipe,
     Patch,
@@ -61,7 +62,7 @@ export class MentorshipController {
         return this.mentorshipService.getAllByMentorPaginated(
             dto.q,
             CurrentUser.getMentorId(req),
-            !published,
+            published === undefined ? null : !published,
             published,
         );
     }
@@ -86,9 +87,19 @@ export class MentorshipController {
     }
 
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
-    @Post('byStatus')
+    @Post('listByAdmin')
     getAllByStatus(@Body() dto: { q: string }) {
-        return this.mentorshipService.getByStatusPaginated(dto.q);
+        return this.mentorshipService.getAllByMentorPaginated(
+            dto.q,
+            null,
+            false,
+            true,
+        );
+    }
+
+    @Get('program/:id')
+    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.mentorshipService.findOne(id);
     }
 
     // @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
@@ -123,32 +134,6 @@ export class MentorshipController {
     //     }
 
     //     this.documentService.generateCsv(data, res, 'jobList');
-    // }
-
-    // @Roles(UserRoleType.Mentor)
-    // @Post('byProvider')
-    // getAllPostedJobsByPorvider(@Request() req, @Body() dto: { q: string }) {
-    //     return this.mentorshipService.getByStatusAndByMentorPaginated(
-    //         CurrentUser.getOrganizationId(req),
-    //         dto.q,
-    //         null,
-    //         true,
-    //     );
-    // }
-
-    // @Roles(UserRoleType.Mentor)
-    // @Post('byProvider/draft')
-    // getAllDraftJobsByPorvider(@Request() req, @Body() dto: { q: string }) {
-    //     return this.mentorshipService.getByStatusAndByMentorPaginated(
-    //         CurrentUser.getOrganizationId(req),
-    //         dto.q,
-    //         true,
-    //     );
-    // }
-
-    // @Get(':id')
-    // findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    //     return this.mentorshipService.findOne(id);
     // }
 
     // @Roles(UserRoleType.WorkProvider)

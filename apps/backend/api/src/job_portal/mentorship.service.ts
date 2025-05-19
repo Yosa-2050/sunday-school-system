@@ -31,9 +31,32 @@ import { Mentors } from './entities/mentor.entity';
 import { Mentorship } from './entities/mentorship.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
+import { MentorshipsResponseDto } from './dto/response/mentorships.response.dto';
 
 @Injectable()
 export class MentorshipService {
+    async findOne(id: string) {
+        const program = await this.mentorshipRepo
+        .createQueryBuilder('mentorship')
+        .leftJoinAndSelect('mentorship.program', 'program')
+        .leftJoinAndSelect('program.jobCategory', 'jobCategory')
+        .leftJoinAndSelect('program.jobSkills', 'jobSkills')
+        .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
+        .leftJoinAndSelect('program.city', 'city')
+        .leftJoinAndSelect('program.country', 'country')
+        .leftJoinAndSelect('program.state', 'state')
+        .leftJoinAndSelect('mentorship.mentor', 'mentor')
+        .leftJoinAndSelect('mentor.profile', 'profile')
+        .where('mentorship.id = :id', { id })
+        .getOne();
+    if (!program) {
+        throw new EntityNotFoundException('Job');
+    }
+
+   return program;
+    }
     async getAllByMentorPaginated(
         paginationDto: string,
         mentorId: string,
@@ -51,7 +74,9 @@ export class MentorshipService {
         const queryString = entityParamSerializer({
             ...deserialized,
             f: [
-                { f: 'mentor.id', v: mentorId, o: 'eq' }, // Uncommented filter
+                mentorId
+                    ? { f: 'mentor.id', v: mentorId, o: 'eq' } // Uncommented filter
+                    : {},
                 isOnlyDraft
                     ? { f: 'program.isPublished', v: 'false', o: 'eq' }
                     : {},
@@ -279,4 +304,74 @@ export class MentorshipService {
     getByStatusPaginated(q: string, arg1?: string, arg2?: boolean) {
         throw new Error('Method not implemented.');
     }
+
+    async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
+            const query = this.mentorshipRepo.createQueryBuilder('mentorship');
+            query.leftJoinAndSelect('mentorship.program', 'program');
+            query.leftJoinAndSelect('mentorship.mentor', 'mentor');
+            query.andWhere('program.status = :status', {
+                status: ApprovalType.Approved,
+            });
+            query.andWhere('program.isPublished = :isPublished', {
+                isPublished: true,
+            });
+    
+            if (filter.title) {
+                query.andWhere('LOWER(program.title) LIKE LOWER(:title)', {
+                    title: `%${filter.title}%`,
+                });
+            }
+    
+            if (filter.categoryId) {
+                query
+                    .leftJoin('program.jobCategory', 'category')
+                    .andWhere('category.id = :categoryId', {
+                        categoryId: filter.categoryId,
+                    });
+            }
+    
+            if (filter.type) {
+                query.andWhere('job.type = :employmentType', {
+                    employmentType: filter.type,
+                });
+            }
+    
+            if (filter.experianceLevel) {
+                query.andWhere('program.experianceLevel = :experianceLevel', {
+                    experianceLevel: filter.experianceLevel,
+                });
+            }
+    
+            if (filter.countryId) {
+                query.andWhere('program.countryId = :countryId', {
+                    countryId: filter.countryId,
+                });
+            }
+    
+            if (filter.cityId) {
+                query.andWhere('program.cityId = :cityId', {
+                    cityId: filter.cityId,
+                });
+            }
+    
+            let programsApplied: string[] = null;
+            if (applicantId) {
+                const applied = await this.jobPortalService.jobsApplied(applicantId);
+                programsApplied = applied.map((x) => x.program?.id);
+            }
+            //const queryStr = query.getSql();
+            const [data, total] = await query
+                .skip((filter.pagination.page - 1) * filter.pagination.limit)
+                .take(filter.pagination.limit)
+                .getManyAndCount();
+            const jobsList = data.map(
+                (job) => new MentorshipsResponseDto(job, programsApplied),
+            );
+            return new PaginatedResponseDto<MentorshipsResponseDto[]>(
+                jobsList,
+                total,
+                filter.pagination.page,
+                filter.pagination.limit,
+            );
+        }
 }
