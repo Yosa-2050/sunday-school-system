@@ -97,10 +97,10 @@ export interface Pagination {
     status?: string;
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const fetchApplicants = async (
     payload: Page,
     jobId: string,
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ): Promise<any> => {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const response: any = await fetcher(`/job-portal/applications/${jobId}`, {

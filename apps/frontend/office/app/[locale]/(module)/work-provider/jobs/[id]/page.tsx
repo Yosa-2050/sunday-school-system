@@ -840,9 +840,9 @@ export default function JobDetailsPage() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                                                 {applicants.data?.map(
                                                     (
+                                                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                                         applicant: any,
                                                         index: number,
                                                     ) => (
