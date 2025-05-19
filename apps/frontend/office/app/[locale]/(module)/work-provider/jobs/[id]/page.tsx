@@ -16,6 +16,7 @@ import {
     Progress,
     SimpleGrid,
     Stack,
+    Table,
     Tabs,
     Text,
     Timeline,
@@ -47,6 +48,7 @@ import {
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchJobsAdminById } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
+import { fetchApplicants } from 'app/[locale]/_api/organizations/fetch-jobs';
 import parse from 'html-react-parser';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -61,6 +63,15 @@ export default function JobDetailsPage() {
     const { data: job, isLoading } = useQuery({
         queryKey: ['job', jobId],
         queryFn: () => fetchJobsAdminById(jobId),
+    });
+
+    const { data: applicants } = useQuery({
+        queryKey: ['applicants', jobId],
+        queryFn: () =>
+            fetchApplicants(
+                { status: '', pagination: { page: 1, limit: 10, search: '' } },
+                jobId
+            ),
     });
 
     // In a real application, you would fetch the job data based on the ID
@@ -799,7 +810,7 @@ export default function JobDetailsPage() {
                         </Card>
 
                         {/* Recent Applicants Card */}
-                        <Card withBorder radius="md" hidden>
+                        {job?.status === "APPROVED" &&<Card withBorder radius="md">
                             <Card.Section withBorder p="md" bg="gray.0">
                                 <Group justify="space-between">
                                     <Group>
@@ -808,63 +819,66 @@ export default function JobDetailsPage() {
                                             color={theme.colors.gray[6]}
                                         />
                                         <Title order={2}>
-                                            Recent Applicants
+                                            Applicants
                                         </Title>
                                     </Group>
-                                    <Button variant="outline">View All</Button>
                                 </Group>
                                 <Text c="gray.6">
-                                    Latest candidates who applied for this
+                                    Candidates who applied for this
                                     position
                                 </Text>
                             </Card.Section>
                             <Card.Section>
-                                {[1, 2, 3].map((i) => (
-                                    <Box
-                                        key={i}
-                                        p="md"
-                                        style={{
-                                            '&:hover': {
-                                                backgroundColor:
-                                                    theme.colors.gray[0],
-                                            },
-                                        }}
-                                    >
-                                        <Group justify="space-between">
-                                            <Group>
-                                                <Avatar>
-                                                    {String.fromCharCode(
-                                                        64 + i,
-                                                    )}
-                                                </Avatar>
-                                                <div>
-                                                    <Text fw={500}>
-                                                        Candidate {i}
-                                                    </Text>
-                                                    <Text size="sm" c="dimmed">
-                                                        Applied 2 day
-                                                        {i > 1 ? 's' : ''} ago
-                                                    </Text>
-                                                </div>
-                                            </Group>
-                                            <Group gap={4}>
-                                                <ActionIcon>
-                                                    <IconMail size={16} />
-                                                </ActionIcon>
-                                                <ActionIcon>
-                                                    <IconDownload size={16} />
-                                                </ActionIcon>
-                                                <ActionIcon>
-                                                    <IconCircleCheck
-                                                        size={16}
-                                                    />
-                                                </ActionIcon>
-                                            </Group>
-                                        </Group>
-                                    </Box>
-                                ))}
+                                {applicants.length === 0 ? (
+                                    <Text c="dimmed">No applicants</Text>
+                                ) : (
+                                    <Table>
+                                        <thead>
+                                            <tr>
+                                                <th>Avatar</th>
+                                                <th>Candidate</th>
+                                                <th>Applied</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                                            {applicants.data?.map((applicant: any, index: number) => (
+                                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+<tr key={index}>
+                                                    <td>
+                                                        <Avatar>{applicant?.initial}</Avatar>
+                                                    </td>
+                                                    <td>
+                                                        <Text fw={500}>{applicant?.name}</Text>
+                                                    </td>
+                                                    <td>
+                                                        <Text size="sm" c="dimmed">
+                                                            Applied {applicant?.daysAgo} day
+                                                            {applicant?.daysAgo > 1 ? 's' : ''} ago
+                                                        </Text>
+                                                    </td>
+                                                    <td>
+                                                        <Group gap={4}>
+                                                            <ActionIcon>
+                                                                <IconMail size={16} />
+                                                            </ActionIcon>
+                                                            <ActionIcon>
+                                                                <IconDownload size={16} />
+                                                            </ActionIcon>
+                                                            <ActionIcon>
+                                                                <IconCircleCheck size={16} />
+                                                            </ActionIcon>
+                                                        </Group>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                )}
                             </Card.Section>
                         </Card>
+                            }
                     </Stack>
                 </Grid.Col>
 

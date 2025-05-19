@@ -43,7 +43,7 @@ export interface Response {
 }
 
 export const fetchMentorship = async () => {
-    const response: Response[] = await fetcher('/mentorship/all', {
+    const response: Response[] = await fetcher('/mentorship/allMentors', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
     });

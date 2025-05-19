@@ -43,8 +43,9 @@
         "skills": "Skills",
         "categories": "Categories",
         "mentors": "Mentors",
-        "mentorship": "Mentorship",
-        "draft-mentorship": "Draft Mentorship"
+        "mentorship": "Mentorship Programs",
+        "draft-mentorship": "Draft Mentorship",
+        "job-explorer-applicants": "Applicants"
     },
     "header": {
         "title": "Admin Dashboard"
@@ -338,6 +339,7 @@
     },
     "mentorsPage": {
         "title": "Mentors List",
+        "create-mentorship": "Create Mentorship Program",
         "addMentor": "Add Mentor",
         "mentorName": "Mentor Name",
         "submit": "Submit",

@@ -19,11 +19,9 @@ import {
     IconBriefcase,
     IconBuilding,
     IconCalendar,
-    IconCircleCheck,
-    IconCurrencyDollar,
-    IconMapPin,
+    IconCircleCheck, IconMapPin,
     IconSchool,
-    IconUser,
+    IconUser
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { getAddressById } from 'app/[locale]/_api/organizations/get-addresses';
@@ -78,15 +76,7 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
         }
     }, [formData.catagories]);
 
-    const formatSalary = () => {
-        if (formData.salaryType === 'RANGE') {
-            return `${formData.salaryFrom?.toLocaleString()} - ${formData.salaryTo?.toLocaleString()} ${formData.currency} ${formData.salaryFrequency}`;
-        }
-        if (formData.salaryType === 'FIXED') {
-            return `${formData.salaryFrom?.toLocaleString()} ${formData.currency} ${formData.salaryFrequency}`;
-        }
-        return 'Not specified';
-    };
+    
 
     return (
         <Container size="xl" py="xl" px="md">
@@ -127,16 +117,9 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                             <IconBriefcase size={14} />
                                         }
                                     >
-                                        {formData.type}
+                                        {formData.mentorshipType}
                                     </Badge>
-                                    <Badge
-                                        variant="outline"
-                                        leftSection={
-                                            <IconCurrencyDollar size={14} />
-                                        }
-                                    >
-                                        {formatSalary()}
-                                    </Badge>
+                                    
                                     <Badge
                                         variant="outline"
                                         leftSection={<IconUser size={14} />}

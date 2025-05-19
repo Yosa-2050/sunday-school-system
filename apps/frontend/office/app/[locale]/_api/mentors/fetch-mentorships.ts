@@ -1,84 +1,61 @@
 import { fetcher } from '@shega/shared';
-
-interface Profile {
-    id: string;
-    isActive: boolean;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    mothersFullName: string | null;
-    birthDate: string | null;
-    dobGregorian: string | null;
-    gender: string | null;
-    marriageStatus: string | null;
-    title: string | null;
-    phoneNumber: string | null;
-    profile_picture_id: string | null;
+type MentorshipResponse = {
+  data: Daum[]
+  total: number
+  totalPages: number
 }
 
-interface Employee {
-    id: string;
-    isActive: boolean;
-    id_number: string | null;
-    profile: Profile;
+export interface Daum {
+  id: string
+  createdAt: string
+  isActive: boolean
+  mentorshipType: string
+  commitment: string
+  duration: number
+  audience: string
+  mentor: Mentor
+  program: Program
 }
 
-interface PostedBy {
-    id: string;
-    isActive: boolean;
-    type: string;
-    employee: Employee;
+export interface Mentor {
+  id: string
+  createdAt: string
+  isActive: boolean
+  status: string
+  note: string
 }
 
-interface Organization {
-    id: string;
-    isActive: boolean;
-    name: string;
-    description: string | null;
-    tinNumber: string | null;
-    displayName: string | null;
-    hasBranches: boolean;
+export interface Program {
+  id: string
+  createdAt: string
+  isActive: boolean
+  title: string
+  description: string
+  status: string
+  workPlace: string
+  numberOfApplicants: number
+  experianceLevel: string
+  experiance: number
+  deadline: string
+  educationalRequirment: string
+  notes: string
+  isPublished: boolean
+  postedDate: string
 }
-
-interface Job {
-    id: string;
-    isActive: boolean;
-    title: string;
-    description: string;
-    type: string;
-    salaryFrom: number;
-    salaryTo: number;
-    status: string;
-    createdDate: string;
-    organization: Organization;
-    postedBy: PostedBy;
-    currency: string;
-    salaryType: string;
-}
-
-interface JobsResponse {
-    data: Job[];
-    total: number;
-    limit: number;
-    page: number;
-    totalPages: number;
-}
-
-type FetchJobsPayload = {
-    status?: string;
-    pagination: Pagination;
-};
-
-export interface Pagination {
-    search: string;
-    page: number;
-    limit: number;
-}
-
 export const fetchMentorships = async (
     payload: string,
-): Promise<JobsResponse> => {
-    const response: JobsResponse = await fetcher('/mentorship/byStatus', {
+): Promise<MentorshipResponse> => {
+    const response: MentorshipResponse = await fetcher('/mentorship/allPrograms?published=true', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    return response;
+};
+export const fetchMentorshipsDraft = async (
+    payload: string,
+): Promise<MentorshipResponse> => {
+    const response: MentorshipResponse = await fetcher('/mentorship/allPrograms?published=false', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
     });

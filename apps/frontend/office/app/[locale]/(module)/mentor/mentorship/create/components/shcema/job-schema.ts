@@ -18,9 +18,9 @@ export const jobSchema = z.object({
     description: z
         .string({ required_error: 'Description is required' })
         .min(37, { message: 'Description must be at least 30 characters' }),
-    mentorshipType: z.coerce
-        .number({ required_error: 'Membership Type is required' })
-        .min(-1, { message: 'Please select a Membership Type' }),
+    mentorshipType: z
+        .string({ required_error: 'Membership Type is required' })
+        .optional(),
     workPlace: z
         .string({ required_error: 'Work place type is required' })
         .min(1, { message: 'Please select a work place type' }),

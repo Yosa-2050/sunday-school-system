@@ -7,7 +7,9 @@ import {
     Burger,
     CloseButton,
     Flex,
+    Paper,
     ScrollArea,
+    useMantineColorScheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -20,6 +22,7 @@ import Logo from '../public/logo.svg';
 import { Menus } from './Menus';
 import UserProfile from './UserProfile';
 import { SideMenu } from './side-menu/SideMenu';
+import { ColorSchemeControl } from './ColorSchema';
 
 interface ShellProps {
     role: 'administrator' | 'work_provider';
@@ -32,6 +35,8 @@ export default function WrapperShell({
 }: ShellProps): React.ReactNode {
     const [opened, { toggle }] = useDisclosure(false);
     const [sidebarOpen, { toggle: toggleSidebar }] = useDisclosure(true);
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === 'dark';
 
     return (
         <>
@@ -95,6 +100,7 @@ export default function WrapperShell({
               <Flex style={{ cursor: "pointer" }}>
                 <IconBell size={20} />
               </Flex> */}
+                        <ColorSchemeControl />
                             <UserProfile />
                             {/* <ActionIcon
                 onClick={() =>
@@ -162,8 +168,8 @@ export default function WrapperShell({
                     </Box>
                 </AppShell.Navbar>
 
-                <AppShell.Main className="bg-primary-5 dark:bg-primary-1">
-                    <Box className="w-full flex-1 ">{children}</Box>
+                <AppShell.Main className="">
+                    <Paper className="w-full flex-1 ">{children}</Paper>
                 </AppShell.Main>
             </AppShell>
         </>

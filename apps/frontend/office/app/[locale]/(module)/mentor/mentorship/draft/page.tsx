@@ -25,7 +25,7 @@ import {
 import { EntityFilter, EntityPagination, EntitySearch } from '@shega/ui';
 import { IconEye, IconPlus } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchMentorships } from 'app/[locale]/_api/mentors/fetch-mentorships';
+import { fetchMentorshipsDraft } from 'app/[locale]/_api/mentors/fetch-mentorships';
 import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
@@ -85,7 +85,7 @@ const JobsList = () => {
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['mentorships', entityParamSerializer(entityParams)],
-        queryFn: () => fetchMentorships(entityParamSerializer(entityParams)),
+        queryFn: () => fetchMentorshipsDraft(entityParamSerializer(entityParams)),
     });
 
     const jobs = data?.data || [];

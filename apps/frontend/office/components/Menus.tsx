@@ -88,6 +88,12 @@ export const Menus = (): MenuTree[] => {
             role: 'work_provider',
         },
         {
+            label: t('job-explorer-applicants'),
+            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            link: '/work-provider/applicants',
+            role: 'work_provider',
+        },
+        {
             label: t('dashboard'),
             icon: <IconHome stroke={1.4} size={20} />,
             link: '/admin/dashboard',
@@ -157,7 +163,7 @@ export const Menus = (): MenuTree[] => {
         {
             label: t('draft-mentorship'),
             icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
-            link: '/mentor/draft',
+            link: '/mentor/mentorship/draft',
             role: 'mentor',
         },
     ];

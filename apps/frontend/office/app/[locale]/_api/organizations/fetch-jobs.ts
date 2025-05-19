@@ -84,3 +84,29 @@ export const fetchJobs = async (payload: string): Promise<JobsResponse> => {
 
     return response;
 };
+
+
+type Page = {
+  status: string
+  pagination: Pagination
+}
+
+export interface Pagination {
+    page: number
+    limit: number
+    search: string
+  status?: string
+}
+
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const fetchApplicants = async (payload: Page, jobId: string): Promise<any> => {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const response: any = await fetcher(`/job-portal/applications/${jobId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( payload ),
+    });
+
+    return response;
+};

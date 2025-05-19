@@ -2,7 +2,7 @@
 
 import { Link, useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Container, Group, Paper, Stepper, Title } from '@mantine/core';
+import { Button, Container, Group, Stepper, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
     IconArrowLeft,
@@ -20,7 +20,6 @@ import {
     fetchSkills,
 } from 'app/[locale]/_api/job-details';
 import {
-    type CreateMentorship,
     createMentorship,
     saveMentorshipDraft,
 } from 'app/[locale]/_api/mentors/create-mentorships';
@@ -32,15 +31,17 @@ import { JobDetails } from './components/JobDetails';
 import { JobPreview } from './components/JobPreview';
 import { JobRequirements } from './components/JobRequirements';
 import { jobSchema } from './components/shcema/job-schema';
+import type { z } from 'zod';
 
 export default function PostJobPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
 
     const [active, setActive] = useState(0);
-    const [formSubmitted, setFormSubmitted] = useState(false);
+    // Infer the type from the schema to ensure compatibility
+    type JobFormType = z.infer<typeof jobSchema>;
 
-    const methods = useForm<CreateMentorship>({
+    const methods = useForm<JobFormType>({
         resolver: zodResolver(jobSchema),
         defaultValues: {
             isPublished: false,
@@ -145,7 +146,7 @@ export default function PostJobPage() {
         mutationFn: createMentorship,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobs'] });
-            router.push('/work-provider/jobs');
+            router.push('/mentor/mentorship');
             notifications.show({
                 title: 'Success',
                 message: 'Job posted successfully',
@@ -182,7 +183,8 @@ export default function PostJobPage() {
         },
     });
 
-    const onSubmit = (data: CreateMentorship) => {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const onSubmit = (data: any) => {
         const organizationId = getCookie('organization_id')?.toString();
         if (!organizationId) {
             notifications.show({
@@ -192,9 +194,11 @@ export default function PostJobPage() {
             });
             return;
         }
-
+    
+        // Ensure mentorshipType is always a string
         jobMutation.mutate({
             ...data,
+            mentorshipType: data.mentorshipType ?? '',
             isPublished: true,
         });
     };
@@ -222,6 +226,7 @@ export default function PostJobPage() {
         const formData = { ...watch() };
         draftMutation.mutate({
             ...formData,
+            mentorshipType: formData.mentorshipType ?? '',
             isPublished: false,
         });
     };
@@ -242,30 +247,6 @@ export default function PostJobPage() {
 
     const prevStep = () =>
         setActive((current) => (current > 0 ? current - 1 : current));
-
-    if (formSubmitted) {
-        return (
-            <Container size="xl">
-                <Paper shadow="sm" p="xl" radius="md">
-                    <div className="text-center">
-                        <IconCheck
-                            size={48}
-                            className="text-green-500 mx-auto mb-4"
-                        />
-                        <Title order={2} mb="md">
-                            Job Posted Successfully!
-                        </Title>
-                        <Button
-                            onClick={() => router.push('/work-provider/jobs')}
-                            leftSection={<IconArrowLeft size="1.1rem" />}
-                        >
-                            Back to Jobs
-                        </Button>
-                    </div>
-                </Paper>
-            </Container>
-        );
-    }
 
     return (
         <FormProvider {...methods}>

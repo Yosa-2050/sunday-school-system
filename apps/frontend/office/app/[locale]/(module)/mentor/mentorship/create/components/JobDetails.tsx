@@ -96,25 +96,14 @@ export const JobDetails = ({
                                     mentorshipType.data?.data ?? {},
                                 )}
                                 value={
-                                    mapEnumToOptions(
-                                        mentorshipType.data?.data ?? {},
-                                    )[field.value]?.value
+                                    field.value 
                                 }
                                 onChange={(value) =>
                                     field.onChange(
                                         value
-                                            ? mapEnumToOptions(
-                                                  mentorshipType.data?.data ??
-                                                      {},
-                                              ).findIndex(
-                                                  (item) =>
-                                                      item.value === value,
-                                              )
-                                            : -1,
-                                    )
+                                           )
                                 }
                                 error={errors.mentorshipType?.message}
-                                required
                             />
                         )}
                     />
