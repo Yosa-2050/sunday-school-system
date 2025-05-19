@@ -73,6 +73,7 @@ interface Job {
     jobSkills: JobSkill[];
     jobDescriptions: JobDescription[];
     applied: boolean;
+    programId: string;
 }
 
 export const fetchJobsById = async (id: string): Promise<Job> => {
