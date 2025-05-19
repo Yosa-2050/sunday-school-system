@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OptionalEnum, OptionalUUID } from '@shega/Utilities/decorators/optional-uuid.decorator';
+import {
+    OptionalEnum,
+    OptionalUUID,
+} from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';

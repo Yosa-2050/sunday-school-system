@@ -3,6 +3,6 @@ export enum ExperianceLevelType {
     Entry = 'Entry',
     Professional = 'Professional',
     ENTRY = 'ENTRY',
-    MID = "MID",
-    SENIOR = "SENIOR"
+    MID = 'MID',
+    SENIOR = 'SENIOR',
 }

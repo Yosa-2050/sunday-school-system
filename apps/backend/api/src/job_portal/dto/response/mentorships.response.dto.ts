@@ -21,7 +21,9 @@ export class MentorshipsResponseDto {
         this.description = mentorships.program.description;
         this.note = mentorships.program.notes;
         this.isPublished = mentorships.program.isPublished;
-        this.applied = appliedprograms ? appliedprograms.includes(mentorships.id) : false;
+        this.applied = appliedprograms
+            ? appliedprograms.includes(mentorships.id)
+            : false;
         this.programId = mentorships.program.id;
         this.experianceLevel = mentorships.program.experianceLevel;
     }
