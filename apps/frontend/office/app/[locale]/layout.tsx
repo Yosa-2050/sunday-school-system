@@ -8,11 +8,11 @@ import { cookies } from 'next/headers';
 import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
 
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
 import { cn } from 'utilies/cn';
 import { generateColors, lightenHexColor } from 'utility/colors';
 import { getUserAction } from './_api/get-user-action';
-import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 const inter = Inter({ subsets: ['latin'] });
 
