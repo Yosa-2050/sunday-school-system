@@ -100,7 +100,7 @@ export default function WrapperShell({
               <Flex style={{ cursor: "pointer" }}>
                 <IconBell size={20} />
               </Flex> */}
-                        <ColorSchemeControl />
+                            <ColorSchemeControl />
                             <UserProfile />
                             {/* <ActionIcon
                 onClick={() =>
