@@ -27,13 +27,13 @@ import {
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateMentorShipProgramRequestDto } from './dto/request/create-mentorship.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
+import { MentorshipsResponseDto } from './dto/response/mentorships.response.dto';
 import { Mentors } from './entities/mentor.entity';
 import { Mentorship } from './entities/mentorship.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
-import { MentorshipsResponseDto } from './dto/response/mentorships.response.dto';
 
 @Injectable()
 export class MentorshipService {
