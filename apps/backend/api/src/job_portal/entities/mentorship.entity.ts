@@ -6,8 +6,8 @@ import { CommitmentType } from '../enums/commitment-type.enum';
 import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { MentorshipType } from '../enums/mentorship-type.enum';
-import { Programs } from './programs.entity';
 import { Mentors } from './mentor.entity';
+import { Programs } from './programs.entity';
 
 @Entity()
 export class Mentorship extends BaseModel {

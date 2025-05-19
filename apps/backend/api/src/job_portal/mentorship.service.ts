@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
@@ -30,7 +31,6 @@ import { Mentors } from './entities/mentor.entity';
 import { Mentorship } from './entities/mentorship.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 
 @Injectable()
 export class MentorshipService {
