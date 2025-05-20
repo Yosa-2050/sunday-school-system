@@ -577,8 +577,8 @@ export class JobPortalService {
     findAll() {
         throw new NotImplementedException();
     }
-    findOneByJobIdRepo(id: string){
-        return this.programRepo.findOneBy({id});
+    findOneByJobIdRepo(id: string) {
+        return this.programRepo.findOneBy({ id });
     }
     async findOneByJobId(id: string) {
         const job = await this.jobRepo
@@ -638,19 +638,25 @@ export class JobPortalService {
         const updateJob = await this.GetJob(createDto);
         const skills = await this.GetSkills(createDto, job.program);
         if (skills && skills.length > 0) {
-            await this.jobSkillsRepo.delete({ program: { id: job.program.id } });
+            await this.jobSkillsRepo.delete({
+                program: { id: job.program.id },
+            });
             await this.jobSkillsRepo.save(skills);
         }
 
         const categories = await this.GetCategories(createDto, job.program);
         if (categories && categories.length > 0) {
-            await this.jobCategoryRepo.delete({ program: { id: job.program.id  } });
+            await this.jobCategoryRepo.delete({
+                program: { id: job.program.id },
+            });
             await this.jobCategoryRepo.save(categories);
         }
 
         const description = await this.GetDescriptions(createDto, job.program);
         if (description && description.length > 0) {
-            await this.jobDescriptionRepo.delete({ program: { id: job.program.id  } });
+            await this.jobDescriptionRepo.delete({
+                program: { id: job.program.id },
+            });
             await this.jobDescriptionRepo.save(description);
         }
         const { program, ...jobDetail } = updateJob;
