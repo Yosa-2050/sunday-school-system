@@ -592,6 +592,7 @@ export class JobPortalService {
             .leftJoinAndSelect('job.postedBy', 'postedBy')
             .leftJoinAndSelect('postedBy.employee', 'employee')
             .leftJoinAndSelect('employee.profile', 'profile')
+            .leftJoinAndSelect('jobCategory.category', 'category')
             .where('job.id = :id', { id })
             .getOne();
         if (!job) {
@@ -651,6 +652,7 @@ export class JobPortalService {
             await this.jobDescriptionRepo.save(description);
         }
         const { program, ...jobDetail } = updateJob;
+        program.jobDescriptions = undefined;
         const updatedProg = await this.programRepo.update(
             job.program.id,
             program,
