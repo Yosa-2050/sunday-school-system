@@ -51,7 +51,7 @@ export class JobSeekerController {
     constructor(
         private readonly jobPortalService: JobPortalService,
         private readonly jobsService: JobsService,
-        private readonly mentorshipService: MentorshipService
+        private readonly mentorshipService: MentorshipService,
     ) {}
 
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
