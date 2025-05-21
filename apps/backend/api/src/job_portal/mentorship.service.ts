@@ -305,7 +305,7 @@ export class MentorshipService {
         throw new Error('Method not implemented.');
     }
 
-    async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
+    async filterPrograms(filter: GetJobsRequestDto, applicantId: string = null) {
         const query = this.mentorshipRepo.createQueryBuilder('mentorship');
         query.leftJoinAndSelect('mentorship.program', 'program');
         query.leftJoinAndSelect('mentorship.mentor', 'mentor');
