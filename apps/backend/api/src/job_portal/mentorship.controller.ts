@@ -25,7 +25,6 @@ import { CreateMentorShipProgramRequestDto } from './dto/request/create-mentorsh
 // biome-ignore lint/style/useImportType: <explanation>
 import { MentorshipService } from './mentorship.service';
 
-@Roles(UserRoleType.Mentor)
 @ApiTags('mentorship')
 @Controller('mentorship')
 export class MentorshipController {
