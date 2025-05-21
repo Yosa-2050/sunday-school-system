@@ -41,6 +41,8 @@ import { UpdateApplicantRequestDto } from './dto/request/update-applicant.reques
 import { JobPortalService } from './job_portal.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobsService } from './jobs.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { MentorshipService } from './mentorship.service';
 
 @Roles(UserRoleType.JobSeeker)
 @ApiTags('job-seeker')
@@ -49,6 +51,7 @@ export class JobSeekerController {
     constructor(
         private readonly jobPortalService: JobPortalService,
         private readonly jobsService: JobsService,
+        private readonly mentorshipService: MentorshipService,
     ) {}
 
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
@@ -105,6 +108,13 @@ export class JobSeekerController {
     @Post('jobs')
     getAllPending(@Body() dto: GetJobsRequestDto, @Request() req) {
         return this.jobPortalService.filterJobs(
+            dto,
+            CurrentUser.getApplicantId(req),
+        );
+    }
+    @Post('mentorships')
+    getAllMentorshipPrograms(@Body() dto: GetJobsRequestDto, @Request() req) {
+        return this.mentorshipService.filterPrograms(
             dto,
             CurrentUser.getApplicantId(req),
         );
