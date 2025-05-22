@@ -51,6 +51,12 @@ export const Menus = (): MenuTree[] => {
             role: 'administrator',
         },
         {
+            label: t('mentorship'),
+            icon: <IconBuilding stroke={1.4} size={20} />,
+            link: '/admin/mentorships',
+            role: 'administrator',
+        },
+        {
             isGroup: true,
             label: 'Lookup',
             role: 'administrator',
@@ -118,15 +124,15 @@ export const Menus = (): MenuTree[] => {
             role: 'super_admin',
         },
         {
-            label: t('mentorship'),
-            icon: <IconBuilding stroke={1.4} size={20} />,
-            link: '/admin/mentorships',
-            role: 'super_admin',
-        },
-        {
             label: t('job-explorer'),
             icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
             link: '/admin/jobs',
+            role: 'super_admin',
+        },
+        {
+            label: t('mentorship'),
+            icon: <IconBuilding stroke={1.4} size={20} />,
+            link: '/admin/programs',
             role: 'super_admin',
         },
         {
