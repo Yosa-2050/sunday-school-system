@@ -23,24 +23,28 @@ import {
     useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import {
-    IconArrowLeft, IconCalendar,
+    IconArrowLeft,
+    IconCalendar,
     IconCheck,
+    IconClock,
     IconMapPin,
     IconPhone,
+    IconSchool,
     IconUser,
-    IconX,
     IconUsers,
-    IconClock,
-    IconSchool
+    IconX,
 } from '@tabler/icons-react';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
-import { fetchMentorshipProgramsById, type MentorshipProgram } from 'app/[locale]/_api/admin/fetch-mentorship';
+import { approveJob } from 'app/[locale]/_api/admin/approve-job';
+import {
+    type MentorshipProgram,
+    fetchMentorshipProgramsById,
+} from 'app/[locale]/_api/admin/fetch-mentorship';
 import parse from 'html-react-parser';
 import { useParams } from 'next/navigation';
 import DeclineModal from '../_components/Decline';
-import { notifications } from '@mantine/notifications';
-import { approveJob } from 'app/[locale]/_api/admin/approve-job';
 
 const MentorshipDetails = () => {
     const params = useParams();
@@ -55,35 +59,33 @@ const MentorshipDetails = () => {
         queryFn: async () => await fetchMentorshipProgramsById(programId),
     });
 
-     const approveProgramMutate = useMutation(
-        {
-            // mutationFn: async () => await approveJob(jobId),
-            mutationFn: async () => {
-                if (!programId) {
-                    throw new Error('Program ID is not available.');
-                }
-                return await approveJob(programId);
-            },
-            onSuccess: () => {
-                queryClient.invalidateQueries({
-                    queryKey: ['job', programId],
-                });
-                router.push('/admin/jobs');
-                notifications.show({
-                    title: 'Job Approved',
-                    message: 'The job has been successfully approved',
-                    color: 'green',
-                });
-            },
-            onError: (error) => {
-                notifications.show({
-                    title: 'Error Approving Job',
-                    message: error.message,
-                    color: 'red',
-                });
-            },
+    const approveProgramMutate = useMutation({
+        // mutationFn: async () => await approveJob(jobId),
+        mutationFn: async () => {
+            if (!program?.program.id) {
+                throw new Error('Program ID is not available.');
+            }
+            return await approveJob(program?.program.id);
         },
-    );
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['job', program?.program.id],
+            });
+            router.push('admin/programs');
+            notifications.show({
+                title: 'Job Approved',
+                message: 'The job has been successfully approved',
+                color: 'green',
+            });
+        },
+        onError: (error) => {
+            notifications.show({
+                title: 'Error Approving Job',
+                message: error.message,
+                color: 'red',
+            });
+        },
+    });
 
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
@@ -122,9 +124,7 @@ const MentorshipDetails = () => {
                             <IconMapPin size={18} className="mr-2" />
                             <Text>{program.program.country.name}</Text>
                         </div>
-                        <Badge variant="light">
-                            {program.audience}
-                        </Badge>
+                        <Badge variant="light">{program.audience}</Badge>
                     </div>
                 </div>
             </div>
@@ -157,7 +157,9 @@ const MentorshipDetails = () => {
                                         size={18}
                                         className="text-gray-500"
                                     />
-                                    <Text size="sm">Status: {program.mentor.status}</Text>
+                                    <Text size="sm">
+                                        Status: {program.mentor.status}
+                                    </Text>
                                 </Group>
                                 {program.mentor.profile.phoneNumber && (
                                     <Group gap="sm">
@@ -216,7 +218,10 @@ const MentorshipDetails = () => {
                                             <Text className="font-medium">
                                                 Commitment:
                                             </Text>
-                                            <Badge color="violet" variant="light">
+                                            <Badge
+                                                color="violet"
+                                                variant="light"
+                                            >
                                                 {program.commitment}
                                             </Badge>
                                         </Group>
@@ -228,7 +233,9 @@ const MentorshipDetails = () => {
                                             <Text className="font-medium">
                                                 Duration:
                                             </Text>
-                                            <Text>{program.duration} weeks</Text>
+                                            <Text>
+                                                {program.duration} weeks
+                                            </Text>
                                         </Group>
                                     </Stack>
                                 </Grid.Col>
@@ -242,7 +249,10 @@ const MentorshipDetails = () => {
                                             <Text className="font-medium">
                                                 Audience:
                                             </Text>
-                                            <Badge color="orange" variant="light">
+                                            <Badge
+                                                color="orange"
+                                                variant="light"
+                                            >
                                                 {program.audience}
                                             </Badge>
                                         </Group>
@@ -271,7 +281,10 @@ const MentorshipDetails = () => {
                                                 Experience Level:
                                             </Text>
                                             <Text>
-                                                {program.program.experianceLevel}
+                                                {
+                                                    program.program
+                                                        .experianceLevel
+                                                }
                                             </Text>
                                         </Group>
                                         <Group gap="sm">
@@ -456,14 +469,18 @@ const MentorshipDetails = () => {
                                         onClick={open}
                                         leftSection={<IconX size={18} />}
                                         className="hover:bg-red-600"
-                                        disabled={approveProgramMutate.isPending}
+                                        disabled={
+                                            approveProgramMutate.isPending
+                                        }
                                     >
                                         Decline
                                     </Button>
                                     <Button
                                         color="green"
                                         size="md"
-                                        onClick={() => approveProgramMutate.mutate()}
+                                        onClick={() =>
+                                            approveProgramMutate.mutate()
+                                        }
                                         loading={approveProgramMutate.isPending}
                                         leftSection={<IconCheck size={18} />}
                                         className="hover:bg-green-600"
@@ -484,7 +501,7 @@ const MentorshipDetails = () => {
                 centered
                 size="md"
             >
-                <DeclineModal close={close} programId={program.id} />
+                <DeclineModal close={close} programId={program?.program.id} />
             </Modal>
         </Container>
     );

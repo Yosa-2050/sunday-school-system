@@ -57,122 +57,117 @@ export const fetchMentorships = async (
     return response;
 };
 
-
-
-
 export type MentorshipProgram = {
-  id: string
-  createdAt: string
-  isActive: boolean
-  mentorshipType: string
-  commitment: string
-  duration: number
-  audience: string
-  program: Program
-  mentor: Mentor
-}
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    mentorshipType: string;
+    commitment: string;
+    duration: number;
+    audience: string;
+    program: Program;
+    mentor: Mentor;
+};
 
 export interface Program {
-  id: string
-  createdAt: string
-  isActive: boolean
-  title: string
-  description: string
-  status: string
-  workPlace: string
-  numberOfApplicants: number
-  experianceLevel: string
-  experiance: number
-  deadline: string
-  educationalRequirment: string
-  notes: string
-  isPublished: boolean
-  postedDate: string
-  jobCategory: JobCategory[]
-  jobSkills: JobSkill[]
-  jobDescriptions: JobDescription[]
-  city: City
-  country: Country
-  state: State
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    title: string;
+    description: string;
+    status: string;
+    workPlace: string;
+    numberOfApplicants: number;
+    experianceLevel: string;
+    experiance: number;
+    deadline: string;
+    educationalRequirment: string;
+    notes: string;
+    isPublished: boolean;
+    postedDate: string;
+    jobCategory: JobCategory[];
+    jobSkills: JobSkill[];
+    jobDescriptions: JobDescription[];
+    city: City;
+    country: Country;
+    state: State;
 }
 
 export interface JobCategory {
-  id: string
-  createdAt: string
-  isActive: boolean
+    id: string;
+    createdAt: string;
+    isActive: boolean;
 }
 
 export interface JobSkill {
-  id: string
-  createdAt: string
-  isActive: boolean
-  skill: string
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    skill: string;
 }
 
 export interface JobDescription {
-  id: string
-  createdAt: string
-  isActive: boolean
-  description: string
-  type: string
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    description: string;
+    type: string;
 }
 
 export interface City {
-  id: string
-  createdAt: string
-  isActive: boolean
-  name: string
-  type: string
-  isRoot: boolean
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    name: string;
+    type: string;
+    isRoot: boolean;
 }
 
 export interface Country {
-  id: string
-  createdAt: string
-  isActive: boolean
-  name: string
-  continent: string
-  code: string
-  phoneCode: string
-  flag: string
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    name: string;
+    continent: string;
+    code: string;
+    phoneCode: string;
+    flag: string;
 }
 
 export interface State {
-  id: string
-  createdAt: string
-  isActive: boolean
-  name: string
-  type: string
-  isRoot: boolean
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    name: string;
+    type: string;
+    isRoot: boolean;
 }
 
 export interface Mentor {
-  id: string
-  createdAt: string
-  isActive: boolean
-  status: string
-  note: string
-  profile: Profile
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    status: string;
+    note: string;
+    profile: Profile;
 }
 
 export interface Profile {
-  id: string
-  createdAt: string
-  isActive: boolean
-  firstName: string
-  middleName: string
-  lastName: string
-  mothersFullName: string
-  birthDate: string
-  dobGregorian: string
-  gender: string
-  marriageStatus: string
-  title: string
-  phoneNumber: string
-  profile_picture_id: string
+    id: string;
+    createdAt: string;
+    isActive: boolean;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    mothersFullName: string;
+    birthDate: string;
+    dobGregorian: string;
+    gender: string;
+    marriageStatus: string;
+    title: string;
+    phoneNumber: string;
+    profile_picture_id: string;
 }
-
-
 
 export const fetchMentorshipProgramsById = async (
     mentorshipId: string,
@@ -186,4 +181,4 @@ export const fetchMentorshipProgramsById = async (
     );
 
     return response;
-}
+};

@@ -44,7 +44,7 @@ function DeclineModal({ close, programId }: DeclineModalProps) {
             },
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['job', jobId] });
-                router.push('/admin/jobs');
+                router.push('admin/programs');
                 notifications.show({
                     title: 'Job Declined',
                     message: 'The job has been successfully declined',

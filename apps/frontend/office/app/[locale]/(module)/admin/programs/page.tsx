@@ -6,13 +6,14 @@ import {
     Button,
     Card,
     Center,
-    Divider, Group,
+    Divider,
+    Group,
     LoadingOverlay,
     Paper,
     Stack,
     Table,
     TableScrollContainer,
-    Text
+    Text,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import {
@@ -219,7 +220,6 @@ const JobsList = () => {
                                         >
                                             View
                                         </Button>
-                                       
                                     </Table.Td>
                                 </Table.Tr>
                             ))}
