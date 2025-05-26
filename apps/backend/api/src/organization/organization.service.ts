@@ -8,6 +8,10 @@ import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 import { AddressService } from '@shega/location/address.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { LocationModel } from '@shega/location/dto/model/location.model';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationService } from '@shega/notification/notification.service';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
@@ -40,10 +44,6 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { LocationModel } from '@shega/location/dto/model/location.model';
 
 @Injectable()
 export class OrganizationService {

@@ -22,6 +22,10 @@ import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { LocationModel } from '@shega/location/dto/model/location.model';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -40,10 +44,6 @@ import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto
 import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { LocationModel } from '@shega/location/dto/model/location.model';
 
 @Controller('organization')
 export class OrganizationController {

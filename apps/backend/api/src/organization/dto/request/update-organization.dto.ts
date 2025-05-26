@@ -1,12 +1,12 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { CreateOrganizationDto } from './create-organization.dto';
-import { CompanySize } from '@shega/organization/enums/company-size.enum';
-import { CompanyType } from '@shega/organization/enums/company-type.enum';
 import {
     OptionalEnum,
     OptionalUUID,
 } from '@shega/Utilities/decorators/optional-uuid.decorator';
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { CompanySize } from '@shega/organization/enums/company-size.enum';
+import { CompanyType } from '@shega/organization/enums/company-type.enum';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { CreateOrganizationDto } from './create-organization.dto';
 
 export class UpdateOrganizationDto extends PartialType(CreateOrganizationDto) {}
 

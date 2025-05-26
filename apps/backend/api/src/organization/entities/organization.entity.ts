@@ -1,18 +1,18 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+import { Category } from '@shega/job_portal/entities/category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetails } from '@shega/location/entities/contact-details.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Location } from '@shega/location/entities/location.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { Branch } from './branch.entity';
-import { EmployeeOrganization } from './employee-organization.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CompanyType } from '../enums/company-type.enum';
-import { Category } from '@shega/job_portal/entities/category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CompanySize } from '../enums/company-size.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CompanyType } from '../enums/company-type.enum';
+import { Branch } from './branch.entity';
+import { EmployeeOrganization } from './employee-organization.entity';
 
 @Entity()
 export class Organization extends BaseModel {
