@@ -32,7 +32,7 @@ import { CreateOrganizationEmployeeDto } from './dto/request/create-employee.dto
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto';
 import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 import { EmployeesService } from './employees.service';
 import { Branch } from './entities/branch.entity';
@@ -40,9 +40,14 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { LocationModel } from '@shega/location/dto/model/location.model';
 
 @Injectable()
 export class OrganizationService {
+   
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -248,10 +253,10 @@ export class OrganizationService {
 
     async updateOrganization(
         id: string,
-        updateOrganizationDto: Partial<UpdateOrganizationDto>,
+        dto: Partial<UpdateOrganizationInfoDto>,
     ) {
         const organization = await this.findOne(id);
-        Object.assign(organization, updateOrganizationDto);
+        Object.assign(organization, dto);
         return this.organizationRepo.save(organization);
     }
 
@@ -440,5 +445,21 @@ export class OrganizationService {
             throw new EntityNotFoundException('Organization');
         }
         return this.organizationRepo.save(update);
+    }
+
+    updateOrganizationContactDetails(orgId: string, contactDetails: ContactDetailsRequest) {
+        return this.addressService.createContactDetails(
+            contactDetails,
+            orgId,
+            ReferenceType.Organization,
+        );
+    }
+
+    updateOrganizationLocation(orgId: string, location: LocationModel[]) {
+        return this.addressService.createLocation(
+            location,
+            orgId,
+            ReferenceType.Organization,
+        );
     }
 }

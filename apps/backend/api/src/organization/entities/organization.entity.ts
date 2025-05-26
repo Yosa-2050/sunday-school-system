@@ -5,26 +5,43 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { ContactDetails } from '@shega/location/entities/contact-details.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Location } from '@shega/location/entities/location.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Branch } from './branch.entity';
 import { EmployeeOrganization } from './employee-organization.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CompanyType } from '../enums/company-type.enum';
+import { Category } from '@shega/job_portal/entities/category.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CompanySize } from '../enums/company-size.enum';
 
 @Entity()
 export class Organization extends BaseModel {
     @Column()
     name: string;
 
-    @Column({ nullable: true })
-    description: string;
+    @Column({nullable: true})
+    registrationNumber: string;
 
     @Column({ nullable: true })
-    tinNumber: string;
+    description: string;
 
     @Column({ nullable: true })
     displayName: string;
 
     @Column({ nullable: true })
     note: string;
+
+    @Column({ nullable: true })
+    type: CompanyType;
+
+    @ManyToOne(() => Category, { eager: true, nullable: true })
+    sector: Category;
+
+    @Column({ nullable: true })
+    yearFounded: string;
+
+    @Column({ nullable: true })
+    companySize: CompanySize;
 
     @OneToMany(
         (type) => Branch,

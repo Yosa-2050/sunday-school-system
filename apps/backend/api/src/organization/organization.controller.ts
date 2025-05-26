@@ -35,11 +35,15 @@ import { CreateOrganizationEmployeeDto } from './dto/request/create-employee.dto
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateOrganizationDto } from './dto/request/update-organization.dto';
+import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { LocationModel } from '@shega/location/dto/model/location.model';
 
 @Controller('organization')
 export class OrganizationController {
@@ -145,14 +149,39 @@ export class OrganizationController {
         return this.organizationService.findOne(id);
     }
 
-    @Patch(':id')
+    @Roles(UserRoleType.WorkProvider)
+    @Patch('companyDetail/:id')
     updateOrganization(
         @Request() req,
-        @Body() updateOrganizationDto: UpdateOrganizationDto,
+        @Body() dto: UpdateOrganizationInfoDto,
     ) {
         return this.organizationService.updateOrganization(
             CurrentUser.getOrganizationId(req),
-            updateOrganizationDto,
+            dto,
+        );
+    }
+
+    @Roles(UserRoleType.WorkProvider)
+    @Patch('contacts/:id')
+    updateContactDetails(
+        @Request() req,
+        @Body() dto: ContactDetailsRequest,
+    ) {
+        return this.organizationService.updateOrganizationContactDetails(
+            CurrentUser.getOrganizationId(req),
+            dto,
+        );
+    }
+
+    @Roles(UserRoleType.WorkProvider)
+    @Patch('location/:id')
+    updateLocation(
+        @Request() req,
+        @Body() dto: LocationModel[],
+    ) {
+        return this.organizationService.updateOrganizationLocation(
+            CurrentUser.getOrganizationId(req),
+            dto,
         );
     }
 
