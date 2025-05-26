@@ -98,6 +98,7 @@ export const JobDetails = ({
                                 value={field.value}
                                 onChange={(value) => field.onChange(value)}
                                 error={errors.mentorshipType?.message}
+                                withAsterisk
                             />
                         )}
                     />
@@ -277,9 +278,6 @@ export const JobDetails = ({
                                 )}
                                 value={field.value}
                                 onChange={field.onChange}
-                                error={errors.commitment?.message}
-                                required
-                                min={1}
                             />
                         )}
                     />
@@ -291,13 +289,12 @@ export const JobDetails = ({
                         control={control}
                         render={({ field }) => (
                             <NumberInput
-                                label="Number of Applicants"
-                                placeholder="Enter number of applicants"
-                                min={1}
+                                label="Number of Mentee"
+                                placeholder="Enter number of Mentees"
                                 value={field.value}
                                 onChange={field.onChange}
                                 error={errors.numberOfApplicants?.message}
-                                required
+                                withAsterisk
                             />
                         )}
                     />

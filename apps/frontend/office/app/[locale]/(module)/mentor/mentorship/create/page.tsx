@@ -218,7 +218,7 @@ export default function PostJobPage() {
         if (watch('title') === '') {
             notifications.show({
                 title: 'Error',
-                message: 'Job title is required',
+                message: 'Mentorship title is required',
                 color: 'red',
             });
             return;
@@ -266,7 +266,7 @@ export default function PostJobPage() {
                                 color="gray"
                             />
                         </Link>
-                        <Title order={2}>Post a New Mentorship</Title>
+                        <Title order={2}>Post a New Mentorship Program</Title>
                     </Group>
                 </Group>
 
@@ -291,8 +291,8 @@ export default function PostJobPage() {
                     }}
                 >
                     <Stepper.Step
-                        label="Job Details"
-                        description="Basic job information and salary"
+                        label="Mentorship Program Details"
+                        description="Basic Program information and salary"
                         completedIcon={
                             hasStepErrors(0) ? (
                                 <IconCircleX size="1.1rem" color="white" />
@@ -313,7 +313,7 @@ export default function PostJobPage() {
 
                     <Stepper.Step
                         label="Requirements"
-                        description="Job requirements"
+                        description="Program requirements"
                         completedIcon={
                             hasStepErrors(0) ? (
                                 <IconCircleX size="1.1rem" color="white" />
@@ -353,7 +353,7 @@ export default function PostJobPage() {
 
                     <Stepper.Step
                         label="Preview"
-                        description="Review job posting"
+                        description="Review Program posting"
                     >
                         <JobPreview formData={methods.getValues()} />
                     </Stepper.Step>
@@ -390,7 +390,7 @@ export default function PostJobPage() {
                                 onClick={methods.handleSubmit(onSubmit)}
                                 loading={jobMutation.isPending}
                             >
-                                Post Job
+                                Post Program
                             </Button>
                         )}
                     </Group>

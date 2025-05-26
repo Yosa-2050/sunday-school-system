@@ -27,8 +27,8 @@ export const ApplicationDetails = ({
                                     type: 'error',
                                 }
                             }
-                            label="Job Description"
-                            placeholder="Detailed job description"
+                            label="Program Description"
+                            placeholder="Detailed program description"
                         />
                     )}
                 />
@@ -43,7 +43,7 @@ export const ApplicationDetails = ({
                             {...field}
                             error={errors.additionalInfo?.message}
                             label="Additional Information"
-                            placeholder="Any additional information about the job"
+                            placeholder="Any additional information about the program"
                             autosize
                             minRows={4}
                             maxRows={8}

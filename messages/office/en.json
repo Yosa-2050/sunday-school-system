@@ -43,6 +43,7 @@
         "skills": "Skills",
         "categories": "Categories",
         "mentors": "Mentors",
+        "mentorManagement": "Mentor Management",
         "mentorship": "Mentorship Programs",
         "draft-mentorship": "Draft Mentorship",
         "job-explorer-applicants": "Applicants"
@@ -362,11 +363,12 @@
             "createdAt": "Created At",
             "actions": "Actions",
             "edit": "Edit",
-            "delete": "Delete"
+            "delete": "Delete",
+            "approvalStatus": "Approval Status"
         }
     },
     "createMentors": {
-        "createUserTitle": "Create Organization",
+        "createUserTitle": "Create Mentor",
         "roleLabel": "Role",
         "rolePlaceholder": "Select your role",
         "roles": {
@@ -387,9 +389,9 @@
         "createUserButton": "Create Organization",
         "notifications": {
             "successTitle": "Success",
-            "successMessage": "Organization created successfully",
+            "successMessage": "Mentor Created Successfully",
             "errorTitle": "Error",
-            "errorMessage": "Error creating Organization"
+            "errorMessage": "Error creating Mentor"
         },
         "validation": {
             "firstNameRequired": "First name is required",

@@ -1,5 +1,6 @@
 import Shell from '@/components/Shell';
 import { redirect } from '@/i18n/routing';
+import { Box } from '@mantine/core';
 import { ProtectedRoute } from '@shega/ui';
 import { getLocale } from 'next-intl/server';
 import { cookies } from 'next/headers';
@@ -14,9 +15,11 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
     }
     return (
         <ProtectedRoute>
-            <Shell role={role as 'administrator' | 'work_provider'}>
-                {children}
-            </Shell>
+            <Box className="h-full">
+                <Shell role={role as 'administrator' | 'work_provider'}>
+                    {children}
+                </Shell>
+            </Box>
         </ProtectedRoute>
     );
 };

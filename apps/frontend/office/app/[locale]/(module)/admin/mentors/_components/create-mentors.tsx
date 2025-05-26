@@ -143,14 +143,14 @@ export function CreateMentors() {
                                 disabled={createUserMutation.isPending}
                                 w={'100%'}
                             >
-                                {'Create Mentors'}
+                                {'Create Mentor'}
                             </Button>
                         </Group>
                     </Stack>
                 </form>
             </Drawer>
 
-            <Button onClick={open}>{'Create Mentors'}</Button>
+            <Button onClick={open}>{'Create Mentor'}</Button>
         </>
     );
 }

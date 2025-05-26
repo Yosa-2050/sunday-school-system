@@ -19,7 +19,6 @@ import {
 import Image from 'next/image';
 
 import Logo from '../public/logo.svg';
-import { ColorSchemeControl } from './ColorSchema';
 import { Menus } from './Menus';
 import UserProfile from './UserProfile';
 import { SideMenu } from './side-menu/SideMenu';
@@ -39,7 +38,7 @@ export default function WrapperShell({
     const dark = colorScheme === 'dark';
 
     return (
-        <>
+        <Paper>
             <AppShell
                 layout="alt"
                 header={{ height: 60 }}
@@ -48,7 +47,7 @@ export default function WrapperShell({
                     breakpoint: 'md',
                     collapsed: { mobile: !opened, desktop: !sidebarOpen },
                 }}
-                padding="md"
+                padding="xl"
             >
                 <AppShell.Header className=" border-b border-gray-200" h={60}>
                     <Flex
@@ -96,29 +95,8 @@ export default function WrapperShell({
                             </Link>
                         </Flex>
                         <Flex align="center" gap="md">
-                            {/* <LocaleSwitcherSelect />
-              <Flex style={{ cursor: "pointer" }}>
-                <IconBell size={20} />
-              </Flex> */}
-                            <ColorSchemeControl />
+                            {/* <ColorSchemeControl /> */}
                             <UserProfile />
-                            {/* <ActionIcon
-                onClick={() =>
-                  setColorScheme(
-                    computedColorScheme === "light" ? "dark" : "light"
-                  )
-                }
-                variant="default"
-                size="xl"
-                aria-label="Toggle color scheme"
-                className="border-none"
-              >
-                {computedColorScheme === "dark" ? (
-                  <IconSun className="w-5.5 h-5.5 stroke-1.5" />
-                ) : (
-                  <IconMoon className="w-5.5 h-5.5 stroke-1.5" />
-                )}
-              </ActionIcon> */}
                             <Burger
                                 onClick={toggle}
                                 style={{ cursor: 'pointer' }}
@@ -168,10 +146,10 @@ export default function WrapperShell({
                     </Box>
                 </AppShell.Navbar>
 
-                <AppShell.Main className="">
-                    <Paper className="w-full flex-1 ">{children}</Paper>
+                <AppShell.Main className="h-full bg-red-400">
+                    {children}
                 </AppShell.Main>
             </AppShell>
-        </>
+        </Paper>
     );
 }

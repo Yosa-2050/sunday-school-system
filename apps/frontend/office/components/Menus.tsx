@@ -33,7 +33,7 @@ export const Menus = (): MenuTree[] => {
             role: 'administrator',
         },
         {
-            label: t('mentors'),
+            label: t('mentorManagement'),
             icon: <IconBuilding stroke={1.4} size={20} />,
             link: '/admin/mentors',
             role: 'administrator',
@@ -118,7 +118,7 @@ export const Menus = (): MenuTree[] => {
             role: 'super_admin',
         },
         {
-            label: t('mentors'),
+            label: t('mentorManagement'),
             icon: <IconBuilding stroke={1.4} size={20} />,
             link: '/admin/mentors',
             role: 'super_admin',

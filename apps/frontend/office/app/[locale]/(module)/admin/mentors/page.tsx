@@ -250,7 +250,9 @@ const MentorshipPage = () => {
                                         label={t('table.createdAt')}
                                     />
                                 </Table.Th>
+                                <Table.Th>{t('table.createdBy')}</Table.Th>
                                 <Table.Th>{t('table.status')}</Table.Th>
+                                <Table.Th>{t('table.approvalStatus')}</Table.Th>
                                 <Can roles={['super_admin']}>
                                     <Table.Th>{t('table.actions')}</Table.Th>
                                 </Can>
@@ -278,6 +280,7 @@ const MentorshipPage = () => {
                                             user.createdAt ?? '',
                                         ).toFormat('yyyy-MM-dd HH:mm:ss')}
                                     </Table.Td>
+                                    <Table.Td>Created By</Table.Td>
                                     <Table.Td
                                         className={
                                             user.status === 'APPROVED'
@@ -295,6 +298,11 @@ const MentorshipPage = () => {
                                               ? t('status.new')
                                               : t('status.decline')}
                                     </Table.Td>
+                                    <Table.Td>
+                                        {user.isActive
+                                            ? t('status.active')
+                                            : t('status.inactive')}
+                                    </Table.Td>
                                     <Can roles={['super_admin']}>
                                         <Table.Td>
                                             <Menu width={200}>
@@ -305,77 +313,44 @@ const MentorshipPage = () => {
                                                     />
                                                 </Menu.Target>
                                                 <Menu.Dropdown>
-                                                    {user.status === 'New' && (
-                                                        <>
-                                                            <Menu.Item
-                                                                onClick={() => {
-                                                                    setSelectedUser(
-                                                                        {
-                                                                            id: user.id,
-                                                                            name: user
-                                                                                .profile
-                                                                                .lastName,
-                                                                        },
-                                                                    );
-                                                                    activationHandlers.open();
-                                                                }}
-                                                            >
-                                                                Approve
-                                                            </Menu.Item>
-                                                            <Menu.Item
-                                                                onClick={() => {
-                                                                    setSelectedUser(
-                                                                        {
-                                                                            id: user.id,
-                                                                            name: user
-                                                                                .profile
-                                                                                .lastName,
-                                                                        },
-                                                                    );
-                                                                    open();
-                                                                }}
-                                                                color="red"
-                                                            >
-                                                                Decline
-                                                            </Menu.Item>
-                                                        </>
+                                                    <Menu.Item>
+                                                        Detail
+                                                    </Menu.Item>
+
+                                                    {user.isActive ? (
+                                                        <Menu.Item
+                                                            color="red"
+                                                            onClick={() => {
+                                                                setSelectedUser(
+                                                                    {
+                                                                        id: user.id,
+                                                                        name: user
+                                                                            .profile
+                                                                            .firstName,
+                                                                    },
+                                                                );
+                                                                open();
+                                                            }}
+                                                        >
+                                                            Deactivate
+                                                        </Menu.Item>
+                                                    ) : (
+                                                        <Menu.Item
+                                                            onClick={() => {
+                                                                setSelectedUser(
+                                                                    {
+                                                                        id: user.id,
+                                                                        name: user
+                                                                            .profile
+                                                                            .lastName,
+                                                                    },
+                                                                );
+                                                                activationHandlers.open();
+                                                            }}
+                                                        >
+                                                            Activate
+                                                        </Menu.Item>
                                                     )}
-                                                    {user.status ===
-                                                        'APPROVED' &&
-                                                        (user.isActive ? (
-                                                            <Menu.Item
-                                                                color="red"
-                                                                onClick={() => {
-                                                                    setSelectedUser(
-                                                                        {
-                                                                            id: user.id,
-                                                                            name: user
-                                                                                .profile
-                                                                                .firstName,
-                                                                        },
-                                                                    );
-                                                                    open();
-                                                                }}
-                                                            >
-                                                                Deactivate
-                                                            </Menu.Item>
-                                                        ) : (
-                                                            <Menu.Item
-                                                                onClick={() => {
-                                                                    setSelectedUser(
-                                                                        {
-                                                                            id: user.id,
-                                                                            name: user
-                                                                                .profile
-                                                                                .lastName,
-                                                                        },
-                                                                    );
-                                                                    activationHandlers.open();
-                                                                }}
-                                                            >
-                                                                Activate
-                                                            </Menu.Item>
-                                                        ))}
                                                 </Menu.Dropdown>
                                             </Menu>
                                         </Table.Td>

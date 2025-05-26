@@ -14,13 +14,13 @@ export const jobDescriptionSchema = z.object({
 export const jobSchema = z.object({
     title: z
         .string({ required_error: 'Job title is required' })
-        .min(3, { message: 'Job title must be at least 3 characters' }),
+        .min(3, { message: 'Program title must be at least 3 characters' }),
     description: z
         .string({ required_error: 'Description is required' })
         .min(37, { message: 'Description must be at least 30 characters' }),
     mentorshipType: z
         .string({ required_error: 'Membership Type is required' })
-        .optional(),
+        .min(1, { message: 'Please select a membership type' }),
     workPlace: z
         .string({ required_error: 'Work place type is required' })
         .min(1, { message: 'Please select a work place type' }),
@@ -45,10 +45,12 @@ export const jobSchema = z.object({
         .number({ required_error: 'Duration is required' })
         .min(0, { message: 'Duration must be a positive number' }),
     numberOfApplicants: z
-        .number()
-        .min(1, { message: 'Number of applicants must be at least 1' })
-        .optional(),
-    audience: z.string().min(1, { message: 'Audio is required' }).optional(),
+        .number({
+            required_error: 'Number of applicants is required',
+            invalid_type_error: 'Number of applicants must be a number',
+        })
+        .min(1, { message: 'Number of applicants must be at least 1' }),
+    audience: z.string().optional(),
     experiance: z.coerce
         .number({ required_error: 'Years of experience is required' })
         .min(0, {
@@ -67,7 +69,7 @@ export const jobSchema = z.object({
         .min(1, { message: 'Please select at least one required skill' }),
     catagories: z
         .array(z.string(), { required_error: 'Categories are required' })
-        .min(1, { message: 'Please select at least one job category' }),
+        .min(1, { message: 'Please select at least one program category' }),
     isPublished: z.boolean({
         required_error: 'Publication status is required',
     }),
@@ -84,7 +86,7 @@ export const jobSchema = z.object({
     additionalInfo: z.string().optional(),
     jobDescriptions: z
         .array(jobDescriptionSchema, {
-            required_error: 'Job descriptions are required',
+            required_error: 'Program descriptions are required',
         })
-        .min(1, { message: 'Please add at least one job description' }),
+        .min(1, { message: 'Please add at least one program description' }),
 });

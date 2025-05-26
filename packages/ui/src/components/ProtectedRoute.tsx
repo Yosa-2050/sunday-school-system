@@ -52,7 +52,11 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     }
 
     return isAuthenticated ? (
-        <Paper className="h-fit h-full" radius={0} withBorder={false}>
+        <Paper
+            className="h-fit h-full bg-green-200"
+            radius={0}
+            withBorder={false}
+        >
             {children}
         </Paper>
     ) : null;
