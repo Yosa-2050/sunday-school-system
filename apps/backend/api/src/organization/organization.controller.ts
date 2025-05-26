@@ -151,10 +151,7 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('companyDetail/:id')
-    updateOrganization(
-        @Request() req,
-        @Body() dto: UpdateOrganizationInfoDto,
-    ) {
+    updateOrganization(@Request() req, @Body() dto: UpdateOrganizationInfoDto) {
         return this.organizationService.updateOrganization(
             CurrentUser.getOrganizationId(req),
             dto,
@@ -163,10 +160,7 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('contacts/:id')
-    updateContactDetails(
-        @Request() req,
-        @Body() dto: ContactDetailsRequest,
-    ) {
+    updateContactDetails(@Request() req, @Body() dto: ContactDetailsRequest) {
         return this.organizationService.updateOrganizationContactDetails(
             CurrentUser.getOrganizationId(req),
             dto,
@@ -175,10 +169,7 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('location/:id')
-    updateLocation(
-        @Request() req,
-        @Body() dto: LocationModel[],
-    ) {
+    updateLocation(@Request() req, @Body() dto: LocationModel[]) {
         return this.organizationService.updateOrganizationLocation(
             CurrentUser.getOrganizationId(req),
             dto,

@@ -19,7 +19,7 @@ export class Organization extends BaseModel {
     @Column()
     name: string;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     registrationNumber: string;
 
     @Column({ nullable: true })

@@ -47,7 +47,6 @@ import { LocationModel } from '@shega/location/dto/model/location.model';
 
 @Injectable()
 export class OrganizationService {
-   
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -447,7 +446,10 @@ export class OrganizationService {
         return this.organizationRepo.save(update);
     }
 
-    updateOrganizationContactDetails(orgId: string, contactDetails: ContactDetailsRequest) {
+    updateOrganizationContactDetails(
+        orgId: string,
+        contactDetails: ContactDetailsRequest,
+    ) {
         return this.addressService.createContactDetails(
             contactDetails,
             orgId,
