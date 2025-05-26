@@ -12,6 +12,7 @@ import { Jobs } from './job_portal/entities/jobs.entity';
 import { Mentors } from './job_portal/entities/mentor.entity';
 import { Mentorship } from './job_portal/entities/mentorship.entity';
 import { Programs } from './job_portal/entities/programs.entity';
+import { SavedPrograms } from './job_portal/entities/savedPrograms.entity';
 import { Skills } from './job_portal/entities/skills.entity';
 import { LocationInfo } from './location/entities/LocationInfo.entity';
 import { ContactDetails } from './location/entities/contact-details.entity';
@@ -58,4 +59,5 @@ export const AppEntities = [
     Programs,
     Mentors,
     Mentorship,
+    SavedPrograms,
 ];

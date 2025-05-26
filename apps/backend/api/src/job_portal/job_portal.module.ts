@@ -18,6 +18,7 @@ import { Jobs } from './entities/jobs.entity';
 import { Mentors } from './entities/mentor.entity';
 import { Mentorship } from './entities/mentorship.entity';
 import { Programs } from './entities/programs.entity';
+import { SavedPrograms } from './entities/savedPrograms.entity';
 import { Skills } from './entities/skills.entity';
 import { JobDetailController } from './job_detail.controller';
 import { JobPortalController } from './job_portal.controller';
@@ -51,6 +52,7 @@ import { MentorshipService } from './mentorship.service';
             Programs,
             Mentors,
             Mentorship,
+            SavedPrograms,
         ]),
         OrganizationModule,
         DocumentModule,
