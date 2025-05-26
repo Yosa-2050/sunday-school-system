@@ -217,4 +217,27 @@ export class JobSeekerController {
     getDetails(@Request() req) {
         return this.jobsService.getDetails(CurrentUser.getApplicantId(req));
     }
+
+    @Post('saveProgram/:programId')
+    saveProgram(@Request() req, @Param('programId') programId: string) {
+        return this.jobsService.saveProgram(
+            CurrentUser.getApplicantId(req),
+            programId,
+        );
+    }
+
+    @Delete('unsaveProgram/:programId')
+    unsaveProgram(@Request() req, @Param('programId') programId: string) {
+        return this.jobsService.unsaveProgram(
+            CurrentUser.getApplicantId(req),
+            programId,
+        );
+    }
+
+    @Get('getSavedPrograms')
+    getSavedPrograms(@Request() req) {
+        return this.jobsService.getSavedProgramsByApplicantId(
+            CurrentUser.getApplicantId(req),
+        );
+    }
 }

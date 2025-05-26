@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -34,6 +34,7 @@ import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
 import { Experiance } from './entities/experiance.entity';
 import { Applications } from './entities/job-application.entity';
+import { SavedPrograms } from './entities/savedPrograms.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
 
@@ -53,6 +54,8 @@ export class JobsService {
         @InjectRepository(EducationHistory)
         private readonly educationalHistoryRepo: Repository<EducationHistory>,
         private readonly notificationService: NotificationService,
+        @InjectRepository(SavedPrograms)
+        private savedProgramsRepo: Repository<SavedPrograms>,
     ) {}
 
     async getApplicantDetail(id: string) {
@@ -340,5 +343,52 @@ export class JobsService {
         );
 
         return UtilityServices.EnsureUpdated(updated, applicantId);
+    }
+
+    async saveProgram(applicantId: string, programId: string) {
+        const programSaved = await this.savedProgramsRepo.findOne({
+            where: {
+                applicant: { id: applicantId },
+                program: { id: programId },
+            },
+        });
+
+        if (programSaved) {
+            throw new BadRequestException('ALREADY_PROGRAM_SAVED');
+        }
+        const applicant = await this.applicantRepo.findOneBy({
+            id: applicantId,
+        });
+        const program = await this.jobPortalService.findOneProgram(programId);
+        const savedProgram = this.savedProgramsRepo.create();
+        savedProgram.applicant = applicant;
+        savedProgram.program = program;
+
+        return this.savedProgramsRepo.save(savedProgram);
+    }
+
+    async unsaveProgram(applicantId: string, programId: string) {
+        const programSaved = await this.savedProgramsRepo.findOne({
+            where: {
+                applicant: { id: applicantId },
+                program: { id: programId },
+            },
+        });
+
+        if (!programSaved) {
+            throw new NotFoundException(
+                `Program not saved with applicantId ${applicantId} and programId ${programId}`,
+            );
+        }
+
+        const deleted = await this.savedProgramsRepo.delete(programSaved.id);
+
+        return UtilityServices.EnsureDeleted(deleted, programSaved.id);
+    }
+
+    async getSavedProgramsByApplicantId(applicantId: string) {
+        return await this.savedProgramsRepo.find({
+            where: { applicant: { id: applicantId } },
+        });
     }
 }

@@ -4,7 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UsersService } from './users/users.service';
-import { GlobalExceptionFilter } from './Utilities/ExceptionHandlers/exception.filter';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
