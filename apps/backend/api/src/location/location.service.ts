@@ -62,7 +62,7 @@ export class LocationService {
         if (addLocations.length > 0) {
             const add = await this.locationInfoRepo.save(addLocations); // Seed new data
             if (add) {
-                return UtilityServices.SuccessResponse();
+                return UtilityServices.SuccessIdResponse();
             }
             throw new BadRequestException('unable to add information');
         }

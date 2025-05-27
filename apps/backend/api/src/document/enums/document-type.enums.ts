@@ -1,6 +1,6 @@
-export enum DocumentType {
-    IMAGE = 0,
-    PDF = 1,
-    EXCEL = 2,
-    WORD = 3,
+export enum DocumentType{
+    BusinessLicense = "Business License",
+    TinCertificate ="Tin Certificate",
+    Payroll = "Payroll",
+    ProofOfAddress ="Proof of Address"
 }

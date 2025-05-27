@@ -16,6 +16,8 @@ import {
     IDocumentInterface,
     IDocumentService,
 } from './interface/document-service.interface';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentType } from './enums/document-type.enums';
 
 @Injectable()
 export class DocumentService {
@@ -25,7 +27,7 @@ export class DocumentService {
         private readonly documentService: IDocumentService,
     ) {}
 
-    async create(file: Express.Multer.File, referenceId: string) {
+    async create(file: Express.Multer.File, referenceId: string, docType?: DocumentType) {
         const file_location = await this.documentService.upload(file);
 
         const document = this.repo.create({
@@ -34,6 +36,7 @@ export class DocumentService {
             filePath: file_location,
             fileSize: file.size,
             referenceId,
+            docType
         });
 
         const doc = await this.repo.save(document);

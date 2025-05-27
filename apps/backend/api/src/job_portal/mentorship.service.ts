@@ -49,10 +49,10 @@ export class MentorshipService {
             .leftJoinAndSelect('program.state', 'state')
             .leftJoinAndSelect('mentorship.mentor', 'mentor')
             .leftJoinAndSelect('mentor.profile', 'profile')
-            .where('mentorship.id = :id', { id })
+            .where('program.id = :id', { id })
             .getOne();
         if (!program) {
-            throw new EntityNotFoundException('Job');
+            throw new EntityNotFoundException('Mentorship');
         }
 
         return program;

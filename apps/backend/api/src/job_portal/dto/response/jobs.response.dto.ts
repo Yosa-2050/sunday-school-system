@@ -12,7 +12,7 @@ import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-ty
 import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 
 export class JobResponseDto {
-    constructor(job: Jobs, appliedJobs: string[] = null) {
+    constructor(job: Jobs, appliedJobs: string[] = null, savedJobs: string[] = null) {
         this.id = job.id;
         this.salaryTo = job.salaryTo;
         this.createdDate = job.createdAt;
@@ -27,6 +27,7 @@ export class JobResponseDto {
         this.currency = job.currency;
         this.isPublished = job.program.isPublished;
         this.applied = appliedJobs ? appliedJobs.includes(job.id) : false;
+        this.saved = savedJobs ? savedJobs.includes(job.id) : false;
         this.salaryType = job.salaryType;
         this.programId = job.program.id;
         this.experianceLevel = job.program.experianceLevel;
@@ -81,4 +82,5 @@ export class JobResponseDto {
     note: string;
     currency: CurrencyType;
     applied: boolean;
+    saved: boolean;
 }

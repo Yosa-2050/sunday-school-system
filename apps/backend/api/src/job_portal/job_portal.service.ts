@@ -56,6 +56,7 @@ import { Skills } from './entities/skills.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ApplicationStatus } from './enums/job-application-status.enum';
 import { SalaryType } from './enums/salary-type.enum';
+import { SavedPrograms } from './entities/savedPrograms.entity';
 
 @Injectable()
 export class JobPortalService {
@@ -79,6 +80,8 @@ export class JobPortalService {
         private applicationRepo: Repository<Applicants>,
         @InjectRepository(Applications)
         private jobApplicationRepo: Repository<Applications>,
+        @InjectRepository(SavedPrograms)
+        private savedJobRepo: Repository<SavedPrograms>,
         private readonly queryBuilderService: QueryBuilderService,
         private readonly addressService: AddressService,
         private readonly passwordService: PasswordService,
@@ -336,13 +339,19 @@ export class JobPortalService {
             const appliedJobs = await this.jobsApplied(applicantId);
             jobsApplied = appliedJobs.map((x) => x.program?.id);
         }
+
+        let savedJobs: string[] = null;
+        if (applicantId) {
+            const jobs = await this.savedJobs(applicantId);
+            savedJobs = jobs.map((x) => x.program?.id);
+        }
         //const queryStr = query.getSql();
         const [data, total] = await query
             .skip((filter.pagination.page - 1) * filter.pagination.limit)
             .take(filter.pagination.limit)
             .getManyAndCount();
         const jobsList = data.map(
-            (job) => new JobResponseDto(job, jobsApplied),
+            (job) => new JobResponseDto(job, jobsApplied, savedJobs),
         );
         return new PaginatedResponseDto<JobResponseDto[]>(
             jobsList,
@@ -417,6 +426,14 @@ export class JobPortalService {
     async jobsApplied(id: string) {
         const existingApp = await this.jobApplicationRepo.findBy({
             applicants: { id },
+        });
+
+        return existingApp;
+    }
+
+    async savedJobs(id: string) {
+        const existingApp = await this.savedJobRepo.findBy({
+            applicant: { id },
         });
 
         return existingApp;

@@ -44,6 +44,9 @@ import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto
 import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
+import { AllEnums } from '@shega/users/enums/allEnums';
+import { Public } from '@shega/auth/jwt-public';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 
 @Controller('organization')
 export class OrganizationController {
@@ -144,14 +147,27 @@ export class OrganizationController {
         return this.organizationService.findBranches(id);
     }
 
+    @Public()
+    @Get('documentToUpload')
+    GetDocumentsToUpload(){
+        const enumType = "DocumentType";
+        const selectedEnum = AllEnums[enumType];
+    
+        if (!selectedEnum) {
+            // Handle the case where the specified enum type is not found
+                return { error: 'Enum type not found' };
+            }
+        return UtilityServices.SuccessDataResponse(selectedEnum);
+    }
+
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.organizationService.findOne(id);
     }
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('companyDetail/:id')
-    updateOrganization(@Request() req, @Body() dto: UpdateOrganizationInfoDto) {
+    updateOrganization(@Param('id', new ParseUUIDPipe()) id: string, @Request() req, @Body() dto: UpdateOrganizationInfoDto) {
         return this.organizationService.updateOrganization(
             CurrentUser.getOrganizationId(req),
             dto,
@@ -160,7 +176,7 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('contacts/:id')
-    updateContactDetails(@Request() req, @Body() dto: ContactDetailsRequest) {
+    updateContactDetails(@Param('id', new ParseUUIDPipe()) id: string, @Request() req, @Body() dto: ContactDetailsRequest) {
         return this.organizationService.updateOrganizationContactDetails(
             CurrentUser.getOrganizationId(req),
             dto,
@@ -169,7 +185,7 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('location/:id')
-    updateLocation(@Request() req, @Body() dto: LocationModel[]) {
+    updateLocation(@Param('id', new ParseUUIDPipe()) id: string, @Request() req, @Body() dto: LocationModel[]) {
         return this.organizationService.updateOrganizationLocation(
             CurrentUser.getOrganizationId(req),
             dto,

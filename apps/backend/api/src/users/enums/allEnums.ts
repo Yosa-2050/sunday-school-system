@@ -12,6 +12,7 @@ import { Gender } from './profile-gender.enum';
 import { MarriageStatus } from './profile-marriagestatus.enum';
 import { Title } from './profile-title.enum';
 import { UserRoleType } from './user-role.enum';
+import { DocumentType } from '@shega/document/enums/document-type.enums';
 
 export const AllEnums = {
     LoginBy,
@@ -28,4 +29,5 @@ export const AllEnums = {
     CommitmentType,
     MentorshipType,
     ExperianceLevelType,
+    DocumentType
 };
