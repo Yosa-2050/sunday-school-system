@@ -65,7 +65,7 @@ export class DocumentController {
         return this.documentService.remove(+id);
     }
 
-    @Post('upload/:referenceId')
+    @Post('upload/:referenceId/:docType')
     @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {
