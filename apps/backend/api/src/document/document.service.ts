@@ -12,12 +12,12 @@ import { Repository } from 'typeorm';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Document } from './entities/document.entity';
 // biome-ignore lint/style/useImportType: <explanation>
+import { DocumentType } from './enums/document-type.enums';
+// biome-ignore lint/style/useImportType: <explanation>
 import {
     IDocumentInterface,
     IDocumentService,
 } from './interface/document-service.interface';
-// biome-ignore lint/style/useImportType: <explanation>
-import { DocumentType } from './enums/document-type.enums';
 
 @Injectable()
 export class DocumentService {

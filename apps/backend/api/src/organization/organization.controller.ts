@@ -18,7 +18,9 @@ import {
     ExportWithQuesryRequestModel,
     StringRequestModel,
 } from '@shega/Utilities/models/list-string.model';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
+import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
@@ -26,6 +28,7 @@ import { DocumentService } from '@shega/document/document.service';
 import { LocationModel } from '@shega/location/dto/model/location.model';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
+import { AllEnums } from '@shega/users/enums/allEnums';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -44,9 +47,6 @@ import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto
 import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from './organization.service';
-import { AllEnums } from '@shega/users/enums/allEnums';
-import { Public } from '@shega/auth/jwt-public';
-import { UtilityServices } from '@shega/Utilities/service/utility.services';
 
 @Controller('organization')
 export class OrganizationController {
