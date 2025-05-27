@@ -1,3 +1,4 @@
+import { DocumentType } from '@shega/document/enums/document-type.enums';
 import { CommitmentType } from '@shega/job_portal/enums/commitment-type.enum';
 import { EducationalRequirmentType } from '@shega/job_portal/enums/education-requirment-type.enum';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
@@ -28,4 +29,5 @@ export const AllEnums = {
     CommitmentType,
     MentorshipType,
     ExperianceLevelType,
+    DocumentType,
 };

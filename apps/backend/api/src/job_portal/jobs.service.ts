@@ -121,7 +121,7 @@ export class JobsService {
                 reference: user.id,
             });
         }
-        return UtilityServices.SuccessResponse();
+        return UtilityServices.SuccessIdResponse();
     }
     private async FindApplicantOrThrow(applicantId: string) {
         const applicant = await this.applicantRepo.findOneBy({
@@ -212,7 +212,7 @@ export class JobsService {
                     skillsToAdd.map((skill) => ({ skill, applicant })),
                 ),
         ]);
-        return UtilityServices.SuccessResponse();
+        return UtilityServices.SuccessIdResponse();
     }
 
     async addExperiance(applicantId: string, dto: AddExperianceRequestDto) {
@@ -387,8 +387,11 @@ export class JobsService {
     }
 
     async getSavedProgramsByApplicantId(applicantId: string) {
-        return await this.savedProgramsRepo.find({
+        const result = await this.savedProgramsRepo.find({
             where: { applicant: { id: applicantId } },
         });
+
+        const jobsList = result.map((job) => job.program);
+        return jobsList;
     }
 }

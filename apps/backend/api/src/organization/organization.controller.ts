@@ -18,7 +18,9 @@ import {
     ExportWithQuesryRequestModel,
     StringRequestModel,
 } from '@shega/Utilities/models/list-string.model';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
+import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
@@ -26,6 +28,7 @@ import { DocumentService } from '@shega/document/document.service';
 import { LocationModel } from '@shega/location/dto/model/location.model';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
+import { AllEnums } from '@shega/users/enums/allEnums';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -144,14 +147,31 @@ export class OrganizationController {
         return this.organizationService.findBranches(id);
     }
 
+    @Public()
+    @Get('documentToUpload')
+    GetDocumentsToUpload() {
+        const enumType = 'DocumentType';
+        const selectedEnum = AllEnums[enumType];
+
+        if (!selectedEnum) {
+            // Handle the case where the specified enum type is not found
+            return { error: 'Enum type not found' };
+        }
+        return UtilityServices.SuccessDataResponse(selectedEnum);
+    }
+
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.organizationService.findOne(id);
     }
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('companyDetail/:id')
-    updateOrganization(@Request() req, @Body() dto: UpdateOrganizationInfoDto) {
+    updateOrganization(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Request() req,
+        @Body() dto: UpdateOrganizationInfoDto,
+    ) {
         return this.organizationService.updateOrganization(
             CurrentUser.getOrganizationId(req),
             dto,
@@ -160,7 +180,11 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('contacts/:id')
-    updateContactDetails(@Request() req, @Body() dto: ContactDetailsRequest) {
+    updateContactDetails(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Request() req,
+        @Body() dto: ContactDetailsRequest,
+    ) {
         return this.organizationService.updateOrganizationContactDetails(
             CurrentUser.getOrganizationId(req),
             dto,
@@ -169,7 +193,11 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('location/:id')
-    updateLocation(@Request() req, @Body() dto: LocationModel[]) {
+    updateLocation(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Request() req,
+        @Body() dto: LocationModel[],
+    ) {
         return this.organizationService.updateOrganizationLocation(
             CurrentUser.getOrganizationId(req),
             dto,

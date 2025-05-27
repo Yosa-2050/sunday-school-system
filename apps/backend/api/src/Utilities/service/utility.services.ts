@@ -10,7 +10,7 @@ export class UtilityServices {
                 `Update with ID ${id} failed, please contact your administrator`,
             );
         }
-        return UtilityServices.SuccessResponse(id);
+        return UtilityServices.SuccessIdResponse(id);
     }
     static EnsureMultipleUpdateds(
         result1: UpdateResult,
@@ -22,7 +22,7 @@ export class UtilityServices {
                 `Update with ID ${id} failed, please contact your administrator`,
             );
         }
-        return UtilityServices.SuccessResponse(id);
+        return UtilityServices.SuccessIdResponse(id);
     }
 
     static EnsureDeleted(result: DeleteResult, id: string) {
@@ -31,19 +31,27 @@ export class UtilityServices {
                 `Delete with ID ${id} failed, please contact your administartor`,
             );
         }
-        return UtilityServices.SuccessResponse();
+        return UtilityServices.SuccessIdResponse();
     }
 
     static EnsureCreated(id: string) {
         if (!id) {
             throw new BadRequestException('Unable to create');
         }
-        return UtilityServices.SuccessResponse(id);
+        return UtilityServices.SuccessIdResponse(id);
     }
 
-    static SuccessResponse(id?: string) {
+    static SuccessIdResponse(id?: string) {
         return {
             data: id,
+            sucess: 'true',
+        };
+    }
+
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static SuccessDataResponse(data?: any) {
+        return {
+            data: data,
             sucess: 'true',
         };
     }

@@ -12,6 +12,8 @@ import { Repository } from 'typeorm';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Document } from './entities/document.entity';
 // biome-ignore lint/style/useImportType: <explanation>
+import { DocumentType } from './enums/document-type.enums';
+// biome-ignore lint/style/useImportType: <explanation>
 import {
     IDocumentInterface,
     IDocumentService,
@@ -25,7 +27,11 @@ export class DocumentService {
         private readonly documentService: IDocumentService,
     ) {}
 
-    async create(file: Express.Multer.File, referenceId: string) {
+    async create(
+        file: Express.Multer.File,
+        referenceId: string,
+        docType?: DocumentType,
+    ) {
         const file_location = await this.documentService.upload(file);
 
         const document = this.repo.create({
@@ -34,6 +40,7 @@ export class DocumentService {
             filePath: file_location,
             fileSize: file.size,
             referenceId,
+            docType,
         });
 
         const doc = await this.repo.save(document);
