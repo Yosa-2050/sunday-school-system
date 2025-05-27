@@ -27,7 +27,11 @@ export class DocumentService {
         private readonly documentService: IDocumentService,
     ) {}
 
-    async create(file: Express.Multer.File, referenceId: string, docType?: DocumentType) {
+    async create(
+        file: Express.Multer.File,
+        referenceId: string,
+        docType?: DocumentType,
+    ) {
         const file_location = await this.documentService.upload(file);
 
         const document = this.repo.create({
@@ -36,7 +40,7 @@ export class DocumentService {
             filePath: file_location,
             fileSize: file.size,
             referenceId,
-            docType
+            docType,
         });
 
         const doc = await this.repo.save(document);

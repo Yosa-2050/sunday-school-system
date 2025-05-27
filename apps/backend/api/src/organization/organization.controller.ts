@@ -149,14 +149,14 @@ export class OrganizationController {
 
     @Public()
     @Get('documentToUpload')
-    GetDocumentsToUpload(){
-        const enumType = "DocumentType";
+    GetDocumentsToUpload() {
+        const enumType = 'DocumentType';
         const selectedEnum = AllEnums[enumType];
-    
+
         if (!selectedEnum) {
             // Handle the case where the specified enum type is not found
-                return { error: 'Enum type not found' };
-            }
+            return { error: 'Enum type not found' };
+        }
         return UtilityServices.SuccessDataResponse(selectedEnum);
     }
 
@@ -167,7 +167,11 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('companyDetail/:id')
-    updateOrganization(@Param('id', new ParseUUIDPipe()) id: string, @Request() req, @Body() dto: UpdateOrganizationInfoDto) {
+    updateOrganization(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Request() req,
+        @Body() dto: UpdateOrganizationInfoDto,
+    ) {
         return this.organizationService.updateOrganization(
             CurrentUser.getOrganizationId(req),
             dto,
@@ -176,7 +180,11 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('contacts/:id')
-    updateContactDetails(@Param('id', new ParseUUIDPipe()) id: string, @Request() req, @Body() dto: ContactDetailsRequest) {
+    updateContactDetails(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Request() req,
+        @Body() dto: ContactDetailsRequest,
+    ) {
         return this.organizationService.updateOrganizationContactDetails(
             CurrentUser.getOrganizationId(req),
             dto,
@@ -185,7 +193,11 @@ export class OrganizationController {
 
     @Roles(UserRoleType.WorkProvider)
     @Patch('location/:id')
-    updateLocation(@Param('id', new ParseUUIDPipe()) id: string, @Request() req, @Body() dto: LocationModel[]) {
+    updateLocation(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Request() req,
+        @Body() dto: LocationModel[],
+    ) {
         return this.organizationService.updateOrganizationLocation(
             CurrentUser.getOrganizationId(req),
             dto,

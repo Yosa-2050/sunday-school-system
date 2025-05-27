@@ -20,6 +20,6 @@ export class Document extends BaseModel {
     @Column()
     referenceId: string;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     docType: DocumentType;
 }

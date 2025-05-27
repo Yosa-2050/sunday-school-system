@@ -12,7 +12,11 @@ import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-ty
 import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 
 export class JobResponseDto {
-    constructor(job: Jobs, appliedJobs: string[] = null, savedJobs: string[] = null) {
+    constructor(
+        job: Jobs,
+        appliedJobs: string[] = null,
+        savedJobs: string[] = null,
+    ) {
         this.id = job.id;
         this.salaryTo = job.salaryTo;
         this.createdDate = job.createdAt;
