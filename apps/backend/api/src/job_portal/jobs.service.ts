@@ -390,10 +390,8 @@ export class JobsService {
         const result = await this.savedProgramsRepo.find({
             where: { applicant: { id: applicantId } },
         });
-        
-        const jobsList = result.map(
-            (job) => job.program,
-        );
-       return jobsList;
+
+        const jobsList = result.map((job) => job.program);
+        return jobsList;
     }
 }
