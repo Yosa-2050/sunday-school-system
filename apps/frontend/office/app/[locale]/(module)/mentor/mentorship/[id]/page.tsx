@@ -1,44 +1,29 @@
 'use client';
 
 import {
-    ActionIcon,
     Avatar,
     Badge,
     Box,
     Button,
     Card,
     Container,
-    Divider,
     Grid,
     Group,
     List,
     Paper,
-    Progress,
     SimpleGrid,
     Stack,
     Tabs,
     Text,
-    Timeline,
     Title,
     useMantineTheme,
 } from '@mantine/core';
 import {
-    IconAlertCircle,
-    IconArchive,
-    IconBell,
     IconBriefcase,
-    IconBuilding,
-    IconCalendar,
-    IconChartBar,
     IconChevronLeft,
     IconCircleCheck,
     IconClock,
-    IconCurrencyDollar,
-    IconDownload,
     IconEdit,
-    IconExternalLink,
-    IconEye,
-    IconMail,
     IconMapPin,
     IconShare,
     IconTrash,
@@ -46,69 +31,24 @@ import {
     IconX,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchJobsAdminById } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
+import {
+    type MentorshipProgram,
+    fetchMentorshipProgramsById,
+} from 'app/[locale]/_api/admin/fetch-mentorship';
 import parse from 'html-react-parser';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
-// Make params optional with a default value
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
-export default function JobDetailsPage() {
+export default function MentorshipProgramDetailsPage() {
     const theme = useMantineTheme();
     const params = useParams();
-    const jobId = params.id as string;
+    const programId = params.id as string;
 
-    const { data: job, isLoading } = useQuery({
-        queryKey: ['job', jobId],
-        queryFn: () => fetchJobsAdminById(jobId),
+    const { data: program, isLoading } = useQuery<MentorshipProgram>({
+        queryKey: ['mentorship', programId],
+        queryFn: async () => await fetchMentorshipProgramsById(programId),
     });
-
-    // In a real application, you would fetch the job data based on the ID
-    const jobData = {
-        id: jobId,
-        title: 'Senior Frontend Developer',
-        company: 'TechCorp Inc.',
-        companyLogo: '/placeholder.svg?height=40&width=40',
-        location: 'San Francisco, CA (Remote)',
-        type: 'Full-time',
-        salary: '$120,000 - $150,000',
-        postedDate: 'March 15, 2025',
-        expiryDate: 'May 15, 2025',
-        status: 'Active',
-        description:
-            'We are looking for a Senior Frontend Developer to join our team. The ideal candidate will have experience with React, TypeScript, and modern frontend frameworks.',
-        requirements: [
-            '5+ years of experience in frontend development',
-            'Strong proficiency in React, TypeScript, and modern JavaScript',
-            'Experience with state management libraries (Redux, MobX, etc.)',
-            'Knowledge of responsive design and cross-browser compatibility',
-            'Excellent problem-solving skills and attention to detail',
-        ],
-        responsibilities: [
-            'Develop and maintain frontend applications using React and TypeScript',
-            'Collaborate with designers and backend developers to implement features',
-            'Optimize applications for maximum speed and scalability',
-            'Write clean, maintainable, and well-documented code',
-            'Participate in code reviews and provide constructive feedback',
-        ],
-        benefits: [
-            'Competitive salary and equity',
-            'Health, dental, and vision insurance',
-            'Flexible work hours and remote work options',
-            'Professional development budget',
-            '401(k) matching',
-        ],
-        stats: {
-            views: 1245,
-            applicants: 78,
-            shortlisted: 12,
-            interviewed: 5,
-            rejected: 8,
-            hired: 0,
-            daysRemaining: 42,
-            conversionRate: 6.3,
-        },
-    };
 
     const statusStyles = {
         APPROVED: 'bg-green-500',
@@ -122,10 +62,18 @@ export default function JobDetailsPage() {
         WAITINGAPPROVAL: 'Waiting Approval',
     };
 
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!program) {
+        return <div>Program not found</div>;
+    }
+
     return (
         <Container size="xl" py="xl" px="md">
             <Group mb="xl">
-                <Link href="/work-provider/jobs" passHref>
+                <Link href="/mentorship-programs" passHref>
                     <Button
                         variant="subtle"
                         leftSection={<IconChevronLeft size={16} />}
@@ -151,25 +99,26 @@ export default function JobDetailsPage() {
                     <Group justify="space-between" align="flex-start">
                         <Group gap="lg" wrap="nowrap">
                             <Avatar size={64} radius="md">
-                                <IconBuilding
+                                <IconUsers
                                     size={32}
                                     style={{ color: 'primary' }}
                                 />
                             </Avatar>
                             <div>
                                 <Title order={1} size={32}>
-                                    {job?.title}
+                                    {program.program.title}
                                 </Title>
                                 <Text size="lg" mt={4}>
-                                    {job?.organization.name}
+                                    Mentorship Program
                                 </Text>
                                 <Group gap="sm" mt="md">
                                     <Badge
                                         variant="outline"
                                         leftSection={<IconMapPin size={14} />}
                                     >
-                                        {job?.city?.name}, {job?.state?.name},{' '}
-                                        {job?.country?.name}
+                                        {program.program.city?.name},{' '}
+                                        {program.program.state?.name},{' '}
+                                        {program.program.country?.name}
                                     </Badge>
                                     <Badge
                                         variant="outline"
@@ -177,55 +126,20 @@ export default function JobDetailsPage() {
                                             <IconBriefcase size={14} />
                                         }
                                     >
-                                        {job?.type}
+                                        {program.mentorshipType}
                                     </Badge>
-                                    {job?.salaryFrom || job?.salaryTo ? (
-                                        <Badge
-                                            variant="outline"
-                                            leftSection={
-                                                <IconCurrencyDollar size={14} />
-                                            }
-                                        >
-                                            {job?.salaryFrom &&
-                                                new Intl.NumberFormat(
-                                                    undefined,
-                                                    {
-                                                        style: 'currency',
-                                                        currency: job?.currency,
-                                                        minimumFractionDigits: 0,
-                                                        maximumFractionDigits: 0,
-                                                    },
-                                                ).format(job.salaryFrom)}
-                                            {job?.salaryFrom &&
-                                                job?.salaryTo &&
-                                                ' - '}
-                                            {job?.salaryTo &&
-                                                new Intl.NumberFormat(
-                                                    undefined,
-                                                    {
-                                                        style: 'currency',
-                                                        currency: job?.currency,
-                                                        minimumFractionDigits: 0,
-                                                        maximumFractionDigits: 0,
-                                                    },
-                                                ).format(job.salaryTo)}
-                                        </Badge>
-                                    ) : (
-                                        <Badge
-                                            variant="outline"
-                                            leftSection={
-                                                <IconCurrencyDollar size={14} />
-                                            }
-                                        >
-                                            Salary not specified
-                                        </Badge>
-                                    )}
-                                    {/* <Badge
-                    variant="outline"
-                    leftSection={<IconCalendar size={14} />}
-                  >
-                    Posted: {job?.createdAt}
-                  </Badge> */}
+                                    <Badge
+                                        variant="outline"
+                                        leftSection={<IconClock size={14} />}
+                                    >
+                                        {program.duration} months
+                                    </Badge>
+                                    <Badge
+                                        variant="outline"
+                                        leftSection={<IconUsers size={14} />}
+                                    >
+                                        {program.audience}
+                                    </Badge>
                                 </Group>
                             </div>
                         </Group>
@@ -234,17 +148,20 @@ export default function JobDetailsPage() {
                                 <Badge
                                     color={
                                         statusStyles[
-                                            job?.status as keyof typeof statusStyles
+                                            program.program
+                                                .status as keyof typeof statusStyles
                                         ]?.includes('green')
                                             ? 'green'
                                             : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                               statusStyles[
-                                                    job?.status as keyof typeof statusStyles
+                                                    program.program
+                                                        .status as keyof typeof statusStyles
                                                 ]?.includes('blue')
                                               ? 'blue'
                                               : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                                 statusStyles[
-                                                      job?.status as keyof typeof statusStyles
+                                                      program.program
+                                                          .status as keyof typeof statusStyles
                                                   ]?.includes('red')
                                                 ? 'red'
                                                 : 'yellow'
@@ -254,8 +171,9 @@ export default function JobDetailsPage() {
                                     radius="xl"
                                 >
                                     {statusText[
-                                        job?.status as keyof typeof statusText
-                                    ] || job?.status}
+                                        program.program
+                                            .status as keyof typeof statusText
+                                    ] || program.program.status}
                                 </Badge>
                             </Box>
                         </Stack>
@@ -267,7 +185,7 @@ export default function JobDetailsPage() {
                 {/* Main content - 2/3 width */}
                 <Grid.Col span={{ base: 12, md: 12 }}>
                     <Stack gap="xl">
-                        {/* Job Details Card */}
+                        {/* Program Details Card */}
                         <Card withBorder radius="md">
                             <Card.Section
                                 withBorder
@@ -275,13 +193,13 @@ export default function JobDetailsPage() {
                                 bg="gray.0"
                                 className="flex justify-between"
                             >
-                                <Title order={2}>Job Details</Title>
+                                <Title order={2}>Program Details</Title>
                                 <Group gap="xs">
                                     <Text size="md" fw={800} c="gray.9">
-                                        Expires:{' '}
-                                        {job?.deadline
+                                        Application Deadline:{' '}
+                                        {program.program.deadline
                                             ? new Date(
-                                                  job.deadline,
+                                                  program.program.deadline,
                                               ).toLocaleDateString('en-US', {
                                                   year: 'numeric',
                                                   month: 'long',
@@ -299,23 +217,26 @@ export default function JobDetailsPage() {
                                     <Tabs.Tab value="requirements">
                                         Requirements
                                     </Tabs.Tab>
-                                    <Tabs.Tab value="responsibilities">
-                                        Responsibilities
+                                    <Tabs.Tab value="mentor">
+                                        Mentor Details
                                     </Tabs.Tab>
-                                    <Tabs.Tab value="benefits">
-                                        Benefits
+                                    <Tabs.Tab value="logistics">
+                                        Program Logistics
                                     </Tabs.Tab>
                                 </Tabs.List>
                                 <Box p="xl">
                                     <Tabs.Panel value="description">
                                         <Stack>
                                             <Title order={3} className="mb-4">
-                                                Job Description
+                                                Program Description
                                             </Title>
                                             <Paper p="md" withBorder>
-                                                {job?.description ? (
+                                                {program.program.description ? (
                                                     <Box className="prose prose-stone max-w-none px-2.5">
-                                                        {parse(job.description)}
+                                                        {parse(
+                                                            program.program
+                                                                .description,
+                                                        )}
                                                     </Box>
                                                 ) : (
                                                     <Text className="text-gray-500">
@@ -330,11 +251,17 @@ export default function JobDetailsPage() {
                                                 Skills & Expertise
                                             </Title>
                                             <Paper p="md" withBorder>
-                                                {(job?.jobSkills ?? []).filter(
+                                                {(
+                                                    program.program.jobSkills ??
+                                                    []
+                                                ).filter(
                                                     (skill) => skill?.isActive,
                                                 ).length > 0 ? (
                                                     <Group gap="xs">
-                                                        {(job?.jobSkills ?? [])
+                                                        {(
+                                                            program.program
+                                                                .jobSkills ?? []
+                                                        )
                                                             .filter(
                                                                 (skill) =>
                                                                     skill?.isActive,
@@ -361,93 +288,188 @@ export default function JobDetailsPage() {
                                         </Stack>
                                     </Tabs.Panel>
                                     <Tabs.Panel value="requirements">
-                                        <List>
-                                            {(job?.jobDescriptions ?? [])
-                                                .filter(
-                                                    (desc) =>
-                                                        desc.type ===
-                                                            'REQUIREMENTS' &&
-                                                        desc.isActive,
+                                        <Stack gap="md">
+                                            <Title order={3}>
+                                                Experience Level
+                                            </Title>
+                                            <Text>
+                                                {
+                                                    program.program
+                                                        .experianceLevel
+                                                }
+                                            </Text>
+
+                                            <Title order={3}>
+                                                Years of Experience Required
+                                            </Title>
+                                            <Text>
+                                                {program.program.experiance}{' '}
+                                                years
+                                            </Text>
+
+                                            <Title order={3}>
+                                                Educational Requirements
+                                            </Title>
+                                            <Text>
+                                                {program.program
+                                                    .educationalRequirment ||
+                                                    'Not specified'}
+                                            </Text>
+
+                                            <Title order={3}>
+                                                Additional Notes
+                                            </Title>
+                                            <Text>
+                                                {program.program.notes ||
+                                                    'No additional notes'}
+                                            </Text>
+
+                                            <Title order={3}>
+                                                Program Requirements
+                                            </Title>
+                                            <List>
+                                                {(
+                                                    program.program
+                                                        .jobDescriptions ?? []
                                                 )
-                                                .map((req) => (
-                                                    <List.Item
-                                                        key={req.id}
-                                                        icon={
-                                                            <IconCircleCheck
-                                                                size={18}
-                                                                color={
-                                                                    theme.colors
-                                                                        .teal[5]
-                                                                }
-                                                            />
-                                                        }
-                                                    >
-                                                        <Text c="gray.7">
-                                                            {req.description}
-                                                        </Text>
-                                                    </List.Item>
-                                                ))}
-                                        </List>
-                                    </Tabs.Panel>
-                                    <Tabs.Panel value="responsibilities">
-                                        <List>
-                                            {(job?.jobDescriptions ?? [])
-                                                .filter(
-                                                    (desc) =>
-                                                        desc.type ===
-                                                            'RESPONSIBILITY' &&
-                                                        desc.isActive,
-                                                )
-                                                .map((resp) => (
-                                                    <List.Item
-                                                        key={resp.id}
-                                                        icon={
-                                                            <IconCircleCheck
-                                                                size={18}
-                                                                color={
-                                                                    theme.colors
-                                                                        .teal[5]
-                                                                }
-                                                            />
-                                                        }
-                                                    >
-                                                        <Text c="gray.7">
-                                                            {resp.description}
-                                                        </Text>
-                                                    </List.Item>
-                                                ))}
-                                        </List>
-                                    </Tabs.Panel>
-                                    <Tabs.Panel value="benefits">
-                                        <List>
-                                            {(job?.jobDescriptions ?? [])
-                                                .filter(
-                                                    (desc) =>
-                                                        desc.type ===
-                                                            'BENEFITS' &&
-                                                        desc.isActive,
-                                                )
-                                                .map((benefit) => (
-                                                    <List.Item
-                                                        key={benefit.id}
-                                                        icon={
-                                                            <IconCircleCheck
-                                                                size={18}
-                                                                color={
-                                                                    theme.colors
-                                                                        .teal[5]
-                                                                }
-                                                            />
-                                                        }
-                                                    >
-                                                        <Text c="gray.7">
-                                                            {
-                                                                benefit.description
+                                                    .filter(
+                                                        (desc) =>
+                                                            desc.type ===
+                                                                'REQUIREMENTS' &&
+                                                            desc.isActive,
+                                                    )
+                                                    .map((req) => (
+                                                        <List.Item
+                                                            key={req.id}
+                                                            icon={
+                                                                <IconCircleCheck
+                                                                    size={18}
+                                                                    color={
+                                                                        theme
+                                                                            .colors
+                                                                            .teal[5]
+                                                                    }
+                                                                />
                                                             }
-                                                        </Text>
-                                                    </List.Item>
-                                                ))}
-                                        </List>
+                                                        >
+                                                            <Text c="gray.7">
+                                                                {
+                                                                    req.description
+                                                                }
+                                                            </Text>
+                                                        </List.Item>
+                                                    ))}
+                                            </List>
+                                        </Stack>
+                                    </Tabs.Panel>
+                                    <Tabs.Panel value="mentor">
+                                        <Stack gap="md">
+                                            <Title order={3}>
+                                                Mentor Information
+                                            </Title>
+                                            <Group gap="lg">
+                                                <Avatar size={64} radius="xl" />
+                                                <div>
+                                                    <Text size="lg" fw={500}>
+                                                        {
+                                                            program.mentor
+                                                                .profile
+                                                                .firstName
+                                                        }{' '}
+                                                        {
+                                                            program.mentor
+                                                                .profile
+                                                                .lastName
+                                                        }
+                                                    </Text>
+                                                    <Text c="dimmed">
+                                                        {
+                                                            program.mentor
+                                                                .profile.title
+                                                        }
+                                                    </Text>
+                                                    <Text>
+                                                        {
+                                                            program.mentor
+                                                                .profile
+                                                                .phoneNumber
+                                                        }
+                                                    </Text>
+                                                </div>
+                                            </Group>
+
+                                            <Title order={3}>
+                                                Mentor Status
+                                            </Title>
+                                            <Badge
+                                                color={
+                                                    program.mentor.status ===
+                                                    'APPROVED'
+                                                        ? 'green'
+                                                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                                          program.mentor
+                                                                .status ===
+                                                            'DECLINED'
+                                                          ? 'red'
+                                                          : 'yellow'
+                                                }
+                                                variant="filled"
+                                            >
+                                                {program.mentor.status}
+                                            </Badge>
+
+                                            <Title order={3}>
+                                                Mentor Notes
+                                            </Title>
+                                            <Text>
+                                                {program.mentor.note ||
+                                                    'No notes provided'}
+                                            </Text>
+                                        </Stack>
+                                    </Tabs.Panel>
+                                    <Tabs.Panel value="logistics">
+                                        <Stack gap="md">
+                                            <Title order={3}>
+                                                Program Type
+                                            </Title>
+                                            <Text>
+                                                {program.mentorshipType}
+                                            </Text>
+
+                                            <Title order={3}>
+                                                Commitment Level
+                                            </Title>
+                                            <Text>{program.commitment}</Text>
+
+                                            <Title order={3}>
+                                                Program Duration
+                                            </Title>
+                                            <Text>
+                                                {program.duration} months
+                                            </Text>
+
+                                            <Title order={3}>
+                                                Target Audience
+                                            </Title>
+                                            <Text>{program.audience}</Text>
+
+                                            <Title order={3}>
+                                                Workplace Type
+                                            </Title>
+                                            <Text>
+                                                {program.program.workPlace}
+                                            </Text>
+
+                                            <Title order={3}>
+                                                Number of Applicants
+                                            </Title>
+                                            <Text>
+                                                {
+                                                    program.program
+                                                        .numberOfApplicants
+                                                }
+                                            </Text>
+                                        </Stack>
                                     </Tabs.Panel>
                                 </Box>
                             </Tabs>
@@ -457,520 +479,48 @@ export default function JobDetailsPage() {
                                         variant="outline"
                                         size="sm"
                                         leftSection={<IconShare size={14} />}
-                                        hidden
                                     >
                                         Share
                                     </Button>
+                                    <Group>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            leftSection={<IconEdit size={14} />}
+                                        >
+                                            Edit Program
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            leftSection={
+                                                <IconTrash size={14} />
+                                            }
+                                            color="red"
+                                        >
+                                            Delete Program
+                                        </Button>
+                                    </Group>
                                 </Group>
                             </Card.Section>
                         </Card>
 
-                        {/* Applicant Pipeline Card */}
-                        <Card withBorder radius="md" hidden>
+                        {/* Applicants Card */}
+                        <Card withBorder radius="md">
                             <Card.Section withBorder p="md" bg="gray.0">
                                 <Group>
                                     <IconUsers
                                         size={20}
                                         color={theme.colors.gray[6]}
                                     />
-                                    <Title order={2}>Applicant Pipeline</Title>
+                                    <Title order={2}>Applicants</Title>
                                 </Group>
                                 <Text c="gray.6">
-                                    Track your applicants through the hiring
-                                    process
+                                    Track applicants for this mentorship program
                                 </Text>
                             </Card.Section>
                             <Box p="xl">
-                                <Stack gap="xl">
-                                    {/* Pipeline Overview */}
-                                    <Paper
-                                        withBorder
-                                        p="md"
-                                        radius="md"
-                                        bg="gray.0"
-                                    >
-                                        <Group justify="space-between">
-                                            <Group>
-                                                <Avatar radius="xl" size={48}>
-                                                    <IconUsers size={24} />
-                                                </Avatar>
-                                                <div>
-                                                    <Text size="sm" c="gray.6">
-                                                        Total Applicants
-                                                    </Text>
-                                                    <Title order={3}>
-                                                        {
-                                                            jobData.stats
-                                                                .applicants
-                                                        }
-                                                    </Title>
-                                                </div>
-                                            </Group>
-                                            <Group>
-                                                <Button
-                                                    variant="outline"
-                                                    leftSection={
-                                                        <IconDownload
-                                                            size={14}
-                                                        />
-                                                    }
-                                                >
-                                                    Export
-                                                </Button>
-                                                <Button
-                                                    leftSection={
-                                                        <IconEye size={14} />
-                                                    }
-                                                >
-                                                    View All
-                                                </Button>
-                                            </Group>
-                                        </Group>
-                                    </Paper>
-
-                                    {/* Pipeline Stages */}
-                                    <SimpleGrid cols={{ base: 1, md: 4 }}>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="gray.0"
-                                        >
-                                            <Group
-                                                justify="space-between"
-                                                mb="sm"
-                                            >
-                                                <Text
-                                                    size="sm"
-                                                    c="gray.6"
-                                                    fw={500}
-                                                >
-                                                    Applied
-                                                </Text>
-                                                <Badge
-                                                    variant="filled"
-                                                    color="gray"
-                                                >
-                                                    {jobData.stats.applicants}
-                                                </Badge>
-                                            </Group>
-                                            <Progress value={100} size="sm" />
-                                        </Paper>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="gray.0"
-                                        >
-                                            <Group
-                                                justify="space-between"
-                                                mb="sm"
-                                            >
-                                                <Text
-                                                    size="sm"
-                                                    c="gray.6"
-                                                    fw={500}
-                                                >
-                                                    Shortlisted
-                                                </Text>
-                                                <Badge
-                                                    variant="filled"
-                                                    color="gray"
-                                                >
-                                                    {jobData.stats.shortlisted}
-                                                </Badge>
-                                            </Group>
-                                            <Progress
-                                                value={
-                                                    (jobData.stats.shortlisted /
-                                                        jobData.stats
-                                                            .applicants) *
-                                                    100
-                                                }
-                                                size="sm"
-                                            />
-                                        </Paper>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="gray.0"
-                                        >
-                                            <Group
-                                                justify="space-between"
-                                                mb="sm"
-                                            >
-                                                <Text
-                                                    size="sm"
-                                                    c="gray.6"
-                                                    fw={500}
-                                                >
-                                                    Interviewed
-                                                </Text>
-                                                <Badge
-                                                    variant="filled"
-                                                    color="gray"
-                                                >
-                                                    {jobData.stats.interviewed}
-                                                </Badge>
-                                            </Group>
-                                            <Progress
-                                                value={
-                                                    (jobData.stats.interviewed /
-                                                        jobData.stats
-                                                            .applicants) *
-                                                    100
-                                                }
-                                                size="sm"
-                                            />
-                                        </Paper>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="gray.0"
-                                        >
-                                            <Group
-                                                justify="space-between"
-                                                mb="sm"
-                                            >
-                                                <Text
-                                                    size="sm"
-                                                    c="gray.6"
-                                                    fw={500}
-                                                >
-                                                    Hired
-                                                </Text>
-                                                <Badge
-                                                    variant="filled"
-                                                    color="gray"
-                                                >
-                                                    {jobData.stats.hired}
-                                                </Badge>
-                                            </Group>
-                                            <Progress
-                                                value={
-                                                    (jobData.stats.hired /
-                                                        jobData.stats
-                                                            .applicants) *
-                                                    100
-                                                }
-                                                size="sm"
-                                            />
-                                        </Paper>
-                                    </SimpleGrid>
-
-                                    {/* Applicant Status */}
-                                    <SimpleGrid cols={{ base: 1, md: 3 }}>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="teal.0"
-                                            style={{
-                                                borderColor:
-                                                    theme.colors.teal[2],
-                                            }}
-                                        >
-                                            <Group wrap="nowrap">
-                                                <IconCircleCheck
-                                                    size={40}
-                                                    color={theme.colors.teal[5]}
-                                                />
-                                                <div>
-                                                    <Text
-                                                        size="sm"
-                                                        c="teal.6"
-                                                        fw={500}
-                                                    >
-                                                        Shortlisted
-                                                    </Text>
-                                                    <Title order={3} c="teal.7">
-                                                        {
-                                                            jobData.stats
-                                                                .shortlisted
-                                                        }
-                                                    </Title>
-                                                    <Text size="xs" c="teal.6">
-                                                        {(
-                                                            (jobData.stats
-                                                                .shortlisted /
-                                                                jobData.stats
-                                                                    .applicants) *
-                                                            100
-                                                        ).toFixed(1)}
-                                                        % of applicants
-                                                    </Text>
-                                                </div>
-                                            </Group>
-                                        </Paper>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="yellow.0"
-                                            style={{
-                                                borderColor:
-                                                    theme.colors.yellow[2],
-                                            }}
-                                        >
-                                            <Group wrap="nowrap">
-                                                <IconAlertCircle
-                                                    size={40}
-                                                    color={
-                                                        theme.colors.yellow[5]
-                                                    }
-                                                />
-                                                <div>
-                                                    <Text
-                                                        size="sm"
-                                                        c="yellow.6"
-                                                        fw={500}
-                                                    >
-                                                        In Progress
-                                                    </Text>
-                                                    <Title
-                                                        order={3}
-                                                        c="yellow.7"
-                                                    >
-                                                        {
-                                                            jobData.stats
-                                                                .interviewed
-                                                        }
-                                                    </Title>
-                                                    <Text
-                                                        size="xs"
-                                                        c="yellow.6"
-                                                    >
-                                                        {(
-                                                            (jobData.stats
-                                                                .interviewed /
-                                                                jobData.stats
-                                                                    .applicants) *
-                                                            100
-                                                        ).toFixed(1)}
-                                                        % of applicants
-                                                    </Text>
-                                                </div>
-                                            </Group>
-                                        </Paper>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="red.0"
-                                            style={{
-                                                borderColor:
-                                                    theme.colors.red[2],
-                                            }}
-                                        >
-                                            <Group wrap="nowrap">
-                                                <IconX
-                                                    size={40}
-                                                    color={theme.colors.red[5]}
-                                                />
-                                                <div>
-                                                    <Text
-                                                        size="sm"
-                                                        c="red.6"
-                                                        fw={500}
-                                                    >
-                                                        Rejected
-                                                    </Text>
-                                                    <Title order={3} c="red.7">
-                                                        {jobData.stats.rejected}
-                                                    </Title>
-                                                    <Text size="xs" c="red.6">
-                                                        {(
-                                                            (jobData.stats
-                                                                .rejected /
-                                                                jobData.stats
-                                                                    .applicants) *
-                                                            100
-                                                        ).toFixed(1)}
-                                                        % of applicants
-                                                    </Text>
-                                                </div>
-                                            </Group>
-                                        </Paper>
-                                    </SimpleGrid>
-                                </Stack>
-                            </Box>
-                        </Card>
-
-                        {/* Recent Applicants Card */}
-                        <Card withBorder radius="md" hidden>
-                            <Card.Section withBorder p="md" bg="gray.0">
-                                <Group justify="space-between">
-                                    <Group>
-                                        <IconUsers
-                                            size={20}
-                                            color={theme.colors.gray[6]}
-                                        />
-                                        <Title order={2}>
-                                            Recent Applicants
-                                        </Title>
-                                    </Group>
-                                    <Button variant="outline">View All</Button>
-                                </Group>
-                                <Text c="gray.6">
-                                    Latest candidates who applied for this
-                                    position
-                                </Text>
-                            </Card.Section>
-                            <Card.Section>
-                                {[1, 2, 3].map((i) => (
-                                    <Box
-                                        key={i}
-                                        p="md"
-                                        style={{
-                                            '&:hover': {
-                                                backgroundColor:
-                                                    theme.colors.gray[0],
-                                            },
-                                        }}
-                                    >
-                                        <Group justify="space-between">
-                                            <Group>
-                                                <Avatar>
-                                                    {String.fromCharCode(
-                                                        64 + i,
-                                                    )}
-                                                </Avatar>
-                                                <div>
-                                                    <Text fw={500}>
-                                                        Candidate {i}
-                                                    </Text>
-                                                    <Text size="sm" c="dimmed">
-                                                        Applied 2 day
-                                                        {i > 1 ? 's' : ''} ago
-                                                    </Text>
-                                                </div>
-                                            </Group>
-                                            <Group gap={4}>
-                                                <ActionIcon>
-                                                    <IconMail size={16} />
-                                                </ActionIcon>
-                                                <ActionIcon>
-                                                    <IconDownload size={16} />
-                                                </ActionIcon>
-                                                <ActionIcon>
-                                                    <IconCircleCheck
-                                                        size={16}
-                                                    />
-                                                </ActionIcon>
-                                            </Group>
-                                        </Group>
-                                    </Box>
-                                ))}
-                            </Card.Section>
-                        </Card>
-                    </Stack>
-                </Grid.Col>
-
-                {/* Sidebar - 1/3 width */}
-                <Grid.Col span={{ base: 12, md: 4 }} hidden>
-                    <Stack gap="xl">
-                        {/* Job Status Card */}
-                        <Card withBorder radius="md">
-                            <Card.Section withBorder p="md" bg="primary.9">
-                                <Title order={2} c="white">
-                                    Job Status
-                                </Title>
-                                <Text c="gray.4">
-                                    This job posting is currently active
-                                </Text>
-                            </Card.Section>
-                            <Card.Section p="xl" bg="gray.0">
-                                <Stack gap="lg">
-                                    <Group justify="space-between">
-                                        <Group gap="xs">
-                                            <IconCalendar
-                                                size={16}
-                                                color={theme.colors.gray[6]}
-                                            />
-                                            <Text size="sm">
-                                                Posted {jobData.postedDate}
-                                            </Text>
-                                        </Group>
-                                        <Badge variant="filled" color="gray">
-                                            {job?.deadline
-                                                ? `${Math.ceil((new Date(job.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days left`
-                                                : '-'}
-                                        </Badge>
-                                    </Group>
-                                    <div>
-                                        <Group justify="space-between" mb="xs">
-                                            <Text size="sm" fw={500}>
-                                                Time Remaining
-                                            </Text>
-                                            <Text size="sm" c="gray.6" fw={500}>
-                                                {job?.deadline
-                                                    ? `${Math.round(((new Date(job.deadline).getTime() - Date.now()) / (new Date(job.deadline).getTime() - Date.now())) * 100)}%`
-                                                    : '-'}
-                                            </Text>
-                                        </Group>
-                                        <Progress
-                                            value={
-                                                job?.deadline
-                                                    ? Math.round(
-                                                          ((new Date(
-                                                              job.deadline,
-                                                          ).getTime() -
-                                                              Date.now()) /
-                                                              (new Date(
-                                                                  job.deadline,
-                                                              ).getTime() -
-                                                                  Date.now())) *
-                                                              100,
-                                                      )
-                                                    : 0
-                                            }
-                                            size="sm"
-                                            mb="xs"
-                                        />
-                                    </div>
-                                    <Stack gap="xs">
-                                        <Button
-                                            variant="outline"
-                                            leftSection={<IconBell size={16} />}
-                                        >
-                                            Set Alerts
-                                        </Button>
-                                    </Stack>
-                                </Stack>
-                            </Card.Section>
-                        </Card>
-
-                        {/* Job Performance Card */}
-                        <Card withBorder radius="md">
-                            <Card.Section withBorder p="md" bg="gray.0">
-                                <Group>
-                                    <IconChartBar
-                                        size={20}
-                                        color={theme.colors.gray[6]}
-                                    />
-                                    <Title order={2}>Job Performance</Title>
-                                </Group>
-                            </Card.Section>
-                            <Card.Section p="xl">
-                                <Stack gap="lg">
-                                    <Paper withBorder p="md" radius="md">
-                                        <Group justify="space-between">
-                                            <Group gap="xs">
-                                                <IconEye
-                                                    size={20}
-                                                    color={theme.colors.gray[6]}
-                                                />
-                                                <Text size="sm" fw={500}>
-                                                    Total Views
-                                                </Text>
-                                            </Group>
-                                            <Title order={3}>
-                                                {jobData.stats.views.toLocaleString()}
-                                            </Title>
-                                        </Group>
-                                    </Paper>
+                                <SimpleGrid cols={{ base: 1, md: 3 }}>
                                     <Paper withBorder p="md" radius="md">
                                         <Group justify="space-between">
                                             <Group gap="xs">
@@ -979,185 +529,53 @@ export default function JobDetailsPage() {
                                                     color={theme.colors.gray[6]}
                                                 />
                                                 <Text size="sm" fw={500}>
-                                                    Applications
+                                                    Total Applicants
                                                 </Text>
                                             </Group>
                                             <Title order={3}>
-                                                {jobData.stats.applicants}
+                                                {
+                                                    program.program
+                                                        .numberOfApplicants
+                                                }
                                             </Title>
                                         </Group>
                                     </Paper>
                                     <Paper withBorder p="md" radius="md">
                                         <Group justify="space-between">
                                             <Group gap="xs">
-                                                <IconCalendar
+                                                <IconCircleCheck
                                                     size={20}
-                                                    color={theme.colors.gray[6]}
+                                                    color={
+                                                        theme.colors.green[6]
+                                                    }
                                                 />
                                                 <Text size="sm" fw={500}>
-                                                    Days Remaining
+                                                    Accepted
                                                 </Text>
                                             </Group>
-                                            <Title order={3}>
-                                                {jobData.stats.daysRemaining}
+                                            <Title order={3} c="green">
+                                                0
                                             </Title>
                                         </Group>
                                     </Paper>
-                                    <Divider />
-                                    <div>
-                                        <Group justify="space-between" mb="xs">
-                                            <Text size="sm" fw={500}>
-                                                Application Rate
-                                            </Text>
-                                            <Text size="sm" c="gray.6" fw={500}>
-                                                {(
-                                                    (jobData.stats.applicants /
-                                                        jobData.stats.views) *
-                                                    100
-                                                ).toFixed(1)}
-                                                %
-                                            </Text>
-                                        </Group>
-                                        <Progress
-                                            value={
-                                                (jobData.stats.applicants /
-                                                    jobData.stats.views) *
-                                                100
-                                            }
-                                            size="sm"
-                                            mb="xs"
-                                        />
+                                    <Paper withBorder p="md" radius="md">
                                         <Group justify="space-between">
-                                            <Text size="xs" c="gray.6">
-                                                {jobData.stats.applicants}{' '}
-                                                applications
-                                            </Text>
-                                            <Text size="xs" c="gray.6">
-                                                {jobData.stats.views.toLocaleString()}{' '}
-                                                views
-                                            </Text>
+                                            <Group gap="xs">
+                                                <IconX
+                                                    size={20}
+                                                    color={theme.colors.red[6]}
+                                                />
+                                                <Text size="sm" fw={500}>
+                                                    Rejected
+                                                </Text>
+                                            </Group>
+                                            <Title order={3} c="red">
+                                                0
+                                            </Title>
                                         </Group>
-                                    </div>
-                                </Stack>
-                            </Card.Section>
-                        </Card>
-
-                        {/* Actions Card */}
-                        <Card withBorder radius="md" hidden>
-                            <Card.Section withBorder p="md" bg="gray.0">
-                                <Group>
-                                    <IconExternalLink
-                                        size={20}
-                                        color={theme.colors.gray[6]}
-                                    />
-                                    <Title order={2}>Admin Actions</Title>
-                                </Group>
-                            </Card.Section>
-                            <Card.Section p="xl">
-                                <Stack gap="xs">
-                                    <Button
-                                        variant="light"
-                                        leftSection={<IconEdit size={16} />}
-                                        fullWidth
-                                        justify="flex-start"
-                                    >
-                                        Edit Job Posting
-                                    </Button>
-                                    <Button
-                                        variant="light"
-                                        leftSection={<IconShare size={16} />}
-                                        fullWidth
-                                        justify="flex-start"
-                                    >
-                                        Share Job
-                                    </Button>
-                                    <Button
-                                        variant="light"
-                                        leftSection={<IconDownload size={16} />}
-                                        fullWidth
-                                        justify="flex-start"
-                                    >
-                                        Export Applicants
-                                    </Button>
-                                    <Button
-                                        variant="light"
-                                        leftSection={<IconArchive size={16} />}
-                                        fullWidth
-                                        justify="flex-start"
-                                    >
-                                        Close Job
-                                    </Button>
-                                    <Button
-                                        variant="light"
-                                        leftSection={<IconTrash size={16} />}
-                                        fullWidth
-                                        color="red"
-                                        justify="flex-start"
-                                    >
-                                        Delete Job
-                                    </Button>
-                                </Stack>
-                            </Card.Section>
-                        </Card>
-
-                        {/* Job Timeline Card */}
-                        <Card withBorder radius="md" hidden>
-                            <Card.Section withBorder p="md" bg="gray.0">
-                                <Group>
-                                    <IconClock
-                                        size={20}
-                                        color={theme.colors.gray[6]}
-                                    />
-                                    <Title order={2}>Job Timeline</Title>
-                                </Group>
-                            </Card.Section>
-                            <Card.Section p="xl">
-                                <Timeline
-                                    active={2}
-                                    bulletSize={24}
-                                    lineWidth={2}
-                                >
-                                    <Timeline.Item
-                                        bullet={<IconCircleCheck size={12} />}
-                                        title="Posted"
-                                        color="teal"
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            {jobData.postedDate}
-                                        </Text>
-                                    </Timeline.Item>
-
-                                    <Timeline.Item
-                                        bullet={<IconCircleCheck size={12} />}
-                                        title="First Application"
-                                        color="yellow"
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            March 16, 2025
-                                        </Text>
-                                    </Timeline.Item>
-
-                                    <Timeline.Item
-                                        bullet={<IconCircleCheck size={12} />}
-                                        title="First Interview Scheduled"
-                                        color="blue"
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            March 22, 2025
-                                        </Text>
-                                    </Timeline.Item>
-
-                                    <Timeline.Item
-                                        bullet={<IconCircleCheck size={12} />}
-                                        title="Expires"
-                                        color="gray"
-                                    >
-                                        <Text size="sm" c="dimmed">
-                                            {jobData.expiryDate}
-                                        </Text>
-                                    </Timeline.Item>
-                                </Timeline>
-                            </Card.Section>
+                                    </Paper>
+                                </SimpleGrid>
+                            </Box>
                         </Card>
                     </Stack>
                 </Grid.Col>

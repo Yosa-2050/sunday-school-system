@@ -226,7 +226,7 @@ const JobsList = () => {
                                             leftSection={<IconEye size={14} />}
                                             onClick={() =>
                                                 router.push(
-                                                    `/work-provider/jobs/${job.id}`,
+                                                    `mentorship/${job.program?.id}`,
                                                 )
                                             }
                                         >

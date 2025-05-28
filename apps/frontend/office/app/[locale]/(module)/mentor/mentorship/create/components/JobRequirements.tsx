@@ -344,7 +344,7 @@ export const JobRequirements = ({
             <Divider my="xl" />
 
             <Stack gap="md">
-                <Title order={3}>Job Detail</Title>
+                <Title order={3}>Program Details</Title>
                 <Grid>
                     <Grid.Col span={{ base: 12, sm: 12 }}>
                         <div>

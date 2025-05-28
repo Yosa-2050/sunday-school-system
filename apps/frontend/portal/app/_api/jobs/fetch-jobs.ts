@@ -23,6 +23,8 @@ export type Response = {
         applied: boolean;
         createdDate: string;
         postedDate: string | null;
+        saved: boolean;
+        programId: string;
         organization: {
             id: string;
             isActive: boolean;
@@ -117,5 +119,29 @@ export const fetchJobs = async (data: Filter) => {
         body: JSON.stringify(cleanedData),
     });
 
+    return response as Response;
+};
+
+export const likeJob = async (programId: string) => {
+    const response = await fetcher(`/job-seeker/saveProgram/${programId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    return response as { success: boolean; message: string };
+};
+
+export const unlikeJob = async (programId: string) => {
+    const response = await fetcher(`/job-seeker/unsaveProgram/${programId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    return response as { success: boolean; message: string };
+};
+
+export const fetchSavedJobs = async () => {
+    const response = await fetcher('/job-seeker/getSavedPrograms', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
     return response as Response;
 };

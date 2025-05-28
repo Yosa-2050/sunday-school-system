@@ -5,6 +5,7 @@ import { redirect, useRouter } from '@/i18n/routing';
 import {
     Avatar,
     Badge,
+    Box,
     Button,
     Card,
     Container,
@@ -20,15 +21,16 @@ import {
     TypographyStylesProvider,
 } from '@mantine/core';
 import { useDebouncedCallback, useMediaQuery } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import {
     PER_PAGE,
     entityParamSchema,
     entityParamSerializer,
 } from '@shega/shared';
 import { useAuth } from '@shega/ui';
-import { IconBriefcase, IconSearch } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
+import { IconBriefcase, IconHeart, IconSearch } from '@tabler/icons-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchJobs, likeJob, unlikeJob } from 'app/_api/jobs/fetch-jobs';
 import { useLocale, useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
@@ -214,7 +216,7 @@ function JobList({ filters }: { filters: JobFilters }) {
         }),
     );
 
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['job-seeker-jbs', entityParamSerializer(entityParams)],
         queryFn: () =>
             fetchJobs({
@@ -225,6 +227,62 @@ function JobList({ filters }: { filters: JobFilters }) {
             }),
     });
 
+    const likeMutation = useMutation({
+        mutationFn: likeJob,
+        mutationKey: ['like-job'],
+        onSuccess: () => {
+            refetch();
+            notifications.show({
+                title: 'Job Liked',
+                message: 'You have successfully liked the job.',
+                color: 'green',
+            });
+        },
+        onError: (error) => {
+            notifications.show({
+                title: 'Error',
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'An error occurred while liking the job.',
+                color: 'red',
+            });
+        },
+        retry: false,
+    });
+
+    const unlikeMutation = useMutation({
+        mutationFn: unlikeJob,
+        mutationKey: ['unlike-job'],
+        onSuccess: () => {
+            refetch();
+            notifications.show({
+                title: 'Job Unliked',
+                message: 'You have successfully unliked the job.',
+                color: 'green',
+            });
+        },
+        onError: (error) => {
+            notifications.show({
+                title: 'Error',
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'An error occurred while unliking the job.',
+                color: 'red',
+            });
+        },
+        retry: false,
+    });
+
+    const handleLikeUnlike = (saved: boolean, programId: string) => {
+        if (saved) {
+            unlikeMutation.mutate(programId);
+        } else {
+            likeMutation.mutate(programId);
+        }
+    };
+
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
     }
@@ -234,6 +292,7 @@ function JobList({ filters }: { filters: JobFilters }) {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
             {data?.data.slice(0, 4).map((job) => (
                 <Card
                     key={job.id}
@@ -244,7 +303,7 @@ function JobList({ filters }: { filters: JobFilters }) {
                     className="hover:shadow-lg transition-shadow duration-300 border border-gray-200 max-h-[300px] overflow-hidden"
                 >
                     <Group justify="space-between" align="flex-start">
-                        <Group gap="sm">
+                        <Group gap="sm" className="w-full">
                             <Flex
                                 align={'center'}
                                 justify={'space-between'}
@@ -268,7 +327,24 @@ function JobList({ filters }: { filters: JobFilters }) {
                                         {job.title}
                                     </Title>
                                 </div>
-                                {job.applied && <Badge>Applied</Badge>}
+                                {job.applied ? (
+                                    <Badge>Applied</Badge>
+                                ) : (
+                                    <Box
+                                        onClick={() =>
+                                            handleLikeUnlike(
+                                                job.saved,
+                                                job.programId,
+                                            )
+                                        }
+                                        className="flex items-center justify-end flex-1 cursor-pointer"
+                                    >
+                                        <IconHeart
+                                            size={20}
+                                            className={`text-gray-500 hover:text-primary transition-colors cursor-pointer ${job.saved ? 'fill-primary' : ''}`}
+                                        />
+                                    </Box>
+                                )}
                             </Flex>
                             <Text size="sm" c="dimmed" className="line-clamp-1">
                                 {job.organization?.name}
