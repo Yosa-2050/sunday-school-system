@@ -87,7 +87,8 @@
         "myJobs": "My Jobs",
         "reports": "Reports",
         "messages": "Messages",
-        "findWork": "Find Work"
+        "findWork": "Find Work",
+        "savedJobs": "Saved Jobs"
     },
     "user": {
         "login": "Login",
@@ -119,5 +120,17 @@
         "appliedJobsTitle": "Applied Jobs",
         "appliedJobsDescription": "Here are the jobs you have applied for.",
         "appliedJobsButton": "Browse Jobs"
+    },
+    "saved-jobs": {
+        "title": "Saved Jobs",
+        "subtitle": "Here are the jobs you have saved.",
+        "noSavedJobs": "You haven't saved any jobs yet.",
+        "browse-jobs": "Browse Jobs",
+        "findJobs": "Find Jobs",
+        "savedJobs": "Saved Jobs",
+        "savedJobsSubtitle": "Here are the jobs you have saved.",
+        "savedJobsTitle": "Saved Jobs",
+        "savedJobsDescription": "Here are the jobs you have saved.",
+        "savedJobsButton": "Browse Jobs"
     }
 }

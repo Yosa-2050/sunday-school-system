@@ -1,9 +1,12 @@
+'use client';
+
 import {
     Avatar,
     Box,
     Burger,
     Drawer,
     Group,
+    Menu,
     Stack,
     Text,
     useMantineTheme,
@@ -26,10 +29,11 @@ import { usePathname, useRouter } from 'next/navigation';
 
 interface MenuItem {
     label: string;
-    href: string;
+    href?: string;
     icon?: React.ReactNode;
     matchPattern?: string;
     requiresAuth?: boolean;
+    children?: MenuItem[];
 }
 
 export function HeaderMenu() {
@@ -49,11 +53,22 @@ export function HeaderMenu() {
             icon: <IconBriefcase size={16} className="text-primary" />,
         },
         {
-            label: t('myJobs'),
-            href: '/my-jobs',
-            matchPattern: '/my-jobs',
-            requiresAuth: true,
+            label: t('jobs'),
             icon: <IconList size={16} className="text-primary" />,
+            requiresAuth: true,
+            matchPattern: '/my-jobs',
+            children: [
+                {
+                    label: t('myJobs'),
+                    href: '/my-jobs',
+                    matchPattern: '/my-jobs',
+                },
+                {
+                    label: t('savedJobs'),
+                    href: '/saved-jobs',
+                    matchPattern: '/saved-jobs',
+                },
+            ],
         },
         {
             label: t('reports'),
@@ -82,33 +97,67 @@ export function HeaderMenu() {
         (item) => !item.requiresAuth || isAuthenticated,
     );
 
-    const MenuLink = ({ item }: { item: MenuItem }) => (
-        <Link
-            href={item.href}
-            className={`px-3 py-2 transition-colors duration-200 ${
-                isActive(item)
-                    ? 'border-b-2 border-[var(--primary-color-5)] font-medium'
-                    : ' hover:border-b-2 hover:border-[var(--primary-color-1)] '
-            }`}
-            onClick={close}
-        >
-            <Group gap="xs">
-                <Box hiddenFrom="md">{item.icon}</Box>
-                <Text size="sm">{item.label}</Text>
-            </Group>
-        </Link>
-    );
-
     return (
         <>
-            {/* Desktop Menu */}
+            {/* Desktop */}
             <Group gap="xs" visibleFrom="md">
-                {filteredMenuItems.map((item) => (
-                    <MenuLink key={item.href} item={item} />
-                ))}
+                {filteredMenuItems.map((item) =>
+                    item.children ? (
+                        <Menu
+                            key={item.label}
+                            trigger="hover"
+                            openDelay={100}
+                            closeDelay={200}
+                        >
+                            <Menu.Target>
+                                <Box
+                                    className={`px-3 py-2 cursor-pointer transition-colors duration-200 ${
+                                        isActive(item)
+                                            ? 'border-b-2 border-[var(--primary-color-5)] font-medium'
+                                            : 'hover:border-b-2 hover:border-[var(--primary-color-1)]'
+                                    }`}
+                                >
+                                    <Group gap="xs">
+                                        {item.icon}
+                                        <Text size="sm">{item.label}</Text>
+                                    </Group>
+                                </Box>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                                {item.children.map((child) => (
+                                    <Menu.Item
+                                        key={child.href}
+                                        component={Link}
+                                        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                                        href={child.href!}
+                                        onClick={close}
+                                    >
+                                        {child.label}
+                                    </Menu.Item>
+                                ))}
+                            </Menu.Dropdown>
+                        </Menu>
+                    ) : (
+                        <Link
+                            key={item.label}
+                            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                            href={item.href!}
+                            className={`px-3 py-2 transition-colors duration-200 ${
+                                isActive(item)
+                                    ? 'border-b-2 border-[var(--primary-color-5)] font-medium'
+                                    : 'hover:border-b-2 hover:border-[var(--primary-color-1)]'
+                            }`}
+                        >
+                            <Group gap="xs">
+                                {item.icon}
+                                <Text size="sm">{item.label}</Text>
+                            </Group>
+                        </Link>
+                    ),
+                )}
             </Group>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile */}
             <Burger
                 opened={opened}
                 onClick={toggle}
@@ -116,7 +165,6 @@ export function HeaderMenu() {
                 color={theme.colors.gray[6]}
             />
 
-            {/* Mobile Drawer */}
             <Drawer
                 opened={opened}
                 onClose={close}
@@ -142,10 +190,52 @@ export function HeaderMenu() {
                         </Text>
                     </div>
                 </Group>
+
                 <Stack p="md" gap="lg">
-                    {filteredMenuItems.map((item) => (
-                        <MenuLink key={item.href} item={item} />
-                    ))}
+                    {filteredMenuItems.map((item) =>
+                        item.children ? (
+                            <Box key={item.label}>
+                                <Text size="sm" fw={600} className="mb-1">
+                                    {item.label}
+                                </Text>
+                                <Stack pl="md" gap={4}>
+                                    {item.children.map((child) => (
+                                        <Link
+                                            key={child.href}
+                                            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                                            href={child.href!}
+                                            className={`px-3 py-2 text-sm transition-colors duration-200 ${
+                                                isActive(child)
+                                                    ? 'border-b-2 border-[var(--primary-color-5)] font-medium'
+                                                    : 'hover:border-b-2 hover:border-[var(--primary-color-1)]'
+                                            }`}
+                                            onClick={close}
+                                        >
+                                            {child.label}
+                                        </Link>
+                                    ))}
+                                </Stack>
+                            </Box>
+                        ) : (
+                            <Link
+                                key={item.label}
+                                // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                                href={item.href!}
+                                className={`px-3 py-2 transition-colors duration-200 ${
+                                    isActive(item)
+                                        ? 'border-b-2 border-[var(--primary-color-5)] font-medium'
+                                        : 'hover:border-b-2 hover:border-[var(--primary-color-1)]'
+                                }`}
+                                onClick={close}
+                            >
+                                <Group gap="xs">
+                                    {item.icon}
+                                    <Text size="sm">{item.label}</Text>
+                                </Group>
+                            </Link>
+                        ),
+                    )}
+
                     {isAuthenticated && (
                         <>
                             <Link

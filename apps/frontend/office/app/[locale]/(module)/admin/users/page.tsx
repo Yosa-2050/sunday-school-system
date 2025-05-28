@@ -171,6 +171,7 @@ const UsersPage = () => {
         { value: 'ADMINISTRATOR', label: t('roles.administrator') },
         { value: 'WORK_PROVIDER', label: t('roles.workProvider') },
         { value: 'JOB_SEEKER', label: t('roles.jobSeeker') },
+        { value: 'MENTOR', label: t('roles.mentor') },
     ];
 
     const handleRoleSelect = (selectedRoles: string[]) => {
@@ -502,7 +503,10 @@ const UsersPage = () => {
                                             : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                               user.role === 'ADMINISTRATOR'
                                               ? 'Administrator'
-                                              : 'Job Seeker'}
+                                              : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                                user.role === 'MENTOR'
+                                                ? 'Mentor'
+                                                : 'Job Seeker'}
                                     </Table.Td>
                                     <Table.Td>{user.createdBy}</Table.Td>
                                     <Table.Td>

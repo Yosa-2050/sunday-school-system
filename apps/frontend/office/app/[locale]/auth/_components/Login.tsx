@@ -99,7 +99,7 @@ const Login = () => {
                         } else if (data.role === 'super_admin') {
                             router.push('/admin/dashboard');
                         } else if (data.role === 'mentor') {
-                            router.push('/mentor/dashboard');
+                            router.push('/mentor/mentorship');
                         }
                         setCookie('role', data.role);
                         setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {

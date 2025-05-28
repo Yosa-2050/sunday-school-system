@@ -149,7 +149,7 @@ export default function PostJobPage() {
             router.push('/mentor/mentorship');
             notifications.show({
                 title: 'Success',
-                message: 'Job posted successfully',
+                message: 'Mentorship program published successfully',
                 color: 'green',
                 icon: <IconCheck size="1.1rem" />,
             });
