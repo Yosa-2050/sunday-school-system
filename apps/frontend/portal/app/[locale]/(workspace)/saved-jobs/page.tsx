@@ -90,7 +90,8 @@ export default function MyJobsPage() {
 function ApplicationsList({
     applications,
 }: {
-    applications: JobApplication[];
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    applications: any[];
 }) {
     const router = useRouter();
 
