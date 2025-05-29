@@ -19,7 +19,6 @@ import {
 } from 'class-validator';
 
 export class GetJobsRequestDto {
-
     @ApiProperty()
     @OptionalEnum(ProgramType)
     programType?: ProgramType;

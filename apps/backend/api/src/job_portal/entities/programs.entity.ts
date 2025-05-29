@@ -85,9 +85,8 @@ export class Programs extends BaseModel {
     @Column({ nullable: true, type: 'timestamp with time zone' })
     postedDate: Date;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     programType: ProgramType;
-
 
     @OneToMany(
         () => Applications,

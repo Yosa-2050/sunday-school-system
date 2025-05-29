@@ -445,7 +445,7 @@ export class MentorshipService {
         if (applicantId) {
             const applied =
                 await this.jobPortalService.savedPrograms(applicantId);
-                programsSaved = applied.map((x) => x.program?.id);
+            programsSaved = applied.map((x) => x.program?.id);
         }
 
         //const queryStr = query.getSql();
@@ -454,7 +454,12 @@ export class MentorshipService {
             .take(filter.pagination.limit)
             .getManyAndCount();
         const programList = data.map(
-            (program) => new ProgramsResponseDto(program, programsApplied, programsSaved),
+            (program) =>
+                new ProgramsResponseDto(
+                    program,
+                    programsApplied,
+                    programsSaved,
+                ),
         );
         return new PaginatedResponseDto<ProgramsResponseDto[]>(
             programList,

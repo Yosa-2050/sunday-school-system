@@ -122,8 +122,8 @@ export class JobSeekerController {
 
     @Post('programs')
     getAllPrograms(@Body() dto: GetJobsRequestDto, @Request() req) {
-       return this.mentorshipService.filterPrograms(
-             dto,
+        return this.mentorshipService.filterPrograms(
+            dto,
             CurrentUser.getApplicantId(req),
         );
     }

@@ -1,4 +1,4 @@
-export enum ProgramType{
-    Job = "Job",
-    Mentorship = "Mentorship"
+export enum ProgramType {
+    Job = 'Job',
+    Mentorship = 'Mentorship',
 }
