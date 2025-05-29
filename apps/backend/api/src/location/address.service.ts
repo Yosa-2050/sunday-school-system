@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { instanceToPlain } from 'class-transformer';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
@@ -64,6 +65,8 @@ export class AddressService {
 
         this.create(createAddressDto, reference, referenceType);
         this.createLocation(request.location, reference, referenceType);
+
+        return UtilityServices.EnsureCreated(reference);
     }
 
     createLocation(

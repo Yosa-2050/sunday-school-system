@@ -196,11 +196,11 @@ export class OrganizationController {
     updateLocation(
         @Param('id', new ParseUUIDPipe()) id: string,
         @Request() req,
-        @Body() dto: LocationModel[],
+        @Body() dto: LocationModel,
     ) {
         return this.organizationService.updateOrganizationLocation(
             CurrentUser.getOrganizationId(req),
-            dto,
+            [dto],
         );
     }
 
