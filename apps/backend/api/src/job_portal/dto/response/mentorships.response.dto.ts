@@ -1,7 +1,7 @@
 // biome-ignore lint/style/useImportType: <explanation>
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Mentorship } from '@shega/job_portal/entities/mentorship.entity';
+import { Programs } from '@shega/job_portal/entities/programs.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CurrencyType } from '@shega/job_portal/enums/currency-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -11,21 +11,24 @@ import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-ty
 // biome-ignore lint/style/useImportType: <explanation>
 import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 
-export class MentorshipsResponseDto {
-    constructor(mentorships: Mentorship, appliedprograms: string[] = null) {
-        this.id = mentorships.id;
-        this.createdDate = mentorships.createdAt;
-        this.postedDate = mentorships.program.postedDate;
-        this.status = mentorships.program.status;
-        this.title = mentorships.program.title;
-        this.description = mentorships.program.description;
-        this.note = mentorships.program.notes;
-        this.isPublished = mentorships.program.isPublished;
+export class ProgramsResponseDto {
+    constructor(program: Programs, appliedprograms: string[] = null, savedprograms: string[] = null) {
+        this.id = program.id;
+        this.createdDate = program.createdAt;
+        this.postedDate = program.postedDate;
+        this.status = program.status;
+        this.title = program.title;
+        this.description = program.description;
+        this.note = program.notes;
+        this.isPublished = program.isPublished;
         this.applied = appliedprograms
-            ? appliedprograms.includes(mentorships.id)
+            ? appliedprograms.includes(program.id)
             : false;
-        this.programId = mentorships.program.id;
-        this.experianceLevel = mentorships.program.experianceLevel;
+        this.saved = savedprograms
+            ? savedprograms.includes(program.id)
+            : false;
+        this.programId = program.id;
+        this.experianceLevel = program.experianceLevel;
     }
     id: string;
     programId: string;
@@ -49,4 +52,5 @@ export class MentorshipsResponseDto {
     note: string;
     currency: CurrencyType;
     applied: boolean;
+    saved: boolean;
 }

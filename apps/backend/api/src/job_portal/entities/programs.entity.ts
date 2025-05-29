@@ -14,6 +14,8 @@ import { Applications } from './job-application.entity';
 import { ProgramCategory } from './job-category.entity';
 import { ProgramDescription } from './job-description.entity';
 import { ProgramSkills } from './job-skills.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ProgramType } from '../enums/program-type.enum';
 
 @Entity()
 export class Programs extends BaseModel {
@@ -82,6 +84,10 @@ export class Programs extends BaseModel {
 
     @Column({ nullable: true, type: 'timestamp with time zone' })
     postedDate: Date;
+
+    @Column({nullable: true})
+    programType: ProgramType;
+
 
     @OneToMany(
         () => Applications,

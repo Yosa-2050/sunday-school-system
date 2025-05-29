@@ -19,6 +19,7 @@ import { Country } from './entities/country.entity';
 import { Location } from './entities/location.entity';
 import { ContactType } from './enums/contact-type.enums';
 import { DefaultCountry } from './enums/location.const';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 
 @Injectable()
 export class AddressService {
@@ -64,6 +65,8 @@ export class AddressService {
 
         this.create(createAddressDto, reference, referenceType);
         this.createLocation(request.location, reference, referenceType);
+
+        return UtilityServices.EnsureCreated(reference);
     }
 
     createLocation(

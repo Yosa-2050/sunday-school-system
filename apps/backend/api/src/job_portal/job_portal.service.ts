@@ -57,6 +57,7 @@ import { Skills } from './entities/skills.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ApplicationStatus } from './enums/job-application-status.enum';
 import { SalaryType } from './enums/salary-type.enum';
+import { ProgramType } from './enums/program-type.enum';
 
 @Injectable()
 export class JobPortalService {
@@ -182,6 +183,7 @@ export class JobPortalService {
     private async GetJob(dto: CreateJobPortalDto) {
         const job = this.jobRepo.create(dto);
         const program = await this.GetProgram(dto);
+        program.programType = ProgramType.Job;
         job.program = program;
 
         return job;
@@ -258,7 +260,7 @@ export class JobPortalService {
             throw new EntityNotFoundException('Job');
         }
 
-        const appliedJobs = await this.jobsApplied(applicantId);
+        const appliedJobs = await this.programsApplied(applicantId);
         const jobsApplied = appliedJobs?.find(
             (x) => x.program.id === job.programId,
         );
@@ -336,13 +338,13 @@ export class JobPortalService {
 
         let jobsApplied: string[] = null;
         if (applicantId) {
-            const appliedJobs = await this.jobsApplied(applicantId);
+            const appliedJobs = await this.programsApplied(applicantId);
             jobsApplied = appliedJobs.map((x) => x.program?.id);
         }
 
         let savedJobs: string[] = null;
         if (applicantId) {
-            const jobs = await this.savedJobs(applicantId);
+            const jobs = await this.savedPrograms(applicantId);
             savedJobs = jobs.map((x) => x.program?.id);
         }
         //const queryStr = query.getSql();
@@ -409,7 +411,7 @@ export class JobPortalService {
         );
         let jobsApplied: string[] = null;
         if (applicantId) {
-            const appliedJobs = await this.jobsApplied(applicantId);
+            const appliedJobs = await this.programsApplied(applicantId);
             jobsApplied = appliedJobs.map((x) => x.program.id);
         }
         const jobsList = jobs.map(
@@ -423,7 +425,7 @@ export class JobPortalService {
         );
     }
 
-    async jobsApplied(id: string) {
+    async programsApplied(id: string) {
         const existingApp = await this.jobApplicationRepo.findBy({
             applicants: { id },
         });
@@ -431,7 +433,7 @@ export class JobPortalService {
         return existingApp;
     }
 
-    async savedJobs(id: string) {
+    async savedPrograms(id: string) {
         const existingApp = await this.savedJobRepo.findBy({
             applicant: { id },
         });

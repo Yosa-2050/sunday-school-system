@@ -10,7 +10,7 @@ export abstract class BaseModel extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Exclude()
+    //Exclude()
     @Column({ nullable: true })
     createdBy: string;
 

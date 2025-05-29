@@ -6,6 +6,7 @@ import {
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
+import { ProgramType } from '@shega/job_portal/enums/program-type.enum';
 import { Type } from 'class-transformer';
 import {
     IsDefined,
@@ -18,6 +19,11 @@ import {
 } from 'class-validator';
 
 export class GetJobsRequestDto {
+
+    @ApiProperty()
+    @OptionalEnum(ProgramType)
+    programType?: ProgramType;
+
     @ApiProperty()
     @IsOptional()
     @IsString()
