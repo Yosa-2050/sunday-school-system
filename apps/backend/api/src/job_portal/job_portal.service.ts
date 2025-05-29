@@ -56,8 +56,8 @@ import { SavedPrograms } from './entities/savedPrograms.entity';
 import { Skills } from './entities/skills.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ApplicationStatus } from './enums/job-application-status.enum';
-import { SalaryType } from './enums/salary-type.enum';
 import { ProgramType } from './enums/program-type.enum';
+import { SalaryType } from './enums/salary-type.enum';
 
 @Injectable()
 export class JobPortalService {

@@ -9,13 +9,13 @@ import { EducationalRequirmentType } from '../enums/education-requirment-type.en
 // biome-ignore lint/style/useImportType: <explanation>
 import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ProgramType } from '../enums/program-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { WorkPlaceType } from '../enums/work-place-type.enum';
 import { Applications } from './job-application.entity';
 import { ProgramCategory } from './job-category.entity';
 import { ProgramDescription } from './job-description.entity';
 import { ProgramSkills } from './job-skills.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ProgramType } from '../enums/program-type.enum';
 
 @Entity()
 export class Programs extends BaseModel {
