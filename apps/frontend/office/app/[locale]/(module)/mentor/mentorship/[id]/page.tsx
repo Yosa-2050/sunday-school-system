@@ -221,7 +221,7 @@ export default function MentorshipProgramDetailsPage() {
                                         Mentor Details
                                     </Tabs.Tab>
                                     <Tabs.Tab value="logistics">
-                                        Program Logistics
+                                        Program Details
                                     </Tabs.Tab>
                                 </Tabs.List>
                                 <Box p="xl">
@@ -473,7 +473,7 @@ export default function MentorshipProgramDetailsPage() {
                                     </Tabs.Panel>
                                 </Box>
                             </Tabs>
-                            <Card.Section withBorder p="md" bg="gray.0">
+                            <Card.Section withBorder p="md" bg="gray.0" hidden>
                                 <Group justify="space-between">
                                     <Button
                                         variant="outline"
@@ -482,7 +482,7 @@ export default function MentorshipProgramDetailsPage() {
                                     >
                                         Share
                                     </Button>
-                                    <Group>
+                                    <Group hidden>
                                         <Button
                                             variant="outline"
                                             size="sm"
@@ -506,7 +506,7 @@ export default function MentorshipProgramDetailsPage() {
                         </Card>
 
                         {/* Applicants Card */}
-                        <Card withBorder radius="md">
+                        <Card withBorder radius="md" hidden>
                             <Card.Section withBorder p="md" bg="gray.0">
                                 <Group>
                                     <IconUsers

@@ -81,7 +81,7 @@ const baseTheme = ({
             },
             Button: {
                 defaultProps: {
-                    size: 'sm',
+                    size: 'xs',
                 },
             },
             Card: {
@@ -101,7 +101,7 @@ const baseTheme = ({
             },
             Input: {
                 defaultProps: {
-                    size: 'sm',
+                    size: 'xs',
                 },
                 // styles: {
                 //   input: {
@@ -111,12 +111,12 @@ const baseTheme = ({
             },
             TextInput: {
                 defaultProps: {
-                    size: 'sm',
+                    size: 'xs',
                 },
             },
             Textarea: {
                 defaultProps: {
-                    size: 'sm',
+                    size: 'xs',
                     minRows: 3,
                 },
             },
@@ -127,17 +127,17 @@ const baseTheme = ({
             },
             NumberInput: {
                 defaultProps: {
-                    size: 'sm',
+                    size: 'xs',
                 },
             },
             Select: {
                 defaultProps: {
-                    size: 'sm',
+                    size: 'xs',
                 },
             },
             PasswordInput: {
                 defaultProps: {
-                    size: 'sm',
+                    size: 'xs',
                 },
             },
             Breadcrumbs: {

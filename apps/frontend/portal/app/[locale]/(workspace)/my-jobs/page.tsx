@@ -25,7 +25,7 @@ interface JobApplication {
     id: string;
     status: string;
     createdAt: string;
-    job: {
+    program: {
         id: string;
         title: string;
         organization: {
@@ -193,7 +193,7 @@ function ApplicationsList({
                                 <div className="flex-1">
                                     <Group justify="space-between" mb="xs">
                                         <Title order={4}>
-                                            {application.job.title}
+                                            {application.program?.title}
                                         </Title>
                                         <Badge
                                             color={getStatusColor(
@@ -204,17 +204,23 @@ function ApplicationsList({
                                         </Badge>
                                     </Group>
                                     <Text size="sm" c="dimmed" mb="xs">
-                                        {application.job.organization.name}
+                                        {
+                                            application.program?.organization
+                                                ?.name
+                                        }
                                     </Text>
                                     <Group gap="xs" mb="xs">
                                         <Badge variant="light" color="blue">
-                                            {application.job.type}
+                                            {application.program?.type}
                                         </Badge>
                                         <Badge variant="light" color="grape">
-                                            {application.job.experianceLevel}
+                                            {
+                                                application.program
+                                                    ?.experianceLevel
+                                            }
                                         </Badge>
                                         <Badge variant="light" color="teal">
-                                            {application.job.workPlace ||
+                                            {application.program?.workPlace ||
                                                 'Remote'}
                                         </Badge>
                                     </Group>
@@ -232,7 +238,7 @@ function ApplicationsList({
                                     color="primary"
                                     onClick={() =>
                                         router.push(
-                                            `/jobs/${application.job.id}`,
+                                            `/jobs/${application.program?.id}`,
                                         )
                                     }
                                     size="xs"

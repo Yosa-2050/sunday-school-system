@@ -144,7 +144,7 @@ export function JobCard({ job }: JobCardProps) {
                                 {job.applied ? (
                                     <Badge size="xs">Applied</Badge>
                                 ) : (
-                                    <Box>
+                                    <Box hidden>
                                         <IconHeart
                                             size={20}
                                             className="text-gray-500 hover:text-primary transition-colors cursor-pointer"

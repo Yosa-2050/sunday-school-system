@@ -46,6 +46,9 @@ interface Job {
     organization: Organization;
     createdDate: string;
     currency: string;
+    program: {
+        id: string;
+    };
     postedBy: {
         employee: {
             profile: {
@@ -214,7 +217,7 @@ const JobsList = () => {
                                             leftSection={<IconEye size={14} />}
                                             onClick={() =>
                                                 router.push(
-                                                    `programs/${job.id}`,
+                                                    `programs/${job.program.id}`,
                                                 )
                                             }
                                         >
