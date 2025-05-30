@@ -32,10 +32,10 @@ import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
 import { ProgramsResponseDto } from './dto/response/mentorships.response.dto';
 import { Mentors } from './entities/mentor.entity';
 import { Mentorship } from './entities/mentorship.entity';
+import { Programs } from './entities/programs.entity';
 import { ProgramType } from './enums/program-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
-import { Programs } from './entities/programs.entity';
 
 @Injectable()
 export class MentorshipService {
