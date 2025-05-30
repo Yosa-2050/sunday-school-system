@@ -168,9 +168,9 @@ export class MentorshipService {
     constructor(
         @InjectRepository(Mentors)
         private mentorsRepo: Repository<Mentors>,
-        @InjectRepository(Mentorship)
-        private programRepo: Repository<Programs>,
         @InjectRepository(Programs)
+        private programRepo: Repository<Programs>,
+        @InjectRepository(Mentorship)
         private mentorshipRepo: Repository<Mentorship>,
         private jobPortalService: JobPortalService,
         private passwordService: PasswordService,
