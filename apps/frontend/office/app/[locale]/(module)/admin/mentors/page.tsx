@@ -251,8 +251,8 @@ const MentorshipPage = () => {
                                     />
                                 </Table.Th>
                                 <Table.Th>{t('table.createdBy')}</Table.Th>
-                                <Table.Th>{t('table.status')}</Table.Th>
                                 <Table.Th>{t('table.approvalStatus')}</Table.Th>
+                                <Table.Th>{t('table.status')}</Table.Th>
                                 <Can roles={['super_admin']}>
                                     <Table.Th>{t('table.actions')}</Table.Th>
                                 </Can>
@@ -280,7 +280,7 @@ const MentorshipPage = () => {
                                             user.createdAt ?? '',
                                         ).toFormat('yyyy-MM-dd HH:mm:ss')}
                                     </Table.Td>
-                                    <Table.Td>Created By</Table.Td>
+                                    <Table.Td>{user.createdBy}</Table.Td>
                                     <Table.Td
                                         className={
                                             user.status === 'APPROVED'

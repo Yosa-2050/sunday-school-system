@@ -338,6 +338,7 @@ function JobList({ filters }: { filters: JobFilters }) {
                                             )
                                         }
                                         className="flex items-center justify-end flex-1 cursor-pointer"
+                                        hidden
                                     >
                                         <IconHeart
                                             size={20}

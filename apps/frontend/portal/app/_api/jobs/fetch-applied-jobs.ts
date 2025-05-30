@@ -5,7 +5,7 @@ interface JobApplication {
     isActive: boolean;
     status: string;
     createdAt: string;
-    job: {
+    program: {
         id: string;
         isActive: boolean;
         title: string;

@@ -121,7 +121,8 @@
         "roles": {
             "jobSeeker": "Job Seeker",
             "workProvider": "Employer",
-            "administrator": "Administrator"
+            "administrator": "Administrator",
+            "mentor": "Mentor"
         },
         "sortOptions": {
             "asc": "Sort Ascending",
