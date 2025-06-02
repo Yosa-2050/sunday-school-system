@@ -61,5 +61,5 @@ export const AppEntities = [
     Mentors,
     Mentorship,
     SavedPrograms,
-    LookUps
+    LookUps,
 ];

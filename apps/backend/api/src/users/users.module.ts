@@ -24,14 +24,19 @@ import { LookupController } from './lookup.controller';
         DocumentModule,
         NotificationModule,
     ],
-    controllers: [UsersController, ProfileController, EnumsController, LookupController],
+    controllers: [
+        UsersController,
+        ProfileController,
+        EnumsController,
+        LookupController,
+    ],
     providers: [
         UsersService,
         PasswordService,
         ProfileService,
         OtpService,
         DateService,
-        LookupSeederService
+        LookupSeederService,
     ],
     exports: [
         UsersService,
@@ -39,7 +44,7 @@ import { LookupController } from './lookup.controller';
         OtpService,
         DateService,
         PasswordService,
-        LookupSeederService
+        LookupSeederService,
     ],
 })
 export class UsersModule {}
