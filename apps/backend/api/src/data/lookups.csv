@@ -1,0 +1,5 @@
+code;value;description;group;subGroup;
+BusinessLicense;Business License;;DocumentType;OrganizationDocuments;
+TinCertificate;Tin Certificate;;DocumentType;OrganizationDocuments;
+Payroll;Payroll;;DocumentType;OrganizationDocuments;
+ProofOfAddress;Proof of Address;;DocumentType;OrganizationDocuments;

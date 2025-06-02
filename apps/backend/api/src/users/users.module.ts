@@ -14,20 +14,24 @@ import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { LookupSeederService } from '@shega/Utilities/service/lookup-seeder.service';
+import { LookUps } from '@shega/Utilities/entities/lookups.entity';
+import { LookupController } from './lookup.controller';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Profile, Otp, UserRoles]),
+        TypeOrmModule.forFeature([User, Profile, Otp, UserRoles, LookUps]),
         DocumentModule,
         NotificationModule,
     ],
-    controllers: [UsersController, ProfileController, EnumsController],
+    controllers: [UsersController, ProfileController, EnumsController, LookupController],
     providers: [
         UsersService,
         PasswordService,
         ProfileService,
         OtpService,
         DateService,
+        LookupSeederService
     ],
     exports: [
         UsersService,
@@ -35,6 +39,7 @@ import { UsersService } from './users.service';
         OtpService,
         DateService,
         PasswordService,
+        LookupSeederService
     ],
 })
 export class UsersModule {}
