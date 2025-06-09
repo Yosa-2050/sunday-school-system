@@ -4,8 +4,6 @@ import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exce
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
-// biome-ignore lint/correctness/noUnusedImports: <explanation>
-import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -16,8 +14,6 @@ import { CreateEmployeeDto } from './dto/request/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
 import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
-// biome-ignore lint/correctness/noUnusedImports: <explanation>
-import { EmployeeType } from './enums/employee-type.enum';
 
 @Injectable()
 export class EmployeesService {
