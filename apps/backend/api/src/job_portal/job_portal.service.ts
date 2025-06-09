@@ -58,6 +58,8 @@ import { Skills } from './entities/skills.entity';
 import { ApplicationStatus } from './enums/job-application-status.enum';
 import { ProgramType } from './enums/program-type.enum';
 import { SalaryType } from './enums/salary-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { MentorshipService } from './mentorship.service';
 
 @Injectable()
 export class JobPortalService {
@@ -89,6 +91,7 @@ export class JobPortalService {
         private readonly profileService: ProfileService,
         private readonly notificationService: NotificationService,
         private readonly dateService: DateService,
+        private readonly mentorshipService: MentorshipService,
     ) {}
 
     async createJobSeeker(dto: CreateBasicUserDto) {
@@ -266,6 +269,29 @@ export class JobPortalService {
         );
 
         return { ...job, applied: !!jobsApplied };
+    }
+
+    async findOneProgramForJobSeeker(id: string, applicantId: string) {
+        const program = await this.programRepo.findOneBy({id});
+        if (!program) {
+            throw new EntityNotFoundException('program');
+        }
+
+        const appliedJobs = await this.programsApplied(applicantId);
+        const jobsApplied = appliedJobs?.find(
+            (x) => x.program.id === program.id,
+        );
+
+        if(program.programType === ProgramType.Job){
+            const job = await this.findOneJobByProgramId(id);
+            return { ...job, type: ProgramType.Job, applied: !!jobsApplied };
+        }
+
+        if(program.programType === ProgramType.Mentorship){
+            const mentors = await this.mentorshipService.findOneByProgramId(id);
+            return { ...mentors, type: ProgramType.Mentorship, applied: !!jobsApplied };
+        }
+
     }
 
     async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
@@ -636,11 +662,47 @@ export class JobPortalService {
         return flattenedJob;
     }
 
+    async findOneJobByProgramId(id: string) {
+        const job = await this.jobRepo
+            .createQueryBuilder('job')
+            .leftJoinAndSelect('job.program', 'program')
+            .innerJoinAndSelect('program.jobCategory', 'jobCategory')
+            .leftJoinAndSelect('program.jobSkills', 'jobSkills')
+            .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
+            .leftJoinAndSelect('program.city', 'city')
+            .leftJoinAndSelect('program.country', 'country')
+            .leftJoinAndSelect('program.state', 'state')
+            .leftJoinAndSelect('job.organization', 'organization')
+            .leftJoinAndSelect('job.postedBy', 'postedBy')
+            .leftJoinAndSelect('postedBy.employee', 'employee')
+            .leftJoinAndSelect('employee.profile', 'profile')
+            .innerJoinAndSelect('jobCategory.category', 'category')
+            .where('program.id = :id', { id })
+            .getOne();
+        if (!job) {
+            throw new EntityNotFoundException('Job');
+        }
+
+        const { program, ...restOfJob } = job;
+
+        const flattenedJob = {
+            ...restOfJob,
+            jobId: job?.id,
+            programId: program?.id,
+            ...(program ?? {}),
+        };
+        return flattenedJob;
+    }
+
     findOneProgram(id: string) {
         return this.programRepo.findOneBy({ id });
     }
 
     findJobByProgram(id: string) {
+        return this.jobRepo.findOneBy({ program: { id } });
+    }
+
+    findMentorshipByProgram(id: string) {
         return this.jobRepo.findOneBy({ program: { id } });
     }
 
