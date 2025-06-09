@@ -272,7 +272,7 @@ export class JobPortalService {
     }
 
     async findOneProgramForJobSeeker(id: string, applicantId: string) {
-        const program = await this.programRepo.findOneBy({id});
+        const program = await this.programRepo.findOneBy({ id });
         if (!program) {
             throw new EntityNotFoundException('program');
         }
@@ -282,16 +282,19 @@ export class JobPortalService {
             (x) => x.program.id === program.id,
         );
 
-        if(program.programType === ProgramType.Job){
+        if (program.programType === ProgramType.Job) {
             const job = await this.findOneJobByProgramId(id);
             return { ...job, type: ProgramType.Job, applied: !!jobsApplied };
         }
 
-        if(program.programType === ProgramType.Mentorship){
+        if (program.programType === ProgramType.Mentorship) {
             const mentors = await this.mentorshipService.findOneByProgramId(id);
-            return { ...mentors, type: ProgramType.Mentorship, applied: !!jobsApplied };
+            return {
+                ...mentors,
+                type: ProgramType.Mentorship,
+                applied: !!jobsApplied,
+            };
         }
-
     }
 
     async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
