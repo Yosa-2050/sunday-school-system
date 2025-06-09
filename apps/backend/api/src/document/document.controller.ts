@@ -19,8 +19,6 @@ import { Express, Response } from 'express';
 import { DocumentService } from './document.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateDocumentDto } from './dto/update-document.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { DocumentType } from './enums/document-type.enums';
 
 @ApiTags('document')
 @Controller('document')
@@ -82,8 +80,9 @@ export class DocumentController {
     uploadFile(
         @UploadedFile() file: Express.Multer.File,
         @Param('referenceId') id: string,
-        @Param('docType') type: DocumentType,
+        @Param('docType') type: string,
     ) {
+        //Add doc type validator if needed
         return this.documentService.create(file, id, type);
     }
 }

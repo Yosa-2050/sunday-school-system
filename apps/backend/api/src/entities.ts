@@ -1,3 +1,4 @@
+import { LookUps } from './Utilities/entities/lookups.entity';
 import { Document } from './document/entities/document.entity';
 import { ApplicantSkills } from './job_portal/entities/applicants-skills.entity';
 import { Applicants } from './job_portal/entities/applicants.entity';
@@ -60,4 +61,5 @@ export const AppEntities = [
     Mentors,
     Mentorship,
     SavedPrograms,
+    LookUps,
 ];

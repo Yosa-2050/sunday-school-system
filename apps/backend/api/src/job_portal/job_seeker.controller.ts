@@ -248,4 +248,11 @@ export class JobSeekerController {
             CurrentUser.getApplicantId(req),
         );
     }
+
+    @Get('canApply')
+    canApply(@Request() req) {
+        return this.jobsService.checkApplicantStatus(
+            CurrentUser.getApplicantId(req),
+        );
+    }
 }
