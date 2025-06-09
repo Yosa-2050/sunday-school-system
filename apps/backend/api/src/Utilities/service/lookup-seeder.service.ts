@@ -1,13 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { LookUps } from '../entities/lookups.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as fs from 'fs';
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as path from 'path';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { parse } from 'csv-parse';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Repository } from 'typeorm';
+import { LookUps } from '../entities/lookups.entity';
 
 @Injectable()
 export class LookupSeederService {

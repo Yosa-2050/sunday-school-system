@@ -7,6 +7,7 @@ import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
+import { Category } from '@shega/job_portal/entities/category.entity';
 import { AddressService } from '@shega/location/address.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LocationModel } from '@shega/location/dto/model/location.model';
@@ -44,7 +45,6 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
-import { Category } from '@shega/job_portal/entities/category.entity';
 
 @Injectable()
 export class OrganizationService {
