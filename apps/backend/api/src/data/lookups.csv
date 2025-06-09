@@ -3,3 +3,5 @@ BusinessLicense;Business License;;DocumentType;OrganizationDocuments;
 TinCertificate;Tin Certificate;;DocumentType;OrganizationDocuments;
 Payroll;Payroll;;DocumentType;OrganizationDocuments;
 ProofOfAddress;Proof of Address;;DocumentType;OrganizationDocuments;
+CV;CV;;DocumentType;Basic;
+ProfilePicture;Profile picture;;DocumentType;Basic;

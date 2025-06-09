@@ -44,6 +44,7 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
+import { Category } from '@shega/job_portal/entities/category.entity';
 
 @Injectable()
 export class OrganizationService {
@@ -54,6 +55,8 @@ export class OrganizationService {
         private employeeOrgRepo: Repository<EmployeeOrganization>,
         @InjectRepository(Employee)
         private employeeRepo: Repository<Employee>,
+        @InjectRepository(Category)
+        private categoryRepo: Repository<Category>,
         @InjectRepository(Branch) private branchRepo: Repository<Branch>,
         @Inject(EmployeesService) private employeeService: EmployeesService,
         @Inject(AddressService) private addressService: AddressService,
@@ -82,7 +85,7 @@ export class OrganizationService {
         );
 
         const result = UtilityServices.EnsureUpdated(updatedOrg, id);
-        if (result.sucess === 'true') {
+        if (result.sucess) {
             let emailTemplate = null;
             const employeeList = await this.findEmployee(id);
             const profile = employeeList[0].employee.profile;
@@ -255,6 +258,14 @@ export class OrganizationService {
         dto: Partial<UpdateOrganizationInfoDto>,
     ) {
         const organization = await this.findOne(id);
+        if(dto.sectorId){
+            const sector = await this.categoryRepo.findOneBy({id: dto.sectorId});
+            if(sector)
+            {
+                organization.sector = sector;
+            } 
+            throw new EntityNotFoundException("Category", dto.sectorId);
+        }
         Object.assign(organization, dto);
         return this.organizationRepo.save(organization);
     }

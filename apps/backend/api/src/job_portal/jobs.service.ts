@@ -72,6 +72,9 @@ export class JobsService {
 
     async apply(programId: string, applicantId: string) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
+        if(!this.GetCanApplyApplicant(applicant)?.canApply){
+            throw new BadRequestException("User can not apply");
+        }
         const existingApp = await this.jobApplicantRepo.findOneBy({
             program: { id: programId },
             applicants: { id: applicant.id },
@@ -393,5 +396,72 @@ export class JobsService {
 
         const jobsList = result.map((job) => job.program);
         return jobsList;
+    }
+
+    async checkApplicantStatus(applicantId: string){
+        const applicant = await this.applicantRepo.findOneBy({id: applicantId});
+
+        const canApply = this.GetCanApplyApplicant(applicant);
+
+
+        const updated = await this.applicantRepo.update(
+            { id: applicantId },
+            { canApply: canApply.canApply }
+        );
+
+        const result = UtilityServices.EnsureUpdated(updated, applicantId);
+        if(result.sucess){
+            return canApply;
+        }
+    }
+
+    private GetCanApplyApplicant(applicant: Applicants) {
+        let canApply = true;
+        const profile = applicant.profile;
+        const applyObject = {
+            cv: true,
+            coverLetter: true,
+            profilePic: true,
+            profile: true,
+            education: true,
+            experiance: true,
+            canApply: true
+        }
+
+        if (!applicant.cv) {
+            canApply = false;
+            applyObject.cv = false;
+        }
+        if (applicant.coverLetter) {
+            canApply = false;
+            applyObject.coverLetter = false;
+
+        }
+
+        if (profile.profile_picture_id) {
+            canApply = false;
+            applyObject.profilePic = false;
+
+        }
+
+        if (profile.birthDate && profile.gender && profile.phoneNumber) {
+            canApply = false;
+            applyObject.profile = false;
+
+        }
+
+        if (applicant.educationalHistory?.length > 0) {
+            canApply = false;
+            applyObject.education = false;
+
+        }
+
+        if (applicant.experiance?.length > 0) {
+            canApply = false;
+            applyObject.experiance = false;
+        }
+
+        applyObject.canApply = canApply;
+        return applyObject;
     }
 }

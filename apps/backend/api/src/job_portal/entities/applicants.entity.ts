@@ -23,6 +23,12 @@ export class Applicants extends BaseModel {
     @Column({ nullable: true })
     coverLetter: string;
 
+    @Column({default: false})
+    canApply: boolean;
+
+    @Column({default: 0})
+    percentageCompleted: number;
+
     @OneToMany(
         () => Applications,
         (application) => application.applicants,

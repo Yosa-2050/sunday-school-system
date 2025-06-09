@@ -12,6 +12,7 @@ import { Employee } from './entities/employee.entity';
 import { Organization } from './entities/organization.entity';
 import { OrganizationController } from './organization.controller';
 import { OrganizationService } from './organization.service';
+import { Category } from '@shega/job_portal/entities/category.entity';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { OrganizationService } from './organization.service';
             Branch,
             Employee,
             EmployeeOrganization,
+            Category
         ]),
         UsersModule,
         AddressModule,
