@@ -1,10 +1,8 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LookupSeederService } from '@shega/Utilities/service/lookup-seeder.service';
 
-@Public()
 @ApiTags('lookup')
 @Controller('lookup')
 export class LookupController {
