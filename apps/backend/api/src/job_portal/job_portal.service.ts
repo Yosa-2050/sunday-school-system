@@ -58,8 +58,7 @@ import { Skills } from './entities/skills.entity';
 import { ApplicationStatus } from './enums/job-application-status.enum';
 import { ProgramType } from './enums/program-type.enum';
 import { SalaryType } from './enums/salary-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { MentorshipService } from './mentorship.service';
+import { Mentorship } from './entities/mentorship.entity';
 
 @Injectable()
 export class JobPortalService {
@@ -85,13 +84,14 @@ export class JobPortalService {
         private jobApplicationRepo: Repository<Applications>,
         @InjectRepository(SavedPrograms)
         private savedJobRepo: Repository<SavedPrograms>,
+        @InjectRepository(Mentorship)
+        private mentorshipRepo: Repository<Mentorship>,
         private readonly queryBuilderService: QueryBuilderService,
         private readonly addressService: AddressService,
         private readonly passwordService: PasswordService,
         private readonly profileService: ProfileService,
         private readonly notificationService: NotificationService,
         private readonly dateService: DateService,
-        private readonly mentorshipService: MentorshipService,
     ) {}
 
     async createJobSeeker(dto: CreateBasicUserDto) {
@@ -271,6 +271,27 @@ export class JobPortalService {
         return { ...job, applied: !!jobsApplied };
     }
 
+    async findOneMentorshipByProgramId(id: string) {
+        const program = await this.mentorshipRepo
+            .createQueryBuilder('mentorship')
+            .leftJoinAndSelect('mentorship.program', 'program')
+            .leftJoinAndSelect('program.jobCategory', 'jobCategory')
+            .leftJoinAndSelect('program.jobSkills', 'jobSkills')
+            .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
+            .leftJoinAndSelect('program.city', 'city')
+            .leftJoinAndSelect('program.country', 'country')
+            .leftJoinAndSelect('program.state', 'state')
+            .leftJoinAndSelect('mentorship.mentor', 'mentor')
+            .leftJoinAndSelect('mentor.profile', 'profile')
+            .where('program.id = :id', { id })
+            .getOne();
+        if (!program) {
+            throw new EntityNotFoundException('Mentorship');
+        }
+
+        return program;
+    }
+
     async findOneProgramForJobSeeker(id: string, applicantId: string) {
         const program = await this.programRepo.findOneBy({ id });
         if (!program) {
@@ -288,7 +309,7 @@ export class JobPortalService {
         }
 
         if (program.programType === ProgramType.Mentorship) {
-            const mentors = await this.mentorshipService.findOneByProgramId(id);
+            const mentors = await this.findOneMentorshipByProgramId(id);
             return {
                 ...mentors,
                 type: ProgramType.Mentorship,

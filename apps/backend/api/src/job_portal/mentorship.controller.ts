@@ -98,7 +98,7 @@ export class MentorshipController {
 
     @Get('program/:id')
     findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.mentorshipService.findOne(id);
+        return this.mentorshipService.findOneByProgramId(id);
     }
 
     // @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
