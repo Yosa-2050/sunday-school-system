@@ -536,7 +536,12 @@ export class JobPortalService {
         const result = UtilityServices.EnsureUpdated(updatedJob, id);
         const job = await this.jobRepo.findOneBy({ program: { id } });
         if (job) {
-            await this.SendJobApprovedNotification(job, result.sucess, status, note);
+            await this.SendJobApprovedNotification(
+                job,
+                result.sucess,
+                status,
+                note,
+            );
         }
 
         return result;

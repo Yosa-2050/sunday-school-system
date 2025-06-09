@@ -21,7 +21,7 @@ import { Category } from '@shega/job_portal/entities/category.entity';
             Branch,
             Employee,
             EmployeeOrganization,
-            Category
+            Category,
         ]),
         UsersModule,
         AddressModule,

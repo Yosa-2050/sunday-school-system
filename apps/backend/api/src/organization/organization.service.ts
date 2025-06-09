@@ -258,13 +258,14 @@ export class OrganizationService {
         dto: Partial<UpdateOrganizationInfoDto>,
     ) {
         const organization = await this.findOne(id);
-        if(dto.sectorId){
-            const sector = await this.categoryRepo.findOneBy({id: dto.sectorId});
-            if(sector)
-            {
+        if (dto.sectorId) {
+            const sector = await this.categoryRepo.findOneBy({
+                id: dto.sectorId,
+            });
+            if (sector) {
                 organization.sector = sector;
-            } 
-            throw new EntityNotFoundException("Category", dto.sectorId);
+            }
+            throw new EntityNotFoundException('Category', dto.sectorId);
         }
         Object.assign(organization, dto);
         return this.organizationRepo.save(organization);
