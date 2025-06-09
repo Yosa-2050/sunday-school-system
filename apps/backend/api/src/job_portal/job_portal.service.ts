@@ -51,6 +51,7 @@ import { ProgramCategory } from './entities/job-category.entity';
 import { ProgramDescription } from './entities/job-description.entity';
 import { ProgramSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
+import { Mentorship } from './entities/mentorship.entity';
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
 import { Skills } from './entities/skills.entity';
@@ -58,7 +59,6 @@ import { Skills } from './entities/skills.entity';
 import { ApplicationStatus } from './enums/job-application-status.enum';
 import { ProgramType } from './enums/program-type.enum';
 import { SalaryType } from './enums/salary-type.enum';
-import { Mentorship } from './entities/mentorship.entity';
 
 @Injectable()
 export class JobPortalService {
