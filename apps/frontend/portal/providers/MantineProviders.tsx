@@ -80,6 +80,16 @@ const baseTheme = ({
                     },
                 },
             },
+            Text: {
+                defaultProps: {
+                    size: 'sm',
+                },
+            },
+            Checkbox:{
+                defaultProps: {
+                    size: 'sm',
+                },
+            },
             Button: {
                 defaultProps: {
                     size: 'sm',
@@ -88,28 +98,19 @@ const baseTheme = ({
             Card: {
                 defaultProps: {
                     withBorder: true,
-                },
-                // styles: {
-                //   root: {
-                //     backgroundColor,
-                //   },
-                // },
+                }
             },
             Paper: {
                 defaultProps: {
                     withBorder: true,
                     radius: 'none',
                 },
+                
             },
             Input: {
                 defaultProps: {
                     size: 'sm',
                 },
-                // styles: {
-                //   input: {
-                //     backgroundColor,
-                //   },
-                // },
             },
             TextInput: {
                 defaultProps: {
@@ -150,8 +151,7 @@ const baseTheme = ({
                 },
                 styles: {
                     body: {
-                        paddingTop: 16,
-                        // backgroundColor,
+                        paddingTop: 16
                     },
                 },
             },

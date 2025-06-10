@@ -92,7 +92,7 @@ export const FilterSidebar = ({
     });
 
     return (
-        <Box className="sticky top-24" hidden={isMobile}>
+        <Box className="sticky top-24 border" hidden={isMobile}>
             <Card p="lg" withBorder={false} w={300}>
                 <Box
                     h={isMobile ? '70vh' : 700}
@@ -101,7 +101,7 @@ export const FilterSidebar = ({
                 >
                     <Stack gap="md">
                         <Box>
-                            <Text size="sm" fw={500} mb="xs">
+                            <Text size="xs" fw={500} mb="xs">
                                 {t('keyword')}
                             </Text>
                             <TextInput
@@ -119,7 +119,7 @@ export const FilterSidebar = ({
                         </Box>
 
                         <Box>
-                            <Text size="sm" fw={500} mb="xs">
+                            <Text size="xs" fw={500} mb="xs">
                                 {t('country')}
                             </Text>
                             <Select
@@ -146,7 +146,7 @@ export const FilterSidebar = ({
                             />
                         </Box>
                         <Box>
-                            <Text size="sm" fw={500} mb="xs">
+                            <Text size="xs" fw={500} mb="xs">
                                 {t('city')}
                             </Text>
                             <Select
@@ -174,7 +174,7 @@ export const FilterSidebar = ({
                         </Box>
 
                         <Box>
-                            <Text size="sm" fw={500} mb="xs">
+                            <Text size="xs" fw={500} mb="xs">
                                 {t('jobType')}
                             </Text>
                             <Stack gap="xs">
@@ -197,7 +197,7 @@ export const FilterSidebar = ({
                         </Box>
 
                         <Box>
-                            <Text size="sm" fw={500} mb="xs">
+                            <Text size="xs" fw={500} mb="xs">
                                 {t('experienceLevel')}
                             </Text>
                             <Stack gap="xs">
@@ -225,7 +225,7 @@ export const FilterSidebar = ({
 
                         <Box>
                             <Group justify="space-between" mb="xs">
-                                <Text size="sm" fw={500}>
+                                <Text size="xs" fw={500}>
                                     {t('salaryRange')}
                                 </Text>
                                 <Text size="xs" c="dimmed">
