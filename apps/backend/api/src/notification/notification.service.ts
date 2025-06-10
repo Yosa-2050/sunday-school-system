@@ -1,7 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -14,8 +12,6 @@ import {
     type IEmailService,
     IEmailServiceInterface,
 } from './interface/email-service.interface';
-// biome-ignore lint/style/useImportType: <explanation>
-import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 export class NotificationService {
@@ -27,7 +23,6 @@ export class NotificationService {
         private notificationRepo: Repository<Notification>,
         @InjectRepository(NotificationTemplate)
         private notificationTemplateRepo: Repository<NotificationTemplate>,
-        private readonly notificationGateway: NotificationGateway,
     ) {}
 
     send(req: CreateNotificationDto) {
@@ -50,57 +45,6 @@ export class NotificationService {
                 req.content,
             );
         }
-
-        //send real time notification to all users or specific user
-        if (
-            req.channel === NotificationChannel.InApp &&
-            req.isRealTimeNofitication
-        ) {
-            if (req.isNotifyToAllUser) {
-                this.notificationGateway.sendNotificationToAllUsers({
-                    title: req.subject,
-                    message: req.content,
-                });
-            } else {
-                this.notificationGateway.sendNotificationToSpecificUser(
-                    req.reference,
-                    {
-                        title: req.subject,
-                        message: req.content,
-                    },
-                );
-            }
-        }
-    }
-
-    async getUserInAppNotifications(userId: string) {
-        return await this.notificationRepo.find({
-            where: {
-                reference: userId,
-                channel: NotificationChannel.InApp,
-            },
-        });
-    }
-
-    async markNotificationAsRead(notificationId: string) {
-        const notification = await this.notificationRepo.findOneBy({
-            id: notificationId,
-        });
-
-        if (!notification) {
-            throw new EntityNotFoundException('Notification');
-        }
-
-        const updatedNotification = await this.notificationRepo.update(
-            { id: notificationId },
-            { status: NotificationStatus.Read },
-        );
-
-        const result = UtilityServices.EnsureUpdated(
-            updatedNotification,
-            notificationId,
-        );
-        return result;
     }
 
     async getTemplate(

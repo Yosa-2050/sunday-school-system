@@ -6,7 +6,6 @@ import { IEmailServiceInterface } from './interface/email-service.interface';
 import { ResendImpl } from './interface/implementations/resend.impl';
 import { NotificationTemplateSeedService } from './notification-template-seed.service';
 import { NotificationController } from './notification.controller';
-import { NotificationGateway } from './notification.gateway';
 import { NotificationService } from './notification.service';
 
 @Module({
@@ -19,7 +18,6 @@ import { NotificationService } from './notification.service';
             useClass: ResendImpl,
         },
         NotificationTemplateSeedService,
-        NotificationGateway,
     ],
     exports: [NotificationService, NotificationTemplateSeedService],
 })
