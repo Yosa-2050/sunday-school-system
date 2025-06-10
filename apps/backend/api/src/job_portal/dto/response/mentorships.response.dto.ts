@@ -29,11 +29,9 @@ export class ProgramsResponseDto {
             ? appliedprograms.includes(program.id)
             : false;
         this.saved = savedprograms ? savedprograms.includes(program.id) : false;
-        this.programId = program.id;
         this.experianceLevel = program.experianceLevel;
     }
     id: string;
-    programId: string;
     title: string;
     orgName: string;
     description: string;

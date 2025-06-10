@@ -39,7 +39,7 @@ import { JobPortalService } from './job_portal.service';
 
 @Injectable()
 export class MentorshipService {
-    async findOne(id: string) {
+    async findOneByProgramId(id: string) {
         const program = await this.mentorshipRepo
             .createQueryBuilder('mentorship')
             .leftJoinAndSelect('mentorship.program', 'program')
@@ -59,6 +59,7 @@ export class MentorshipService {
 
         return program;
     }
+
     async getAllByMentorPaginated(
         paginationDto: string,
         mentorId: string,

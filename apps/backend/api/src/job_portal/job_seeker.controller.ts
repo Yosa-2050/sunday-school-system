@@ -97,6 +97,17 @@ export class JobSeekerController {
     //     );
     // }
 
+    @Get('program/:id')
+    findOneByProgramId(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Request() req,
+    ) {
+        return this.jobPortalService.findOneProgramForJobSeeker(
+            id,
+            CurrentUser.getApplicantId(req),
+        );
+    }
+
     @Get('job/:id')
     findOne(@Param('id', new ParseUUIDPipe()) id: string, @Request() req) {
         return this.jobPortalService.findOneForJobSeeker(

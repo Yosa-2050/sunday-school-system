@@ -51,6 +51,7 @@ import { ProgramCategory } from './entities/job-category.entity';
 import { ProgramDescription } from './entities/job-description.entity';
 import { ProgramSkills } from './entities/job-skills.entity';
 import { Jobs } from './entities/jobs.entity';
+import { Mentorship } from './entities/mentorship.entity';
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
 import { Skills } from './entities/skills.entity';
@@ -83,6 +84,8 @@ export class JobPortalService {
         private jobApplicationRepo: Repository<Applications>,
         @InjectRepository(SavedPrograms)
         private savedJobRepo: Repository<SavedPrograms>,
+        @InjectRepository(Mentorship)
+        private mentorshipRepo: Repository<Mentorship>,
         private readonly queryBuilderService: QueryBuilderService,
         private readonly addressService: AddressService,
         private readonly passwordService: PasswordService,
@@ -266,6 +269,53 @@ export class JobPortalService {
         );
 
         return { ...job, applied: !!jobsApplied };
+    }
+
+    async findOneMentorshipByProgramId(id: string) {
+        const program = await this.mentorshipRepo
+            .createQueryBuilder('mentorship')
+            .leftJoinAndSelect('mentorship.program', 'program')
+            .leftJoinAndSelect('program.jobCategory', 'jobCategory')
+            .leftJoinAndSelect('program.jobSkills', 'jobSkills')
+            .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
+            .leftJoinAndSelect('program.city', 'city')
+            .leftJoinAndSelect('program.country', 'country')
+            .leftJoinAndSelect('program.state', 'state')
+            .leftJoinAndSelect('mentorship.mentor', 'mentor')
+            .leftJoinAndSelect('mentor.profile', 'profile')
+            .where('program.id = :id', { id })
+            .getOne();
+        if (!program) {
+            throw new EntityNotFoundException('Mentorship');
+        }
+
+        return program;
+    }
+
+    async findOneProgramForJobSeeker(id: string, applicantId: string) {
+        const program = await this.programRepo.findOneBy({ id });
+        if (!program) {
+            throw new EntityNotFoundException('program');
+        }
+
+        const appliedJobs = await this.programsApplied(applicantId);
+        const jobsApplied = appliedJobs?.find(
+            (x) => x.program.id === program.id,
+        );
+
+        if (program.programType === ProgramType.Job) {
+            const job = await this.findOneJobByProgramId(id);
+            return { ...job, type: ProgramType.Job, applied: !!jobsApplied };
+        }
+
+        if (program.programType === ProgramType.Mentorship) {
+            const mentors = await this.findOneMentorshipByProgramId(id);
+            return {
+                ...mentors,
+                type: ProgramType.Mentorship,
+                applied: !!jobsApplied,
+            };
+        }
     }
 
     async filterJobs(filter: GetJobsRequestDto, applicantId: string = null) {
@@ -636,11 +686,47 @@ export class JobPortalService {
         return flattenedJob;
     }
 
+    async findOneJobByProgramId(id: string) {
+        const job = await this.jobRepo
+            .createQueryBuilder('job')
+            .leftJoinAndSelect('job.program', 'program')
+            .innerJoinAndSelect('program.jobCategory', 'jobCategory')
+            .leftJoinAndSelect('program.jobSkills', 'jobSkills')
+            .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
+            .leftJoinAndSelect('program.city', 'city')
+            .leftJoinAndSelect('program.country', 'country')
+            .leftJoinAndSelect('program.state', 'state')
+            .leftJoinAndSelect('job.organization', 'organization')
+            .leftJoinAndSelect('job.postedBy', 'postedBy')
+            .leftJoinAndSelect('postedBy.employee', 'employee')
+            .leftJoinAndSelect('employee.profile', 'profile')
+            .innerJoinAndSelect('jobCategory.category', 'category')
+            .where('program.id = :id', { id })
+            .getOne();
+        if (!job) {
+            throw new EntityNotFoundException('Job');
+        }
+
+        const { program, ...restOfJob } = job;
+
+        const flattenedJob = {
+            ...restOfJob,
+            jobId: job?.id,
+            programId: program?.id,
+            ...(program ?? {}),
+        };
+        return flattenedJob;
+    }
+
     findOneProgram(id: string) {
         return this.programRepo.findOneBy({ id });
     }
 
     findJobByProgram(id: string) {
+        return this.jobRepo.findOneBy({ program: { id } });
+    }
+
+    findMentorshipByProgram(id: string) {
         return this.jobRepo.findOneBy({ program: { id } });
     }
 
