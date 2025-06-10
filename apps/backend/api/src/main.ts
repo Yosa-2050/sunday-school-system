@@ -1,10 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { LookupSeederService } from './Utilities/service/lookup-seeder.service';
 import { AppModule } from './app.module';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UsersService } from './users/users.service';
-import { LookupSeederService } from './Utilities/service/lookup-seeder.service';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -50,9 +50,9 @@ async function bootstrap() {
         await seeder.seedFromCsvIfNeeded();
 
         await userService.createMainAdministrator(seedUser);
-    } catch (ex){
+    } catch (ex) {
         //TODO: write logs
-        console.log(ex)
+        console.log(ex);
     }
 
     const port = process.env.PORT || 5000;
