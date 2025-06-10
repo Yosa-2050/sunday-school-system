@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -15,15 +15,5 @@ export class NotificationController {
     @Post()
     sendEmail(@Body() req: CreateNotificationDto) {
         return this.notificationService.send(req);
-    }
-
-    @Get('getUserInAppNotifications/:userId')
-    getUserInAppNotifications(@Param('userId') userId: string) {
-        return this.notificationService.getUserInAppNotifications(userId);
-    }
-
-    @Patch('markNotificationAsRead/:notificationId')
-    markNotificationAsRead(@Param('notificationId') notificationId: string) {
-        return this.notificationService.markNotificationAsRead(notificationId);
     }
 }
