@@ -433,17 +433,17 @@ export class JobsService {
             canApply = false;
             applyObject.cv = false;
         }
-        if (applicant.coverLetter) {
+        if (!applicant.coverLetter) {
             canApply = false;
             applyObject.coverLetter = false;
         }
 
-        if (profile.profile_picture_id) {
+        if (!profile.profile_picture_id) {
             canApply = false;
             applyObject.profilePic = false;
         }
 
-        if (profile.birthDate && profile.gender && profile.phoneNumber) {
+        if (!(profile.birthDate && profile.gender && profile.phoneNumber)) {
             canApply = false;
             applyObject.profile = false;
         }
