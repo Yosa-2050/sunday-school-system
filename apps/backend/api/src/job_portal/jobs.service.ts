@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto2 } from '@shega/Utilities/models/paginated.request2';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -34,6 +37,8 @@ import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
 import { Experiance } from './entities/experiance.entity';
 import { Applications } from './entities/job-application.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
@@ -363,6 +368,11 @@ export class JobsService {
             id: applicantId,
         });
         const program = await this.jobPortalService.findOneProgram(programId);
+        if (!program) {
+            throw new NotFoundException(
+                `Program Not Found with ProgramId ${programId}`,
+            );
+        }
         const savedProgram = this.savedProgramsRepo.create();
         savedProgram.applicant = applicant;
         savedProgram.program = program;
@@ -389,13 +399,31 @@ export class JobsService {
         return UtilityServices.EnsureDeleted(deleted, programSaved.id);
     }
 
-    async getSavedProgramsByApplicantId(applicantId: string) {
-        const result = await this.savedProgramsRepo.find({
-            where: { applicant: { id: applicantId } },
-        });
+    async getSavedProgramsByApplicantId(
+        applicantId: string,
+        paginationDto: PaginationDto2,
+    ) {
+        const [data, total] = await this.savedProgramsRepo
+            .createQueryBuilder('savedPrograms')
+            .leftJoinAndSelect('savedPrograms.program', 'program')
+            .leftJoinAndSelect('program.country', 'country')
+            .leftJoinAndSelect('program.state', 'state')
+            .leftJoinAndSelect('program.city', 'city')
+            .leftJoin('savedPrograms.applicant', 'applicant')
+            .where('savedPrograms.applicantId = :applicantId', { applicantId })
+            .orderBy('savedPrograms.createdAt', 'DESC')
+            .skip((paginationDto.page - 1) * paginationDto.limit)
+            .take(paginationDto.limit)
+            .getManyAndCount();
 
-        const jobsList = result.map((job) => job.program);
-        return jobsList;
+        const programList = data.map((job) => job.program);
+
+        return new PaginatedResponseDto<Programs[]>(
+            programList,
+            total,
+            paginationDto.page,
+            paginationDto.limit,
+        );
     }
 
     async checkApplicantStatus(applicantId: string) {

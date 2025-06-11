@@ -7,6 +7,7 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Query,
     Request,
     UploadedFile,
     UseInterceptors,
@@ -16,6 +17,8 @@ import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto2 } from '@shega/Utilities/models/paginated.request2';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
@@ -254,9 +257,10 @@ export class JobSeekerController {
     }
 
     @Get('getSavedPrograms')
-    getSavedPrograms(@Request() req) {
+    getSavedPrograms(@Request() req, @Query() paginationDto: PaginationDto2) {
         return this.jobsService.getSavedProgramsByApplicantId(
             CurrentUser.getApplicantId(req),
+            paginationDto,
         );
     }
 
