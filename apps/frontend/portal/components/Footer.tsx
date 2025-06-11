@@ -71,10 +71,16 @@ export function Footer() {
                                     Companies
                                 </Link>
                                 <Link
-                                    href="/careers"
+                                    href="/terms-and-conditions"
                                     className="text-gray-300 hover:text-white transition-colors"
                                 >
-                                    Career Advice
+                                    Terms and Conditions
+                                </Link>
+                                <Link
+                                    href="/privacy-policy"
+                                    className="text-gray-300 hover:text-white transition-colors"
+                                >
+                                    Privacy Policy
                                 </Link>
                                 <Link
                                     href="/about"

@@ -1,7 +1,8 @@
-import { Card, Divider, Button, Text } from '@mantine/core';
-import { IconBriefcase, IconSearch, IconFilter } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
+'use client';
 
+import { Box, Button, Card, Divider, Group, Stack, Text } from '@mantine/core';
+import { IconBriefcase, IconFilter, IconSearch } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
 
 type NoDataProps = {
     resetFilters: () => void;
@@ -9,72 +10,106 @@ type NoDataProps = {
 
 const NoData = ({ resetFilters }: NoDataProps) => {
     const t = useTranslations('jobListing');
-  return (
-    <Card shadow="sm">
-                                        <div className=" p-8 rounded-full mb-8 shadow-lg transform hover:scale-105 transition-transform duration-300">
-                                            <div className="relative">
-                                                <IconBriefcase
-                                                    size={56}
-                                                    className="text-primary animate-bounce-slow"
-                                                />
-                                                <div className="absolute -top-2 -right-2 bg-primary/10 rounded-full p-2">
-                                                    <IconSearch
-                                                        size={16}
-                                                        className="text-primary"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <Text
-                                            size="2xl"
-                                            fw={700}
-                                            mb={'lg'}
-                                            className="text-gray-800 text-center mb-4"
-                                        >
-                                            {t('noJobsFound')}
-                                        </Text>
-                                        <Divider my={'md'} />
-                                        <div className="flex gap-4">
-                                            <Button
-                                                variant="filled"
-                                                color="primary"
-                                                radius="xl"
-                                                size="md"
-                                                leftSection={
-                                                    <IconFilter size={16} />
-                                                }
-                                                onClick={resetFilters}
-                                                className="hover:scale-105 transition-transform duration-200"
-                                            >
-                                                {t('resetFilters')}
-                                            </Button>
-                                            <Button
-                                                variant="light"
-                                                color="primary"
-                                                radius="xl"
-                                                size="md"
-                                                leftSection={
-                                                    <IconSearch size={16} />
-                                                }
-                                                onClick={() => {
-                                                    // Focus on search input
-                                                    const searchInput =
-                                                        document.querySelector(
-                                                            'input[type="text"]',
-                                                        );
-                                                    if (searchInput) {
-                                                        (
-                                                            searchInput as HTMLElement
-                                                        ).focus();
-                                                    }
-                                                }}
-                                                className="hover:scale-105 transition-transform duration-200"
-                                            >
-                                                {t('searchAgain')}
-                                            </Button>
-                                        </div>
-                                    </Card>
-  )
-}
 
-export default NoData
+    return (
+        <Card shadow="sm" padding="xl" radius="md" withBorder>
+            <Stack align="center" gap="lg">
+                <Box
+                    style={{
+                        position: 'relative',
+                        padding: '2rem',
+                        borderRadius: '50%',
+                        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                        transition: 'transform 0.3s ease',
+                    }}
+                    className="hover:scale-105"
+                >
+                    <IconBriefcase
+                        size={56}
+                        style={{
+                            color: 'var(--mantine-primary-color)',
+                            animation: 'bounce 2s infinite',
+                        }}
+                    />
+                    <Box
+                        style={{
+                            position: 'absolute',
+                            top: '-8px',
+                            right: '-8px',
+                            backgroundColor:
+                                'var(--mantine-primary-color-light)',
+                            borderRadius: '50%',
+                            padding: '8px',
+                        }}
+                    >
+                        <IconSearch
+                            size={16}
+                            style={{ color: 'var(--mantine-primary-color)' }}
+                        />
+                    </Box>
+                </Box>
+
+                <Text size="xl" fw={700} ta="center" c="gray.8">
+                    {t('noJobsFound')}
+                </Text>
+
+                <Divider w="100%" />
+
+                <Group gap="md" justify="center">
+                    <Button
+                        variant="filled"
+                        radius="xl"
+                        size="md"
+                        leftSection={<IconFilter size={16} />}
+                        onClick={resetFilters}
+                        style={{
+                            transition: 'transform 0.2s ease',
+                        }}
+                        className="hover:scale-105"
+                    >
+                        {t('resetFilters')}
+                    </Button>
+
+                    <Button
+                        variant="light"
+                        radius="xl"
+                        size="md"
+                        leftSection={<IconSearch size={16} />}
+                        onClick={() => {
+                            const searchInput =
+                                document.querySelector('input[type="text"]');
+                            if (searchInput) {
+                                (searchInput as HTMLElement).focus();
+                            }
+                        }}
+                        style={{
+                            transition: 'transform 0.2s ease',
+                        }}
+                        className="hover:scale-105"
+                    >
+                        {t('searchAgain')}
+                    </Button>
+                </Group>
+            </Stack>
+
+            <style jsx>{`
+        @keyframes bounce {
+          0%, 20%, 53%, 80%, 100% {
+            transform: translate3d(0, 0, 0);
+          }
+          40%, 43% {
+            transform: translate3d(0, -15px, 0);
+          }
+          70% {
+            transform: translate3d(0, -7px, 0);
+          }
+          90% {
+            transform: translate3d(0, -2px, 0);
+          }
+        }
+      `}</style>
+        </Card>
+    );
+};
+
+export default NoData;

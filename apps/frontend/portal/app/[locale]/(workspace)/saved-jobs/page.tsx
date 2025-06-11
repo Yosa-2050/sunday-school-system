@@ -4,16 +4,17 @@ import { useRouter } from '@/i18n/routing';
 import {
     Button,
     Card,
-    Container, Group,
-    LoadingOverlay, Stack,
+    Container,
+    Group,
+    LoadingOverlay,
+    Stack,
     Text,
-    Title
+    Title,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSavedJobs } from 'app/_api/jobs/fetch-jobs';
 import { useTranslations } from 'next-intl';
 import { SavedJobsList } from './_components/SavedProgramsList';
-
 
 export default function MyJobsPage() {
     const t = useTranslations('saved-jobs');
@@ -23,7 +24,7 @@ export default function MyJobsPage() {
         queryFn: () => fetchSavedJobs(),
     });
 
-    const applications = data?.filter(item => item != null)
+    const applications = data?.filter((item) => item != null);
 
     return (
         <Container size="xl" className="py-8 !h-full">
@@ -62,4 +63,3 @@ export default function MyJobsPage() {
         </Container>
     );
 }
-

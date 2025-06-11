@@ -1,5 +1,15 @@
-import { useRouter } from "@/i18n/routing";
-import { Box, Button, Stack, Grid, Paper, Group, Title, Badge, Text } from "@mantine/core";
+import { useRouter } from '@/i18n/routing';
+import {
+    Badge,
+    Box,
+    Button,
+    Grid,
+    Group,
+    Paper,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
 
 interface JobApplication {
     id: string;
@@ -17,7 +27,6 @@ interface JobApplication {
         postedDate: string | null;
     };
 }
-
 
 function ApplicationsList({
     applications,

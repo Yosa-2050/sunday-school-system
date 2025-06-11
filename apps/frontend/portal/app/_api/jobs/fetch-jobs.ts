@@ -6,19 +6,19 @@ export type FetchJob = {
 };
 
 export type ResponseItem = {
-  id: string
-  createdDate: string
-  postedDate: string
-  status: string
-  title: string
-  description: string
-  note: string
-  isPublished: boolean
-  applied: boolean
-  saved: boolean
-  programId: string
-  experianceLevel: string
-}
+    id: string;
+    createdDate: string;
+    postedDate: string;
+    status: string;
+    title: string;
+    description: string;
+    note: string;
+    isPublished: boolean;
+    applied: boolean;
+    saved: boolean;
+    programId: string;
+    experianceLevel: string;
+};
 
 export type Response = {
     data: Array<ResponseItem>;

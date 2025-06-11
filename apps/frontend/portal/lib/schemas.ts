@@ -12,7 +12,7 @@ export const personalInfoSchema = z.object({
         .string()
         .nullish()
         .refine(
-            (val) => !val || /^\+?[1-9]\d{1,14}$/.test(val),
+            (val) => !val || /^(\+?[1-9]\d{1,14}|0\d{9,14})$/.test(val),
             'Invalid phone number format.',
         ),
 });

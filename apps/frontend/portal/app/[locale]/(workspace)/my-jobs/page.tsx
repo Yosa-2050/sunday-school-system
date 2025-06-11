@@ -4,18 +4,19 @@ import { useRouter } from '@/i18n/routing';
 import {
     Button,
     Card,
-    Container, Group,
-    LoadingOverlay, Stack,
+    Container,
+    Group,
+    LoadingOverlay,
+    Stack,
     Tabs,
     Text,
-    Title
+    Title,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAppliedJobs } from 'app/_api/jobs/fetch-applied-jobs';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { ApplicationsList } from './_components/ApplicationList';
-
 
 export default function MyJobsPage() {
     const t = useTranslations('my-jobs');
@@ -30,12 +31,13 @@ export default function MyJobsPage() {
                 limit: 10,
             }),
     });
-    const filteredApplications = data?.filter((application) => {
-        if (activeTab === 'all') {
-            return true;
-        }
-        return application.status === activeTab;
-    }) ?? [];
+    const filteredApplications =
+        data?.filter((application) => {
+            if (activeTab === 'all') {
+                return true;
+            }
+            return application.status === activeTab;
+        }) ?? [];
 
     return (
         <Container size="xl" className="py-8 !h-full">
@@ -68,7 +70,11 @@ export default function MyJobsPage() {
                         overlayProps={{ radius: 'sm', blur: 2 }}
                     />
 
-                    <Tabs value={activeTab} onChange={setActiveTab} variant='pills'>
+                    <Tabs
+                        value={activeTab}
+                        onChange={setActiveTab}
+                        variant="pills"
+                    >
                         <Tabs.List>
                             <Tabs.Tab value="PENDING">Application</Tabs.Tab>
                             <Tabs.Tab value="SHORTLISTED">Shortlisted</Tabs.Tab>
@@ -98,4 +104,3 @@ export default function MyJobsPage() {
         </Container>
     );
 }
-

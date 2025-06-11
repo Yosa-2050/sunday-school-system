@@ -1,19 +1,21 @@
-import { notifications } from "@mantine/notifications";
-import { entityParamSerializer } from "@shega/shared";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { fetchJobs, likeJob, unlikeJob } from "app/_api/jobs/fetch-jobs";
+import { notifications } from '@mantine/notifications';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+    type Filter,
+    fetchJobs,
+    likeJob,
+    unlikeJob,
+} from 'app/_api/jobs/fetch-jobs';
 
-export const useJobs = (entityParams: any) => {
-    
+export const useJobs = (filters?: Filter) => {
     const { data, isLoading, error, refetch } = useQuery({
-        queryKey: ['job-seeker-jbs', entityParamSerializer(entityParams)],
-        queryFn: () =>
-            fetchJobs({
-                pagination: {
-                    page: 1,
-                    limit: 5,
-                },
-            }),
+        queryKey: [
+            'job-seeker-jbs',
+            filters?.pagination?.page,
+            filters?.pagination.limit,
+        ],
+        queryFn: () => fetchJobs(filters as Filter),
+        enabled: !!filters,
     });
 
     const likeMutation = useMutation({
@@ -64,5 +66,5 @@ export const useJobs = (entityParams: any) => {
         retry: false,
     });
 
-    return { data, isLoading, error, likeMutation, unlikeMutation };
-}
+    return { data, isLoading, error, likeMutation, unlikeMutation, refetch };
+};

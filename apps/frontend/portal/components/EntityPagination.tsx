@@ -18,10 +18,9 @@ export function EntityPagination({
     total,
     perPage = PER_PAGE,
     hideCounter = false,
-    createPageURL
+    createPageURL,
 }: EntityPaginationProps) {
     const currentPage = p || 1;
-    
 
     const totalPages = Math.ceil(total / perPage);
     const from = (currentPage - 1) * perPage + 1;

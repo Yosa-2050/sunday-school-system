@@ -1,56 +1,53 @@
 'use client';
 
+import { EntityPagination } from '@/components/EntityPagination';
 import { Footer } from '@/components/Footer';
-import {
-    Container, Grid,
-    LoadingOverlay, Stack
-} from '@mantine/core';
+import { useJobs } from '@/hooks/jobs.hook';
+import { Container, Grid, LoadingOverlay, Stack } from '@mantine/core';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { PER_PAGE, entityParamSchema } from '@shega/shared';
-import { useQuery } from '@tanstack/react-query';
-import { fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import type { Filter } from 'app/_api/jobs/fetch-jobs';
 import { useSearchParams } from 'next/navigation';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
+import { JobCard } from '../_components/JobCard';
 import { FilterSidebar } from './components/FilterSidebar';
-import { JobCard } from './components/JobCard';
-import { EntityPagination } from '@/components/EntityPagination';
 import JobHeader from './components/JobHeader';
 import NoData from './components/NoData';
 
-
-const initialValues = (title? : string | null):Filter =>  {
+const initialValues = (title?: string | null): Filter => {
     return {
-            pagination: {
-                page: 1,
-                limit: PER_PAGE,
-            },
-            title: title || '',
-            categoryId: '',
-            organizationId: '',
-            cityId: '',
-            type: '',
-            experianceLevel: '',
-        }
-}
+        pagination: {
+            page: 1,
+            limit: PER_PAGE,
+        },
+        title: title || '',
+        categoryId: '',
+        organizationId: '',
+        cityId: '',
+        type: '',
+        experianceLevel: '',
+    };
+};
 
 export default function JobsPage() {
-    
     const searchParam = useSearchParams();
 
-    const [filters, setFilters] = useState<Filter>(initialValues(searchParam.get('title')));
-    const updateFilters = ({key, value}: {key: keyof Filter, value: string}) => {
+    const [filters, setFilters] = useState<Filter>(
+        initialValues(searchParam.get('title')) || initialValues(''),
+    );
+    const updateFilters = ({
+        key,
+        value,
+    }: { key: keyof Filter; value: string }) => {
         setFilters((prev) => ({
             ...prev,
             [key]: value,
         }));
-    }
+    };
 
-    const { data, isLoading, error, refetch } = useQuery({
-        queryKey: ['job-seeker-jbs',filters.pagination.page],
-        queryFn: () => fetchJobs(filters),
-    });
+    const { data, isLoading, refetch, error, likeMutation, unlikeMutation } =
+        useJobs(filters);
     const isEmpty = !!data?.data?.length;
     const [entityParams, setEntityParams] = useQueryState(
         'job-seeker-jbs',
@@ -59,7 +56,7 @@ export default function JobsPage() {
             pp: PER_PAGE,
         }),
     );
-    
+
     const [shouldApplyFilters, setShouldApplyFilters] = useState(false);
 
     const handleSearch = useDebouncedCallback((term: string | null) => {
@@ -90,7 +87,6 @@ export default function JobsPage() {
         }
     }, 300);
 
- 
     // biome-ignore lint/correctness/useExhaustiveDependencies(searchParam.get): intentional
     useEffect(() => {
         if (shouldApplyFilters && searchParam.get('search')) {
@@ -118,7 +114,6 @@ export default function JobsPage() {
         setShouldApplyFilters(true);
     };
 
-
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
     }
@@ -126,15 +121,16 @@ export default function JobsPage() {
         <>
             <Container size="xl" py="xl">
                 <Grid>
-                    <Grid.Col
-                        span={{ base: 12, md: 3 }}
-                        visibleFrom="md"
-                    >
+                    <Grid.Col span={{ base: 12, md: 3 }} visibleFrom="md">
                         <FilterSidebar
                             filters={filters}
                             setFilters={setFilters}
-                            handleJobTypeChange={(value) => updateFilters({key: 'type', value})}
-                            handleExperienceLevelChange={(value) => updateFilters({key: 'experianceLevel', value})}
+                            handleJobTypeChange={(value) =>
+                                updateFilters({ key: 'type', value })
+                            }
+                            handleExperienceLevelChange={(value) =>
+                                updateFilters({ key: 'experianceLevel', value })
+                            }
                             handleSearch={handleSearch}
                             handleApplyFilters={handleApplyFilters}
                         />
@@ -142,32 +138,44 @@ export default function JobsPage() {
 
                     <Grid.Col span={{ base: 12, md: 9 }}>
                         <Stack gap="md">
-                               <JobHeader 
-                                    total={data?.total ?? 0}
-                                    filters={filters}
-                                    setFilters={setFilters}
-                                    handleJobTypeChange={(value)=> updateFilters({key: 'type', value: value})}
-                                    handleExperienceLevelChange={(value) => updateFilters({value, key: 'experianceLevel'})}
-                                    handleSearch={handleSearch}
-                                    handleApplyFilters={handleApplyFilters}
-                               />
+                            <JobHeader
+                                total={data?.total ?? 0}
+                                filters={filters}
+                                setFilters={setFilters}
+                                handleJobTypeChange={(value) =>
+                                    updateFilters({ key: 'type', value: value })
+                                }
+                                handleExperienceLevelChange={(value) =>
+                                    updateFilters({
+                                        value,
+                                        key: 'experianceLevel',
+                                    })
+                                }
+                                handleSearch={handleSearch}
+                                handleApplyFilters={handleApplyFilters}
+                            />
 
-                            <div className="grid grid-cols-2 gap-4">
-                                {isEmpty ? (
-                                    data?.data.map((job) => (
-                                        <JobCard key={job.id} job={job} />
-                                    ))
-                                ) : (
-                                    <NoData resetFilters={resetFilters}/>
-                                )}
-                            </div>
+                            {isEmpty ? (
+                                <div className="grid grid-cols-2 gap-4">
+                                    {data?.data.map((job) => (
+                                        <JobCard
+                                            key={job.id}
+                                            job={job}
+                                            likeMutation={likeMutation}
+                                            unlikeMutation={unlikeMutation}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <NoData resetFilters={resetFilters} />
+                            )}
                             <EntityPagination
                                 p={filters.pagination.page ?? 1}
                                 total={data?.total ?? 0}
                                 perPage={PER_PAGE}
                                 createPageURL={createPageURL}
                             />
-                         </Stack>
+                        </Stack>
                     </Grid.Col>
                 </Grid>
             </Container>

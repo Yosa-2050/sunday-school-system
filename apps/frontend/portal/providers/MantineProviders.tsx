@@ -85,7 +85,7 @@ const baseTheme = ({
                     size: 'sm',
                 },
             },
-            Checkbox:{
+            Checkbox: {
                 defaultProps: {
                     size: 'sm',
                 },
@@ -98,14 +98,13 @@ const baseTheme = ({
             Card: {
                 defaultProps: {
                     withBorder: true,
-                }
+                },
             },
             Paper: {
                 defaultProps: {
                     withBorder: true,
                     radius: 'none',
                 },
-                
             },
             Input: {
                 defaultProps: {
@@ -151,7 +150,7 @@ const baseTheme = ({
                 },
                 styles: {
                     body: {
-                        paddingTop: 16
+                        paddingTop: 16,
                     },
                 },
             },
