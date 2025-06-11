@@ -37,6 +37,9 @@ staging:
     - pnpm install
     - pnpm run format
     - pnpm run build
+    - |
+      curl -X GET "$COOLIFY_URL/api/v1/deploy?tag=shega&force=false" -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN"
+
   cache:
     key:
       files:

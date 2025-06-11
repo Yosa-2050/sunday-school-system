@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Badge,
     Button,
     Card,
@@ -8,7 +7,7 @@ import {
     Group,
     Text,
     Title,
-    TypographyStylesProvider,
+    TypographyStylesProvider
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconBookmark, IconBriefcase } from '@tabler/icons-react';
@@ -72,13 +71,13 @@ export const JobCard = ({
                 <Group gap="sm" className="w-full">
                     <Flex align={'center'} justify={'space-between'} w={'100%'}>
                         <div className="flex items-center flex-1">
-                            <Avatar
+                            {/* <Avatar
                                 size={isMobile ? 'sm' : 'lg'}
                                 color="blue"
                                 radius="xl"
-                            >
+                            > */}
                                 {/* {job.organization?.name.slice(0, 2)} */}
-                            </Avatar>
+                            {/* </Avatar> */}
                             <Title
                                 order={isMobile ? 5 : 4}
                                 className="font-semibold line-clamp-1 cursor-pointer transition-colors"

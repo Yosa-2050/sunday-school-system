@@ -1,8 +1,6 @@
 import { useRouter } from '@/i18n/routing';
 import {
-    ActionIcon,
-    Avatar,
-    Badge,
+    ActionIcon, Badge,
     Box,
     Button,
     Card,
@@ -11,7 +9,7 @@ import {
     Group,
     Stack,
     Text,
-    TypographyStylesProvider,
+    TypographyStylesProvider
 } from '@mantine/core';
 import { IconClock, IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import type { ResponseItem } from 'app/_api/jobs/fetch-jobs';
@@ -39,7 +37,7 @@ export function JobCard({ job }: JobCardProps) {
             <Stack p={8} gap="xs">
                 <Group justify="space-between" align="flex-start">
                     <Group gap="sm">
-                        <Avatar size="md" radius="md" color="primary"></Avatar>
+                        {/* <Avatar size="md" radius="md" color="primary"></Avatar> */}
                         <Box>
                             <Text
                                 size="sm"
