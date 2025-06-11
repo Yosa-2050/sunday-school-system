@@ -1,6 +1,7 @@
 import { useRouter } from '@/i18n/routing';
 import {
-    ActionIcon, Badge,
+    ActionIcon,
+    Badge,
     Box,
     Button,
     Card,
@@ -9,7 +10,7 @@ import {
     Group,
     Stack,
     Text,
-    TypographyStylesProvider
+    TypographyStylesProvider,
 } from '@mantine/core';
 import { IconClock, IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import type { ResponseItem } from 'app/_api/jobs/fetch-jobs';

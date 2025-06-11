@@ -344,7 +344,7 @@ export const JobApplicationPanel = ({
                 )}
 
                 <Group grow>
-                    {job?.applied && canApply?.canApply && (
+                    {!job?.applied && canApply?.canApply && (
                         <Flex justify={'end'}>
                             <Button
                                 w={'50%'}

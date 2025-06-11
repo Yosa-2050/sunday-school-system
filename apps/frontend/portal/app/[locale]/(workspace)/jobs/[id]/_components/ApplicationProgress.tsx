@@ -9,10 +9,13 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
+import { logger } from '@shega/shared';
+import { IconCheck, IconShare } from '@tabler/icons-react';
+import type { Job } from 'app/_api/jobs/fetch-job-id';
 
 type ApplicationProgressProps = {
     setActiveTab: (value: string) => void;
+    job: Job;
 };
 
 const CanApply = {
@@ -26,8 +29,24 @@ const CanApply = {
 
 export const ApplicationProgress = ({
     setActiveTab,
+    job,
 }: ApplicationProgressProps) => {
     const { canApply, isLoading } = useCanApply();
+    const handleShare = async () => {
+        try {
+            if (navigator.share) {
+                await navigator.share({
+                    title: job.title,
+                    text: `Check out this job opportunity: ${job.title} at ${job.organization?.name}`,
+                    url: window.location.href,
+                });
+            } else {
+                logger.info('Web Share API not supported in this browser');
+            }
+        } catch (err) {
+            logger.error('Error sharing:', err);
+        }
+    };
     if (isLoading) {
         return <LoadingOverlay visible={true} h={'100%'} />;
     }
@@ -74,10 +93,10 @@ export const ApplicationProgress = ({
                     variant="outline"
                     fullWidth
                     size="xs"
-                    onClick={() => setActiveTab('application')}
-                    hidden
+                    onClick={handleShare}
                 >
-                    Continue Application
+                    <IconShare size={16} stroke={1.5} />
+                    Share
                 </Button>
             </Stack>
         </Card>

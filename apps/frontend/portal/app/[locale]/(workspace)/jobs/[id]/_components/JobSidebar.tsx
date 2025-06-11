@@ -1,4 +1,5 @@
 import { Box, Stack } from '@mantine/core';
+import type { Job } from 'app/_api/jobs/fetch-job-id';
 import { ApplicationProgress } from './ApplicationProgress';
 import { ApplicationTips } from './ApplicationTips';
 import { OrganizationDetails } from './OrganizationDetails';
@@ -7,11 +8,13 @@ import { SimilarJobs } from './SimilarJobs';
 type JobDetailSideBarProps = {
     organizationName: string;
     setActiveTab: (value: string) => void;
+    job: Job;
 };
 
 export const JobDetailSideBar = ({
     organizationName,
     setActiveTab,
+    job,
 }: JobDetailSideBarProps) => {
     return (
         <Box
@@ -21,7 +24,7 @@ export const JobDetailSideBar = ({
             flex={1}
         >
             <Stack gap="lg">
-                <ApplicationProgress setActiveTab={setActiveTab} />
+                <ApplicationProgress setActiveTab={setActiveTab} job={job} />
                 <OrganizationDetails organizationName={organizationName} />
                 <SimilarJobs />
                 <ApplicationTips />

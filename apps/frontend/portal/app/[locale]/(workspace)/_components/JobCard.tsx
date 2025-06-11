@@ -7,7 +7,7 @@ import {
     Group,
     Text,
     Title,
-    TypographyStylesProvider
+    TypographyStylesProvider,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconBookmark, IconBriefcase } from '@tabler/icons-react';
@@ -76,7 +76,7 @@ export const JobCard = ({
                                 color="blue"
                                 radius="xl"
                             > */}
-                                {/* {job.organization?.name.slice(0, 2)} */}
+                            {/* {job.organization?.name.slice(0, 2)} */}
                             {/* </Avatar> */}
                             <Title
                                 order={isMobile ? 5 : 4}
