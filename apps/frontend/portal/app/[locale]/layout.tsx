@@ -4,7 +4,7 @@ import { getUserAction } from 'app/_api/get-user-action';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { Inter } from 'next/font/google';
+import { Roboto } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import MantineThemeProvider from 'providers/MantineProviders';
@@ -14,7 +14,13 @@ import type { ReactNode } from 'react';
 import { cn } from 'utility/cn';
 import { generateColors } from 'utility/colors';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Roboto({
+    subsets: ['latin'],
+    weight: ['100', '300', '400', '500', '700', '900'],
+    style: ['normal', 'italic'],
+    variable: '--font-inter',
+    display: 'swap',
+});
 
 export const metadata: Metadata = {
     title: 'Shega Jobs',

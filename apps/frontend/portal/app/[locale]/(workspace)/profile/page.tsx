@@ -3,8 +3,8 @@
 import type { ProfileData } from '@/lib/types';
 import {
     AppShell,
+    Box,
     Center,
-    Container,
     Flex,
     Loader,
     Paper,
@@ -25,34 +25,37 @@ import ProfileHeader from './_components/profile-header';
 import ResumeSection from './_components/resume-section';
 import SkillsSection from './_components/skills-section';
 
+const initialProfileData: ProfileData = {
+    id: '',
+    isActive: true,
+    bio: {
+        bio: '',
+    },
+    cv: '',
+    headline: '',
+    coverLetter: '',
+    experiance: [],
+    __experiance__: [],
+    educationalHistory: [],
+    __educationalHistory__: [],
+    skills: [],
+    profile: {
+        id: '',
+        firstName: 'John',
+        middleName: '',
+        lastName: 'Doe',
+        birthDate: '',
+        gender: '',
+        title: '',
+        phoneNumber: '+1 (555) 123-4567',
+        profile_picture_id: '',
+    },
+};
+
 export default function ProfilePage() {
     const { data: jobSeekerData, isLoading, error } = useJobSeekerDetails();
-    const [localProfileData, setLocalProfileData] = useState<ProfileData>({
-        id: '',
-        isActive: true,
-        bio: {
-            bio: '',
-        },
-        cv: '',
-        headline: '',
-        coverLetter: '',
-        experiance: [],
-        __experiance__: [],
-        educationalHistory: [],
-        __educationalHistory__: [],
-        skills: [],
-        profile: {
-            id: '',
-            firstName: 'John',
-            middleName: '',
-            lastName: 'Doe',
-            birthDate: '',
-            gender: '',
-            title: '',
-            phoneNumber: '+1 (555) 123-4567',
-            profile_picture_id: '',
-        },
-    });
+    const [localProfileData, setLocalProfileData] =
+        useState<ProfileData>(initialProfileData);
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const handleUpdateSection = (section: keyof ProfileData, data: any) => {
@@ -100,15 +103,13 @@ export default function ProfilePage() {
                 headline={displayData.headline}
             />
             <Paper
-                // bg="gray.0"
                 withBorder={false}
                 py="xl"
                 style={{
                     minHeight: 'calc(100vh - 200px)',
-                    //   background: "linear-gradient(to bottom, #f8f9fa, #e9ecef)",
                 }}
             >
-                <Container size="xl">
+                <Box className="container mx-auto px-0">
                     <Transition
                         mounted={true}
                         transition="fade"
@@ -174,7 +175,7 @@ export default function ProfilePage() {
                             </Flex>
                         )}
                     </Transition>
-                </Container>
+                </Box>
             </Paper>
         </AppShell>
     );

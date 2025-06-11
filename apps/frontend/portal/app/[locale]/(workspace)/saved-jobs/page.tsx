@@ -2,15 +2,11 @@
 
 import { useRouter } from '@/i18n/routing';
 import {
-    Badge,
-    Box,
     Button,
     Card,
     Container,
-    Grid,
     Group,
     LoadingOverlay,
-    Paper,
     Stack,
     Text,
     Title,
@@ -18,36 +14,17 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { fetchSavedJobs } from 'app/_api/jobs/fetch-jobs';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-
-interface JobApplication {
-    id: string;
-    status: string;
-    createdAt: string;
-    job: {
-        id: string;
-        title: string;
-        organization: {
-            name: string;
-        };
-        type: string;
-        experianceLevel: string;
-        workPlace: string | null;
-        postedDate: string | null;
-    };
-}
+import { SavedJobsList } from './_components/SavedProgramsList';
 
 export default function MyJobsPage() {
     const t = useTranslations('saved-jobs');
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<string | null>('PENDING');
-
     const { data, isLoading } = useQuery({
         queryKey: ['saved-jobs'],
         queryFn: () => fetchSavedJobs(),
     });
 
-    const applications = data?.data || [];
+    const applications = data?.filter((item) => item != null);
 
     return (
         <Container size="xl" className="py-8 !h-full">
@@ -80,122 +57,9 @@ export default function MyJobsPage() {
                         overlayProps={{ radius: 'sm', blur: 2 }}
                     />
 
-                    <ApplicationsList applications={applications} />
+                    <SavedJobsList applications={applications} />
                 </Card>
             </Stack>
         </Container>
-    );
-}
-
-function ApplicationsList({
-    applications,
-}: {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    applications: any[];
-}) {
-    const router = useRouter();
-
-    const getStatusColor = (status: string) => {
-        if (status === 'PENDING') {
-            return 'yellow';
-        }
-        if (status === 'APPROVED') {
-            return 'green';
-        }
-        if (status === 'SHORTLISTED') {
-            return 'blue';
-        }
-        return 'red';
-    };
-
-    if (applications.length === 0) {
-        return (
-            <Box className="flex flex-col items-center justify-center h-[400px]">
-                <Text size="lg" c="dimmed" ta="center">
-                    No applications found
-                </Text>
-                <Button
-                    variant="light"
-                    color="primary"
-                    mt="md"
-                    onClick={() => router.push('/jobs')}
-                >
-                    Browse Jobs
-                </Button>
-            </Box>
-        );
-    }
-
-    return (
-        <Stack gap="md">
-            <Grid>
-                {applications.map((application) => (
-                    <Grid.Col
-                        span={{ base: 12, md: 6, lg: 4 }}
-                        key={application.id}
-                    >
-                        <Paper
-                            withBorder
-                            p="md"
-                            radius="md"
-                            className="hover:shadow-md transition-shadow"
-                            h={'180px'}
-                        >
-                            <Group justify="space-between" align="flex-start">
-                                <div className="flex-1">
-                                    <Group justify="space-between" mb="xs">
-                                        <Title order={4}>
-                                            {application.job.title}
-                                        </Title>
-                                        <Badge
-                                            color={getStatusColor(
-                                                application.status,
-                                            )}
-                                        >
-                                            {application.status}
-                                        </Badge>
-                                    </Group>
-                                    <Text size="sm" c="dimmed" mb="xs">
-                                        {application.job.organization.name}
-                                    </Text>
-                                    <Group gap="xs" mb="xs">
-                                        <Badge variant="light" color="blue">
-                                            {application.job.type}
-                                        </Badge>
-                                        <Badge variant="light" color="grape">
-                                            {application.job.experianceLevel}
-                                        </Badge>
-                                        <Badge variant="light" color="teal">
-                                            {application.job.workPlace ||
-                                                'Remote'}
-                                        </Badge>
-                                    </Group>
-                                    <Text size="sm" c="dimmed">
-                                        Applied on:{' '}
-                                        {application.createdAt
-                                            ? new Date(
-                                                  application.createdAt || '',
-                                              ).toLocaleDateString()
-                                            : 'N/A'}
-                                    </Text>
-                                </div>
-                                <Button
-                                    variant="light"
-                                    color="primary"
-                                    onClick={() =>
-                                        router.push(
-                                            `/jobs/${application.job.id}`,
-                                        )
-                                    }
-                                    size="xs"
-                                >
-                                    View Details
-                                </Button>
-                            </Group>
-                        </Paper>
-                    </Grid.Col>
-                ))}
-            </Grid>
-        </Stack>
     );
 }

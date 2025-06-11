@@ -1,65 +1,27 @@
 import { fetcher } from '@shega/shared';
-import type { jobTypes } from 'constants/job-type';
-
 export type FetchJob = {
     search: string;
     page: number;
     limit: number;
 };
 
+export type ResponseItem = {
+    id: string;
+    createdDate: string;
+    postedDate: string;
+    status: string;
+    title: string;
+    description: string;
+    note: string;
+    isPublished: boolean;
+    applied: boolean;
+    saved: boolean;
+    programId: string;
+    experianceLevel: string;
+};
+
 export type Response = {
-    data: Array<{
-        experianceLevel: string;
-        id: string;
-        isActive: boolean;
-        title: string;
-        description: string;
-        type: keyof typeof jobTypes;
-        salaryFrom: number;
-        salaryTo: number;
-        status: string;
-        currency: string;
-        createdAt: string;
-        applied: boolean;
-        createdDate: string;
-        postedDate: string | null;
-        saved: boolean;
-        programId: string;
-        organization: {
-            id: string;
-            isActive: boolean;
-            name: string;
-            description: null;
-            tinNumber: null;
-            displayName: null;
-            hasBranches: boolean;
-        };
-        postedBy: {
-            id: string;
-            isActive: boolean;
-            type: string;
-            employee: {
-                id: string;
-                isActive: boolean;
-                id_number: null;
-                profile: {
-                    id: string;
-                    isActive: boolean;
-                    firstName: string;
-                    middleName: string;
-                    lastName: string;
-                    mothersFullName: null;
-                    birthDate: null;
-                    dobGregorian: null;
-                    gender: null;
-                    marriageStatus: null;
-                    title: null;
-                    phoneNumber: null;
-                    profile_picture_id: null;
-                };
-            };
-        };
-    }>;
+    data: Array<ResponseItem>;
     total: number;
     limit: number;
     page: number;
@@ -113,7 +75,7 @@ export const fetchJobs = async (data: Filter) => {
         {} as Record<string, any>,
     );
 
-    const response = await fetcher('/job-seeker/jobs', {
+    const response = await fetcher('/job-seeker/programs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cleanedData),
@@ -143,5 +105,5 @@ export const fetchSavedJobs = async () => {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
-    return response as Response;
+    return response as Array<ResponseItem>;
 };

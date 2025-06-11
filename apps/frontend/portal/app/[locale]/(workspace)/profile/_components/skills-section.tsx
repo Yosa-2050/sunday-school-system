@@ -31,7 +31,7 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
             <Card shadow="sm" withBorder>
                 <Stack gap="md">
                     <Group justify="space-between">
-                        <Title order={4}>
+                        <Title order={4} className="flex items-center gap-2">
                             Skills <Badge>{skills.length}</Badge>
                         </Title>
                         <ActionIcon

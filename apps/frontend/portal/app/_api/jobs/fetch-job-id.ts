@@ -53,7 +53,7 @@ interface JobDescription {
     type: string;
 }
 
-interface Job {
+export interface Job {
     workPlace: string;
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     responsibilities: any;
@@ -74,10 +74,11 @@ interface Job {
     jobDescriptions: JobDescription[];
     applied: boolean;
     programId: string;
+    saved: boolean;
 }
 
 export const fetchJobsById = async (id: string): Promise<Job> => {
-    const response: Job = await fetcher(`/job-seeker/job/${id}`, {
+    const response: Job = await fetcher(`/job-seeker/program/${id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
