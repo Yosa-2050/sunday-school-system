@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
@@ -20,7 +21,6 @@ import { Country } from './entities/country.entity';
 import { Location } from './entities/location.entity';
 import { ContactType } from './enums/contact-type.enums';
 import { DefaultCountry } from './enums/location.const';
-import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 
 @Injectable()
 export class AddressService {
