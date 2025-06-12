@@ -20,6 +20,7 @@ import { Country } from './entities/country.entity';
 import { Location } from './entities/location.entity';
 import { ContactType } from './enums/contact-type.enums';
 import { DefaultCountry } from './enums/location.const';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 
 @Injectable()
 export class AddressService {
@@ -64,7 +65,43 @@ export class AddressService {
         }
 
         this.create(createAddressDto, reference, referenceType);
-        this.createLocation(request.location, reference, referenceType);
+
+        return UtilityServices.EnsureCreated(reference);
+    }
+
+    async updateContactDetails(
+        request: ContactDetailsRequest,
+        reference: string,
+        referenceType: ReferenceType,
+    ) {
+        await this.addressRepo.delete({reference: reference, referenceType: referenceType});
+        const createAddressDto = [];
+        const emails = request.emailAddress?.map((x) => ({
+            ...x,
+            contactType: ContactType.Email,
+        }));
+
+        const phones = request.phoneNumbers?.map((x) => ({
+            ...x,
+            contactType: ContactType.Phone,
+        }));
+
+        const other = request.otherAddress?.map((x) => ({
+            ...x,
+            contactType: ContactType.Other,
+        }));
+
+        if (emails) {
+            createAddressDto.push(...emails);
+        }
+        if (phones) {
+            createAddressDto.push(...phones);
+        }
+        if (other) {
+            createAddressDto.push(...other);
+        }
+
+        this.create(createAddressDto, reference, referenceType);
 
         return UtilityServices.EnsureCreated(reference);
     }
@@ -85,6 +122,39 @@ export class AddressService {
         });
 
         return this.locationRepo.save(locations);
+    }
+
+    async updateLocation(
+        request: LocationModel,
+        locationId: string,
+    ) {
+        const location = await this.locationRepo.findOneBy({id: locationId});
+
+        if(!location){
+            throw new EntityNotFoundException("Location");
+        }
+        
+        location.locationData = instanceToPlain(request);
+        location.isPreferred = request.isPreferred;
+        location.addressType = request.addressType;
+
+        return this.locationRepo.save(location);
+    }
+
+    async updateContactDetail(
+        request: IndividualAddressDto,
+        id: string,
+    ) {
+        const address = await this.addressRepo.findOneBy({id});
+
+        if(!address){
+            throw new EntityNotFoundException("Address");
+        }
+        
+        address.isPreferred = request.isPreferred;
+        address.value = request.value;
+
+        return this.addressRepo.save(address);
     }
 
     create(
@@ -145,14 +215,27 @@ export class AddressService {
         return `This action updates a #${id} address`;
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} address`;
+    async removeLocation(id: string) {
+        const remove = await this.locationRepo.delete({id});
+        return UtilityServices.EnsureDeleted(remove, id);
     }
+
+    async removeContact(id: string) {
+        const remove = await this.addressRepo.delete({id});
+        return UtilityServices.EnsureDeleted(remove, id);
+    }
+
+    async removeContactByReferenceId(referenceId: string, referenceType: ReferenceType) {
+        const remove = await this.addressRepo.delete({reference: referenceId, referenceType: referenceType});
+        return UtilityServices.EnsureDeleted(remove, referenceId);
+
+    }
+
     findAddressByReferenceId(referenceId: string) {
         return this.addressRepo.findBy({ reference: referenceId });
     }
-    findLocationById(id: string) {
-        return this.locationRepo.findOneBy({ id });
+    async findLocationById(id: string) {
+        return UtilityServices.SuccessDataResponseIfExists(await this.locationRepo.findOneBy({ id }), id, "Location");
     }
 
     findAddressById(id: string) {

@@ -3,6 +3,8 @@ import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ContactType } from '@shega/location/enums/contact-type.enums';
 import { ContactDetailsType } from '@shega/location/enums/contanct-details.type.enum';
+import { EmalAddressType } from '@shega/location/enums/email-type.enums';
+import { PhoneTypes } from '@shega/location/enums/phone-type.enums';
 import { Type } from 'class-transformer';
 import {
     IsArray,
@@ -14,9 +16,6 @@ import {
 } from 'class-validator';
 
 export class IndividualAddressDto {
-    @ApiProperty()
-    @IsEnum(ContactDetailsType)
-    type: ContactDetailsType;
 
     contactType: ContactType;
 
@@ -27,6 +26,24 @@ export class IndividualAddressDto {
     @ApiProperty()
     @IsBoolean()
     isPreferred: boolean;
+}
+
+export class EmailAddressDto extends IndividualAddressDto{
+    @ApiProperty()
+    @IsEnum(EmalAddressType)
+    type: EmalAddressType;
+}
+
+export class PhoneNumberDto extends IndividualAddressDto{
+    @ApiProperty()
+    @IsEnum(PhoneTypes)
+    type: PhoneTypes;
+}
+
+export class OtherAddressDto extends IndividualAddressDto{
+    @ApiProperty()
+    @IsEnum(ContactDetailsType)
+    type: ContactDetailsType;
 }
 
 export class CreateAddressDto {

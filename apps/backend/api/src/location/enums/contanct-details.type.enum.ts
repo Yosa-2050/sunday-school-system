@@ -1,6 +1,5 @@
 export enum ContactDetailsType {
-    Mobile = 'Mobile',
-    Home = 'Home',
-    Email = 'Email',
+    Facebook = 'Facebook',
+    Website = 'Website',
     Default = 'Default',
 }
