@@ -1,4 +1,4 @@
-export enum PhoneTypes{
-    Mobile = "Mobile",
-    Home = "Home"
+export enum PhoneTypes {
+    Mobile = 'Mobile',
+    Home = 'Home',
 }

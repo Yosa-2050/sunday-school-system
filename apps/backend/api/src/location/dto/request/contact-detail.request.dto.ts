@@ -2,7 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsDefined, ValidateNested } from 'class-validator';
 import { LocationModel } from '../model/location.model';
-import { EmailAddressDto, OtherAddressDto, PhoneNumberDto } from './create-address.dto';
+import {
+    EmailAddressDto,
+    OtherAddressDto,
+    PhoneNumberDto,
+} from './create-address.dto';
 
 export class ContactDetailsRequest {
     @IsDefined()
@@ -25,7 +29,6 @@ export class ContactDetailsRequest {
     @ValidateNested({})
     @Type(() => OtherAddressDto)
     otherAddress: OtherAddressDto[];
-
 }
 
 export class LocationListRequest {

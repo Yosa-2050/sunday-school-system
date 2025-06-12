@@ -16,7 +16,6 @@ import {
 } from 'class-validator';
 
 export class IndividualAddressDto {
-
     contactType: ContactType;
 
     @ApiProperty()
@@ -28,19 +27,19 @@ export class IndividualAddressDto {
     isPreferred: boolean;
 }
 
-export class EmailAddressDto extends IndividualAddressDto{
+export class EmailAddressDto extends IndividualAddressDto {
     @ApiProperty()
     @IsEnum(EmalAddressType)
     type: EmalAddressType;
 }
 
-export class PhoneNumberDto extends IndividualAddressDto{
+export class PhoneNumberDto extends IndividualAddressDto {
     @ApiProperty()
     @IsEnum(PhoneTypes)
     type: PhoneTypes;
 }
 
-export class OtherAddressDto extends IndividualAddressDto{
+export class OtherAddressDto extends IndividualAddressDto {
     @ApiProperty()
     @IsEnum(ContactDetailsType)
     type: ContactDetailsType;

@@ -59,8 +59,7 @@ export class UtilityServices {
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     static SuccessDataResponseIfExists(data?: any, id?: string, type?: string) {
-
-        if(!data){
+        if (!data) {
             throw new EntityNotFoundException(type, id);
         }
         return UtilityServices.SuccessDataResponse(data);

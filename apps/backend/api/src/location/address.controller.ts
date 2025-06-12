@@ -15,7 +15,10 @@ import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from './address.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ContactDetailsRequest, LocationListRequest } from './dto/request/contact-detail.request.dto';
+import {
+    ContactDetailsRequest,
+    LocationListRequest,
+} from './dto/request/contact-detail.request.dto';
 import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LocationModel } from './dto/model/location.model';
@@ -28,14 +31,24 @@ import { IndividualAddressDto } from './dto/request/create-address.dto';
 export class AddressController {
     constructor(private readonly addressService: AddressService) {}
 
-    @Post("location/:referenceId/:referenceType")
-    createLocation(@Body() request: LocationListRequest, @Param('referenceId') referenceId: string,
-    @Param('referenceType') referenceType: ReferenceType) {
-        return this.addressService.createLocation(request.location, referenceId, referenceType);
+    @Post('location/:referenceId/:referenceType')
+    createLocation(
+        @Body() request: LocationListRequest,
+        @Param('referenceId') referenceId: string,
+        @Param('referenceType') referenceType: ReferenceType,
+    ) {
+        return this.addressService.createLocation(
+            request.location,
+            referenceId,
+            referenceType,
+        );
     }
 
-    @Patch("location/:locationId")
-    updateLocation(@Body() request: LocationModel, @Param('locationId') referenceId: string) {
+    @Patch('location/:locationId')
+    updateLocation(
+        @Body() request: LocationModel,
+        @Param('locationId') referenceId: string,
+    ) {
         return this.addressService.updateLocation(request, referenceId);
     }
 
@@ -49,20 +62,37 @@ export class AddressController {
         return this.addressService.removeLocation(id);
     }
 
-    @Post("contacts/:referenceId/:referenceType")
-    createContactDetails(@Param('referenceId') referenceId: string,
-    @Param('referenceType') referenceType: ReferenceType,@Body() request: ContactDetailsRequest) {
-        return this.addressService.createContactDetails(request, referenceId, referenceType);
+    @Post('contacts/:referenceId/:referenceType')
+    createContactDetails(
+        @Param('referenceId') referenceId: string,
+        @Param('referenceType') referenceType: ReferenceType,
+        @Body() request: ContactDetailsRequest,
+    ) {
+        return this.addressService.createContactDetails(
+            request,
+            referenceId,
+            referenceType,
+        );
     }
 
-    @Put("contacts/:referenceId/:referenceType")
-    updateContactDetails(@Param('referenceId') referenceId: string,
-    @Param('referenceType') referenceType: ReferenceType,@Body() request: ContactDetailsRequest) {
-        return this.addressService.updateContactDetails(request, referenceId, referenceType);
+    @Put('contacts/:referenceId/:referenceType')
+    updateContactDetails(
+        @Param('referenceId') referenceId: string,
+        @Param('referenceType') referenceType: ReferenceType,
+        @Body() request: ContactDetailsRequest,
+    ) {
+        return this.addressService.updateContactDetails(
+            request,
+            referenceId,
+            referenceType,
+        );
     }
 
-    @Patch("contacts/:id")
-    updateContactDetail(@Body() request: IndividualAddressDto, @Param('id') id: string) {
+    @Patch('contacts/:id')
+    updateContactDetail(
+        @Body() request: IndividualAddressDto,
+        @Param('id') id: string,
+    ) {
         return this.addressService.updateContactDetail(request, id);
     }
 
@@ -83,8 +113,13 @@ export class AddressController {
     }
 
     @Delete('contactsByReference/:referenceId/:referenceType')
-    removecantactDetailsByReference(@Param('referenceId') referenceId: string,
-    @Param('referenceType') referenceType: ReferenceType,) {
-        return this.addressService.removeContactByReferenceId(referenceId, referenceType);
+    removecantactDetailsByReference(
+        @Param('referenceId') referenceId: string,
+        @Param('referenceType') referenceType: ReferenceType,
+    ) {
+        return this.addressService.removeContactByReferenceId(
+            referenceId,
+            referenceType,
+        );
     }
 }

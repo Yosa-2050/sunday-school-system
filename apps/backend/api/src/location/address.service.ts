@@ -74,7 +74,10 @@ export class AddressService {
         reference: string,
         referenceType: ReferenceType,
     ) {
-        await this.addressRepo.delete({reference: reference, referenceType: referenceType});
+        await this.addressRepo.delete({
+            reference: reference,
+            referenceType: referenceType,
+        });
         const createAddressDto = [];
         const emails = request.emailAddress?.map((x) => ({
             ...x,
@@ -124,16 +127,13 @@ export class AddressService {
         return this.locationRepo.save(locations);
     }
 
-    async updateLocation(
-        request: LocationModel,
-        locationId: string,
-    ) {
-        const location = await this.locationRepo.findOneBy({id: locationId});
+    async updateLocation(request: LocationModel, locationId: string) {
+        const location = await this.locationRepo.findOneBy({ id: locationId });
 
-        if(!location){
-            throw new EntityNotFoundException("Location");
+        if (!location) {
+            throw new EntityNotFoundException('Location');
         }
-        
+
         location.locationData = instanceToPlain(request);
         location.isPreferred = request.isPreferred;
         location.addressType = request.addressType;
@@ -141,16 +141,13 @@ export class AddressService {
         return this.locationRepo.save(location);
     }
 
-    async updateContactDetail(
-        request: IndividualAddressDto,
-        id: string,
-    ) {
-        const address = await this.addressRepo.findOneBy({id});
+    async updateContactDetail(request: IndividualAddressDto, id: string) {
+        const address = await this.addressRepo.findOneBy({ id });
 
-        if(!address){
-            throw new EntityNotFoundException("Address");
+        if (!address) {
+            throw new EntityNotFoundException('Address');
         }
-        
+
         address.isPreferred = request.isPreferred;
         address.value = request.value;
 
@@ -216,26 +213,35 @@ export class AddressService {
     }
 
     async removeLocation(id: string) {
-        const remove = await this.locationRepo.delete({id});
+        const remove = await this.locationRepo.delete({ id });
         return UtilityServices.EnsureDeleted(remove, id);
     }
 
     async removeContact(id: string) {
-        const remove = await this.addressRepo.delete({id});
+        const remove = await this.addressRepo.delete({ id });
         return UtilityServices.EnsureDeleted(remove, id);
     }
 
-    async removeContactByReferenceId(referenceId: string, referenceType: ReferenceType) {
-        const remove = await this.addressRepo.delete({reference: referenceId, referenceType: referenceType});
+    async removeContactByReferenceId(
+        referenceId: string,
+        referenceType: ReferenceType,
+    ) {
+        const remove = await this.addressRepo.delete({
+            reference: referenceId,
+            referenceType: referenceType,
+        });
         return UtilityServices.EnsureDeleted(remove, referenceId);
-
     }
 
     findAddressByReferenceId(referenceId: string) {
         return this.addressRepo.findBy({ reference: referenceId });
     }
     async findLocationById(id: string) {
-        return UtilityServices.SuccessDataResponseIfExists(await this.locationRepo.findOneBy({ id }), id, "Location");
+        return UtilityServices.SuccessDataResponseIfExists(
+            await this.locationRepo.findOneBy({ id }),
+            id,
+            'Location',
+        );
     }
 
     findAddressById(id: string) {

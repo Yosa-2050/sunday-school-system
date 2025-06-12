@@ -1,3 +1,3 @@
-export enum EmalAddressType{
-    Communication = "Communication"
+export enum EmalAddressType {
+    Communication = 'Communication',
 }
