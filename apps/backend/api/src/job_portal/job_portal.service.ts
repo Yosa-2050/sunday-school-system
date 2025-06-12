@@ -285,7 +285,7 @@ export class JobPortalService {
             .leftJoinAndSelect('mentor.profile', 'profile')
             .where('program.id = :id', { id })
             .getOne();
-        
+
         if (!mentorship) {
             throw new EntityNotFoundException('Mentorship');
         }
