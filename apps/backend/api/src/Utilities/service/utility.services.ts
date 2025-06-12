@@ -1,6 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { EntityNotFoundException } from '../ExceptionHandlers/Exceptions/notfound.exception';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class UtilityServices {
@@ -54,5 +55,13 @@ export class UtilityServices {
             data: data,
             sucess: true,
         };
+    }
+
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static SuccessDataResponseIfExists(data?: any, id?: string, type?: string) {
+        if (!data) {
+            throw new EntityNotFoundException(type, id);
+        }
+        return UtilityServices.SuccessDataResponse(data);
     }
 }
