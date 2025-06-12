@@ -272,7 +272,7 @@ export class JobPortalService {
     }
 
     async findOneMentorshipByProgramId(id: string) {
-        const program = await this.mentorshipRepo
+        const mentorship = await this.mentorshipRepo
             .createQueryBuilder('mentorship')
             .leftJoinAndSelect('mentorship.program', 'program')
             .leftJoinAndSelect('program.jobCategory', 'jobCategory')
@@ -285,11 +285,20 @@ export class JobPortalService {
             .leftJoinAndSelect('mentor.profile', 'profile')
             .where('program.id = :id', { id })
             .getOne();
-        if (!program) {
+
+        if (!mentorship) {
             throw new EntityNotFoundException('Mentorship');
         }
 
-        return program;
+        const { program, ...restOfMentorship } = mentorship;
+
+        const flattened = {
+            ...restOfMentorship,
+            mentorshipId: mentorship?.id,
+            programId: program?.id,
+            ...(program ?? {}),
+        };
+        return flattened;
     }
 
     async findOneProgramForJobSeeker(id: string, applicantId: string) {
