@@ -12,7 +12,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
-import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from './address.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -25,7 +24,6 @@ import {
 // biome-ignore lint/style/useImportType: <explanation>
 import { IndividualAddressDto } from './dto/request/create-address.dto';
 
-@Public()
 @ApiTags('address')
 @Controller('address')
 export class AddressController {
