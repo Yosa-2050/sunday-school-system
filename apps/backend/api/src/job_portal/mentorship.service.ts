@@ -434,6 +434,7 @@ export class MentorshipService {
                 cityId: filter.cityId,
             });
         }
+        query.orderBy('program.postedDate', 'DESC');
 
         let programsApplied: string[] = null;
         if (applicantId) {
