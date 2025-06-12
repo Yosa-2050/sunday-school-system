@@ -2,9 +2,22 @@
 
 import { useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Group, PasswordInput, Stack, Title } from '@mantine/core';
+import {
+    Box,
+    Button,
+    Checkbox,
+    Group,
+    Modal,
+    PasswordInput,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
+import { PrivacyPolicy } from 'app/[locale]/(module)/_components/PrivacyPolicy';
+import { TermsAndConditions } from 'app/[locale]/(module)/_components/TermsAndCondition';
 import { changePassword } from 'app/[locale]/_api/auth/sign-up';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
@@ -37,6 +50,10 @@ const changePasswordSchema = z
 type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
 
 const ChangePassword = ({ userId }: { userId: string }) => {
+    const [opened, { open, close }] = useDisclosure(false);
+    const [termOpened, { open: openTerm, close: closeTerm }] =
+        useDisclosure(false);
+
     const t = useTranslations('auth.changePassword');
 
     const {
@@ -91,72 +108,132 @@ const ChangePassword = ({ userId }: { userId: string }) => {
     const isButtonDisabled = !(newPasswordValue && confirmPasswordValue);
 
     return (
-        <Box className="flex w-1/2 items-center justify-center bg-white">
-            <div className="relative w-full p-8">
-                <Stack>
-                    <Title order={2} ta="center" mb={'lg'}>
-                        {t('title')}
-                    </Title>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <Stack>
-                            <PasswordInput
-                                label="Old Password"
-                                placeholder="Enter your old password"
-                                {...register('oldPassword')}
-                                error={errors.oldPassword?.message}
-                            />
-                            <PasswordInput
-                                label={t('newPassword')}
-                                placeholder="Enter a new password"
-                                {...register('newPassword')}
-                                error={errors.newPassword?.message}
-                                styles={{
-                                    input: {
-                                        borderColor: 'rgba(204, 204, 204, 1)',
-                                        '&:focus, &:focus-within': {
+        <>
+            <PrivacyModal opened={opened} close={close} />
+            <TermsModal opened={termOpened} close={closeTerm} />
+            <Box className="flex w-1/2 items-center justify-center bg-white">
+                <div className="relative w-full p-8">
+                    <Stack>
+                        <Title order={2} ta="center" mb={'lg'}>
+                            {t('title')}
+                        </Title>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <Stack>
+                                <PasswordInput
+                                    label="Old Password"
+                                    placeholder="Enter your old password"
+                                    {...register('oldPassword')}
+                                    error={errors.oldPassword?.message}
+                                />
+                                <PasswordInput
+                                    label={t('newPassword')}
+                                    placeholder="Enter a new password"
+                                    {...register('newPassword')}
+                                    error={errors.newPassword?.message}
+                                    styles={{
+                                        input: {
                                             borderColor:
-                                                'rgba(19, 158, 123, 1)',
-                                            outline: 'none',
-                                            boxShadow:
-                                                '0 0 0 1px rgba(19, 158, 123, 1)',
+                                                'rgba(204, 204, 204, 1)',
+                                            '&:focus, &:focus-within': {
+                                                borderColor:
+                                                    'rgba(19, 158, 123, 1)',
+                                                outline: 'none',
+                                                boxShadow:
+                                                    '0 0 0 1px rgba(19, 158, 123, 1)',
+                                            },
                                         },
-                                    },
-                                }}
-                            />
-                            <PasswordInput
-                                label={t('confirmPassword')}
-                                placeholder="Confirm your new password"
-                                {...register('confirmPassword')}
-                                error={errors.confirmPassword?.message}
-                                styles={{
-                                    input: {
-                                        borderColor: 'rgba(204, 204, 204, 1)',
-                                        '&:focus, &:focus-within': {
+                                    }}
+                                />
+                                <PasswordInput
+                                    label={t('confirmPassword')}
+                                    placeholder="Confirm your new password"
+                                    {...register('confirmPassword')}
+                                    error={errors.confirmPassword?.message}
+                                    styles={{
+                                        input: {
                                             borderColor:
-                                                'rgba(19, 158, 123, 1)',
-                                            outline: 'none',
-                                            boxShadow:
-                                                '0 0 0 1px rgba(19, 158, 123, 1)',
+                                                'rgba(204, 204, 204, 1)',
+                                            '&:focus, &:focus-within': {
+                                                borderColor:
+                                                    'rgba(19, 158, 123, 1)',
+                                                outline: 'none',
+                                                boxShadow:
+                                                    '0 0 0 1px rgba(19, 158, 123, 1)',
+                                            },
                                         },
-                                    },
-                                }}
-                            />
-                            <Group w={'100%'} justify="center" mt={'lg'}>
-                                <Button
-                                    type="submit"
-                                    loading={isPending}
-                                    disabled={isButtonDisabled}
-                                    className="w-full rounded-md bg-teal-600 px-4 py-2 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                                >
-                                    {t('proccedBtn')}
-                                </Button>
-                            </Group>
-                        </Stack>
-                    </form>
-                </Stack>
-            </div>
-        </Box>
+                                    }}
+                                />
+                                <Group w={'100%'} justify="center" mt={'lg'}>
+                                    <Checkbox
+                                        size="xs"
+                                        label={
+                                            <Text className="flex items-center gap-1.5">
+                                                I agree to the{' '}
+                                                <Text
+                                                    className="cursor-pointer"
+                                                    c="primary.4"
+                                                    onClick={openTerm}
+                                                >
+                                                    {t('terms')}
+                                                </Text>
+                                                and{' '}
+                                                <Text
+                                                    className="cursor-pointer"
+                                                    c="primary.4"
+                                                    onClick={open}
+                                                >
+                                                    {t('privacy')}
+                                                </Text>
+                                            </Text>
+                                        }
+                                        type="checkbox"
+                                    />
+                                    <Button
+                                        type="submit"
+                                        loading={isPending}
+                                        disabled={isButtonDisabled}
+                                        className="w-full rounded-md bg-teal-600 px-4 py-2 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                                    >
+                                        {t('proccedBtn')}
+                                    </Button>
+                                </Group>
+                            </Stack>
+                        </form>
+                    </Stack>
+                </div>
+            </Box>
+        </>
     );
 };
 
 export default ChangePassword;
+
+type PrivacyModalProps = {
+    close: () => void;
+    opened: boolean;
+};
+const PrivacyModal = ({ close, opened }: PrivacyModalProps) => {
+    return (
+        <Modal
+            opened={opened}
+            onClose={close}
+            title="Privacy Policy"
+            size="50%"
+        >
+            <PrivacyPolicy />
+        </Modal>
+    );
+};
+
+const TermsModal = ({ close, opened }: PrivacyModalProps) => {
+    return (
+        <Modal
+            opened={opened}
+            onClose={close}
+            title="Terms of Service"
+            size="50%"
+        >
+            <TermsAndConditions />
+        </Modal>
+    );
+};

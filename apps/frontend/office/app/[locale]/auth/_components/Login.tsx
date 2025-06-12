@@ -22,7 +22,7 @@ import {
 } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import { useMutation } from '@tanstack/react-query';
-import { login } from 'app/[locale]/_api/auth/login';
+import { type Data, login } from 'app/[locale]/_api/auth/login';
 import { getUserAction } from 'app/[locale]/_api/get-user-action';
 import { setCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
@@ -55,6 +55,73 @@ const Login = () => {
         formState: { errors },
     } = useForm({ resolver: zodResolver(schema) });
 
+    const updateSetUser = ({
+        data,
+        user,
+    }: { data: Data; user: { id: string; createdBy: string } }) => {
+        setUser({
+            ...user,
+            role: data.role as
+                | 'administrator'
+                | 'work_provider'
+                | 'super_admin'
+                | 'mentor',
+            id: user.id ?? '',
+            createdBy: user.createdBy ?? '',
+        });
+    };
+
+    const handleRole = (
+        role: 'administrator' | 'work_provider' | 'super_admin' | 'mentor',
+    ) => {
+        if (role === 'administrator') {
+            router.push('/admin/dashboard');
+        } else if (role === 'work_provider') {
+            router.push('/work-provider/jobs');
+        } else if (role === 'super_admin') {
+            router.push('/admin/dashboard');
+        } else if (role === 'mentor') {
+            router.push('/mentor/mentorship');
+        }
+    };
+
+    const updateCookies = (data: Data) => {
+        setCookie('organization_id', data?.details?.organizationId);
+        setCookie('role', data.role);
+        setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
+            maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
+        });
+        setCookie(COOKIE_REFRESH_TOKEN, data.access_token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
+        });
+    };
+
+    const handleLogin = async ({ data }: { data: Data }) => {
+        try {
+            if (data.pwdChangeRequired) {
+                router.push(`/auth/change-password/${data.id}`);
+            } else {
+                const user = await getUserAction(data.access_token);
+                if (!user) {
+                    notifications.show({
+                        title: 'Error',
+                        message: t('loginFailed'),
+                        color: 'red',
+                    });
+                }
+                if (user) {
+                    updateSetUser({ data, user });
+                    handleRole(data.role);
+                    updateCookies(data);
+                }
+            }
+        } catch (error) {
+            logger.error('Error processing login success:', error);
+        }
+    };
+
     const loginMutation = useMutation({
         mutationFn: login,
         onError: () => {
@@ -64,58 +131,7 @@ const Login = () => {
                 color: 'red',
             });
         },
-        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
-        onSuccess: async ({ data }) => {
-            try {
-                if (data.pwdChangeRequired) {
-                    router.push(`/auth/change-password/${data.id}`);
-                } else {
-                    logger.log(data);
-
-                    setCookie('organization_id', data?.details?.organizationId);
-                    const user = await getUserAction(data.access_token);
-                    if (!user) {
-                        notifications.show({
-                            title: 'Error',
-                            message: t('loginFailed'),
-                            color: 'red',
-                        });
-                    }
-                    if (user) {
-                        setUser({
-                            ...user,
-                            role: data.role as
-                                | 'administrator'
-                                | 'work_provider'
-                                | 'super_admin'
-                                | 'mentor',
-                            id: user.id ?? '',
-                            createdBy: user.createdBy ?? '',
-                        });
-                        if (data.role === 'administrator') {
-                            router.push('/admin/dashboard');
-                        } else if (data.role === 'work_provider') {
-                            router.push('/work-provider/jobs');
-                        } else if (data.role === 'super_admin') {
-                            router.push('/admin/dashboard');
-                        } else if (data.role === 'mentor') {
-                            router.push('/mentor/mentorship');
-                        }
-                        setCookie('role', data.role);
-                        setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
-                            maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
-                        });
-                        setCookie(COOKIE_REFRESH_TOKEN, data.access_token, {
-                            httpOnly: true,
-                            secure: true,
-                            maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
-                        });
-                    }
-                }
-            } catch (error) {
-                logger.error('Error processing login success:', error);
-            }
-        },
+        onSuccess: handleLogin,
     });
 
     const onSubmit = (values: { email: string; password: string }) => {

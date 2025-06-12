@@ -4,12 +4,12 @@ import type { User } from '@shega/shared';
 import { type ReactNode, createContext, useContext, useState } from 'react';
 
 type AuthContextType = {
-    user?: User;
-    setUser: (user?: User) => void;
+    user?: Partial<User>;
+    setUser: (user?: Partial<User>) => void;
 };
 
 type AuthProviderProps = {
-    user?: User;
+    user?: Partial<User>;
     children: ReactNode;
 };
 
@@ -25,7 +25,7 @@ export function AuthProvider({
     user: initialUser,
     children,
 }: AuthProviderProps) {
-    const [user, setUser] = useState<User | undefined>(initialUser);
+    const [user, setUser] = useState<Partial<User> | undefined>(initialUser);
 
     return (
         <AuthContext.Provider value={{ user, setUser }}>

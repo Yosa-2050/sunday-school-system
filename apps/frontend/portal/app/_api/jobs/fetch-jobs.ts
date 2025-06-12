@@ -100,10 +100,13 @@ export const unlikeJob = async (programId: string) => {
     return response as { success: boolean; message: string };
 };
 
-export const fetchSavedJobs = async () => {
-    const response = await fetcher('/job-seeker/getSavedPrograms', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    });
-    return response as Array<ResponseItem>;
+export const fetchSavedJobs = async (payload: Pagination) => {
+    const response = await fetcher(
+        `/job-seeker/getSavedPrograms?page=${payload.page}&limit=${payload.limit}`,
+        {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        },
+    );
+    return response as Response;
 };
