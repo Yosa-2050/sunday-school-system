@@ -15,6 +15,8 @@
             "**/node_modules/**",
             "./packages/ui/index.ts",
             "./packages/shared/src/index.ts",
+            "./apps/frontend/office/app/globals.css",
+            "./apps/frontend/portal/app/globals.css",
             "**/*.*.spec.ts",
             "./apps/backend/api/src/main.ts"
         ]

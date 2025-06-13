@@ -201,7 +201,10 @@ export function SideMenu({
     role: 'super_admin' | 'administrator' | 'work_provider';
 }) {
     return (
-        <ScrollArea className="w-full px-4 py-4" scrollHideDelay={500}>
+        <ScrollArea
+            className="w-full px-4 py-4 overflow-x-hidden"
+            scrollHideDelay={500}
+        >
             <ul>
                 {menu.map((group, index) => {
                     if (group.role === role) {

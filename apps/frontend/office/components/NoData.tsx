@@ -1,44 +1,51 @@
-import { Button, Center, Image, Stack, Text } from '@mantine/core';
-import { IconMoodSad } from '@tabler/icons-react';
-
-interface NoDataProps {
-    title?: string;
-    message?: string;
-    actionText?: string;
-    onActionClick?: () => void;
-}
+import { Box, Text } from '@mantine/core';
+import { IconFoldersFilled } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
+import { cn } from 'utilies/cn';
 
 export default function NoData({
-    title = 'No Data Available',
-    message = 'There is nothing to display here.',
-    actionText,
-    onActionClick,
-}: NoDataProps) {
+    entity,
+    header,
+    subHeader,
+    children,
+    className,
+}: {
+    entity?: string;
+    header?: React.ReactNode;
+    subHeader?: React.ReactNode;
+    children?: React.ReactNode;
+    className?: string;
+}) {
+    const t = useTranslations('ui');
     return (
-        <Center style={{ height: '100%', width: '100%' }}>
-            <Stack align="center" gap="md">
-                <Image
-                    src="/empty.svg" // Replace with an actual image or illustration
-                    alt="No data"
-                    width={150}
-                    height={150}
-                    style={{ opacity: 0.7 }}
+        <Box
+            className={cn(
+                'flex flex-col max-h-screen min-h-[250px] items-center justify-center',
+                className,
+            )}
+        >
+            <div className="mb-4 flex justify-center">
+                <IconFoldersFilled
+                    size={60}
+                    color="var(--primary-color-2)"
+                    stroke={1.5}
                 />
-                <Text size="xl" fw={600} c="dimmed">
-                    {title}
-                </Text>
-                <Text size="sm" c="gray.6">
-                    {message}
-                </Text>
-                {actionText && onActionClick && (
-                    <Button
-                        onClick={onActionClick}
-                        leftSection={<IconMoodSad size={18} />}
-                    >
-                        {actionText}
-                    </Button>
-                )}
-            </Stack>
-        </Center>
+            </div>
+            <div className="flex flex-col items-center justify-center text-center">
+                <div className="text-2xl font-semibold text-gray-600">
+                    {header ? header : <Text size="xs">No Data Available</Text>}
+                </div>
+                <div className="text-gray-500 text-center">
+                    {subHeader ? (
+                        subHeader
+                    ) : (
+                        <span className="space-x-2">
+                            <Text size="xs">There is no data available</Text>
+                        </span>
+                    )}
+                </div>
+            </div>
+            <div className="mt-4">{children}</div>
+        </Box>
     );
 }

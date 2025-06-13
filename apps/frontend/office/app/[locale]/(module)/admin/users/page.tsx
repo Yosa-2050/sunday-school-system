@@ -441,7 +441,7 @@ const UsersPage = () => {
                         withRowBorders
                         withColumnBorders
                         striped
-                        verticalSpacing="md"
+                        verticalSpacing="xs"
                     >
                         <Table.Thead>
                             <Table.Tr>
@@ -512,7 +512,7 @@ const UsersPage = () => {
                                     <Table.Td>
                                         {DateTime.fromISO(
                                             user.createdDate ?? '',
-                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                        ).toFormat('dd-mm-yyyy')}
                                     </Table.Td>
                                     <Table.Td>
                                         <Pill
