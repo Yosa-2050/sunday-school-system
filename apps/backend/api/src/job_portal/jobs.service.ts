@@ -82,14 +82,14 @@ export class JobsService {
             throw new BadRequestException('User can not apply');
         }
         const existingApp = await this.programsRepo.findOneBy({
-             id: programId,
-            applications: { applicants:{id: applicant.id} },
+            id: programId,
+            applications: { applicants: { id: applicant.id } },
         });
         if (existingApp) {
             throw new BadRequestException('Already applied for the job');
         }
 
-        const program = await this.programsRepo.findOneBy({id: programId});
+        const program = await this.programsRepo.findOneBy({ id: programId });
 
         if (!program) {
             throw new EntityNotFoundException('Program');
@@ -103,8 +103,11 @@ export class JobsService {
         if (savedJobApplication) {
             //send email
             const dateToday = new Date();
-            const {content, subject} =
-                await this.GetJobTemplate(applicant, program, dateToday);
+            const { content, subject } = await this.GetJobTemplate(
+                applicant,
+                program,
+                dateToday,
+            );
 
             const user = await this.profileService.findUserByProfileId(
                 applicant.profile.id,
@@ -120,8 +123,14 @@ export class JobsService {
         }
         return UtilityServices.SuccessIdResponse();
     }
-    private async GetJobTemplate(applicant: Applicants, program: Programs, dateToday: Date) {
-        const job = await this.jobPortalService.findOneJobByProgramId(program.id);
+    private async GetJobTemplate(
+        applicant: Applicants,
+        program: Programs,
+        dateToday: Date,
+    ) {
+        const job = await this.jobPortalService.findOneJobByProgramId(
+            program.id,
+        );
         return await this.notificationService.getTemplate(
             'jobApplicationEmailTemplate',
             {
@@ -133,7 +142,7 @@ export class JobsService {
             {
                 jobTitle: program.title,
                 companyName: job.organization.name,
-            }
+            },
         );
     }
 

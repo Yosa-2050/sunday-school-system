@@ -147,7 +147,10 @@ export class JobSeekerController {
         @Request() req,
         @Param('programId', new ParseUUIDPipe()) programId: string,
     ) {
-        return this.jobsService.apply(programId, CurrentUser.getApplicantId(req));
+        return this.jobsService.apply(
+            programId,
+            CurrentUser.getApplicantId(req),
+        );
     }
 
     @Post('jobs/appliedByJobSeeker')
