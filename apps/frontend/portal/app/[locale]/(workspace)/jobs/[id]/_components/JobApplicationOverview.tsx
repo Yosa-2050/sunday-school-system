@@ -29,10 +29,7 @@ type ApplicationOverviewProps = {
     job: Job;
 };
 
-export const ApplicationOverview = ({
-    job: _job,
-}: ApplicationOverviewProps) => {
-    const job = _job.program;
+export const ApplicationOverview = ({ job }: ApplicationOverviewProps) => {
     const theme = useMantineTheme();
     const isMobile = useMediaQuery('(max-width: 768px)');
 
