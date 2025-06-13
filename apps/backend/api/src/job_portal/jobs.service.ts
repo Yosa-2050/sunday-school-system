@@ -491,13 +491,12 @@ export class JobsService {
             applyObject.profile = false;
         }
 
-        if (applicant.educationalHistory?.length > 0) {
+        if (!(applicant.educationalHistory?.length > 0)) {
             canApply = false;
             applyObject.education = false;
         }
 
-        if (applicant.experiance?.length > 0) {
-            canApply = false;
+        if (!(applicant.experiance?.length > 0)) {
             applyObject.experiance = false;
         }
 
