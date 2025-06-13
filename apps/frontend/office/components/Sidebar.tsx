@@ -22,10 +22,10 @@ export const Sidebar = () => {
 
     return (
         <>
-            <Box className="hidden md:flex h-10   border-b dark:border-gray-700 light:border-gray-200 px-4 max-h-14 overflow-hidden w-[255px] bg-primary-3">
+            <Box className="hidden md:flex h-10   border-b border-gray-200 px-4 max-h-14 overflow-hidden w-[255px] bg-primary-3">
                 <Link
                     href="/dashboard"
-                    className="text-xl flex    font-bold items-center gap-4 dar:text-white"
+                    className="text-xl flex    font-bold items-center gap-4 "
                     style={{
                         color: getContrastColor('#000000'),
                     }}
@@ -56,7 +56,7 @@ export const Sidebar = () => {
                     }
                 />
             </Box>
-            <Box className="flex h-14 items-stretch border-t dark:border-gray-700 border-gray-200  px-4 py-2 justify-between light:bg-white text-xs">
+            <Box className="flex h-14 items-stretch border-t border-gray-200 text-sm px-4 py-2 justify-between bg-white text-xs">
                 <Box className="flex flex-col gap-1 justify-between">
                     <span
                         className={
