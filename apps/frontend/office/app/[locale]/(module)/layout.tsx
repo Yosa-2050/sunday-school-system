@@ -16,9 +16,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
     return (
         <ProtectedRoute>
             <Box className="h-full">
-                <Shell role={role as 'administrator' | 'work_provider'}>
-                    {children}
-                </Shell>
+                <Shell>{children}</Shell>
             </Box>
         </ProtectedRoute>
     );

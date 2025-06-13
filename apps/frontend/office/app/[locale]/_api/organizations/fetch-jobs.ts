@@ -56,7 +56,7 @@ interface Job {
     salaryType: string;
 }
 
-interface JobsResponse {
+export interface JobsResponse {
     data: Job[];
     total: number;
     limit: number;
@@ -96,18 +96,35 @@ export interface Pagination {
     search: string;
     status?: string;
 }
+export type Result = {
+    data: Daum[];
+    total: number;
+    limit: number;
+    page: number;
+    totalPages: number;
+};
+
+export interface Daum {
+    firstName: string;
+    lastName: string;
+    middleName: string;
+    dateOfApplicaton: string;
+    applicationStatus: string;
+}
 
 export const fetchApplicants = async (
     payload: Page,
     jobId: string,
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ): Promise<any> => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const response: any = await fetcher(`/job-portal/applications/${jobId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-    });
+    const response: Result = await fetcher(
+        `/job-portal/applications/${jobId}`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        },
+    );
 
-    return response;
+    return response as Result;
 };

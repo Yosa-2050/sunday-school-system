@@ -83,6 +83,12 @@ const baseTheme = ({
                 defaultProps: {
                     size: 'xs',
                 },
+                styles: {
+                    section: {
+                        marginRight: 4,
+                        marginLeft: 1,
+                    },
+                },
             },
             Card: {
                 defaultProps: {
@@ -145,6 +151,11 @@ const baseTheme = ({
                     breadcrumb: {
                         fontSize: '14px',
                     },
+                },
+            },
+            Text: {
+                defaultProps: {
+                    size: 'xs',
                 },
             },
             Modal: {

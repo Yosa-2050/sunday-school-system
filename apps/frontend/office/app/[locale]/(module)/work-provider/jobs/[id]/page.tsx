@@ -1,7 +1,7 @@
 'use client';
 
+import { useRouter } from '@/i18n/routing';
 import {
-    ActionIcon,
     Avatar,
     Badge,
     Box,
@@ -39,7 +39,6 @@ import {
     IconEdit,
     IconExternalLink,
     IconEye,
-    IconMail,
     IconMapPin,
     IconShare,
     IconTrash,
@@ -63,15 +62,6 @@ export default function JobDetailsPage() {
     const { data: job, isLoading } = useQuery({
         queryKey: ['job', jobId],
         queryFn: () => fetchJobsAdminById(jobId),
-    });
-
-    const { data: applicants } = useQuery({
-        queryKey: ['applicants', jobId],
-        queryFn: () =>
-            fetchApplicants(
-                { status: '', pagination: { page: 1, limit: 10, search: '' } },
-                jobId,
-            ),
     });
 
     // In a real application, you would fetch the job data based on the ID
@@ -152,11 +142,11 @@ export default function JobDetailsPage() {
             <Paper
                 p="xl"
                 mb="xl"
-                radius="lg"
-                style={{
-                    background: 'linear-gradient(to right, #f0f7ff, #e6f1ff)',
-                    border: '1px solid #cce3ff',
-                }}
+                // radius="lg"
+                // style={{
+                //     background: 'linear-gradient(to right, #f0f7ff, #e6f1ff)',
+                //     border: '1px solid #cce3ff',
+                // }}
             >
                 <Stack>
                     <Group justify="space-between" align="flex-start">
@@ -811,107 +801,7 @@ export default function JobDetailsPage() {
 
                         {/* Recent Applicants Card */}
                         {job?.status === 'APPROVED' && (
-                            <Card withBorder radius="md">
-                                <Card.Section withBorder p="md" bg="gray.0">
-                                    <Group justify="space-between">
-                                        <Group>
-                                            <IconUsers
-                                                size={20}
-                                                color={theme.colors.gray[6]}
-                                            />
-                                            <Title order={2}>Applicants</Title>
-                                        </Group>
-                                    </Group>
-                                    <Text c="gray.6">
-                                        Candidates who applied for this position
-                                    </Text>
-                                </Card.Section>
-                                <Card.Section>
-                                    {applicants.length === 0 ? (
-                                        <Text c="dimmed">No applicants</Text>
-                                    ) : (
-                                        <Table>
-                                            <thead>
-                                                <tr>
-                                                    <th>Avatar</th>
-                                                    <th>Candidate</th>
-                                                    <th>Applied</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {applicants.data?.map(
-                                                    (
-                                                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                                        applicant: any,
-                                                        index: number,
-                                                    ) => (
-                                                        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                                                        <tr key={index}>
-                                                            <td>
-                                                                <Avatar>
-                                                                    {
-                                                                        applicant?.initial
-                                                                    }
-                                                                </Avatar>
-                                                            </td>
-                                                            <td>
-                                                                <Text fw={500}>
-                                                                    {
-                                                                        applicant?.name
-                                                                    }
-                                                                </Text>
-                                                            </td>
-                                                            <td>
-                                                                <Text
-                                                                    size="sm"
-                                                                    c="dimmed"
-                                                                >
-                                                                    Applied{' '}
-                                                                    {
-                                                                        applicant?.daysAgo
-                                                                    }{' '}
-                                                                    day
-                                                                    {applicant?.daysAgo >
-                                                                    1
-                                                                        ? 's'
-                                                                        : ''}{' '}
-                                                                    ago
-                                                                </Text>
-                                                            </td>
-                                                            <td>
-                                                                <Group gap={4}>
-                                                                    <ActionIcon>
-                                                                        <IconMail
-                                                                            size={
-                                                                                16
-                                                                            }
-                                                                        />
-                                                                    </ActionIcon>
-                                                                    <ActionIcon>
-                                                                        <IconDownload
-                                                                            size={
-                                                                                16
-                                                                            }
-                                                                        />
-                                                                    </ActionIcon>
-                                                                    <ActionIcon>
-                                                                        <IconCircleCheck
-                                                                            size={
-                                                                                16
-                                                                            }
-                                                                        />
-                                                                    </ActionIcon>
-                                                                </Group>
-                                                            </td>
-                                                        </tr>
-                                                    ),
-                                                )}
-                                            </tbody>
-                                        </Table>
-                                    )}
-                                </Card.Section>
-                            </Card>
+                            <Applicants jobId={jobId} />
                         )}
                     </Stack>
                 </Grid.Col>
@@ -1213,3 +1103,108 @@ export default function JobDetailsPage() {
         </Container>
     );
 }
+
+const Applicants = ({ jobId }: { jobId: string }) => {
+    const router = useRouter();
+    const { data: applicants } = useQuery({
+        queryKey: ['applicants', jobId],
+        queryFn: () =>
+            fetchApplicants(
+                { status: '', pagination: { page: 1, limit: 5, search: '' } },
+                jobId,
+            ),
+    });
+    return (
+        <Card withBorder radius="md" p={'md'}>
+            <Card.Section withBorder p="md" bg="gray.0">
+                <Group justify="space-between">
+                    <Group>
+                        <IconUsers size={20} />
+                        <Title order={2}>Applicants</Title>
+                    </Group>
+                </Group>
+                <Text c="gray.6">Candidates who applied for this position</Text>
+            </Card.Section>
+            <Card.Section withBorder mb={'sm'}>
+                {applicants?.data?.length ? (
+                    <Table>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>Avatar</Table.Th>
+                                <Table.Th>Candidate</Table.Th>
+                                <Table.Th>Applied Date</Table.Th>
+                                <Table.Th>Status</Table.Th>
+                                <Table.Th>Actions</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {applicants.data?.map(
+                                (
+                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                    applicant: any,
+                                    index: number,
+                                ) => (
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                    <Table.Tr key={index}>
+                                        <Table.Td>
+                                            <Avatar>
+                                                {applicant?.initial}
+                                            </Avatar>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Text fw={500}>
+                                                {`${applicant?.firstName} 
+                                                    ' ' 
+                                                    ${applicant?.lastName}`}
+                                            </Text>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Text size="sm" c="dimmed">
+                                                {
+                                                    applicant?.dateOfApplicaton.split(
+                                                        'T',
+                                                    )[0]
+                                                }
+                                            </Text>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Text size="sm">
+                                                {applicant?.applicationStatus}
+                                            </Text>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Button
+                                                variant="transparent"
+                                                onClick={() =>
+                                                    router.push(
+                                                        `/work-provider/applicants/${jobId}?jobId=${applicant?.id}`,
+                                                    )
+                                                }
+                                            >
+                                                Detail
+                                            </Button>
+                                        </Table.Td>
+                                    </Table.Tr>
+                                ),
+                            )}
+                        </Table.Tbody>
+                    </Table>
+                ) : (
+                    <Text c="dimmed">No applicants</Text>
+                )}
+            </Card.Section>
+            {applicants?.totall > 5 && (
+                <Box className="flex items-center justify-end mt-4">
+                    <Button
+                        variant="transparent"
+                        onClick={() =>
+                            router.push(`/work-provider/applicants/${jobId}`)
+                        }
+                    >
+                        Load More
+                    </Button>
+                </Box>
+            )}
+        </Card>
+    );
+};

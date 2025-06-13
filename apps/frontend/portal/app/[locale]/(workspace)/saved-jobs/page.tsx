@@ -1,5 +1,6 @@
 'use client';
 
+import { EntityPagination } from '@/components/EntityPagination';
 import { useRouter } from '@/i18n/routing';
 import {
     Button,
@@ -12,19 +13,24 @@ import {
     Title,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { fetchSavedJobs } from 'app/_api/jobs/fetch-jobs';
+import { type Pagination, fetchSavedJobs } from 'app/_api/jobs/fetch-jobs';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 import { SavedJobsList } from './_components/SavedProgramsList';
 
 export default function MyJobsPage() {
     const t = useTranslations('saved-jobs');
     const router = useRouter();
-    const { data, isLoading } = useQuery({
-        queryKey: ['saved-jobs'],
-        queryFn: () => fetchSavedJobs(),
+
+    const [pages, setPages] = useState<Pagination>({
+        page: 1,
+        limit: 10,
     });
 
-    const applications = data?.filter((item) => item != null);
+    const { data, isLoading } = useQuery({
+        queryKey: ['saved-jobs', pages.page, pages.limit],
+        queryFn: () => fetchSavedJobs(pages),
+    });
 
     return (
         <Container size="xl" className="py-8 !h-full">
@@ -57,7 +63,18 @@ export default function MyJobsPage() {
                         overlayProps={{ radius: 'sm', blur: 2 }}
                     />
 
-                    <SavedJobsList applications={applications} />
+                    <SavedJobsList applications={data?.data ?? []} />
+                    <EntityPagination
+                        total={data?.total ?? 0}
+                        createPageURL={(page) =>
+                            setPages((prev) => ({
+                                ...prev,
+                                page,
+                            }))
+                        }
+                        p={data?.page ?? 1}
+                        perPage={pages.limit}
+                    />
                 </Card>
             </Stack>
         </Container>

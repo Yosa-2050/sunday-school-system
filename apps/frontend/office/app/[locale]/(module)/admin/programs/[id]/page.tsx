@@ -71,7 +71,7 @@ const MentorshipDetails = () => {
             queryClient.invalidateQueries({
                 queryKey: ['job', program?.program.id],
             });
-            router.push('admin/programs');
+            router.push('/admin/programs');
             notifications.show({
                 title: 'Job Approved',
                 message: 'The job has been successfully approved',
@@ -122,7 +122,7 @@ const MentorshipDetails = () => {
                         </div>
                         <div className="flex items-center">
                             <IconMapPin size={18} className="mr-2" />
-                            <Text>{program.program.country.name}</Text>
+                            <Text>{program.program.country?.name}</Text>
                         </div>
                         <Badge variant="light">{program.audience}</Badge>
                     </div>
@@ -142,8 +142,8 @@ const MentorshipDetails = () => {
                                 className="border-2 border-white shadow-md"
                             />
                             <Text className="text-xl font-semibold text-center">
-                                {program.mentor.profile.firstName}{' '}
-                                {program.mentor.profile.lastName}
+                                {program.mentor?.profile?.firstName}{' '}
+                                {program.mentor?.profile?.lastName}
                             </Text>
                             <Badge variant="light" color="teal">
                                 Mentor
@@ -158,10 +158,10 @@ const MentorshipDetails = () => {
                                         className="text-gray-500"
                                     />
                                     <Text size="sm">
-                                        Status: {program.mentor.status}
+                                        Status: {program?.mentor?.status}
                                     </Text>
                                 </Group>
-                                {program.mentor.profile.phoneNumber && (
+                                {program?.mentor?.profile?.phoneNumber && (
                                     <Group gap="sm">
                                         <IconPhone
                                             size={18}
@@ -269,7 +269,7 @@ const MentorshipDetails = () => {
                                                     `${program.program.city.name}, `}
                                                 {program.program.state?.name &&
                                                     `${program.program.state.name}, `}
-                                                {program.program.country.name}
+                                                {program.program?.country?.name}
                                             </Text>
                                         </Group>
                                         <Group gap="sm">
