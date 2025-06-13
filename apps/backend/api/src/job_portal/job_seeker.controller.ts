@@ -145,9 +145,9 @@ export class JobSeekerController {
     @Post('apply/:programId')
     apply(
         @Request() req,
-        @Param('programId', new ParseUUIDPipe()) jobId: string,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
     ) {
-        return this.jobsService.apply(jobId, CurrentUser.getApplicantId(req));
+        return this.jobsService.apply(programId, CurrentUser.getApplicantId(req));
     }
 
     @Post('jobs/appliedByJobSeeker')
@@ -238,6 +238,11 @@ export class JobSeekerController {
     @Get('details')
     getDetails(@Request() req) {
         return this.jobsService.getDetails(CurrentUser.getApplicantId(req));
+    }
+
+    @Get('details/:applicantId')
+    getApplicantDetails(@Param('applicantId') applicantId: string) {
+        return this.jobsService.getDetails(applicantId);
     }
 
     @Post('saveProgram/:programId')

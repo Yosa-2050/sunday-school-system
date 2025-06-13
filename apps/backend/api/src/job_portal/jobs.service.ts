@@ -37,7 +37,6 @@ import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
 import { Experiance } from './entities/experiance.entity';
 import { Applications } from './entities/job-application.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -61,6 +60,8 @@ export class JobsService {
         private readonly notificationService: NotificationService,
         @InjectRepository(SavedPrograms)
         private savedProgramsRepo: Repository<SavedPrograms>,
+        @InjectRepository(Programs)
+        private programsRepo: Repository<Programs>,
     ) {}
 
     async getApplicantDetail(id: string) {
@@ -80,42 +81,30 @@ export class JobsService {
         if (!this.GetCanApplyApplicant(applicant)?.canApply) {
             throw new BadRequestException('User can not apply');
         }
-        const existingApp = await this.jobApplicantRepo.findOneBy({
-            program: { id: programId },
-            applicants: { id: applicant.id },
+        const existingApp = await this.programsRepo.findOneBy({
+             id: programId,
+            applications: { applicants:{id: applicant.id} },
         });
         if (existingApp) {
             throw new BadRequestException('Already applied for the job');
         }
 
-        const job = await this.jobPortalService.findJobByProgram(programId);
+        const program = await this.programsRepo.findOneBy({id: programId});
 
-        if (!job) {
-            throw new EntityNotFoundException('Job');
+        if (!program) {
+            throw new EntityNotFoundException('Program');
         }
 
         const application = this.jobApplicantRepo.create();
-        application.program = job.program;
+        application.program = program;
         application.applicants = applicant;
 
         const savedJobApplication = this.jobApplicantRepo.save(application);
         if (savedJobApplication) {
             //send email
             const dateToday = new Date();
-            const jobApplicationEmailTemplate =
-                await this.notificationService.getTemplate(
-                    'jobApplicationEmailTemplate',
-                    {
-                        jobSeekerName: applicant.profile.firstName,
-                        jobTitle: job.program.title,
-                        companyName: job.organization.name,
-                        applicationDate: dateToday.toLocaleDateString(),
-                    },
-                    {
-                        jobTitle: job.program.title,
-                        companyName: job.organization.name,
-                    },
-                );
+            const {content, subject} =
+                await this.GetJobTemplate(applicant, program, dateToday);
 
             const user = await this.profileService.findUserByProfileId(
                 applicant.profile.id,
@@ -123,14 +112,31 @@ export class JobsService {
 
             this.notificationService.send({
                 channel: NotificationChannel.Email,
-                content: jobApplicationEmailTemplate.content,
+                content: content,
                 to: user.email,
-                subject: jobApplicationEmailTemplate.subject,
+                subject: subject,
                 reference: user.id,
             });
         }
         return UtilityServices.SuccessIdResponse();
     }
+    private async GetJobTemplate(applicant: Applicants, program: Programs, dateToday: Date) {
+        const job = await this.jobPortalService.findOneJobByProgramId(program.id);
+        return await this.notificationService.getTemplate(
+            'jobApplicationEmailTemplate',
+            {
+                jobSeekerName: applicant.profile.firstName,
+                jobTitle: program.title,
+                companyName: job.organization.name,
+                applicationDate: dateToday.toLocaleDateString(),
+            },
+            {
+                jobTitle: program.title,
+                companyName: job.organization.name,
+            }
+        );
+    }
+
     private async FindApplicantOrThrow(applicantId: string) {
         const applicant = await this.applicantRepo.findOneBy({
             id: applicantId,
