@@ -1104,7 +1104,7 @@ export default function JobDetailsPage() {
     );
 }
 
-export const Applicants = ({ jobId }: { jobId: string }) => {
+const Applicants = ({ jobId }: { jobId: string }) => {
     const router = useRouter();
     const { data: applicants } = useQuery({
         queryKey: ['applicants', jobId],

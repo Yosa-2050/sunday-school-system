@@ -107,7 +107,7 @@ const MenuLabel = ({
         <div
             className={cn(
                 classes.menuItem,
-                'flex cursor-pointer items-center rounded-md px-2 py-1 transition duration-300 ease-in-out  dark:text-gray-700 text-gray-50',
+                'flex cursor-pointer items-center rounded-md px-2 py-1 transition duration-300 ease-in-out  light:text-gray-700 dark:text-gray-200',
 
                 active ? classes.active : '',
             )}

@@ -17,6 +17,16 @@
     position: relative;
     background-color: var(--primary-color-1);
     color: var(--primary-text-color);
+
+    [data-mantine-color-scheme="light"] & {
+        background-color: var(--primary-color-5);
+        color: var(--primary-color-text);
+    }
+
+    [data-mantine-color-scheme="dark"] & {
+        background-color: var(--primary-color-3);
+        color: lightslategray;
+    }
 }
 
 .active .activeIndicator {
