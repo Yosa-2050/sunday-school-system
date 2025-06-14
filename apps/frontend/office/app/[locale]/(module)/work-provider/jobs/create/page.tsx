@@ -277,33 +277,29 @@ export default function PostJobPage() {
 
     if (formSubmitted) {
         return (
-                <Paper shadow="sm" p="xl" radius="md">
-                    <div className="text-center">
-                        <IconCheck
-                            size={48}
-                            className="text-green-500 mx-auto mb-4"
-                        />
-                        <Title order={2} mb="md">
-                            Job Posted Successfully!
-                        </Title>
-                        <Button
-                            onClick={() => router.push('/work-provider/jobs')}
-                            leftSection={<IconArrowLeft size="1.1rem" />}
-                        >
-                            Back to Jobs
-                        </Button>
-                    </div>
-                </Paper>
+            <Paper shadow="sm" p="xl" radius="md">
+                <div className="text-center">
+                    <IconCheck
+                        size={48}
+                        className="text-green-500 mx-auto mb-4"
+                    />
+                    <Title order={2} mb="md">
+                        Job Posted Successfully!
+                    </Title>
+                    <Button
+                        onClick={() => router.push('/work-provider/jobs')}
+                        leftSection={<IconArrowLeft size="1.1rem" />}
+                    >
+                        Back to Jobs
+                    </Button>
+                </div>
+            </Paper>
         );
     }
 
     return (
         <FormProvider {...methods}>
-            <Paper
-                p={'md'}
-
-                className="shadow rounded-sm"
-            >
+            <Paper p={'md'} className="shadow rounded-sm">
                 <Group justify="space-between" align="center" py={'lg'}>
                     <Group>
                         <Link href="/work-provider/jobs" passHref>
