@@ -50,13 +50,14 @@ staging:
   only:
     - develop
   before_script:
-    - npm install -g corepack@latest
+    - npm install --global corepack@latest
     - corepack enable
     - corepack prepare pnpm@latest --activate
     - pnpm install
   script:
-    - export NEXT_PUBLIC_APP_VERSION=$(node -p "require('./package.json').version")
-    - echo "Using version: $NEXT_PUBLIC_APP_VERSION"
+    - export "NEXT_PUBLIC_APP_VERSION=$(node -p \"require('./package.json').version\")
+    - |
+      echo \"Using version: $NEXT_PUBLIC_APP_VERSION\""
     - pnpm run format
     - pnpm run build
     - |
