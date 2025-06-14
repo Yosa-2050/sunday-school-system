@@ -3,7 +3,7 @@
 import useIsAuthorized from '@/hooks/useIsAuthorized';
 import { Link, useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Container, Group, Paper, Stepper, Title } from '@mantine/core';
+import { Button, Group, Paper, Stepper, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
     IconArrowLeft,
@@ -277,36 +277,29 @@ export default function PostJobPage() {
 
     if (formSubmitted) {
         return (
-            <Container size="xl">
-                <Paper shadow="sm" p="xl" radius="md">
-                    <div className="text-center">
-                        <IconCheck
-                            size={48}
-                            className="text-green-500 mx-auto mb-4"
-                        />
-                        <Title order={2} mb="md">
-                            Job Posted Successfully!
-                        </Title>
-                        <Button
-                            onClick={() => router.push('/work-provider/jobs')}
-                            leftSection={<IconArrowLeft size="1.1rem" />}
-                        >
-                            Back to Jobs
-                        </Button>
-                    </div>
-                </Paper>
-            </Container>
+            <Paper shadow="sm" p="xl" radius="md">
+                <div className="text-center">
+                    <IconCheck
+                        size={48}
+                        className="text-green-500 mx-auto mb-4"
+                    />
+                    <Title order={2} mb="md">
+                        Job Posted Successfully!
+                    </Title>
+                    <Button
+                        onClick={() => router.push('/work-provider/jobs')}
+                        leftSection={<IconArrowLeft size="1.1rem" />}
+                    >
+                        Back to Jobs
+                    </Button>
+                </div>
+            </Paper>
         );
     }
 
     return (
         <FormProvider {...methods}>
-            <Container
-                size={'xl'}
-                bg={'white'}
-                p={'md'}
-                className="shadow rounded"
-            >
+            <Paper p={'md'} className="shadow rounded-sm">
                 <Group justify="space-between" align="center" py={'lg'}>
                     <Group>
                         <Link href="/work-provider/jobs" passHref>
@@ -448,7 +441,7 @@ export default function PostJobPage() {
                         )}
                     </Group>
                 </Group>
-            </Container>
+            </Paper>
         </FormProvider>
     );
 }
