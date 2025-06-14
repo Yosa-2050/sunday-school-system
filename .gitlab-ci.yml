@@ -1,5 +1,6 @@
 variables:
-  GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis taskk
+  GIT_DEPTH: "0" # Required for semantic-release
+  PNPM_CACHE_FOLDER: .pnpm-store
 
 default:
   image: node:22
@@ -9,35 +10,37 @@ stages:
   - build
   - staging
 
+cache:
+  key:
+    files:
+      - pnpm-lock.yaml
+  paths:
+    - .pnpm-store
+
 release:
-  image: node:22
   stage: release
   only:
     - develop
   before_script:
-    - npm install --global corepack@latest
+    - npm install -g corepack@latest
     - corepack enable
-    - corepack prepare pnpm@latest-10 --activate
-    - pnpm config set store-dir .pnpm-store
-  script:
+    - corepack prepare pnpm@latest --activate
     - pnpm install
-    - export NEXT_PUBLIC_APP_VERSION="$(npx semantic-release --dry-run | grep 'next release version' | cut -d' ' -f4)"
-    - npx semantic-release
+  script:
+    - pnpm semantic-release
   variables:
-    GITLAB_TOKEN: $CI_JOB_TOKEN
+    GITLAB_TOKEN: $GITLAB_TOKEN # Use a real Personal Access Token with `api` scope
 
 build:
   stage: build
-  image: node:22
   only:
     - merge_requests
   before_script:
-    - npm install --global corepack@latest
+    - npm install -g corepack@latest
     - corepack enable
     - corepack prepare pnpm@9.0.0 --activate
-    - pnpm config set store-dir .pnpm-store
-  script:
     - pnpm install
+  script:
     - pnpm run format:error
     - pnpm run build
 
@@ -49,18 +52,12 @@ staging:
   before_script:
     - npm install --global corepack@latest
     - corepack enable
-    - corepack prepare pnpm@latest-10 --activate
-    - pnpm config set store-dir .pnpm-store
-  script:
+    - corepack prepare pnpm@latest --activate
     - pnpm install
+  script:
+    - "NEXT_PUBLIC_APP_VERSION=$(node -p \"require('./apps/web/package.json').version\") && echo \"Using version: $NEXT_PUBLIC_APP_VERSION\""
     - pnpm run format
     - pnpm run build
     - |
-      curl -X GET "$COOLIFY_URL/api/v1/deploy?tag=shega&force=false" -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN"
-
-  cache:
-    key:
-      files:
-        - pnpm-lock.yaml
-    paths:
-      - .pnpm-store
+      curl -X GET "$COOLIFY_URL/api/v1/deploy?tag=shega&force=false" \
+        -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN"
