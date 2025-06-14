@@ -1,5 +1,6 @@
 'use client';
 
+import { PageContainer } from '@/components/PageContainer';
 import { useRouter } from '@/i18n/routing';
 import {
     Badge,
@@ -167,232 +168,239 @@ const JobsList = () => {
         );
 
     return (
-        <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-            <Flex align="center" justify="space-between" className="p-4">
-                <Text className="font-bold text-xl">{t('title')}</Text>
-            </Flex>
-            <Divider my="md" />
+        <PageContainer className="flex flex-col gap-2.5">
+            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+                <Flex align="center" justify="space-between" className="p-4">
+                    <Text className="font-bold text-xl">{t('title')}</Text>
+                </Flex>
+                <Divider my="md" />
 
-            <Group justify="space-between" className="mb-4">
-                <EntitySearch
-                    entity="jobs"
-                    placeholder={t('searchPlaceholder')}
-                    className="!w-[300px]"
-                />
-                <Group>
-                    <EntityFilter
+                <Group justify="space-between" className="mb-4">
+                    <EntitySearch
                         entity="jobs"
-                        filterOptions={[
-                            { value: '', label: t('allCategories') },
-                            { value: 'FULL_TIME', label: 'Full Time' },
-                            { value: 'PART_TIME', label: 'Part Time' },
-                            { value: 'Contract', label: 'Contract' },
-                            { value: 'Internship', label: 'Internship' },
-                        ]}
-                        mode="select"
-                        field="type"
+                        placeholder={t('searchPlaceholder')}
+                        className="!w-[300px]"
                     />
-                    <EntityFilter
-                        entity="jobs"
-                        filterOptions={[
-                            { value: '', label: 'All Status' },
-                            {
-                                value: 'WAITINGAPPROVAL',
-                                label: 'Waiting for Approval',
-                            },
-                            { value: 'APPROVED', label: 'Approved' },
-                            { value: 'DECLINED', label: 'Declined' },
-                        ]}
-                        defaultOrder={[
-                            { f: 'program.status', d: 'desc' },
-                            { f: 'createdAt', d: 'asc' },
-                        ]}
-                        mode="select"
-                        field="program.status"
-                    />
-                    <Button
-                        variant="light"
-                        leftSection={<IconDownload size={18} />}
-                        onClick={() => {
-                            const payload =
-                                selection.length === 0
-                                    ? entityParamSerializer({
-                                          ...entityParams,
-                                          pp: data?.total,
-                                      })
-                                    : selection;
-                            const type: 'filter' | 'selected' =
-                                selection.length === 0 ? 'filter' : 'selected';
-                            exportMutation.mutate({ payload, type });
-                        }}
-                        loading={exportMutation.isPending}
-                    >
-                        {t('exportCSV')}
-                    </Button>
-                </Group>
-            </Group>
-
-            {jobs.length === 0 ? (
-                <Center h={200}>
-                    <Text c="dimmed" ta="center">
-                        You haven&apos;t posted any jobs yet.
-                    </Text>
-                </Center>
-            ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-            isMobile ? (
-                <Stack>
-                    {jobs.map((job) => (
-                        <Card
-                            key={job.id}
-                            shadow="sm"
-                            p="lg"
-                            radius="md"
-                            withBorder
+                    <Group>
+                        <EntityFilter
+                            entity="jobs"
+                            filterOptions={[
+                                { value: '', label: t('allCategories') },
+                                { value: 'FULL_TIME', label: 'Full Time' },
+                                { value: 'PART_TIME', label: 'Part Time' },
+                                { value: 'Contract', label: 'Contract' },
+                                { value: 'Internship', label: 'Internship' },
+                            ]}
+                            mode="select"
+                            field="type"
+                        />
+                        <EntityFilter
+                            entity="jobs"
+                            filterOptions={[
+                                { value: '', label: 'All Status' },
+                                {
+                                    value: 'WAITINGAPPROVAL',
+                                    label: 'Waiting for Approval',
+                                },
+                                { value: 'APPROVED', label: 'Approved' },
+                                { value: 'DECLINED', label: 'Declined' },
+                            ]}
+                            defaultOrder={[
+                                { f: 'program.status', d: 'desc' },
+                                { f: 'createdAt', d: 'asc' },
+                            ]}
+                            mode="select"
+                            field="program.status"
+                        />
+                        <Button
+                            variant="light"
+                            leftSection={<IconDownload size={18} />}
+                            onClick={() => {
+                                const payload =
+                                    selection.length === 0
+                                        ? entityParamSerializer({
+                                              ...entityParams,
+                                              pp: data?.total,
+                                          })
+                                        : selection;
+                                const type: 'filter' | 'selected' =
+                                    selection.length === 0
+                                        ? 'filter'
+                                        : 'selected';
+                                exportMutation.mutate({ payload, type });
+                            }}
+                            loading={exportMutation.isPending}
                         >
-                            <Text fw={500}>{job.title}</Text>
-                            <Stack>
-                                <div className="job-description">
-                                    {parse(job.description)}
-                                </div>
-                            </Stack>
-                            <Text size="sm" c="dimmed">
-                                {job.type}
-                            </Text>
-                            <Text size="sm">
-                                Salary: ${job.salaryFrom.toLocaleString()} - $
-                                {job.salaryTo.toLocaleString()}
-                            </Text>
-                            <Badge
-                                color={
-                                    job.status === 'APPROVED'
-                                        ? 'green'
-                                        : 'yellow'
-                                }
+                            {t('exportCSV')}
+                        </Button>
+                    </Group>
+                </Group>
+            </Paper>
+            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+                {jobs.length === 0 ? (
+                    <Center h={200}>
+                        <Text c="dimmed" ta="center">
+                            You haven&apos;t posted any jobs yet.
+                        </Text>
+                    </Center>
+                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                isMobile ? (
+                    <Stack>
+                        {jobs.map((job) => (
+                            <Card
+                                key={job.id}
+                                shadow="sm"
+                                p="lg"
+                                radius="md"
+                                withBorder
                             >
-                                {job.status}
-                            </Badge>
-                            <Text size="xs" c="dimmed">
-                                Posted by:{' '}
-                                {job.postedBy.employee.profile.firstName}{' '}
-                                {job.postedBy.employee.profile.lastName}
-                            </Text>
-                        </Card>
-                    ))}
-                </Stack>
-            ) : (
-                <TableScrollContainer minWidth={800} type="native">
-                    <Table striped verticalSpacing="md">
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th>
-                                    <Checkbox
-                                        onChange={toggleAll}
-                                        checked={
-                                            selection.length === jobs.length
-                                        }
-                                        indeterminate={
-                                            selection.length > 0 &&
-                                            selection.length !== jobs.length
-                                        }
-                                    />
-                                </Table.Th>
-                                <Table.Th>Organization Name</Table.Th>
-                                <Table.Th>Job Title</Table.Th>
-                                <Table.Th>Created Date</Table.Th>
-                                <Table.Th>Salary</Table.Th>
-                                <Table.Th>Salary Type</Table.Th>
-                                <Table.Th>Status</Table.Th>
-                                <Table.Th>Actions</Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {jobs.map((job) => (
-                                <Table.Tr key={job.id}>
-                                    <Table.Td>
+                                <Text fw={500}>{job.title}</Text>
+                                <Stack>
+                                    <div className="job-description">
+                                        {parse(job.description)}
+                                    </div>
+                                </Stack>
+                                <Text size="sm" c="dimmed">
+                                    {job.type}
+                                </Text>
+                                <Text size="sm">
+                                    Salary: ${job.salaryFrom.toLocaleString()} -
+                                    ${job.salaryTo.toLocaleString()}
+                                </Text>
+                                <Badge
+                                    color={
+                                        job.status === 'APPROVED'
+                                            ? 'green'
+                                            : 'yellow'
+                                    }
+                                >
+                                    {job.status}
+                                </Badge>
+                                <Text size="xs" c="dimmed">
+                                    Posted by:{' '}
+                                    {job.postedBy.employee.profile.firstName}{' '}
+                                    {job.postedBy.employee.profile.lastName}
+                                </Text>
+                            </Card>
+                        ))}
+                    </Stack>
+                ) : (
+                    <TableScrollContainer minWidth={800} type="native">
+                        <Table striped>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th>
                                         <Checkbox
-                                            checked={selection.includes(
-                                                job.id ?? '',
-                                            )}
-                                            onChange={() =>
-                                                toggleRow(job.id ?? '')
+                                            onChange={toggleAll}
+                                            checked={
+                                                selection.length === jobs.length
+                                            }
+                                            indeterminate={
+                                                selection.length > 0 &&
+                                                selection.length !== jobs.length
                                             }
                                         />
-                                    </Table.Td>
-                                    <Table.Td>{job?.orgName}</Table.Td>
-                                    <Table.Td
-                                        style={{ maxWidth: '200px' }}
-                                        title={job.title}
-                                    >
-                                        {job.title.length > 15
-                                            ? `${job.title.substring(0, 15)}...`
-                                            : job.title}
-                                    </Table.Td>
-                                    <Table.Td>
-                                        {new Date(
-                                            job.createdDate,
-                                        ).toDateString()}
-                                    </Table.Td>
-                                    <Table.Td>
-                                        {(() => {
-                                            if (
-                                                job?.salaryFrom &&
-                                                job?.salaryTo
-                                            ) {
-                                                return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
-                                            }
-                                            if (job?.salaryFrom) {
-                                                return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
-                                            }
-                                            return 'N/A';
-                                        })()}
-                                    </Table.Td>
-                                    <Table.Td>{job.salaryType}</Table.Td>
-                                    <Table.Td>
-                                        <span
-                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                statusStyles[
-                                                    job.status as keyof typeof statusStyles
-                                                ] || 'bg-yellow-300'
-                                            } text-white`}
-                                            autoCapitalize="none"
-                                        >
-                                            {statusText[
-                                                job.status as keyof typeof statusText
-                                            ] || job.status}
-                                        </span>
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <Button
-                                            variant="transparent"
-                                            leftSection={<IconEye size={14} />}
-                                            onClick={() =>
-                                                router.push(
-                                                    `/admin/jobs/${job.id}`,
-                                                )
-                                            }
-                                            className="py-0 my-0"
-                                        >
-                                            Details
-                                        </Button>
-                                    </Table.Td>
+                                    </Table.Th>
+                                    <Table.Th>Organization Name</Table.Th>
+                                    <Table.Th>Job Title</Table.Th>
+                                    <Table.Th>Created Date</Table.Th>
+                                    <Table.Th>Salary</Table.Th>
+                                    <Table.Th>Salary Type</Table.Th>
+                                    <Table.Th>Status</Table.Th>
+                                    <Table.Th>Actions</Table.Th>
                                 </Table.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
-                </TableScrollContainer>
-            )}
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {jobs.map((job) => (
+                                    <Table.Tr key={job.id}>
+                                        <Table.Td>
+                                            <Checkbox
+                                                checked={selection.includes(
+                                                    job.id ?? '',
+                                                )}
+                                                onChange={() =>
+                                                    toggleRow(job.id ?? '')
+                                                }
+                                            />
+                                        </Table.Td>
+                                        <Table.Td>{job?.orgName}</Table.Td>
+                                        <Table.Td
+                                            style={{ maxWidth: '200px' }}
+                                            title={job.title}
+                                        >
+                                            {job.title.length > 15
+                                                ? `${job.title.substring(0, 15)}...`
+                                                : job.title}
+                                        </Table.Td>
+                                        <Table.Td>
+                                            {new Date(
+                                                job.createdDate,
+                                            ).toDateString()}
+                                        </Table.Td>
+                                        <Table.Td>
+                                            {(() => {
+                                                if (
+                                                    job?.salaryFrom &&
+                                                    job?.salaryTo
+                                                ) {
+                                                    return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                                }
+                                                if (job?.salaryFrom) {
+                                                    return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                                }
+                                                return 'N/A';
+                                            })()}
+                                        </Table.Td>
+                                        <Table.Td>{job.salaryType}</Table.Td>
+                                        <Table.Td>
+                                            <span
+                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                    statusStyles[
+                                                        job.status as keyof typeof statusStyles
+                                                    ] || 'bg-yellow-300'
+                                                } text-white`}
+                                                autoCapitalize="none"
+                                            >
+                                                {statusText[
+                                                    job.status as keyof typeof statusText
+                                                ] || job.status}
+                                            </span>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Button
+                                                variant="transparent"
+                                                leftSection={
+                                                    <IconEye size={14} />
+                                                }
+                                                onClick={() =>
+                                                    router.push(
+                                                        `/admin/jobs/${job.id}`,
+                                                    )
+                                                }
+                                                className="py-0 my-0"
+                                            >
+                                                Details
+                                            </Button>
+                                        </Table.Td>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                    </TableScrollContainer>
+                )}
 
-            <EntityPagination
-                entity="jobs"
-                total={data?.total ?? 0}
-                defaultSorting={{
-                    o: [
-                        { f: 'status', d: 'desc' },
-                        { f: 'createdAt', d: 'asc' },
-                    ],
-                }}
-            />
-        </Paper>
+                <EntityPagination
+                    entity="jobs"
+                    total={data?.total ?? 0}
+                    defaultSorting={{
+                        o: [
+                            { f: 'status', d: 'desc' },
+                            { f: 'createdAt', d: 'asc' },
+                        ],
+                    }}
+                />
+            </Paper>
+        </PageContainer>
     );
 };
 

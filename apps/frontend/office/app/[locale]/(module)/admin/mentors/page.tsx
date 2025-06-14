@@ -29,6 +29,7 @@ import { EntityColumn, EntitySearch } from '@shega/ui';
 import { IconDotsVertical, IconDownload } from '@tabler/icons-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { PageContainer } from '@/components/PageContainer';
 import { fetchMentorship } from 'app/[locale]/_api/mentors/fetch-mentorship';
 import {
     useActivateMentors,
@@ -144,382 +145,393 @@ const MentorshipPage = () => {
     const mentorship = data ?? [];
 
     return (
-        <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-            <Flex align="center" justify="space-between" className="p-4">
-                <Text className="font-bold text-xl">{t('title')}</Text>
-                <CreateMentors />
-            </Flex>
-
-            <Divider my="md" />
-
-            {/* Search, Filter, Sort Controls */}
-            <Group justify="space-between" className="mb-4">
-                <EntitySearch
-                    entity="mentorship"
-                    placeholder={t('searchPlaceholder')}
-                    className="!w-[300px]"
-                />
-                <Flex gap={'xs'} align={'center'}>
-                    <Button
-                        variant="light"
-                        leftSection={<IconDownload size={18} />}
-                        // onClick={() => {
-                        //     const payload =
-                        //         selection.length === 0
-                        //             ? entityParamSerializer({
-                        //                   ...entityParams,
-                        //                   pp: data?.total,
-                        //               })
-                        //             : selection;
-                        //     const type: 'filter' | 'selected' =
-                        //         selection.length === 0 ? 'filter' : 'selected';
-                        //     exportMutation.mutate({ payload, type });
-                        // }}
-                        // loading={exportMutation.isPending}
-                    >
-                        {t('exportCSV')}
-                    </Button>
+        <PageContainer className="flex flex-col gap-2.5">
+            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+                <Flex align="center" justify="space-between" className="p-4">
+                    <Text className="font-bold text-xl">{t('title')}</Text>
+                    <CreateMentors />
                 </Flex>
-            </Group>
 
-            {/* No Data State */}
-            {mentorship.length === 0 ? (
-                <NoData />
-            ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-            isMobile ? (
-                <Stack>
-                    {mentorship.map((user) => (
-                        <Card
-                            key={user.createdAt}
-                            shadow="sm"
-                            p="lg"
-                            radius="md"
-                            withBorder
+                <Divider my="md" />
+
+                {/* Search, Filter, Sort Controls */}
+                <Group justify="space-between" className="mb-4">
+                    <EntitySearch
+                        entity="mentorship"
+                        placeholder={t('searchPlaceholder')}
+                        className="!w-[300px]"
+                    />
+                    <Flex gap={'xs'} align={'center'}>
+                        <Button
+                            variant="light"
+                            leftSection={<IconDownload size={18} />}
+                            // onClick={() => {
+                            //     const payload =
+                            //         selection.length === 0
+                            //             ? entityParamSerializer({
+                            //                   ...entityParams,
+                            //                   pp: data?.total,
+                            //               })
+                            //             : selection;
+                            //     const type: 'filter' | 'selected' =
+                            //         selection.length === 0 ? 'filter' : 'selected';
+                            //     exportMutation.mutate({ payload, type });
+                            // }}
+                            // loading={exportMutation.isPending}
                         >
-                            <Flex justify="space-between" align="center">
-                                <Text
-                                    fw={500}
-                                >{`${user.profile?.firstName} ${user.profile?.middleName} ${user.profile.lastName}`}</Text>
-                            </Flex>
-                            <Divider my="xs" />
-                            <Text size="xs" c="dimmed">
-                                {DateTime.fromISO(
-                                    user.createdAt ?? '',
-                                ).toFormat('yyyy-MM-dd HH:mm:ss')}
-                            </Text>
-                            <Group mt="md">
-                                <Button variant="light" size="xs">
-                                    {t('table.edit')}
-                                </Button>
-                                <Button variant="light" size="xs" color="red">
-                                    {t('table.delete')}
-                                </Button>
-                            </Group>
-                        </Card>
-                    ))}
-                </Stack>
-            ) : (
-                <TableScrollContainer minWidth={800} type="native">
-                    <Table
-                        withRowBorders
-                        withColumnBorders
-                        striped
-                        verticalSpacing="md"
-                    >
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th>
-                                    <Checkbox
-                                        // onChange={toggleAll}
-                                        checked={
-                                            selection.length ===
-                                            mentorship.length
-                                        }
-                                        indeterminate={
-                                            selection.length > 0 &&
-                                            selection.length !==
-                                                mentorship.length
-                                        }
-                                    />
-                                </Table.Th>
-                                <Table.Th>{t('table.name')}</Table.Th>
-                                <Table.Th>
-                                    <EntityColumn
-                                        entity="mentorship"
-                                        field="createdAt"
-                                        label={t('table.createdAt')}
-                                    />
-                                </Table.Th>
-                                <Table.Th>{t('table.createdBy')}</Table.Th>
-                                <Table.Th>{t('table.approvalStatus')}</Table.Th>
-                                <Table.Th>{t('table.status')}</Table.Th>
-                                <Can roles={['super_admin']}>
-                                    <Table.Th>{t('table.actions')}</Table.Th>
-                                </Can>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
-                            {mentorship.map((user) => (
-                                <Table.Tr key={user.id}>
-                                    <Table.Td>
-                                        <Checkbox
-                                            checked={selection.includes(
-                                                user.id ?? '',
-                                            )}
-                                            // onChange={() =>
-                                            //     toggleRow(user.id ?? '')
-                                            // }
-                                        />
-                                    </Table.Td>
-                                    <Table.Td>{`${user.profile?.firstName} ${user.profile?.middleName} ${user.profile.lastName}`}</Table.Td>
-
-                                    {/* <Table.Td>{user.createdBy}</Table.Td> */}
-                                    <Table.Td>
-                                        {DateTime.fromISO(
-                                            user.createdAt ?? '',
-                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
-                                    </Table.Td>
-                                    <Table.Td>{user.createdBy}</Table.Td>
-                                    <Table.Td
-                                        className={
-                                            user.status === 'APPROVED'
-                                                ? 'text-green-600'
-                                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                                  user.status === 'New'
-                                                  ? 'text-yellow-600'
-                                                  : 'text-red-600'
-                                        }
+                            {t('exportCSV')}
+                        </Button>
+                    </Flex>
+                </Group>
+            </Paper>
+            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+                {/* No Data State */}
+                {mentorship.length === 0 ? (
+                    <NoData />
+                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                isMobile ? (
+                    <Stack>
+                        {mentorship.map((user) => (
+                            <Card
+                                key={user.createdAt}
+                                shadow="sm"
+                                p="lg"
+                                radius="md"
+                                withBorder
+                            >
+                                <Flex justify="space-between" align="center">
+                                    <Text
+                                        fw={500}
+                                    >{`${user.profile?.firstName} ${user.profile?.middleName} ${user.profile.lastName}`}</Text>
+                                </Flex>
+                                <Divider my="xs" />
+                                <Text size="xs" c="dimmed">
+                                    {DateTime.fromISO(
+                                        user.createdAt ?? '',
+                                    ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                </Text>
+                                <Group mt="md">
+                                    <Button variant="light" size="xs">
+                                        {t('table.edit')}
+                                    </Button>
+                                    <Button
+                                        variant="light"
+                                        size="xs"
+                                        color="red"
                                     >
-                                        {user.status === 'APPROVED'
-                                            ? t('status.approved')
-                                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                              user.status === 'New'
-                                              ? t('status.new')
-                                              : t('status.decline')}
-                                    </Table.Td>
-                                    <Table.Td>
-                                        {user.isActive
-                                            ? t('status.active')
-                                            : t('status.inactive')}
-                                    </Table.Td>
+                                        {t('table.delete')}
+                                    </Button>
+                                </Group>
+                            </Card>
+                        ))}
+                    </Stack>
+                ) : (
+                    <TableScrollContainer minWidth={800} type="native">
+                        <Table
+                            withRowBorders
+                            withColumnBorders
+                            striped
+                            verticalSpacing="md"
+                        >
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th>
+                                        <Checkbox
+                                            // onChange={toggleAll}
+                                            checked={
+                                                selection.length ===
+                                                mentorship.length
+                                            }
+                                            indeterminate={
+                                                selection.length > 0 &&
+                                                selection.length !==
+                                                    mentorship.length
+                                            }
+                                        />
+                                    </Table.Th>
+                                    <Table.Th>{t('table.name')}</Table.Th>
+                                    <Table.Th>
+                                        <EntityColumn
+                                            entity="mentorship"
+                                            field="createdAt"
+                                            label={t('table.createdAt')}
+                                        />
+                                    </Table.Th>
+                                    <Table.Th>{t('table.createdBy')}</Table.Th>
+                                    <Table.Th>
+                                        {t('table.approvalStatus')}
+                                    </Table.Th>
+                                    <Table.Th>{t('table.status')}</Table.Th>
                                     <Can roles={['super_admin']}>
-                                        <Table.Td>
-                                            <Menu width={200}>
-                                                <Menu.Target>
-                                                    <IconDotsVertical
-                                                        size={18}
-                                                        className="cursor-pointer"
-                                                    />
-                                                </Menu.Target>
-                                                <Menu.Dropdown>
-                                                    <Menu.Item>
-                                                        Detail
-                                                    </Menu.Item>
-
-                                                    {user.isActive ? (
-                                                        <Menu.Item
-                                                            color="red"
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        name: user
-                                                                            .profile
-                                                                            .firstName,
-                                                                    },
-                                                                );
-                                                                open();
-                                                            }}
-                                                        >
-                                                            Deactivate
-                                                        </Menu.Item>
-                                                    ) : (
-                                                        <Menu.Item
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        name: user
-                                                                            .profile
-                                                                            .lastName,
-                                                                    },
-                                                                );
-                                                                activationHandlers.open();
-                                                            }}
-                                                        >
-                                                            Activate
-                                                        </Menu.Item>
-                                                    )}
-                                                </Menu.Dropdown>
-                                            </Menu>
-                                        </Table.Td>
+                                        <Table.Th>
+                                            {t('table.actions')}
+                                        </Table.Th>
                                     </Can>
                                 </Table.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
-                    <Modal
-                        opened={opened}
-                        onClose={() => {
-                            close();
-                            setSelectedUser(null);
-                        }}
-                        title="Organization Deactivation"
-                        centered
-                    >
-                        <TextInput
-                            placeholder="Enter the reason for deactivation"
-                            label="Reason"
-                            description="Please provide a reason for deactivating this mentorship."
-                            required
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                        />
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
+                                {mentorship.map((user) => (
+                                    <Table.Tr key={user.id}>
+                                        <Table.Td>
+                                            <Checkbox
+                                                checked={selection.includes(
+                                                    user.id ?? '',
+                                                )}
+                                                // onChange={() =>
+                                                //     toggleRow(user.id ?? '')
+                                                // }
+                                            />
+                                        </Table.Td>
+                                        <Table.Td>{`${user.profile?.firstName} ${user.profile?.middleName} ${user.profile.lastName}`}</Table.Td>
 
-                        <Group mt="xl" justify="flex-end">
-                            <Button variant="default" onClick={close}>
-                                Cancel
-                            </Button>
-                            <Button
-                                color="red"
-                                loading={deactivateUserMutation.isPending}
-                                onClick={async () => {
-                                    if (selectedUser) {
-                                        await deactivateUserMutation.mutateAsync();
-                                        close();
-                                        setSelectedUser(null);
-                                    }
-                                }}
-                            >
-                                Deactivate
-                            </Button>
-                        </Group>
-                    </Modal>
-                    <Modal
-                        opened={openedActivation}
-                        onClose={() => {
-                            activationHandlers.close();
-                            setSelectedUser(null);
-                        }}
-                        title="Organization Deactivation"
-                        centered
-                    >
-                        <Text>
-                            Are you sure you want to activate{' '}
-                            <Text span fw={600}>
-                                {selectedUser?.name}{' '}
+                                        {/* <Table.Td>{user.createdBy}</Table.Td> */}
+                                        <Table.Td>
+                                            {DateTime.fromISO(
+                                                user.createdAt ?? '',
+                                            ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                        </Table.Td>
+                                        <Table.Td>{user.createdBy}</Table.Td>
+                                        <Table.Td
+                                            className={
+                                                user.status === 'APPROVED'
+                                                    ? 'text-green-600'
+                                                    : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                                      user.status === 'New'
+                                                      ? 'text-yellow-600'
+                                                      : 'text-red-600'
+                                            }
+                                        >
+                                            {user.status === 'APPROVED'
+                                                ? t('status.approved')
+                                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                                  user.status === 'New'
+                                                  ? t('status.new')
+                                                  : t('status.decline')}
+                                        </Table.Td>
+                                        <Table.Td>
+                                            {user.isActive
+                                                ? t('status.active')
+                                                : t('status.inactive')}
+                                        </Table.Td>
+                                        <Can roles={['super_admin']}>
+                                            <Table.Td>
+                                                <Menu width={200}>
+                                                    <Menu.Target>
+                                                        <IconDotsVertical
+                                                            size={18}
+                                                            className="cursor-pointer"
+                                                        />
+                                                    </Menu.Target>
+                                                    <Menu.Dropdown>
+                                                        <Menu.Item>
+                                                            Detail
+                                                        </Menu.Item>
+
+                                                        {user.isActive ? (
+                                                            <Menu.Item
+                                                                color="red"
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            name: user
+                                                                                .profile
+                                                                                .firstName,
+                                                                        },
+                                                                    );
+                                                                    open();
+                                                                }}
+                                                            >
+                                                                Deactivate
+                                                            </Menu.Item>
+                                                        ) : (
+                                                            <Menu.Item
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            name: user
+                                                                                .profile
+                                                                                .lastName,
+                                                                        },
+                                                                    );
+                                                                    activationHandlers.open();
+                                                                }}
+                                                            >
+                                                                Activate
+                                                            </Menu.Item>
+                                                        )}
+                                                    </Menu.Dropdown>
+                                                </Menu>
+                                            </Table.Td>
+                                        </Can>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                        <Modal
+                            opened={opened}
+                            onClose={() => {
+                                close();
+                                setSelectedUser(null);
+                            }}
+                            title="Organization Deactivation"
+                            centered
+                        >
+                            <TextInput
+                                placeholder="Enter the reason for deactivation"
+                                label="Reason"
+                                description="Please provide a reason for deactivating this mentorship."
+                                required
+                                value={reason}
+                                onChange={(e) => setReason(e.target.value)}
+                            />
+
+                            <Group mt="xl" justify="flex-end">
+                                <Button variant="default" onClick={close}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="red"
+                                    loading={deactivateUserMutation.isPending}
+                                    onClick={async () => {
+                                        if (selectedUser) {
+                                            await deactivateUserMutation.mutateAsync();
+                                            close();
+                                            setSelectedUser(null);
+                                        }
+                                    }}
+                                >
+                                    Deactivate
+                                </Button>
+                            </Group>
+                        </Modal>
+                        <Modal
+                            opened={openedActivation}
+                            onClose={() => {
+                                activationHandlers.close();
+                                setSelectedUser(null);
+                            }}
+                            title="Organization Deactivation"
+                            centered
+                        >
+                            <Text>
+                                Are you sure you want to activate{' '}
+                                <Text span fw={600}>
+                                    {selectedUser?.name}{' '}
+                                </Text>
+                                Organization?
                             </Text>
-                            Organization?
-                        </Text>
 
-                        <Group mt="xl" justify="flex-end">
-                            <Button
-                                variant="default"
-                                onClick={() => {
-                                    activationHandlers.close();
-                                    setSelectedUser(null);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                loading={activateUserMutation.isPending}
-                                onClick={async () => {
-                                    if (selectedUser) {
-                                        await activateUserMutation.mutateAsync();
+                            <Group mt="xl" justify="flex-end">
+                                <Button
+                                    variant="default"
+                                    onClick={() => {
                                         activationHandlers.close();
                                         setSelectedUser(null);
-                                    }
-                                }}
-                            >
-                                Activate
-                            </Button>
-                        </Group>
-                    </Modal>
-                    <Modal
-                        opened={openedActivation}
-                        onClose={() => {
-                            activationHandlers.close();
-                            setSelectedUser(null);
-                        }}
-                        title="Mentors Deactivation"
-                        centered
-                    >
-                        <Text>
-                            Are you sure you want to Approve{' '}
-                            <Text span fw={600}>
-                                {selectedUser?.name}{' '}
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    loading={activateUserMutation.isPending}
+                                    onClick={async () => {
+                                        if (selectedUser) {
+                                            await activateUserMutation.mutateAsync();
+                                            activationHandlers.close();
+                                            setSelectedUser(null);
+                                        }
+                                    }}
+                                >
+                                    Activate
+                                </Button>
+                            </Group>
+                        </Modal>
+                        <Modal
+                            opened={openedActivation}
+                            onClose={() => {
+                                activationHandlers.close();
+                                setSelectedUser(null);
+                            }}
+                            title="Mentors Deactivation"
+                            centered
+                        >
+                            <Text>
+                                Are you sure you want to Approve{' '}
+                                <Text span fw={600}>
+                                    {selectedUser?.name}{' '}
+                                </Text>
+                                Mentors?
                             </Text>
-                            Mentors?
-                        </Text>
 
-                        <Group mt="xl" justify="flex-end">
-                            <Button
-                                variant="default"
-                                onClick={() => {
-                                    activationHandlers.close();
-                                    setSelectedUser(null);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                loading={approvedMentorsMutation.isPending}
-                                onClick={async () => {
-                                    if (selectedUser) {
-                                        await approvedMentorsMutation.mutateAsync();
+                            <Group mt="xl" justify="flex-end">
+                                <Button
+                                    variant="default"
+                                    onClick={() => {
                                         activationHandlers.close();
                                         setSelectedUser(null);
-                                    }
-                                }}
-                            >
-                                Activate
-                            </Button>
-                        </Group>
-                    </Modal>
-                    <Modal
-                        opened={opened}
-                        onClose={() => {
-                            close();
-                            setSelectedUser(null);
-                        }}
-                        title="Mentor Deactivation"
-                        centered
-                    >
-                        <TextInput
-                            placeholder="Enter the reason for deactivation"
-                            label="Reason"
-                            description="Please provide a reason for decline this mentor."
-                            required
-                            value={note}
-                            onChange={(e) => setNote(e.target.value)}
-                        />
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    loading={approvedMentorsMutation.isPending}
+                                    onClick={async () => {
+                                        if (selectedUser) {
+                                            await approvedMentorsMutation.mutateAsync();
+                                            activationHandlers.close();
+                                            setSelectedUser(null);
+                                        }
+                                    }}
+                                >
+                                    Activate
+                                </Button>
+                            </Group>
+                        </Modal>
+                        <Modal
+                            opened={opened}
+                            onClose={() => {
+                                close();
+                                setSelectedUser(null);
+                            }}
+                            title="Mentor Deactivation"
+                            centered
+                        >
+                            <TextInput
+                                placeholder="Enter the reason for deactivation"
+                                label="Reason"
+                                description="Please provide a reason for decline this mentor."
+                                required
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
+                            />
 
-                        <Group mt="xl" justify="flex-end">
-                            <Button variant="default" onClick={close}>
-                                Cancel
-                            </Button>
-                            <Button
-                                color="red"
-                                loading={declinedMentorsMutation.isPending}
-                                onClick={async () => {
-                                    if (selectedUser) {
-                                        await declinedMentorsMutation.mutateAsync();
-                                        close();
-                                        setSelectedUser(null);
-                                    }
-                                }}
-                            >
-                                Deactivate
-                            </Button>
-                        </Group>
-                    </Modal>
-                </TableScrollContainer>
-            )}
+                            <Group mt="xl" justify="flex-end">
+                                <Button variant="default" onClick={close}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="red"
+                                    loading={declinedMentorsMutation.isPending}
+                                    onClick={async () => {
+                                        if (selectedUser) {
+                                            await declinedMentorsMutation.mutateAsync();
+                                            close();
+                                            setSelectedUser(null);
+                                        }
+                                    }}
+                                >
+                                    Deactivate
+                                </Button>
+                            </Group>
+                        </Modal>
+                    </TableScrollContainer>
+                )}
 
-            {/* <EntityPagination entity="mentorship" total={data?.total ?? 0} /> */}
-        </Paper>
+                {/* <EntityPagination entity="mentorship" total={data?.total ?? 0} /> */}
+            </Paper>
+        </PageContainer>
     );
 };
 

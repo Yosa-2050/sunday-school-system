@@ -1,12 +1,10 @@
 'use client';
 
 import NoData from '@/components/NoData';
+import { PageContainer, PageTitle } from '@/components/PageContainer';
 import { useRouter } from '@/i18n/routing';
 import {
     Button,
-    Card,
-    Divider,
-    Flex,
     Group,
     LoadingOverlay,
     Modal,
@@ -17,7 +15,7 @@ import {
     TextInput,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconArrowLeft, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronRight, IconPin } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     addRegion,
@@ -86,105 +84,106 @@ const CitiesPage = () => {
     }
 
     return (
-        <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-            <Flex align={'center'} justify={'space-between'}>
-                <Group>
-                    <IconArrowLeft
-                        size={16}
-                        onClick={() => router.back()}
-                        className="cursor-pointer"
-                    />
-                    <Text className="font-bold text-xl">{t('title')}</Text>
-                </Group>
-                <Button variant="filled" onClick={() => setModalOpened(true)}>
-                    {t('addCity')}
-                </Button>
-            </Flex>
-            <Divider my="md" />
-
-            <Modal
-                opened={modalOpened}
-                onClose={() => setModalOpened(false)}
-                title={t('addCity')}
-                centered
-            >
-                <TextInput
-                    label={t('cityName')}
-                    value={newCityName}
-                    onChange={(event) =>
-                        setNewCityName(event.currentTarget.value)
-                    }
-                />
-                <Button
-                    onClick={handleAddCity}
-                    mt="md"
-                    loading={mutation.isPending}
+        <PageContainer className="flex flex-col gap-2.5">
+            <Paper shadow="xs" p="md" style={{ borderRadius: '10px' }}>
+                <Group
+                    justify="space-between"
+                    className="w-full border-b border-gray-200"
                 >
-                    {t('submit')}
-                </Button>
-            </Modal>
-
-            {cities.length === 0 ? (
-                <NoData />
-            ) : (
-                <>
-                    <Card mt="md" padding="md" shadow="sm" mb={'md'}>
-                        <Text className="font-bold text-lg">
-                            {t('selectedRegion')}
-                        </Text>
+                    <PageTitle icon={<IconPin size={28} />}>
                         <Text>
                             {t('regionName')}: {regionData?.name}
                         </Text>
-                    </Card>
-                    <ScrollArea>
-                        <Table
-                            striped
-                            highlightOnHover
-                            withRowBorders
-                            withColumnBorders
-                        >
-                            <Table.Thead>
-                                <Table.Tr>
-                                    <Table.Th style={{ textAlign: 'left' }}>
-                                        {t('cityName')}
-                                    </Table.Th>
-                                    <Table.Th style={{ textAlign: 'left' }}>
-                                        {t('isActive')}
-                                    </Table.Th>
-                                    <Table.Th style={{ textAlign: 'center' }}>
-                                        {t('actions')}
-                                    </Table.Th>
-                                </Table.Tr>
-                            </Table.Thead>
-                            <Table.Tbody>
-                                {cities.map((city) => (
-                                    <Table.Tr key={city.id}>
-                                        <Table.Td>{city.name}</Table.Td>
-                                        <Table.Td>
-                                            {city.isActive ? 'Yes' : 'No'}
-                                        </Table.Td>
-                                        <Table.Td
+                    </PageTitle>
+                    <Button
+                        variant="filled"
+                        onClick={() => setModalOpened(true)}
+                    >
+                        {t('addCity')}
+                    </Button>
+                </Group>
+            </Paper>
+            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+                <Modal
+                    opened={modalOpened}
+                    onClose={() => setModalOpened(false)}
+                    title={t('addCity')}
+                    centered
+                >
+                    <TextInput
+                        label={t('cityName')}
+                        value={newCityName}
+                        onChange={(event) =>
+                            setNewCityName(event.currentTarget.value)
+                        }
+                    />
+                    <Button
+                        onClick={handleAddCity}
+                        mt="md"
+                        loading={mutation.isPending}
+                    >
+                        {t('submit')}
+                    </Button>
+                </Modal>
+
+                {cities.length === 0 ? (
+                    <NoData />
+                ) : (
+                    <>
+                        <ScrollArea>
+                            <Table
+                                striped
+                                highlightOnHover
+                                withRowBorders
+                                withColumnBorders
+                            >
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th style={{ textAlign: 'left' }}>
+                                            {t('cityName')}
+                                        </Table.Th>
+                                        <Table.Th style={{ textAlign: 'left' }}>
+                                            {t('isActive')}
+                                        </Table.Th>
+                                        <Table.Th
                                             style={{ textAlign: 'center' }}
                                         >
-                                            <Button
-                                                variant="light"
-                                                onClick={() =>
-                                                    console.log(
-                                                        `Edit ${city.id}`,
-                                                    )
-                                                }
-                                            >
-                                                <IconChevronRight size={16} />
-                                            </Button>
-                                        </Table.Td>
+                                            {t('actions')}
+                                        </Table.Th>
                                     </Table.Tr>
-                                ))}
-                            </Table.Tbody>
-                        </Table>
-                    </ScrollArea>
-                </>
-            )}
-        </Paper>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {cities.map((city) => (
+                                        <Table.Tr key={city.id}>
+                                            <Table.Td>{city.name}</Table.Td>
+                                            <Table.Td>
+                                                {city.isActive ? 'Yes' : 'No'}
+                                            </Table.Td>
+                                            <Table.Td
+                                                style={{ textAlign: 'center' }}
+                                            >
+                                                <Button
+                                                    variant="light"
+                                                    onClick={() =>
+                                                        console.log(
+                                                            `Edit ${city.id}`,
+                                                        )
+                                                    }
+                                                >
+                                                    <IconChevronRight
+                                                        size={16}
+                                                    />
+                                                </Button>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        </ScrollArea>
+                    </>
+                )}
+            </Paper>
+        </PageContainer>
     );
 };
 

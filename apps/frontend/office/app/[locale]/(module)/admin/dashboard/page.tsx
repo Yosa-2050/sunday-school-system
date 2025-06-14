@@ -1,114 +1,78 @@
 'use client';
 
-import { Flex, Grid, Stack, Text } from '@mantine/core';
-import {
-    IconBriefcase,
-    IconSitemapFilled,
-    IconUserFilled,
-    IconUserPlus,
-    IconUsersGroup,
-} from '@tabler/icons-react';
+import { EntityPageLoading } from '@/components/EntityPageLoading';
+import { PageBody, PageContainer, PageTitle } from '@/components/PageContainer';
+import { Card, Grid, Group, Stack, Text, ThemeIcon } from '@mantine/core';
+import { IconDashboard } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchReportAdmin } from 'app/[locale]/_api/admin/fetch-count-totals';
-import { useState } from 'react';
-import ReportCard from './_components/charts/ReportCard';
+import { type StatKeys, stats } from './const/stats.const';
 
 export default function Dashboard() {
-    const [value, setValue] = useState<[Date | null, Date | null]>([
-        null,
-        null,
-    ]);
     const { data, isLoading, error } = useQuery({
         queryKey: ['report'],
-        queryFn: () => fetchReportAdmin(),
+        queryFn: fetchReportAdmin,
     });
 
+    if (isLoading) {
+        return <EntityPageLoading />;
+    }
     return (
-        <Flex w="100%" direction="column" align="start" gap={30}>
-            <Flex w="100%" align="center" justify="space-between">
-                <Text fz={{ base: 18, md: 22, lg: 22 }} fw={600}>
-                    Admin dashboard
-                </Text>
-                {/* <DatePickerInput
-          type="range"
-          size="xs"
-          leftSection={<IconCalendar size={20} />}
-          placeholder="Pick a date"
-          value={value}
-          classNames={{
-            input: dateStyleClasses.date_input,
-            placeholder: dateStyleClasses.date_input_placeholder,
-          }}
-          onChange={setValue}
-        /> */}
-            </Flex>
-            <Stack w="100%" align="stretch" justify="center" p="md">
-                <Grid gutter="md" justify="flex-start">
-                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
-                        <ReportCard
-                            count={data?.totalRegisteredUsers ?? 0}
-                            color={'green'}
-                            title={'Total Users'}
-                            Icon={IconUsersGroup}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
-                        <ReportCard
-                            count={data?.totalPostedJobs ?? 0}
-                            color={'gray'}
-                            title={'Total Jobs'}
-                            Icon={IconBriefcase}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
-                        <ReportCard
-                            count={data?.totalRegisteredAdmin ?? 0}
-                            color={'orange'}
-                            title={'Total Admin'}
-                            Icon={IconUserPlus}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
-                        <ReportCard
-                            count={data?.totalRegisteredEmployer ?? 0}
-                            color={'blue'}
-                            title={'Total Employer'}
-                            Icon={IconSitemapFilled}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>
-                        <ReportCard
-                            count={data?.totalRegisteredJobSeekers ?? 0}
-                            color={'purple'}
-                            title={'Total Job Seeker'}
-                            Icon={IconUserFilled}
-                        />
-                    </Grid.Col>
-                </Grid>
-            </Stack>
+        <PageContainer>
+            <Group
+                justify="space-between"
+                className="w-full border-b border-gray-200"
+            >
+                <PageTitle icon={<IconDashboard size={28} />}>
+                    <Text>Dashboard</Text>
+                </PageTitle>
+            </Group>
 
-            <Stack w="100%" align="stretch" justify="center">
-                <Grid columns={10} w="100%">
-                    {/* <Grid.Col h={400} span={{ base: 10, md: 7, lg: 7 }}>
-              <ReportSnapshot />
-            </Grid.Col> */}
-
-                    {/* <Grid.Col h={400} span={{ base: 10, md: 3, lg: 3 }}>
-                        <UserChart />
-                    </Grid.Col> */}
-
-                    {/* <Grid.Col h={350} span={{ base: 10, md: 5, lg: 4 }}>
-                        <StatsSection />
-                    </Grid.Col>
-                    <Grid.Col h={350} span={{ base: 10, md: 5, lg: 3 }}>
-                        <ReturningUserChart />
-                    </Grid.Col>
-
-                    <Grid.Col h={350} span={{ base: 10, md: 5, lg: 3 }}>
-                        <DeviceBreakdownChart />
-                    </Grid.Col> */}
-                </Grid>
-            </Stack>
-        </Flex>
+            <PageBody>
+                <Stack w="100%" align="stretch" justify="center">
+                    <Grid mt="md">
+                        {Object.entries(data ?? {}).map(([key, value]) => {
+                            const stat = stats[key as StatKeys];
+                            return (
+                                <Grid.Col
+                                    span={{ base: 12, md: 6, lg: 3 }}
+                                    key={key}
+                                >
+                                    <StatisticCard
+                                        title={stat.title}
+                                        count={value}
+                                        icon={stat.icon}
+                                    />
+                                </Grid.Col>
+                            );
+                        })}
+                    </Grid>
+                </Stack>
+            </PageBody>
+        </PageContainer>
     );
 }
+
+type StatisticCardProps = {
+    title: string;
+    count: number;
+    icon: React.ReactNode;
+};
+
+const StatisticCard = ({ title, count, icon }: StatisticCardProps) => {
+    return (
+        <Card withBorder radius="md" p="md" shadow="sm">
+            <Group justify="space-between" mb="xs">
+                <Text size="sm" fw={500}>
+                    {title}
+                </Text>
+                <ThemeIcon variant="light" radius="xl" size="lg" color="blue">
+                    {icon}
+                </ThemeIcon>
+            </Group>
+            <Text size="xl" fw={700}>
+                {count}
+            </Text>
+        </Card>
+    );
+};

@@ -20,7 +20,7 @@ import {
     fetchCategories,
     fetchCities,
     fetchCountries,
-    fetchRegions,
+    fetchRegionsByCountryId,
     fetchSkills,
 } from 'app/[locale]/_api/job-details';
 import {
@@ -135,9 +135,7 @@ const DraftJobEdit = () => {
 
                   // catagories: job.jobCategory.map((cat) => cat.category.id),
                   catagories:
-                      job.jobCategory
-                          ?.map((cat) => cat.category?.id)
-                          .filter(Boolean) ?? [],
+                      job.jobCategory?.map((cat) => cat.category?.id) ?? [],
 
                   isPublished: false,
                   contactEmail: '',
@@ -168,6 +166,11 @@ const DraftJobEdit = () => {
                         description: desc.description,
                         type: desc.type as JobDescriptionType,
                     })) || [],
+                skills: job.jobSkills?.map((skill) => skill.skill) ?? [],
+
+                // catagories: job.jobCategory.map((cat) => cat.category.id),
+                catagories:
+                    job.jobCategory?.map((cat) => cat.category?.id) ?? [],
             };
             methods.reset(defaultValues);
         }
@@ -256,7 +259,7 @@ const DraftJobEdit = () => {
             if (!selectedCountry) {
                 return Promise.resolve([]);
             }
-            return fetchRegions(selectedCountry);
+            return fetchRegionsByCountryId(selectedCountry);
         },
         enabled: !!selectedCountry,
     });
@@ -359,7 +362,13 @@ const DraftJobEdit = () => {
             // Manually check salary values
             const salaryFrom = methods.getValues('salaryFrom');
             const salaryTo = methods.getValues('salaryTo');
-            if (salaryFrom && salaryTo && salaryTo <= salaryFrom) {
+            const salaryType = methods.getValues('salaryType');
+            if (
+                salaryType === 'RANGE' &&
+                salaryFrom &&
+                salaryTo &&
+                salaryTo <= salaryFrom
+            ) {
                 methods.setError('salaryTo', {
                     type: 'manual',
                     message: 'Salary to must be greater than salary from',

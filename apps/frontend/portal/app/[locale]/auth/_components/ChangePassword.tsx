@@ -4,7 +4,6 @@ import { useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Button,
-    Checkbox,
     Group,
     Modal,
     Paper,
@@ -41,6 +40,8 @@ const changePasswordSchema = z
         confirmPassword: z
             .string()
             .min(8, 'Confirm password must be at least 8 characters'),
+
+        agreeToTermsandPrivacyPolicy: z.boolean().default(false),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
         message: "Passwords don't match",
@@ -61,6 +62,7 @@ const ChangePassword = ({ userId }: { userId: string }) => {
         watch,
         formState: { errors },
         reset,
+        setValue,
     } = useForm<ChangePasswordFormValues>({
         resolver: zodResolver(changePasswordSchema),
         defaultValues: {
@@ -100,16 +102,28 @@ const ChangePassword = ({ userId }: { userId: string }) => {
         },
     });
 
+    const updateTerms = (value: boolean) => {
+        setValue('agreeToTermsandPrivacyPolicy', value);
+    };
+
     const onSubmit = (data: ChangePasswordFormValues) => {
         mutate(data);
     };
 
-    const isButtonDisabled = !(newPasswordValue && confirmPasswordValue);
+    const isButtonDisabled = !(
+        newPasswordValue &&
+        confirmPasswordValue &&
+        watch('agreeToTermsandPrivacyPolicy')
+    );
 
     return (
         <>
             <PrivacyModal opened={opened} close={close} />
-            <TermsModal opened={termOpened} close={closeTerm} />
+            <TermsModal
+                opened={termOpened}
+                close={closeTerm}
+                updateTerms={updateTerms}
+            />
             <Paper className="flex items-center justify-center  shadow rounded w-full md:w-1/2">
                 <div className="relative w-full p-8">
                     <Stack>
@@ -175,37 +189,41 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                                         },
                                     }}
                                 />
-                                <Group w={'100%'} justify="center" mt={'lg'}>
-                                    <Checkbox
-                                        size="xs"
-                                        label={
-                                            <Text className="flex items-center gap-1.5">
-                                                I agree to the{' '}
-                                                <Text
-                                                    className="cursor-pointer"
-                                                    c="primary.4"
-                                                    onClick={openTerm}
-                                                >
-                                                    {t('terms')}
-                                                </Text>
-                                                and{' '}
-                                                <Text
-                                                    className="cursor-pointer"
-                                                    c="primary.4"
-                                                    onClick={open}
-                                                >
-                                                    {t('privacy')}
-                                                </Text>
-                                            </Text>
-                                        }
-                                        type="checkbox"
-                                    />
+                                <Text
+                                    className="flex items-center gap-1.5"
+                                    mt={'lg'}
+                                >
+                                    Agree to the{' '}
+                                    <Text
+                                        className="cursor-pointer"
+                                        c="primary.4"
+                                        onClick={openTerm}
+                                    >
+                                        {t('terms')}
+                                    </Text>
+                                    and{' '}
+                                    <Text
+                                        className="cursor-pointer"
+                                        c="primary.4"
+                                        onClick={open}
+                                    >
+                                        {t('privacy')}
+                                    </Text>
+                                </Text>
+                                <Group w={'100%'} justify="center">
                                     <Button
                                         fullWidth
                                         type="submit"
                                         loading={isPending}
                                         disabled={isButtonDisabled}
                                         className="w-full rounded-md bg-teal-600 px-4 py-2 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                                        title={
+                                            watch(
+                                                'agreeToTermsandPrivacyPolicy',
+                                            )
+                                                ? ''
+                                                : 'Please agree to terms and privacy policy'
+                                        }
                                     >
                                         {t('proceedBtn')}
                                     </Button>
@@ -238,7 +256,11 @@ const PrivacyModal = ({ close, opened }: PrivacyModalProps) => {
     );
 };
 
-const TermsModal = ({ close, opened }: PrivacyModalProps) => {
+const TermsModal = ({
+    close,
+    opened,
+    updateTerms,
+}: PrivacyModalProps & { updateTerms: (value: boolean) => void }) => {
     return (
         <Modal
             opened={opened}
@@ -246,7 +268,7 @@ const TermsModal = ({ close, opened }: PrivacyModalProps) => {
             title="Terms of Service"
             size="50%"
         >
-            <TermsAndConditions />
+            <TermsAndConditions updateTerms={updateTerms} close={close} />
         </Modal>
     );
 };

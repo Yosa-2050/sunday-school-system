@@ -90,6 +90,11 @@ const baseTheme = ({
                     },
                 },
             },
+            Table: {
+                defaultProps: {
+                    verticalSpacing: 'xs',
+                },
+            },
             Card: {
                 defaultProps: {
                     withBorder: true,

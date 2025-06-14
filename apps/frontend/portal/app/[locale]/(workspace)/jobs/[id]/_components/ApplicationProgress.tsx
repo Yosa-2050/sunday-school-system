@@ -3,6 +3,7 @@ import {
     Badge,
     Button,
     Card,
+    Flex,
     Group,
     LoadingOverlay,
     Stack,
@@ -24,7 +25,7 @@ const CanApply = {
     profilePic: 'Profile Picture',
     profile: 'Profile Information',
     education: 'Education',
-    experiance: 'Experiance',
+    experiance: 'Experience',
 } as const;
 
 export const ApplicationProgress = ({
@@ -59,11 +60,18 @@ export const ApplicationProgress = ({
                         if (CanApply?.[key as keyof typeof CanApply]) {
                             return (
                                 <Group justify={'space-between'} key={key}>
-                                    <Text size="xs">
-                                        {CanApply?.[
-                                            key as keyof typeof CanApply
-                                        ] ?? ''}
-                                    </Text>
+                                    <Flex gap="xs" align="center">
+                                        <Text size="xs">
+                                            {CanApply?.[
+                                                key as keyof typeof CanApply
+                                            ] ?? ''}
+                                        </Text>
+                                        {(key === 'profile' ||
+                                            key === 'cv' ||
+                                            key === 'coverLetter') && (
+                                            <Text c="red">*</Text>
+                                        )}
+                                    </Flex>
                                     {value ? (
                                         <Badge
                                             color="green"
