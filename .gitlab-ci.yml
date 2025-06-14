@@ -59,5 +59,7 @@ staging:
     - echo "Using version: $NEXT_PUBLIC_APP_VERSION"
     - pnpm run format
     - pnpm run build
-    - curl -X GET "$COOLIFY_URL/api/v1/deploy?tag=shega&force=false" \
+    - |
+      curl -X GET "$COOLIFY_URL/api/v1/deploy?tag=shega&force=false" \
         -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN"
+
