@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Box,
     Button,
-    Checkbox,
     Group,
     Modal,
     PasswordInput,
@@ -41,6 +40,7 @@ const changePasswordSchema = z
         confirmPassword: z
             .string()
             .min(8, 'Confirm password must be at least 8 characters'),
+        agreeToTermsandPrivacyPolicy: z.boolean().default(false),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
         message: "Passwords don't match",
@@ -59,9 +59,11 @@ const ChangePassword = ({ userId }: { userId: string }) => {
     const {
         register,
         handleSubmit,
+        control,
         watch,
         formState: { errors },
         reset,
+        setValue,
     } = useForm<ChangePasswordFormValues>({
         resolver: zodResolver(changePasswordSchema),
         defaultValues: {
@@ -101,6 +103,10 @@ const ChangePassword = ({ userId }: { userId: string }) => {
         },
     });
 
+    const updateTerms = (value: boolean) => {
+        setValue('agreeToTermsandPrivacyPolicy', value);
+    };
+
     const onSubmit = (data: ChangePasswordFormValues) => {
         mutate(data);
     };
@@ -110,7 +116,11 @@ const ChangePassword = ({ userId }: { userId: string }) => {
     return (
         <>
             <PrivacyModal opened={opened} close={close} />
-            <TermsModal opened={termOpened} close={closeTerm} />
+            <TermsModal
+                opened={termOpened}
+                close={closeTerm}
+                updateTerms={updateTerms}
+            />
             <Box className="flex w-1/2 items-center justify-center bg-white">
                 <div className="relative w-full p-8">
                     <Stack>
@@ -163,31 +173,28 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                                         },
                                     }}
                                 />
+                                <Text
+                                    className="flex items-center gap-1.5"
+                                    mt={'lg'}
+                                >
+                                    Agree to the{' '}
+                                    <Text
+                                        className="cursor-pointer"
+                                        c="primary.4"
+                                        onClick={openTerm}
+                                    >
+                                        {t('terms')}
+                                    </Text>
+                                    and{' '}
+                                    <Text
+                                        className="cursor-pointer"
+                                        c="primary.4"
+                                        onClick={open}
+                                    >
+                                        {t('privacy')}
+                                    </Text>
+                                </Text>
                                 <Group w={'100%'} justify="center" mt={'lg'}>
-                                    <Checkbox
-                                        size="xs"
-                                        label={
-                                            <Text className="flex items-center gap-1.5">
-                                                I agree to the{' '}
-                                                <Text
-                                                    className="cursor-pointer"
-                                                    c="primary.4"
-                                                    onClick={openTerm}
-                                                >
-                                                    {t('terms')}
-                                                </Text>
-                                                and{' '}
-                                                <Text
-                                                    className="cursor-pointer"
-                                                    c="primary.4"
-                                                    onClick={open}
-                                                >
-                                                    {t('privacy')}
-                                                </Text>
-                                            </Text>
-                                        }
-                                        type="checkbox"
-                                    />
                                     <Button
                                         type="submit"
                                         loading={isPending}
@@ -225,7 +232,11 @@ const PrivacyModal = ({ close, opened }: PrivacyModalProps) => {
     );
 };
 
-const TermsModal = ({ close, opened }: PrivacyModalProps) => {
+const TermsModal = ({
+    close,
+    opened,
+    updateTerms,
+}: PrivacyModalProps & { updateTerms: (value: boolean) => void }) => {
     return (
         <Modal
             opened={opened}
@@ -233,7 +244,7 @@ const TermsModal = ({ close, opened }: PrivacyModalProps) => {
             title="Terms of Service"
             size="50%"
         >
-            <TermsAndConditions />
+            <TermsAndConditions updateTerms={updateTerms} close={close} />
         </Modal>
     );
 };

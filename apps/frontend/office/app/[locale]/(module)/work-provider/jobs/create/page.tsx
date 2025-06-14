@@ -249,7 +249,13 @@ export default function PostJobPage() {
             // Manually check salary values
             const salaryFrom = methods.getValues('salaryFrom');
             const salaryTo = methods.getValues('salaryTo');
-            if (salaryFrom && salaryTo && salaryTo <= salaryFrom) {
+            const salaryType = methods.getValues('salaryType');
+            if (
+                salaryType === 'RANGE' &&
+                salaryFrom &&
+                salaryTo &&
+                salaryTo <= salaryFrom
+            ) {
                 methods.setError('salaryTo', {
                     type: 'manual',
                     message: 'Salary to must be greater than salary from',

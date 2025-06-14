@@ -39,6 +39,7 @@ import { IconDotsVertical, IconDownload, IconX } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import Can from '@/components/Can';
+import { PageContainer } from '@/components/PageContainer';
 import { exportSelectedUsers } from 'app/[locale]/_api/users/export-selected-users';
 import { type Daum, fetchUsers } from 'app/[locale]/_api/users/fetch-user';
 import {
@@ -282,393 +283,414 @@ const UsersPage = () => {
         : [];
 
     return (
-        <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-            <Flex align="center" justify="space-between" className="p-4">
-                <Text className="font-bold text-xl">{t('title')}</Text>
-                <CreateUser />
-            </Flex>
-
-            <Divider my="md" />
-
-            {/* Search, Filter, Sort Controls */}
-            <Group justify="space-between" className="mb-4">
-                <EntitySearch
-                    entity="users"
-                    placeholder={t('searchPlaceholder')}
-                    className="!w-[300px]"
-                />
-                <Flex gap={'xs'} align={'center'}>
-                    <EntityFilter
-                        entity="users"
-                        filterOptions={roles}
-                        mode="select"
-                        field="roles.role"
-                        placeholder="Filter By Role"
-                    />
-                    <EntityFilter
-                        entity="users"
-                        filterOptions={[
-                            { value: '', label: t('status.all') },
-                            { value: 'true', label: t('status.active') },
-                            { value: 'false', label: t('status.inactive') },
-                        ]}
-                        mode="select"
-                        field="isActive"
-                        placeholder="Filter By Status"
-                    />
-                    <Button
-                        variant="light"
-                        leftSection={<IconDownload size={18} />}
-                        onClick={() => {
-                            const payload =
-                                selection.length === 0
-                                    ? entityParamSerializer({
-                                          ...entityParams,
-                                          pp: data?.total,
-                                      })
-                                    : selection;
-                            const type: 'filter' | 'selected' =
-                                selection.length === 0 ? 'filter' : 'selected';
-                            exportMutation.mutate({ payload, type });
-                        }}
-                        loading={exportMutation.isPending}
-                    >
-                        {t('exportCSV')}
-                    </Button>
+        <PageContainer className="flex flex-col gap-2.5">
+            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+                <Flex align="center" justify="space-between" className="p-4">
+                    <Text className="font-bold text-xl">{t('title')}</Text>
+                    <CreateUser />
                 </Flex>
-            </Group>
 
-            {/* Active Filters and Sort */}
-            <Group gap="sm" className="mb-4">
-                {activeFilters.map((group) => (
-                    <Group key={group.type} gap="sm">
-                        <Text size="sm" c="dimmed">
-                            {group.type}:
-                        </Text>
-                        {group.filters.map((filter) => (
+                <Divider my="md" />
+
+                {/* Search, Filter, Sort Controls */}
+                <Group justify="space-between" className="mb-4">
+                    <EntitySearch
+                        entity="users"
+                        placeholder={t('searchPlaceholder')}
+                        className="!w-[300px]"
+                    />
+                    <Flex gap={'xs'} align={'center'}>
+                        <EntityFilter
+                            entity="users"
+                            filterOptions={roles}
+                            mode="select"
+                            field="roles.role"
+                            placeholder="Filter By Role"
+                        />
+                        <EntityFilter
+                            entity="users"
+                            filterOptions={[
+                                { value: '', label: t('status.all') },
+                                { value: 'true', label: t('status.active') },
+                                { value: 'false', label: t('status.inactive') },
+                            ]}
+                            mode="select"
+                            field="isActive"
+                            placeholder="Filter By Status"
+                        />
+                        <Button
+                            variant="light"
+                            leftSection={<IconDownload size={18} />}
+                            onClick={() => {
+                                const payload =
+                                    selection.length === 0
+                                        ? entityParamSerializer({
+                                              ...entityParams,
+                                              pp: data?.total,
+                                          })
+                                        : selection;
+                                const type: 'filter' | 'selected' =
+                                    selection.length === 0
+                                        ? 'filter'
+                                        : 'selected';
+                                exportMutation.mutate({ payload, type });
+                            }}
+                            loading={exportMutation.isPending}
+                        >
+                            {t('exportCSV')}
+                        </Button>
+                    </Flex>
+                </Group>
+            </Paper>
+
+            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+                {/* Active Filters and Sort */}
+                <Group gap="sm" className="mb-4">
+                    {activeFilters.map((group) => (
+                        <Group key={group.type} gap="sm">
+                            <Text size="sm" c="dimmed">
+                                {group.type}:
+                            </Text>
+                            {group.filters.map((filter) => (
+                                <Badge
+                                    key={filter.value}
+                                    rightSection={
+                                        <IconX
+                                            size={12}
+                                            onClick={() => {
+                                                if (group.type === 'Role') {
+                                                    handleRoleSelect(
+                                                        filters?.roles.filter(
+                                                            (r) =>
+                                                                r !==
+                                                                filter.value,
+                                                        ) || [],
+                                                    );
+                                                } else if (
+                                                    group.type === 'Status'
+                                                ) {
+                                                    handleStatusChange('');
+                                                }
+                                            }}
+                                        />
+                                    }
+                                >
+                                    {filter.label}
+                                </Badge>
+                            ))}
+                        </Group>
+                    ))}
+                    {filters?.sort && Object.keys(filters.sort).length > 0 && (
+                        <Group gap="sm">
+                            <Text size="sm" c="dimmed">
+                                Sort:
+                            </Text>
                             <Badge
-                                key={filter.value}
                                 rightSection={
                                     <IconX
                                         size={12}
-                                        onClick={() => {
-                                            if (group.type === 'Role') {
-                                                handleRoleSelect(
-                                                    filters?.roles.filter(
-                                                        (r) =>
-                                                            r !== filter.value,
-                                                    ) || [],
-                                                );
-                                            } else if (
-                                                group.type === 'Status'
-                                            ) {
-                                                handleStatusChange('');
-                                            }
-                                        }}
+                                        onClick={() =>
+                                            setFilters({ ...filters, sort: {} })
+                                        }
                                     />
                                 }
                             >
-                                {filter.label}
+                                {Object.keys(filters.sort)[0]}
+                                {
+                                    Object.values(
+                                        filters.sort,
+                                    )[0] as React.ReactNode
+                                }
                             </Badge>
-                        ))}
-                    </Group>
-                ))}
-                {filters?.sort && Object.keys(filters.sort).length > 0 && (
-                    <Group gap="sm">
-                        <Text size="sm" c="dimmed">
-                            Sort:
-                        </Text>
-                        <Badge
-                            rightSection={
-                                <IconX
-                                    size={12}
-                                    onClick={() =>
-                                        setFilters({ ...filters, sort: {} })
-                                    }
-                                />
-                            }
-                        >
-                            {Object.keys(filters.sort)[0]}
-                            {Object.values(filters.sort)[0] as React.ReactNode}
-                        </Badge>
-                    </Group>
-                )}
-            </Group>
+                        </Group>
+                    )}
+                </Group>
 
-            {/* No Data State */}
-            {users.length === 0 ? (
-                <NoData />
-            ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-            isMobile ? (
-                <Stack>
-                    {users.map((user: Daum) => (
-                        <Card
-                            key={user.email}
-                            shadow="sm"
-                            p="lg"
-                            radius="md"
-                            withBorder
+                {/* No Data State */}
+                {users.length === 0 ? (
+                    <NoData />
+                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                isMobile ? (
+                    <Stack>
+                        {users.map((user: Daum) => (
+                            <Card
+                                key={user.email}
+                                shadow="sm"
+                                p="lg"
+                                radius="md"
+                                withBorder
+                            >
+                                <Flex justify="space-between" align="center">
+                                    <Text fw={500}>{user.fullName}</Text>
+                                    <Badge
+                                        color={user.isActive ? 'green' : 'red'}
+                                    >
+                                        {user.isActive
+                                            ? t('status.active')
+                                            : t('status.inactive')}
+                                    </Badge>
+                                </Flex>
+                                <Divider my="xs" />
+                                <Text size="sm">{user.email}</Text>
+                                <Text size="xs" c="dimmed">
+                                    {DateTime.fromISO(
+                                        user.createdDate ?? '',
+                                    ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                </Text>
+                                <Group mt="md">
+                                    <Button variant="light" size="xs">
+                                        {t('table.edit')}
+                                    </Button>
+                                    <Button
+                                        variant="light"
+                                        size="xs"
+                                        color="red"
+                                    >
+                                        {t('table.delete')}
+                                    </Button>
+                                </Group>
+                            </Card>
+                        ))}
+                    </Stack>
+                ) : (
+                    <TableScrollContainer minWidth={800} type="native">
+                        <Table
+                            withRowBorders
+                            withColumnBorders
+                            striped
+                            verticalSpacing="xs"
                         >
-                            <Flex justify="space-between" align="center">
-                                <Text fw={500}>{user.fullName}</Text>
-                                <Badge color={user.isActive ? 'green' : 'red'}>
-                                    {user.isActive
-                                        ? t('status.active')
-                                        : t('status.inactive')}
-                                </Badge>
-                            </Flex>
-                            <Divider my="xs" />
-                            <Text size="sm">{user.email}</Text>
-                            <Text size="xs" c="dimmed">
-                                {DateTime.fromISO(
-                                    user.createdDate ?? '',
-                                ).toFormat('yyyy-MM-dd HH:mm:ss')}
-                            </Text>
-                            <Group mt="md">
-                                <Button variant="light" size="xs">
-                                    {t('table.edit')}
-                                </Button>
-                                <Button variant="light" size="xs" color="red">
-                                    {t('table.delete')}
-                                </Button>
-                            </Group>
-                        </Card>
-                    ))}
-                </Stack>
-            ) : (
-                <TableScrollContainer minWidth={800} type="native">
-                    <Table
-                        withRowBorders
-                        withColumnBorders
-                        striped
-                        verticalSpacing="xs"
-                    >
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th>
-                                    <Checkbox
-                                        onChange={toggleAll}
-                                        checked={
-                                            selection.length === users.length
-                                        }
-                                        indeterminate={
-                                            selection.length > 0 &&
-                                            selection.length !== users.length
-                                        }
-                                    />
-                                </Table.Th>
-                                <Table.Th>{t('table.fullName')}</Table.Th>
-                                <Table.Th>{t('table.email')}</Table.Th>
-                                <Table.Th>{t('table.role')}</Table.Th>
-                                <Table.Th>{t('table.createdBy')}</Table.Th>
-                                <Table.Th>
-                                    <EntityColumn
-                                        entity="users"
-                                        field="createdAt"
-                                        label={t('table.createdAt')}
-                                    />
-                                </Table.Th>
-                                <Table.Th>{t('table.status')}</Table.Th>
-                                <Can roles={['super_admin']}>
-                                    <Table.Th>{t('table.actions')}</Table.Th>
-                                </Can>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
-                            {users.map((user: Daum) => (
-                                <Table.Tr key={user.id}>
-                                    <Table.Td>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th>
                                         <Checkbox
-                                            checked={selection.includes(
-                                                user.id ?? '',
-                                            )}
-                                            onChange={() =>
-                                                toggleRow(user.id ?? '')
+                                            onChange={toggleAll}
+                                            checked={
+                                                selection.length ===
+                                                users.length
+                                            }
+                                            indeterminate={
+                                                selection.length > 0 &&
+                                                selection.length !==
+                                                    users.length
                                             }
                                         />
-                                    </Table.Td>
-                                    <Table.Td>{user.fullName}</Table.Td>
-                                    <Table.Td>
-                                        <Link
-                                            href={`mailto:${user.email}`}
-                                            className="hover:underline"
-                                        >
-                                            {user.email}
-                                        </Link>
-                                    </Table.Td>
-                                    <Table.Td>
-                                        {user.role === 'WORK_PROVIDER'
-                                            ? 'Employer'
-                                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                              user.role === 'ADMINISTRATOR'
-                                              ? 'Administrator'
-                                              : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                                user.role === 'MENTOR'
-                                                ? 'Mentor'
-                                                : 'Job Seeker'}
-                                    </Table.Td>
-                                    <Table.Td>{user.createdBy}</Table.Td>
-                                    <Table.Td>
-                                        {DateTime.fromISO(
-                                            user.createdDate ?? '',
-                                        ).toFormat('dd-mm-yyyy')}
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <Pill
-                                            variant="filled"
-                                            className={`bg-gray-100 ${user.isActive ? 'text-green-600' : 'text-red-600'}`}
-                                        >
-                                            {user.isActive
-                                                ? t('status.active')
-                                                : t('status.inactive')}
-                                        </Pill>
-                                    </Table.Td>
-
+                                    </Table.Th>
+                                    <Table.Th>{t('table.fullName')}</Table.Th>
+                                    <Table.Th>{t('table.email')}</Table.Th>
+                                    <Table.Th>{t('table.role')}</Table.Th>
+                                    <Table.Th>{t('table.createdBy')}</Table.Th>
+                                    <Table.Th>
+                                        <EntityColumn
+                                            entity="users"
+                                            field="createdAt"
+                                            label={t('table.createdAt')}
+                                        />
+                                    </Table.Th>
+                                    <Table.Th>{t('table.status')}</Table.Th>
                                     <Can roles={['super_admin']}>
-                                        <Table.Td>
-                                            <Menu width={200}>
-                                                <Menu.Target>
-                                                    <IconDotsVertical
-                                                        size={18}
-                                                        className="cursor-pointer"
-                                                    />
-                                                </Menu.Target>
-                                                <Menu.Dropdown>
-                                                    {user.isActive ? (
-                                                        <Menu.Item
-                                                            color="red"
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        fullName:
-                                                                            user.fullName ??
-                                                                            '',
-                                                                    },
-                                                                );
-                                                                open();
-                                                            }}
-                                                        >
-                                                            Deactivate
-                                                        </Menu.Item>
-                                                    ) : (
-                                                        <Menu.Item
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        fullName:
-                                                                            user.fullName ??
-                                                                            '',
-                                                                    },
-                                                                );
-                                                                activationHandlers.open();
-                                                            }}
-                                                        >
-                                                            Activate
-                                                        </Menu.Item>
-                                                    )}
-                                                </Menu.Dropdown>
-                                            </Menu>
-                                        </Table.Td>
+                                        <Table.Th>
+                                            {t('table.actions')}
+                                        </Table.Th>
                                     </Can>
                                 </Table.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
-                    <Modal
-                        opened={opened}
-                        onClose={() => {
-                            close();
-                            setSelectedUser(null);
-                        }}
-                        title="User Deactivation"
-                        centered
-                    >
-                        <TextInput
-                            placeholder="Enter the reason for deactivation"
-                            label="Reason"
-                            description="Please provide a reason for deactivating this user."
-                            required
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                        />
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
+                                {users.map((user: Daum) => (
+                                    <Table.Tr key={user.id}>
+                                        <Table.Td>
+                                            <Checkbox
+                                                checked={selection.includes(
+                                                    user.id ?? '',
+                                                )}
+                                                onChange={() =>
+                                                    toggleRow(user.id ?? '')
+                                                }
+                                            />
+                                        </Table.Td>
+                                        <Table.Td>{user.fullName}</Table.Td>
+                                        <Table.Td>
+                                            <Link
+                                                href={`mailto:${user.email}`}
+                                                className="hover:underline"
+                                            >
+                                                {user.email}
+                                            </Link>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            {user.role === 'WORK_PROVIDER'
+                                                ? 'Employer'
+                                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                                  user.role === 'ADMINISTRATOR'
+                                                  ? 'Administrator'
+                                                  : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                                    user.role === 'MENTOR'
+                                                    ? 'Mentor'
+                                                    : 'Job Seeker'}
+                                        </Table.Td>
+                                        <Table.Td>{user.createdBy}</Table.Td>
+                                        <Table.Td>
+                                            {DateTime.fromISO(
+                                                user.createdDate ?? '',
+                                            ).toFormat('dd-mm-yyyy')}
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Pill
+                                                variant="filled"
+                                                className={`bg-gray-100 ${user.isActive ? 'text-green-600' : 'text-red-600'}`}
+                                            >
+                                                {user.isActive
+                                                    ? t('status.active')
+                                                    : t('status.inactive')}
+                                            </Pill>
+                                        </Table.Td>
 
-                        <Group mt="xl" justify="flex-end">
-                            <Button variant="default" onClick={close}>
-                                Cancel
-                            </Button>
-                            <Button
-                                color="red"
-                                loading={deactivateUserMutation.isPending}
-                                onClick={async () => {
-                                    if (selectedUser) {
-                                        await deactivateUserMutation.mutateAsync(
-                                            {
-                                                userId: selectedUser.id,
-                                                reason,
-                                            },
-                                        );
-                                        close();
-                                        setSelectedUser(null);
-                                    }
-                                }}
-                            >
-                                Deactivate
-                            </Button>
-                        </Group>
-                    </Modal>
-                    <Modal
-                        opened={openedActivation}
-                        onClose={() => {
-                            activationHandlers.close();
-                            setSelectedUser(null);
-                        }}
-                        title="User Activation"
-                        centered
-                    >
-                        <Text>
-                            Are you sure you want to activate{' '}
-                            <Text span fw={600}>
-                                {selectedUser?.fullName}{' '}
+                                        <Can roles={['super_admin']}>
+                                            <Table.Td>
+                                                <Menu width={200}>
+                                                    <Menu.Target>
+                                                        <IconDotsVertical
+                                                            size={18}
+                                                            className="cursor-pointer"
+                                                        />
+                                                    </Menu.Target>
+                                                    <Menu.Dropdown>
+                                                        {user.isActive ? (
+                                                            <Menu.Item
+                                                                color="red"
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            fullName:
+                                                                                user.fullName ??
+                                                                                '',
+                                                                        },
+                                                                    );
+                                                                    open();
+                                                                }}
+                                                            >
+                                                                Deactivate
+                                                            </Menu.Item>
+                                                        ) : (
+                                                            <Menu.Item
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            fullName:
+                                                                                user.fullName ??
+                                                                                '',
+                                                                        },
+                                                                    );
+                                                                    activationHandlers.open();
+                                                                }}
+                                                            >
+                                                                Activate
+                                                            </Menu.Item>
+                                                        )}
+                                                    </Menu.Dropdown>
+                                                </Menu>
+                                            </Table.Td>
+                                        </Can>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                        <Modal
+                            opened={opened}
+                            onClose={() => {
+                                close();
+                                setSelectedUser(null);
+                            }}
+                            title="User Deactivation"
+                            centered
+                        >
+                            <TextInput
+                                placeholder="Enter the reason for deactivation"
+                                label="Reason"
+                                description="Please provide a reason for deactivating this user."
+                                required
+                                value={reason}
+                                onChange={(e) => setReason(e.target.value)}
+                            />
+
+                            <Group mt="xl" justify="flex-end">
+                                <Button variant="default" onClick={close}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="red"
+                                    loading={deactivateUserMutation.isPending}
+                                    onClick={async () => {
+                                        if (selectedUser) {
+                                            await deactivateUserMutation.mutateAsync(
+                                                {
+                                                    userId: selectedUser.id,
+                                                    reason,
+                                                },
+                                            );
+                                            close();
+                                            setSelectedUser(null);
+                                        }
+                                    }}
+                                >
+                                    Deactivate
+                                </Button>
+                            </Group>
+                        </Modal>
+                        <Modal
+                            opened={openedActivation}
+                            onClose={() => {
+                                activationHandlers.close();
+                                setSelectedUser(null);
+                            }}
+                            title="User Activation"
+                            centered
+                        >
+                            <Text>
+                                Are you sure you want to activate{' '}
+                                <Text span fw={600}>
+                                    {selectedUser?.fullName}{' '}
+                                </Text>
+                                ?
                             </Text>
-                            ?
-                        </Text>
 
-                        <Group mt="xl" justify="flex-end">
-                            <Button
-                                variant="default"
-                                onClick={() => {
-                                    activationHandlers.close();
-                                    setSelectedUser(null);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                // color="green"
-                                loading={activateUserMutation.isPending}
-                                onClick={async () => {
-                                    if (selectedUser) {
-                                        await activateUserMutation.mutateAsync(
-                                            selectedUser.id,
-                                        );
+                            <Group mt="xl" justify="flex-end">
+                                <Button
+                                    variant="default"
+                                    onClick={() => {
                                         activationHandlers.close();
                                         setSelectedUser(null);
-                                    }
-                                }}
-                            >
-                                Activate
-                            </Button>
-                        </Group>
-                    </Modal>
-                </TableScrollContainer>
-            )}
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    // color="green"
+                                    loading={activateUserMutation.isPending}
+                                    onClick={async () => {
+                                        if (selectedUser) {
+                                            await activateUserMutation.mutateAsync(
+                                                selectedUser.id,
+                                            );
+                                            activationHandlers.close();
+                                            setSelectedUser(null);
+                                        }
+                                    }}
+                                >
+                                    Activate
+                                </Button>
+                            </Group>
+                        </Modal>
+                    </TableScrollContainer>
+                )}
 
-            {/* Pagination */}
-            <EntityPagination entity="users" total={data?.total ?? 0} />
-        </Paper>
+                {/* Pagination */}
+                <EntityPagination entity="users" total={data?.total ?? 0} />
+            </Paper>
+        </PageContainer>
     );
 };
 export default UsersPage;

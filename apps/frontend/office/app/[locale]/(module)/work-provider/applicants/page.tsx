@@ -30,7 +30,13 @@ const Page = () => {
     } = useInfiniteQuery<JobsResponse, Error>({
         queryKey: ['jobs'],
         queryFn: ({ pageParam = 1 }) =>
-            fetchJobs(entityParamSerializer({ p: pageParam as number, pp: 1 })),
+            fetchJobs(
+                entityParamSerializer({
+                    p: pageParam as number,
+                    pp: 10,
+                    f: [{ f: 'program.status', v: 'APPROVED', o: 'eq' }],
+                }),
+            ),
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
             const next = lastPage.page + 1;

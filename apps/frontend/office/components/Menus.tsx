@@ -1,11 +1,16 @@
 import {
-    IconBriefcase, // Added for jobs
+    IconBriefcase,
     IconBuilding,
     IconCategory,
+    IconClipboardList,
+    IconFileText,
+    IconHierarchy,
     IconHome,
-    IconMapPin, // Added for locations
-    IconStar, // Added for skills
-    IconUser,
+    IconMapPin,
+    IconPencil,
+    IconStar,
+    IconUserSquare,
+    IconUsersGroup,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import type { MenuTree } from './side-menu/SideMenu';
@@ -22,7 +27,7 @@ export const Menus = (): MenuTree[] => {
         },
         {
             label: t('users'),
-            icon: <IconUser stroke={1.4} size={20} />,
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
             link: '/admin/users',
             role: 'administrator',
         },
@@ -34,26 +39,20 @@ export const Menus = (): MenuTree[] => {
         },
         {
             label: t('mentorManagement'),
-            icon: <IconBuilding stroke={1.4} size={20} />,
+            icon: <IconUserSquare stroke={1.4} size={20} />,
             link: '/admin/mentors',
             role: 'administrator',
         },
         {
             label: t('mentorship'),
-            icon: <IconBuilding stroke={1.4} size={20} />,
+            icon: <IconHierarchy stroke={1.4} size={20} />,
             link: '/admin/mentorships',
             role: 'administrator',
         },
         {
             label: t('job-explorer'),
-            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            icon: <IconBriefcase stroke={1.4} size={20} />,
             link: '/admin/jobs',
-            role: 'administrator',
-        },
-        {
-            label: t('mentorship'),
-            icon: <IconBuilding stroke={1.4} size={20} />,
-            link: '/admin/mentorships',
             role: 'administrator',
         },
         {
@@ -63,42 +62,44 @@ export const Menus = (): MenuTree[] => {
             children: [
                 {
                     label: t('locations'),
-                    icon: <IconMapPin stroke={1.4} size={20} />, // Updated icon for locations
+                    icon: <IconMapPin stroke={1.4} size={20} />,
                     link: '/admin/locations',
                     role: 'administrator',
                 },
                 {
                     label: t('skills'),
-                    icon: <IconStar stroke={1.4} size={20} />, // Updated icon for skills
+                    icon: <IconStar stroke={1.4} size={20} />,
                     link: '/admin/skills',
                     role: 'administrator',
                 },
                 {
                     label: t('categories'),
-                    icon: <IconCategory stroke={1.4} size={20} />, // Updated icon for categories
+                    icon: <IconCategory stroke={1.4} size={20} />,
                     link: '/admin/categories',
                     role: 'administrator',
                 },
             ],
         },
+        // Work Provider Role
         {
             label: t('job-explorer'),
-            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            icon: <IconClipboardList stroke={1.4} size={20} />,
             link: '/work-provider/jobs',
             role: 'work_provider',
         },
         {
             label: t('job-explorer-draft-jobs'),
-            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            icon: <IconPencil stroke={1.4} size={20} />,
             link: '/work-provider/draft-jobs',
             role: 'work_provider',
         },
         {
             label: t('job-explorer-applicants'),
-            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            icon: <IconFileText stroke={1.4} size={20} />,
             link: '/work-provider/applicants',
             role: 'work_provider',
         },
+        // Super Admin Role
         {
             label: t('dashboard'),
             icon: <IconHome stroke={1.4} size={20} />,
@@ -107,7 +108,7 @@ export const Menus = (): MenuTree[] => {
         },
         {
             label: t('users'),
-            icon: <IconUser stroke={1.4} size={20} />,
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
             link: '/admin/users',
             role: 'super_admin',
         },
@@ -119,19 +120,19 @@ export const Menus = (): MenuTree[] => {
         },
         {
             label: t('mentorManagement'),
-            icon: <IconBuilding stroke={1.4} size={20} />,
+            icon: <IconUserSquare stroke={1.4} size={20} />,
             link: '/admin/mentors',
             role: 'super_admin',
         },
         {
             label: t('job-explorer'),
-            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            icon: <IconBriefcase stroke={1.4} size={20} />,
             link: '/admin/jobs',
             role: 'super_admin',
         },
         {
             label: t('mentorship'),
-            icon: <IconBuilding stroke={1.4} size={20} />,
+            icon: <IconHierarchy stroke={1.4} size={20} />,
             link: '/admin/programs',
             role: 'super_admin',
         },
@@ -142,33 +143,34 @@ export const Menus = (): MenuTree[] => {
             children: [
                 {
                     label: t('locations'),
-                    icon: <IconMapPin stroke={1.4} size={20} />, // Updated icon for locations
+                    icon: <IconMapPin stroke={1.4} size={20} />,
                     link: '/admin/locations',
                     role: 'super_admin',
                 },
                 {
                     label: t('skills'),
-                    icon: <IconStar stroke={1.4} size={20} />, // Updated icon for skills
+                    icon: <IconStar stroke={1.4} size={20} />,
                     link: '/admin/skills',
                     role: 'super_admin',
                 },
                 {
                     label: t('categories'),
-                    icon: <IconCategory stroke={1.4} size={20} />, // Updated icon for categories
+                    icon: <IconCategory stroke={1.4} size={20} />,
                     link: '/admin/categories',
                     role: 'super_admin',
                 },
             ],
         },
+        // Mentor Role
         {
             label: t('mentorship'),
-            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            icon: <IconHierarchy stroke={1.4} size={20} />,
             link: '/mentor/mentorship',
             role: 'mentor',
         },
         {
             label: t('draft-mentorship'),
-            icon: <IconBriefcase stroke={1.4} size={20} />, // Updated icon for job explorer
+            icon: <IconPencil stroke={1.4} size={20} />,
             link: '/mentor/mentorship/draft',
             role: 'mentor',
         },

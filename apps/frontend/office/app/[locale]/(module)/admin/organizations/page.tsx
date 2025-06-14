@@ -2,6 +2,7 @@
 
 import Can from '@/components/Can';
 import NoData from '@/components/NoData';
+import { PageContainer } from '@/components/PageContainer';
 import {
     Button,
     Card,
@@ -190,287 +191,301 @@ const OrganizationsPage = () => {
         );
 
     return (
-        <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-            <Flex align="center" justify="space-between" className="p-4">
-                <Text className="font-bold text-xl">{t('title')}</Text>
-                <CreateOrganization />
-            </Flex>
-
-            <Divider my="md" />
-
-            {/* Search, Filter, Sort Controls */}
-            <Group justify="space-between" className="mb-4">
-                <EntitySearch
-                    entity="organizations"
-                    placeholder={t('searchPlaceholder')}
-                    className="!w-[300px]"
-                />
-                <Flex gap={'xs'} align={'center'}>
-                    <Button
-                        variant="light"
-                        leftSection={<IconDownload size={18} />}
-                        onClick={() => {
-                            const payload =
-                                selection.length === 0
-                                    ? entityParamSerializer({
-                                          ...entityParams,
-                                          pp: data?.total,
-                                      })
-                                    : selection;
-                            const type: 'filter' | 'selected' =
-                                selection.length === 0 ? 'filter' : 'selected';
-                            exportMutation.mutate({ payload, type });
-                        }}
-                        loading={exportMutation.isPending}
-                    >
-                        {t('exportCSV')}
-                    </Button>
+        <PageContainer className="flex flex-col gap-2.5">
+            <Paper p="lg" style={{ borderRadius: '10px' }}>
+                <Flex align="center" justify="space-between" className="p-4">
+                    <Text className="font-bold text-xl">{t('title')}</Text>
+                    <CreateOrganization />
                 </Flex>
-            </Group>
 
-            {/* No Data State */}
-            {organizations.length === 0 ? (
-                <NoData />
-            ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-            isMobile ? (
-                <Stack>
-                    {organizations.map((user: Daum) => (
-                        <Card
-                            key={user.createdDate}
-                            shadow="sm"
-                            p="lg"
-                            radius="md"
-                            withBorder
+                <Divider my="md" />
+
+                {/* Search, Filter, Sort Controls */}
+                <Group justify="space-between" className="mb-4">
+                    <EntitySearch
+                        entity="organizations"
+                        placeholder={t('searchPlaceholder')}
+                        className="!w-[300px]"
+                    />
+                    <Flex gap={'xs'} align={'center'}>
+                        <Button
+                            variant="light"
+                            leftSection={<IconDownload size={18} />}
+                            onClick={() => {
+                                const payload =
+                                    selection.length === 0
+                                        ? entityParamSerializer({
+                                              ...entityParams,
+                                              pp: data?.total,
+                                          })
+                                        : selection;
+                                const type: 'filter' | 'selected' =
+                                    selection.length === 0
+                                        ? 'filter'
+                                        : 'selected';
+                                exportMutation.mutate({ payload, type });
+                            }}
+                            loading={exportMutation.isPending}
                         >
-                            <Flex justify="space-between" align="center">
-                                <Text fw={500}>{user.name}</Text>
-                            </Flex>
-                            <Divider my="xs" />
-                            <Text size="xs" c="dimmed">
-                                {DateTime.fromISO(
-                                    user.createdDate ?? '',
-                                ).toFormat('yyyy-MM-dd HH:mm:ss')}
-                            </Text>
-                            <Group mt="md">
-                                <Button variant="light" size="xs">
-                                    {t('table.edit')}
-                                </Button>
-                                <Button variant="light" size="xs" color="red">
-                                    {t('table.delete')}
-                                </Button>
-                            </Group>
-                        </Card>
-                    ))}
-                </Stack>
-            ) : (
-                <TableScrollContainer minWidth={800} type="native">
-                    <Table
-                        withRowBorders
-                        withColumnBorders
-                        striped
-                        verticalSpacing="md"
-                    >
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th>
-                                    <Checkbox
-                                        onChange={toggleAll}
-                                        checked={
-                                            selection.length ===
-                                            organizations.length
-                                        }
-                                        indeterminate={
-                                            selection.length > 0 &&
-                                            selection.length !==
-                                                organizations.length
-                                        }
-                                    />
-                                </Table.Th>
-                                <Table.Th>{t('table.name')}</Table.Th>
-                                <Table.Th>{t('table.createdBy')}</Table.Th>
-                                <Table.Th>
-                                    <EntityColumn
-                                        entity="organizations"
-                                        field="createdAt"
-                                        label={t('table.createdAt')}
-                                    />
-                                </Table.Th>
-                                <Table.Th>{t('table.status')}</Table.Th>
-                                <Can roles={['super_admin']}>
-                                    <Table.Th>{t('table.actions')}</Table.Th>
-                                </Can>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {organizations.map((user: Daum) => (
-                                <Table.Tr key={user.id}>
-                                    <Table.Td>
+                            {t('exportCSV')}
+                        </Button>
+                    </Flex>
+                </Group>
+            </Paper>
+            <Paper p="lg" style={{ borderRadius: '10px' }}>
+                {/* No Data State */}
+                {organizations.length === 0 ? (
+                    <NoData />
+                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                isMobile ? (
+                    <Stack>
+                        {organizations.map((user: Daum) => (
+                            <Card
+                                key={user.createdDate}
+                                shadow="sm"
+                                p="lg"
+                                radius="md"
+                                withBorder
+                            >
+                                <Flex justify="space-between" align="center">
+                                    <Text fw={500}>{user.name}</Text>
+                                </Flex>
+                                <Divider my="xs" />
+                                <Text size="xs" c="dimmed">
+                                    {DateTime.fromISO(
+                                        user.createdDate ?? '',
+                                    ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                </Text>
+                                <Group mt="md">
+                                    <Button variant="light" size="xs">
+                                        {t('table.edit')}
+                                    </Button>
+                                    <Button
+                                        variant="light"
+                                        size="xs"
+                                        color="red"
+                                    >
+                                        {t('table.delete')}
+                                    </Button>
+                                </Group>
+                            </Card>
+                        ))}
+                    </Stack>
+                ) : (
+                    <TableScrollContainer minWidth={800} type="native">
+                        <Table
+                            withRowBorders
+                            withColumnBorders
+                            striped
+                            verticalSpacing="md"
+                        >
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th>
                                         <Checkbox
-                                            checked={selection.includes(
-                                                user.id ?? '',
-                                            )}
-                                            onChange={() =>
-                                                toggleRow(user.id ?? '')
+                                            onChange={toggleAll}
+                                            checked={
+                                                selection.length ===
+                                                organizations.length
+                                            }
+                                            indeterminate={
+                                                selection.length > 0 &&
+                                                selection.length !==
+                                                    organizations.length
                                             }
                                         />
-                                    </Table.Td>
-                                    <Table.Td>{user.name}</Table.Td>
-
-                                    <Table.Td>{user.createdBy}</Table.Td>
-                                    <Table.Td>
-                                        {DateTime.fromISO(
-                                            user.createdDate ?? '',
-                                        ).toFormat('yyyy-MM-dd HH:mm:ss')}
-                                    </Table.Td>
-                                    <Table.Td
-                                        className={
-                                            user.isActive
-                                                ? 'text-green-600'
-                                                : 'text-red-600'
-                                        }
-                                    >
-                                        {user.isActive
-                                            ? t('status.active')
-                                            : t('status.inactive')}
-                                    </Table.Td>
+                                    </Table.Th>
+                                    <Table.Th>{t('table.name')}</Table.Th>
+                                    <Table.Th>{t('table.createdBy')}</Table.Th>
+                                    <Table.Th>
+                                        <EntityColumn
+                                            entity="organizations"
+                                            field="createdAt"
+                                            label={t('table.createdAt')}
+                                        />
+                                    </Table.Th>
+                                    <Table.Th>{t('table.status')}</Table.Th>
                                     <Can roles={['super_admin']}>
-                                        <Table.Td>
-                                            <Menu width={200}>
-                                                <Menu.Target>
-                                                    <IconDotsVertical
-                                                        size={18}
-                                                        className="cursor-pointer"
-                                                    />
-                                                </Menu.Target>
-                                                <Menu.Dropdown>
-                                                    {user.isActive ? (
-                                                        <Menu.Item
-                                                            color="red"
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        name: user.name,
-                                                                    },
-                                                                );
-                                                                open();
-                                                            }}
-                                                        >
-                                                            Deactivate
-                                                        </Menu.Item>
-                                                    ) : (
-                                                        <Menu.Item
-                                                            onClick={() => {
-                                                                setSelectedUser(
-                                                                    {
-                                                                        id: user.id,
-                                                                        name: user.name,
-                                                                    },
-                                                                );
-                                                                activationHandlers.open();
-                                                            }}
-                                                        >
-                                                            Activate
-                                                        </Menu.Item>
-                                                    )}
-                                                </Menu.Dropdown>
-                                            </Menu>
-                                        </Table.Td>
+                                        <Table.Th>
+                                            {t('table.actions')}
+                                        </Table.Th>
                                     </Can>
                                 </Table.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
-                    <Modal
-                        opened={opened}
-                        onClose={() => {
-                            close();
-                            setSelectedUser(null);
-                        }}
-                        title="Organization Deactivation"
-                        centered
-                    >
-                        <TextInput
-                            placeholder="Enter the reason for deactivation"
-                            label="Reason"
-                            description="Please provide a reason for deactivating this organizations."
-                            required
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                        />
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {organizations.map((user: Daum) => (
+                                    <Table.Tr key={user.id}>
+                                        <Table.Td>
+                                            <Checkbox
+                                                checked={selection.includes(
+                                                    user.id ?? '',
+                                                )}
+                                                onChange={() =>
+                                                    toggleRow(user.id ?? '')
+                                                }
+                                            />
+                                        </Table.Td>
+                                        <Table.Td>{user.name}</Table.Td>
 
-                        <Group mt="xl" justify="flex-end">
-                            <Button variant="default" onClick={close}>
-                                Cancel
-                            </Button>
-                            <Button
-                                color="red"
-                                loading={deactivateUserMutation.isPending}
-                                onClick={async () => {
-                                    if (selectedUser) {
-                                        await deactivateUserMutation.mutateAsync(
-                                            {
-                                                userId: selectedUser.id,
-                                                reason,
-                                            },
-                                        );
-                                        close();
-                                        setSelectedUser(null);
-                                    }
-                                }}
-                            >
-                                Deactivate
-                            </Button>
-                        </Group>
-                    </Modal>
-                    <Modal
-                        opened={openedActivation}
-                        onClose={() => {
-                            activationHandlers.close();
-                            setSelectedUser(null);
-                        }}
-                        title="Organization Deactivation"
-                        centered
-                    >
-                        <Text>
-                            Are you sure you want to activate{' '}
-                            <Text span fw={600}>
-                                {selectedUser?.name}{' '}
+                                        <Table.Td>{user.createdBy}</Table.Td>
+                                        <Table.Td>
+                                            {DateTime.fromISO(
+                                                user.createdDate ?? '',
+                                            ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                        </Table.Td>
+                                        <Table.Td
+                                            className={
+                                                user.isActive
+                                                    ? 'text-green-600'
+                                                    : 'text-red-600'
+                                            }
+                                        >
+                                            {user.isActive
+                                                ? t('status.active')
+                                                : t('status.inactive')}
+                                        </Table.Td>
+                                        <Can roles={['super_admin']}>
+                                            <Table.Td>
+                                                <Menu width={200}>
+                                                    <Menu.Target>
+                                                        <IconDotsVertical
+                                                            size={18}
+                                                            className="cursor-pointer"
+                                                        />
+                                                    </Menu.Target>
+                                                    <Menu.Dropdown>
+                                                        {user.isActive ? (
+                                                            <Menu.Item
+                                                                color="red"
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            name: user.name,
+                                                                        },
+                                                                    );
+                                                                    open();
+                                                                }}
+                                                            >
+                                                                Deactivate
+                                                            </Menu.Item>
+                                                        ) : (
+                                                            <Menu.Item
+                                                                onClick={() => {
+                                                                    setSelectedUser(
+                                                                        {
+                                                                            id: user.id,
+                                                                            name: user.name,
+                                                                        },
+                                                                    );
+                                                                    activationHandlers.open();
+                                                                }}
+                                                            >
+                                                                Activate
+                                                            </Menu.Item>
+                                                        )}
+                                                    </Menu.Dropdown>
+                                                </Menu>
+                                            </Table.Td>
+                                        </Can>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                        <Modal
+                            opened={opened}
+                            onClose={() => {
+                                close();
+                                setSelectedUser(null);
+                            }}
+                            title="Organization Deactivation"
+                            centered
+                        >
+                            <TextInput
+                                placeholder="Enter the reason for deactivation"
+                                label="Reason"
+                                description="Please provide a reason for deactivating this organizations."
+                                required
+                                value={reason}
+                                onChange={(e) => setReason(e.target.value)}
+                            />
+
+                            <Group mt="xl" justify="flex-end">
+                                <Button variant="default" onClick={close}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="red"
+                                    loading={deactivateUserMutation.isPending}
+                                    onClick={async () => {
+                                        if (selectedUser) {
+                                            await deactivateUserMutation.mutateAsync(
+                                                {
+                                                    userId: selectedUser.id,
+                                                    reason,
+                                                },
+                                            );
+                                            close();
+                                            setSelectedUser(null);
+                                        }
+                                    }}
+                                >
+                                    Deactivate
+                                </Button>
+                            </Group>
+                        </Modal>
+                        <Modal
+                            opened={openedActivation}
+                            onClose={() => {
+                                activationHandlers.close();
+                                setSelectedUser(null);
+                            }}
+                            title="Organization Deactivation"
+                            centered
+                        >
+                            <Text>
+                                Are you sure you want to activate{' '}
+                                <Text span fw={600}>
+                                    {selectedUser?.name}{' '}
+                                </Text>
+                                Organization?
                             </Text>
-                            Organization?
-                        </Text>
 
-                        <Group mt="xl" justify="flex-end">
-                            <Button
-                                variant="default"
-                                onClick={() => {
-                                    activationHandlers.close();
-                                    setSelectedUser(null);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                loading={activateUserMutation.isPending}
-                                onClick={async () => {
-                                    if (selectedUser) {
-                                        await activateUserMutation.mutateAsync(
-                                            selectedUser.id,
-                                        );
+                            <Group mt="xl" justify="flex-end">
+                                <Button
+                                    variant="default"
+                                    onClick={() => {
                                         activationHandlers.close();
                                         setSelectedUser(null);
-                                    }
-                                }}
-                            >
-                                Activate
-                            </Button>
-                        </Group>
-                    </Modal>
-                </TableScrollContainer>
-            )}
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    loading={activateUserMutation.isPending}
+                                    onClick={async () => {
+                                        if (selectedUser) {
+                                            await activateUserMutation.mutateAsync(
+                                                selectedUser.id,
+                                            );
+                                            activationHandlers.close();
+                                            setSelectedUser(null);
+                                        }
+                                    }}
+                                >
+                                    Activate
+                                </Button>
+                            </Group>
+                        </Modal>
+                    </TableScrollContainer>
+                )}
 
-            <EntityPagination entity="organizations" total={data?.total ?? 0} />
-        </Paper>
+                <EntityPagination
+                    entity="organizations"
+                    total={data?.total ?? 0}
+                />
+            </Paper>
+        </PageContainer>
     );
 };
 

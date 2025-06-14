@@ -4,7 +4,9 @@ import {
     Anchor,
     Badge,
     Box,
+    Button,
     Divider,
+    Flex,
     Group,
     List,
     Paper,
@@ -14,7 +16,10 @@ import {
 } from '@mantine/core';
 import { IconCalendar, IconMail } from '@tabler/icons-react';
 
-export function TermsAndConditions() {
+export function TermsAndConditions({
+    updateTerms,
+    close,
+}: { updateTerms?: (value: boolean) => void; close?: () => void }) {
     return (
         <Box className="container mx-auto mt-8">
             <Paper shadow="sm" p="xl" radius="md">
@@ -385,6 +390,24 @@ export function TermsAndConditions() {
                         By using Shega Jobs, you acknowledge that you have read,
                         understood, and agreed to these Terms and Conditions.
                     </Text>
+
+                    {updateTerms && close && (
+                        <Flex
+                            align="center"
+                            justify="center"
+                            mt="xl"
+                            wrap="wrap"
+                        >
+                            <Button
+                                onClick={() => {
+                                    updateTerms(true);
+                                    close();
+                                }}
+                            >
+                                Accept
+                            </Button>
+                        </Flex>
+                    )}
                 </Stack>
             </Paper>
         </Box>
