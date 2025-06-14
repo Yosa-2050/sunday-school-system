@@ -15,7 +15,7 @@ release:
   only:
     - develop
   script:
-    - npm ci
+    - pnpm install
     - export NEXT_PUBLIC_APP_VERSION="$(npx semantic-release --dry-run | grep 'next release version' | cut -d' ' -f4)"
     - npx semantic-release
   variables:
