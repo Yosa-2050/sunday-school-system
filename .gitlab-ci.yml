@@ -5,8 +5,21 @@ default:
   image: node:22
 
 stages:
+  - release
   - build
   - staging
+
+release:
+  image: node:18
+  stage: release
+  only:
+    - main
+  script:
+    - npm ci
+    - export NEXT_PUBLIC_APP_VERSION="$CI_COMMIT_TAG"
+    - npx semantic-release
+  variables:
+    GITLAB_TOKEN: $CI_JOB_TOKEN
 
 build:
   stage: build

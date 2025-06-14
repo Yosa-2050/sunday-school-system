@@ -73,6 +73,9 @@
         "@jest/globals": "^29.7.0",
         "@next/eslint-plugin-next": "15.2.1",
         "@playwright/test": "^1.44.0",
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/npm": "^12.0.1",
         "@shega/api": "workspace:*",
         "@shega/jest-config": "workspace:*",
         "@shega/typescript-config": "workspace:*",
@@ -89,6 +92,7 @@
         "jest-environment-jsdom": "^29.7.0",
         "postcss": "^8.5.3",
         "postcss-preset-mantine": "^1.17.0",
+        "semantic-release": "^24.2.5",
         "tailwindcss": "^4.0.9",
         "typescript": "5.5.4"
     },

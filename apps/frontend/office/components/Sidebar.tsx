@@ -1,6 +1,6 @@
 import { useNetwork } from '@mantine/hooks';
 
-import { Box } from '@mantine/core';
+import { Box, useComputedColorScheme } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import Link from 'next/link';
 import { Menus } from './Menus';
@@ -16,13 +16,16 @@ function getContrastColor(bgColor: string): string {
 }
 export const Sidebar = () => {
     const networkStatus = useNetwork();
+    const schema = useComputedColorScheme();
     const { user } = useAuth();
 
     const year = new Date().getFullYear();
 
     return (
         <>
-            <Box className="hidden md:flex h-10   border-b border-gray-200 px-4 max-h-14 overflow-hidden w-[255px] bg-primary-3">
+            <Box
+                className={`${schema === 'light' ? 'border-gray-200' : 'border-[var(--mantine-color-dark-4)]'} hidden md:flex h-10   border-b  px-4 max-h-14 overflow-hidden w-[255px] bg-primary-3`}
+            >
                 <Link
                     href="/dashboard"
                     className="text-xl flex    font-bold items-center gap-4 "
@@ -56,7 +59,9 @@ export const Sidebar = () => {
                     }
                 />
             </Box>
-            <Box className="flex h-14 items-stretch border-t border-gray-200 text-sm px-4 py-2 justify-between bg-white text-xs">
+            <Box
+                className={`${schema === 'light' ? 'border-gray-200 bg-whit' : 'border-[var(--mantine-color-dark-4)]'} flex h-14 items-stretch border-t px-4 py-2 justify-between e text-xs`}
+            >
                 <Box className="flex flex-col gap-1 justify-between">
                     <span
                         className={

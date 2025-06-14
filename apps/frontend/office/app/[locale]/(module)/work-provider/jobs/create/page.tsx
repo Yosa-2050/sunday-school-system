@@ -3,7 +3,7 @@
 import useIsAuthorized from '@/hooks/useIsAuthorized';
 import { Link, useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Container, Group, Paper, Stepper, Title } from '@mantine/core';
+import { Button, Group, Paper, Stepper, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
     IconArrowLeft,
@@ -277,7 +277,6 @@ export default function PostJobPage() {
 
     if (formSubmitted) {
         return (
-            <Container size="xl">
                 <Paper shadow="sm" p="xl" radius="md">
                     <div className="text-center">
                         <IconCheck
@@ -295,17 +294,15 @@ export default function PostJobPage() {
                         </Button>
                     </div>
                 </Paper>
-            </Container>
         );
     }
 
     return (
         <FormProvider {...methods}>
-            <Container
-                size={'xl'}
-                bg={'white'}
+            <Paper
                 p={'md'}
-                className="shadow rounded"
+
+                className="shadow rounded-sm"
             >
                 <Group justify="space-between" align="center" py={'lg'}>
                     <Group>
@@ -448,7 +445,7 @@ export default function PostJobPage() {
                         )}
                     </Group>
                 </Group>
-            </Container>
+            </Paper>
         </FormProvider>
     );
 }

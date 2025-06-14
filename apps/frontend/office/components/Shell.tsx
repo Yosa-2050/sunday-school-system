@@ -156,7 +156,7 @@
 // }
 
 'use client';
-import { ActionIcon, Box, Drawer } from '@mantine/core';
+import { ActionIcon, Box, Drawer, useComputedColorScheme } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMenu2 } from '@tabler/icons-react';
 import { usePathname } from 'next/navigation';
@@ -177,6 +177,7 @@ export default function Shell({
     children,
     type = 'office',
 }: ShellProps): ReactNode {
+    const schema = useComputedColorScheme();
     const [opened, { open, close }] = useDisclosure(false);
     const [isSidebarOpen, toggleSidebar] = useToggle(true);
     const pathname = usePathname();
@@ -217,14 +218,21 @@ export default function Shell({
             <Box className="w-full flex flex-1 h-screen">
                 <Box
                     className={cn(
-                        'bg-white   flex-col border-r border-gray-200 hidden lg:flex !h-full',
+                        schema === 'light'
+                            ? 'bg-white border-gray-200'
+                            : ' border-[var(--mantine-color-dark-4)]',
+                        'flex-col border-r  hidden lg:flex !h-full',
                         isSidebarOpen ? 'w-[265px]' : 'w-0 hidden',
                     )}
                 >
                     {isSidebarOpen && <Sidebar />}
                 </Box>
-                <Box className="w-full flex flex-col overflow-y-auto bg-gray-50">
-                    <header className="w-full h-10 py-2 px-4 bg-white flex items-center justify-between border-b border-gray-200 z-10 sticky top-0">
+                <Box
+                    className={`${schema === 'light' ? ' bg-gray-50' : 'bg-[var(--mantine-color-dark-6)] border-[var(--mantine-color-dark-4)]'} w-full flex flex-col overflow-y-auto`}
+                >
+                    <header
+                        className={`${schema === 'light' ? 'bg-white border-gray-200' : 'bg-[var(--mantine-color-body)] border-[var(--mantine-color-dark-4)]'} w-full h-10 py-2 px-4 flex items-center justify-between border-b z-10 sticky top-0`}
+                    >
                         <Box className="flex gap-2 items-center">
                             <ActionIcon
                                 className="hidden lg:block"
@@ -248,7 +256,7 @@ export default function Shell({
                     </header>
                     <Box
                         className={cn(
-                            ' py-4 flex-1 bg',
+                            ' py-4 flex-1',
                             isSidebarOpen ? 'container mx-auto' : 'w-full px-4',
                         )}
                     >
