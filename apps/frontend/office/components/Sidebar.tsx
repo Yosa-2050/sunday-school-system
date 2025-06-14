@@ -60,7 +60,7 @@ export const Sidebar = () => {
                 />
             </Box>
             <Box
-                className={`${schema === 'light' ? 'border-gray-200 bg-whit' : 'border-[var(--mantine-color-dark-4)]'} flex h-14 items-stretch border-t px-4 py-2 justify-between e text-xs`}
+                className={`${schema === 'light' ? 'border-gray-200 bg-white' : 'border-[var(--mantine-color-dark-4)]'} flex h-14 items-stretch border-t px-4 py-2 justify-between text-xs`}
             >
                 <Box className="flex flex-col gap-1 justify-between">
                     <span
