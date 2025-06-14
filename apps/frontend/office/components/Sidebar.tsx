@@ -73,7 +73,7 @@ export const Sidebar = () => {
                         {networkStatus.online ? 'Online' : 'Offline'}
                     </span>
                     <Box className="text-center">
-                        {process.env.NEXT_PUBLIC_VERSION ?? 'V 0.0.1'}
+                        {process.env.NEXT_PUBLIC_APP_VERSION ?? 'V 0.0.1'}
                     </Box>
                 </Box>
                 <Box className="flex flex-col gap-1 justify-between">
