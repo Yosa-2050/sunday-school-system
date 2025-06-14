@@ -13,10 +13,10 @@ release:
   image: node:22
   stage: release
   only:
-    - main
+    - develop
   script:
     - npm ci
-    - export NEXT_PUBLIC_APP_VERSION="$CI_COMMIT_TAG"
+    - export NEXT_PUBLIC_APP_VERSION="$(npx semantic-release --dry-run | grep 'next release version' | cut -d' ' -f4)"
     - npx semantic-release
   variables:
     GITLAB_TOKEN: $CI_JOB_TOKEN
