@@ -10,7 +10,7 @@ stages:
   - staging
 
 release:
-  image: node:18
+  image: node:22
   stage: release
   only:
     - main
