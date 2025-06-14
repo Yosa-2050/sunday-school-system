@@ -55,7 +55,7 @@ staging:
     - corepack prepare pnpm@latest --activate
     - pnpm install
   script:
-    - "NEXT_PUBLIC_APP_VERSION=$(node -p \"require('./apps/web/package.json').version\") && echo \"Using version: $NEXT_PUBLIC_APP_VERSION\""
+    - "NEXT_PUBLIC_APP_VERSION=$(node -p \"require('./apps/frontend/office/package.json').version\") && echo \"Using version: $NEXT_PUBLIC_APP_VERSION\""
     - pnpm run format
     - pnpm run build
     - |
