@@ -1,3 +1,11 @@
+# [1.2.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.1.0...v1.2.0) (2025-06-14)
+
+
+### Features
+
+* **shega:** setup app versioning ([84b6a76](https://gitlab.heranitech.com/meklit/shega-jobs/commit/84b6a76e892d3bf42ad013ed42fce566c64cab68))
+* **shega:** setup app versioning ([5860221](https://gitlab.heranitech.com/meklit/shega-jobs/commit/58602219f9a17e1fc0b28fca6b3f2f71cee3806f))
+
 # [1.1.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.0.0...v1.1.0) (2025-06-14)
 
 
