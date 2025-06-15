@@ -78,7 +78,7 @@ export class JobsService {
 
     async apply(programId: string, applicantId: string) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
-        if (!this.GetCanApplyApplicant(applicant)?.canApply) {
+        if (!(await this.GetCanApplyApplicant(applicant))?.canApply) {
             throw new BadRequestException('User can not apply');
         }
         const existingApp = await this.programsRepo.findOneBy({
@@ -446,7 +446,7 @@ export class JobsService {
             id: applicantId,
         });
 
-        const canApply = this.GetCanApplyApplicant(applicant);
+        const canApply = await this.GetCanApplyApplicant(applicant);
 
         const updated = await this.applicantRepo.update(
             { id: applicantId },
@@ -459,7 +459,7 @@ export class JobsService {
         }
     }
 
-    private GetCanApplyApplicant(applicant: Applicants) {
+    private async GetCanApplyApplicant(applicant: Applicants) {
         let canApply = true;
         const profile = applicant.profile;
         const applyObject = {
@@ -482,7 +482,6 @@ export class JobsService {
         }
 
         if (!profile.profile_picture_id) {
-            canApply = false;
             applyObject.profilePic = false;
         }
 
@@ -491,12 +490,11 @@ export class JobsService {
             applyObject.profile = false;
         }
 
-        if (!(applicant.educationalHistory?.length > 0)) {
-            canApply = false;
+        if (!((await applicant.educationalHistory)?.length > 0)) {
             applyObject.education = false;
         }
 
-        if (!(applicant.experiance?.length > 0)) {
+        if (!((await applicant.experiance)?.length > 0)) {
             applyObject.experiance = false;
         }
 
