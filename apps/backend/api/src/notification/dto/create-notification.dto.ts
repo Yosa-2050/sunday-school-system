@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 import { NotificationChannel } from '../enums/notification-channel.enum';
 
 export class CreateNotificationDto {
@@ -22,4 +22,14 @@ export class CreateNotificationDto {
     @ApiProperty()
     @IsString()
     reference: string;
+
+    @ApiProperty()
+    @IsBoolean()
+    @IsOptional()
+    isRealTimeNofitication?: boolean = false;
+
+    @ApiProperty()
+    @IsBoolean()
+    @IsOptional()
+    isNotifyToAllUser?: boolean = false;
 }
