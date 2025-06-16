@@ -121,6 +121,7 @@ export class OrganizationService {
                 profile.id,
             );
 
+            //send email notification
             this.notificationService.send({
                 channel: NotificationChannel.Email,
                 content: emailTemplate.content,
@@ -128,6 +129,21 @@ export class OrganizationService {
                 subject: emailTemplate.subject,
                 reference: user.id,
             });
+
+            //For testing
+            //send real time in-app nofitcation
+            if (status === ApprovalType.Approved) {
+                this.notificationService.send({
+                    channel: NotificationChannel.InApp,
+                    subject: 'Organization Approved',
+                    content:
+                        'Your Organization has been approved and is now live on the shega platform.',
+                    to: user.id,
+                    reference: user.id,
+                    isRealTimeNofitication: true,
+                    isNotifyToAllUser: false,
+                });
+            }
         }
         return result;
     }
