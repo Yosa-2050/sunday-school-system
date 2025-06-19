@@ -45,7 +45,7 @@ export const updateLocation = async (
     data: UpdateLocationPayload,
 ) => {
     const response = await fetcher(
-        `/address/location/${organizationId}/organization`,
+        `/address/location/${organizationId}/Organization`,
         {
             method: 'POST',
             body: JSON.stringify({ location: [data] }),
@@ -67,7 +67,7 @@ export const updateContactInfo = async (
     }>,
 ) => {
     const response = await fetcher(
-        `/address/contacts/${organizationId}/organization`,
+        `/address/contacts/${organizationId}/Organization`,
         {
             method: 'POST',
             body: JSON.stringify(payload),
