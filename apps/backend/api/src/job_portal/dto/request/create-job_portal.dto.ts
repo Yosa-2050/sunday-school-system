@@ -15,7 +15,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { CurrencyType } from '../../enums/currency-type.enum';
-import { EducationalRequirmentType } from '../../enums/education-requirment-type.enum';
+import { EducationalRequirementType } from '../../enums/education-requirment-type.enum';
 import { EmploymentType } from '../../enums/employment-type.enum';
 import { ExperianceLevelType } from '../../enums/experiance-level-type.enum';
 import { SalaryFrequencyType } from '../../enums/salary-frequency-type.enum';
@@ -86,11 +86,11 @@ export class ProgramRequestDto {
     deadline?: Date;
 
     @ApiProperty({
-        example: EducationalRequirmentType.Diplom,
-        description: 'Diplom educational',
+        example: EducationalRequirementType.Diploma,
+        description: 'Diploma educational',
     })
-    @OptionalEnum(EducationalRequirmentType)
-    educationalRequirment?: EducationalRequirmentType;
+    @OptionalEnum(EducationalRequirementType)
+    educationalRequirment?: EducationalRequirementType;
 
     @ApiProperty()
     @IsArray()

@@ -5,7 +5,7 @@ import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
 import { Country } from '@shega/location/entities/country.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
+import { EducationalRequirementType } from '../enums/education-requirment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -53,7 +53,7 @@ export class Programs extends BaseModel {
     deadline: Date;
 
     @Column({ nullable: true })
-    educationalRequirment: EducationalRequirmentType;
+    educationalRequirment: EducationalRequirementType;
 
     @Column({ nullable: true })
     notes: string;

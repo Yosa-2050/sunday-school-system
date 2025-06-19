@@ -1,5 +1,5 @@
-export enum EducationalRequirmentType {
-    Diplom = 'DIPLOM',
+export enum EducationalRequirementType {
+    Diploma = 'DIPLOMA',
     BSC = 'BSC',
     BA = 'BA',
     MSC = 'MSC',
