@@ -1,7 +1,7 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EducationalRequirmentType } from '../enums/education-requirment-type.enum';
+import { EducationalRequirementType } from '../enums/education-requirment-type.enum';
 import { Applicants } from './applicants.entity';
 import { Category } from './category.entity';
 
@@ -17,7 +17,7 @@ export class EducationHistory extends BaseModel {
     school: string;
 
     @Column()
-    level: EducationalRequirmentType;
+    level: EducationalRequirementType;
 
     @ManyToOne(() => Category, { eager: true, nullable: false })
     fieldOfStudy: Category;

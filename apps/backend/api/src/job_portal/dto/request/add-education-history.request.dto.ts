@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { EducationalRequirmentType } from '@shega/job_portal/enums/education-requirment-type.enum';
+import { EducationalRequirementType } from '@shega/job_portal/enums/education-requirment-type.enum';
 import { Transform } from 'class-transformer';
 import {
     IsDateString,
@@ -16,8 +16,8 @@ export class AddEducationalHistoryRequestDto {
     school: string;
 
     @ApiProperty()
-    @IsEnum(EducationalRequirmentType)
-    level: EducationalRequirmentType;
+    @IsEnum(EducationalRequirementType)
+    level: EducationalRequirementType;
 
     @ApiProperty()
     @IsUUID()

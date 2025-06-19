@@ -141,8 +141,7 @@ export class JobPortalController {
         return this.jobPortalService.jobsAppliedByJobId(
             id,
             CurrentUser.getOrganizationId(req),
-            request.pagination,
-            request.status,
+            request,
         );
     }
 

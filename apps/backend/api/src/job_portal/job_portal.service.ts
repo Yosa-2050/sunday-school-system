@@ -10,8 +10,6 @@ import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exce
 // biome-ignore lint/style/useImportType: <explanation>
 import { DateService } from '@shega/Utilities/date.service';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
@@ -39,6 +37,8 @@ import {
     ProgramRequestDto,
 } from './dto/request/create-job_portal.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { GetJobApplicationsRequestDto } from './dto/request/get-job-applications.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateJobPortalDto } from './dto/request/update-job_portal.dto';
@@ -55,8 +55,6 @@ import { Mentorship } from './entities/mentorship.entity';
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
 import { Skills } from './entities/skills.entity';
-// biome-ignore lint/style/useImportType: <explanation>
-import { ApplicationStatus } from './enums/job-application-status.enum';
 import { ProgramType } from './enums/program-type.enum';
 import { SalaryType } from './enums/salary-type.enum';
 
@@ -906,8 +904,7 @@ export class JobPortalService {
     async jobsAppliedByJobId(
         jobId: string,
         organizationId: string,
-        paginated: PaginationDto,
-        status: ApplicationStatus,
+        request: GetJobApplicationsRequestDto,
     ) {
         const job = await this.jobRepo.findOneBy({
             id: jobId,
@@ -922,20 +919,61 @@ export class JobPortalService {
             .leftJoinAndSelect('applications.program', 'program')
             .leftJoinAndSelect('applications.applicants', 'applicants')
             .leftJoinAndSelect('applicants.profile', 'profile')
-            .skip((paginated.page - 1) * paginated.limit)
-            .take(paginated.limit)
+            .skip((request.pagination.page - 1) * request.pagination.limit)
+            .take(request.pagination.limit)
             .orderBy('applications.createdAt', 'DESC');
 
         query.andWhere('program.id = :programId', { programId });
 
-        if (status) {
-            query.andWhere('applications.status = :status', { status });
+        if (request.status) {
+            query.andWhere('applications.status = :status', {
+                status: request.status,
+            });
         }
 
-        if (paginated.search) {
+        if (request.ageTo || request.ageFrom) {
+            const currentDate = this.dateService.getCurrentDate();
+
+            // Calculate date range based on age
+            const fromDate = new Date(
+                currentDate.getFullYear() - (request.ageTo ?? 100),
+                currentDate.getMonth(),
+                currentDate.getDate(),
+            );
+
+            const toDate = new Date(
+                currentDate.getFullYear() - (request.ageFrom ?? 0),
+                currentDate.getMonth(),
+                currentDate.getDate(),
+            );
+
+            query.andWhere('profile.birthDate BETWEEN :fromDate AND :toDate', {
+                fromDate: fromDate.toISOString().split('T')[0], // 'YYYY-MM-DD'
+                toDate: toDate.toISOString().split('T')[0],
+            });
+        }
+
+        if (request.gender) {
+            query.andWhere('profile.gender = :gender', {
+                gender: request.gender,
+            });
+        }
+
+        if (request.category) {
+            query.andWhere(
+                `EXISTS (
+                  SELECT 1 FROM educational_history edu
+                  WHERE edu.application_id = applications.id
+                    AND edu.field_of_study = :category
+                )`,
+                { category: request.category },
+            );
+        }
+
+        if (request.pagination.search) {
             query.andWhere(
                 `LOWER(CONCAT(profile.firstName, ' ', profile.lastName)) LIKE :search`,
-                { search: `%${paginated.search.toLowerCase()}%` },
+                { search: `%${request.pagination.search.toLowerCase()}%` },
             );
         }
 
@@ -945,8 +983,8 @@ export class JobPortalService {
         return new PaginatedResponseDto<JobApplicantsResponseDto[]>(
             applicants,
             total,
-            paginated.page,
-            paginated.limit,
+            request.pagination.page,
+            request.pagination.limit,
         );
     }
 }
