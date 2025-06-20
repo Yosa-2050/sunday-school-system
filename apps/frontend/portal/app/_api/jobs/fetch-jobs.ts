@@ -18,6 +18,7 @@ export type ResponseItem = {
     saved: boolean;
     programId: string;
     experianceLevel: string;
+    type: string;
 };
 
 export type Response = {

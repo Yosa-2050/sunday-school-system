@@ -25,7 +25,7 @@ import {
 import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 interface MenuItem {
     label: string;
@@ -39,7 +39,6 @@ interface MenuItem {
 export function HeaderMenu() {
     const t = useTranslations('navigation');
     const pathname = usePathname();
-    const router = useRouter();
     const { user, setUser } = useAuth();
     const isAuthenticated = !!user;
     const theme = useMantineTheme();

@@ -26,7 +26,7 @@ export function PrivacyPolicy() {
                             align="flex-start"
                             mb="md"
                         >
-                            <Title order={1} size="h2" c="primary.7">
+                            <Title order={1} size="h2" fw={600}>
                                 Shega Jobs Privacy Policy
                             </Title>
                             <Badge color="primary" variant="light" size="lg">
@@ -65,7 +65,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 1 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             1. Information We Collect
                         </Title>
                         <Text>
@@ -127,7 +127,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 2 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             2. How We Use Your Information
                         </Title>
                         <Text>
@@ -207,7 +207,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 3 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             3. How We Share Your Information
                         </Title>
                         <Text>
@@ -261,7 +261,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 4 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             4. Your Privacy Choices
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -287,7 +287,7 @@ export function PrivacyPolicy() {
                                 contacting{' '}
                                 <Anchor
                                     href="mailto:support@shegajobs.com"
-                                    c="primary.7"
+                                    fw={600}
                                 >
                                     support@shegajobs.com
                                 </Anchor>
@@ -298,7 +298,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 5 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             5. Cookies & Tracking Technologies
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -325,7 +325,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 6 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             6. Data Security
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -342,7 +342,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 7 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             7. Children&#39;s Privacy
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -355,7 +355,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 8 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             8. Changes to This Policy
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -368,7 +368,7 @@ export function PrivacyPolicy() {
 
                     {/* Section 10 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             10. Contact Us
                         </Title>
                         <Text>
@@ -376,7 +376,7 @@ export function PrivacyPolicy() {
                             email:{' '}
                             <Anchor
                                 href="mailto:support@shegajobs.com"
-                                c="primary.7"
+                                fw={600}
                             >
                                 support@shegajobs.com
                             </Anchor>
@@ -388,7 +388,7 @@ export function PrivacyPolicy() {
 
                     {/* Contact Info */}
                     <Paper p="md" radius="md">
-                        <Title order={3} size="h4" c="primary.7" mb="sm">
+                        <Title order={3} size="h4" fw={600} mb="sm">
                             Privacy Questions?
                         </Title>
                         <Text>
@@ -399,7 +399,7 @@ export function PrivacyPolicy() {
                             <IconMail size={16} />
                             <Anchor
                                 href="mailto:support@shegajobs.com"
-                                c="primary.7"
+                                fw={600}
                             >
                                 support@shegajobs.com
                             </Anchor>

@@ -38,6 +38,7 @@ export default function JobDetailsPage() {
         data: job,
         isLoading,
         error,
+        refetch,
     } = useQuery({
         queryKey: ['job', params.id],
         queryFn: () => {
@@ -49,15 +50,17 @@ export default function JobDetailsPage() {
         enabled: !!params.id,
     });
 
-    const { likeMutation, unlikeMutation } = useJobs();
+    const { likeMutation, unlikeMutation } = useJobs({
+        isJob: job?.type === 'Job',
+    });
 
     const handleLikeUnlike = async (saved: boolean, programId: string) => {
         if (saved) {
             await unlikeMutation.mutateAsync(programId);
-            queryClient.invalidateQueries({ queryKey: ['job', params.id] });
+            await refetch();
         } else {
             await likeMutation.mutate(programId);
-            queryClient.invalidateQueries({ queryKey: ['job', params.id] });
+            await refetch();
         }
     };
 

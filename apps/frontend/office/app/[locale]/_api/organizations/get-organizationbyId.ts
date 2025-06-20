@@ -6,6 +6,7 @@ export interface Category {
 }
 
 export interface Contact {
+    id?: string;
     value: string;
     type?: string | undefined;
     isPreferred?: boolean;

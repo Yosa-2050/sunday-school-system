@@ -3,6 +3,7 @@
 import Can from '@/components/Can';
 import NoData from '@/components/NoData';
 import { PageContainer } from '@/components/PageContainer';
+import { useRouter } from '@/i18n/routing';
 import {
     Button,
     Card,
@@ -48,6 +49,7 @@ import { CreateOrganization } from './_components/create-organization';
 
 const OrganizationsPage = () => {
     const queryClient = useQueryClient();
+    const router = useRouter();
     const t = useTranslations('organizationsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
     const [opened, { open, close }] = useDisclosure(false);
@@ -354,6 +356,15 @@ const OrganizationsPage = () => {
                                                         />
                                                     </Menu.Target>
                                                     <Menu.Dropdown>
+                                                        <Menu.Item
+                                                            onClick={() =>
+                                                                router.push(
+                                                                    `/admin/organizations/${user.id}`,
+                                                                )
+                                                            }
+                                                        >
+                                                            Detail
+                                                        </Menu.Item>
                                                         {user.isActive ? (
                                                             <Menu.Item
                                                                 color="red"

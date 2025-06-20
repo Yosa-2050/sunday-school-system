@@ -94,7 +94,7 @@ const MenuLabel = ({
     level = 0,
 }: MenuLabelProps) => {
     const pathname = usePathname();
-    const { colorScheme } = useMantineColorScheme();
+    const theme = useMantineColorScheme();
 
     const active =
         link &&
@@ -107,8 +107,7 @@ const MenuLabel = ({
         <div
             className={cn(
                 classes.menuItem,
-                'flex cursor-pointer items-center rounded-md px-2 py-1 transition duration-300 ease-in-out  dark:text-gray-700 text-gray-50',
-
+                `flex cursor-pointer items-center rounded-md px-2 py-1 transition duration-300 ease-in-out  ${theme.colorScheme === 'dark' ? 'text-gray-50' : 'text-gray-700'}`,
                 active ? classes.active : '',
             )}
             style={{ paddingLeft: paddingLeft <= 0 ? 20 : paddingLeft }}
