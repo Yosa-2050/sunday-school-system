@@ -174,14 +174,14 @@ function UserProfile() {
 
             {/* Contact + Location Info Card */}
             <Card withBorder radius="md" padding="lg" shadow="sm" mt="xl">
-                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 <ContactSection
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     contactsFromServer={(organization?.contacts as any) ?? []}
                 />
 
-                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 <LocationSection
                     defaultLocation={
+                        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                         (organization?.locations?.[0]?.locationData as any) ??
                         {}
                     }
