@@ -1,4 +1,3 @@
-import { Optional } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { OptionalEnum } from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
@@ -10,6 +9,7 @@ import {
     IsNotEmptyObject,
     IsNumber,
     IsObject,
+    IsOptional,
     IsString,
     ValidateNested,
 } from 'class-validator';
@@ -20,12 +20,12 @@ export class GetJobApplicationsRequestDto {
     status: ApplicationStatus;
 
     @ApiProperty()
-    @Optional()
+    @IsOptional()
     @IsNumber()
     experience: number;
 
     @ApiProperty()
-    @Optional()
+    @IsOptional()
     @IsString()
     category: string;
 
@@ -34,13 +34,12 @@ export class GetJobApplicationsRequestDto {
     gender: Gender;
 
     @ApiProperty()
-    @Optional()
+    @IsOptional()
     @IsNumber()
     ageTo: number;
 
     @ApiProperty()
-    @Optional()
-    @IsNumber()
+    @IsOptional()
     ageFrom: number;
 
     @ApiProperty()
