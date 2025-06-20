@@ -4,7 +4,6 @@ import {
     approveOrganization,
     declineOrganization,
 } from 'app/[locale]/_api/organizations/approve-organization';
-import router from 'next/router';
 
 const useOrganizationDetail = ({ id }: { id: string }) => {
     const queryClient = new QueryClient();
@@ -12,18 +11,13 @@ const useOrganizationDetail = ({ id }: { id: string }) => {
         mutate: approveOrganizationMutation,
         isPending: isApprovingOrganization,
     } = useMutation({
-        // mutationFn: async () => await approveJob(jobId),
         mutationFn: async () => {
-            if (id) {
-                throw new Error('Program ID is not available.');
-            }
             return await approveOrganization(id);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ['organization', id],
             });
-            router.push('/admin/jobs');
             notifications.show({
                 title: 'Organization Approved',
                 message: 'The organization has been successfully approved',
@@ -45,16 +39,12 @@ const useOrganizationDetail = ({ id }: { id: string }) => {
     } = useMutation({
         // mutationFn: async () => await approveJob(jobId),
         mutationFn: async (note: string) => {
-            if (id) {
-                throw new Error('Program ID is not available.');
-            }
             return await declineOrganization(id, note);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ['organization', id],
             });
-            router.push('/admin/jobs');
             notifications.show({
                 title: 'Organization Declined',
                 message: 'The organization has been successfully declined',

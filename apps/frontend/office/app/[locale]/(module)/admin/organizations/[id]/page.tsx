@@ -48,12 +48,8 @@ const OrganizationDetails = () => {
             return response;
         },
     });
-    const {
-        approveOrganizationMutation,
-        isApprovingOrganization,
-        declineOrganizationMutation,
-        isDecliningOrganization,
-    } = useOrganizationDetail({ id });
+    const { approveOrganizationMutation, isApprovingOrganization } =
+        useOrganizationDetail({ id });
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'APPROVED':
