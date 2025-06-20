@@ -1,3 +1,18 @@
+# [1.4.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.3.0...v1.4.0) (2025-06-20)
+
+
+### Bug Fixes
+
+* **shega:** setup app versioning ([d712176](https://gitlab.heranitech.com/meklit/shega-jobs/commit/d712176fd1cad072dcec0969e6f1af0aacbdfff4))
+
+
+### Features
+
+* **shega:** approve decline organization ([f8ba024](https://gitlab.heranitech.com/meklit/shega-jobs/commit/f8ba024cd796283722d7a645e9337bdad9caf641))
+* **shega:** approve decline organization ([d865c53](https://gitlab.heranitech.com/meklit/shega-jobs/commit/d865c53b64c56d35eb398ddd16126fe3a309151d))
+* **shega:** approve decline organization ([d36a83e](https://gitlab.heranitech.com/meklit/shega-jobs/commit/d36a83e497c506cee2a90f6a4321938c7081bf44))
+* **shega:** approve decline organization ([5d4cbfa](https://gitlab.heranitech.com/meklit/shega-jobs/commit/5d4cbfacc27fc8165edb3e10f2d43568bf4b29c6))
+
 # [1.3.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.2.0...v1.3.0) (2025-06-14)
 
 
