@@ -7,7 +7,10 @@ import {
     unlikeJob,
 } from 'app/_api/jobs/fetch-jobs';
 
-export const useJobs = (filters?: Filter) => {
+export const useJobs = ({
+    filters,
+    isJob,
+}: { filters?: Filter; isJob?: boolean }) => {
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: [
             'job-seeker-jbs',
@@ -25,7 +28,9 @@ export const useJobs = (filters?: Filter) => {
             refetch();
             notifications.show({
                 title: 'Job Liked',
-                message: 'You have successfully liked the job.',
+                message: isJob
+                    ? 'Job saved successfully'
+                    : 'Mentorship Program saved successfully',
                 color: 'green',
             });
         },
@@ -49,7 +54,9 @@ export const useJobs = (filters?: Filter) => {
             refetch();
             notifications.show({
                 title: 'Job Unliked',
-                message: 'You have successfully unliked the job.',
+                message: isJob
+                    ? 'Job unsaved successfully'
+                    : 'Mentorship Program unsaved successfully',
                 color: 'green',
             });
         },

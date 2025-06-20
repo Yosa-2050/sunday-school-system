@@ -1,4 +1,6 @@
 import { fetcher } from '@shega/shared';
+import type { ContactFormData } from 'app/[locale]/(module)/work-provider/profile/components/ContactInformation';
+import type { LocationFormData } from 'app/[locale]/(module)/work-provider/profile/components/LocationDetails';
 
 interface UpdateOrganizationPayload {
     registrationNumber: string;
@@ -42,13 +44,25 @@ export type UpdateLocationPayload = {
 
 export const updateLocation = async (
     organizationId: string,
-    data: UpdateLocationPayload,
+    data: LocationFormData,
 ) => {
     const response = await fetcher(
-        `/address/location/${organizationId}/organization`,
+        `/address/location/${organizationId}/Organization`,
         {
             method: 'POST',
-            body: JSON.stringify({ location: [data] }),
+            body: JSON.stringify({
+                location: [
+                    {
+                        ...data.locationData,
+                        addressType: '',
+                        addressText: '',
+                        latitude: '',
+                        longitude: '',
+                        isPreferred: true,
+                        village: '',
+                    },
+                ],
+            }),
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -60,17 +74,19 @@ export const updateLocation = async (
 
 export const updateContactInfo = async (
     organizationId: string,
-    payload: Partial<{
-        phoneNumbers: { value: string; isPreferred: boolean; type: string }[];
-        emailAddress: { value: string; isPreferred: boolean; type: string }[];
-        otherAddress: { value: string; isPreferred: boolean; type: string }[];
-    }>,
+    data: ContactFormData,
 ) => {
+    const grouped = {
+        phoneNumbers: data.contacts.filter((c) => c.type === 'Mobile'),
+        emailAddress: data.contacts.filter((c) => c.type === 'Communication'),
+        otherAddress: data.contacts.filter((c) => c.type === 'Default'),
+    };
+
     const response = await fetcher(
-        `/address/contacts/${organizationId}/organization`,
+        `/address/contacts/${organizationId}/Organization`,
         {
             method: 'POST',
-            body: JSON.stringify(payload),
+            body: JSON.stringify(grouped),
             headers: {
                 'Content-Type': 'application/json',
             },

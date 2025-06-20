@@ -221,12 +221,6 @@ export default function JobDetailsPage() {
                                             Salary not specified
                                         </Badge>
                                     )}
-                                    {/* <Badge
-                    variant="outline"
-                    leftSection={<IconCalendar size={14} />}
-                  >
-                    Posted: {job?.createdAt}
-                  </Badge> */}
                                 </Group>
                             </div>
                         </Group>
@@ -273,7 +267,6 @@ export default function JobDetailsPage() {
                             <Card.Section
                                 withBorder
                                 p="md"
-                                bg="gray.0"
                                 className="flex justify-between"
                             >
                                 <Title order={2}>Job Details</Title>
@@ -452,7 +445,7 @@ export default function JobDetailsPage() {
                                     </Tabs.Panel>
                                 </Box>
                             </Tabs>
-                            <Card.Section withBorder p="md" bg="gray.0">
+                            <Card.Section withBorder p="md">
                                 <Group justify="space-between">
                                     <Button
                                         variant="outline"
@@ -468,7 +461,7 @@ export default function JobDetailsPage() {
 
                         {/* Applicant Pipeline Card */}
                         <Card withBorder radius="md" hidden>
-                            <Card.Section withBorder p="md" bg="gray.0">
+                            <Card.Section withBorder p="md">
                                 <Group>
                                     <IconUsers
                                         size={20}
@@ -484,12 +477,7 @@ export default function JobDetailsPage() {
                             <Box p="xl">
                                 <Stack gap="xl">
                                     {/* Pipeline Overview */}
-                                    <Paper
-                                        withBorder
-                                        p="md"
-                                        radius="md"
-                                        bg="gray.0"
-                                    >
+                                    <Paper withBorder p="md" radius="md">
                                         <Group justify="space-between">
                                             <Group>
                                                 <Avatar radius="xl" size={48}>
@@ -531,12 +519,7 @@ export default function JobDetailsPage() {
 
                                     {/* Pipeline Stages */}
                                     <SimpleGrid cols={{ base: 1, md: 4 }}>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="gray.0"
-                                        >
+                                        <Paper withBorder p="md" radius="md">
                                             <Group
                                                 justify="space-between"
                                                 mb="sm"
@@ -557,12 +540,7 @@ export default function JobDetailsPage() {
                                             </Group>
                                             <Progress value={100} size="sm" />
                                         </Paper>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="gray.0"
-                                        >
+                                        <Paper withBorder p="md" radius="md">
                                             <Group
                                                 justify="space-between"
                                                 mb="sm"
@@ -591,12 +569,7 @@ export default function JobDetailsPage() {
                                                 size="sm"
                                             />
                                         </Paper>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="gray.0"
-                                        >
+                                        <Paper withBorder p="md" radius="md">
                                             <Group
                                                 justify="space-between"
                                                 mb="sm"
@@ -625,12 +598,7 @@ export default function JobDetailsPage() {
                                                 size="sm"
                                             />
                                         </Paper>
-                                        <Paper
-                                            withBorder
-                                            p="md"
-                                            radius="md"
-                                            bg="gray.0"
-                                        >
+                                        <Paper withBorder p="md" radius="md">
                                             <Group
                                                 justify="space-between"
                                                 mb="sm"
@@ -819,7 +787,7 @@ export default function JobDetailsPage() {
                                     This job posting is currently active
                                 </Text>
                             </Card.Section>
-                            <Card.Section p="xl" bg="gray.0">
+                            <Card.Section p="xl">
                                 <Stack gap="lg">
                                     <Group justify="space-between">
                                         <Group gap="xs">
@@ -882,7 +850,7 @@ export default function JobDetailsPage() {
 
                         {/* Job Performance Card */}
                         <Card withBorder radius="md">
-                            <Card.Section withBorder p="md" bg="gray.0">
+                            <Card.Section withBorder p="md">
                                 <Group>
                                     <IconChartBar
                                         size={20}
@@ -982,7 +950,7 @@ export default function JobDetailsPage() {
 
                         {/* Actions Card */}
                         <Card withBorder radius="md" hidden>
-                            <Card.Section withBorder p="md" bg="gray.0">
+                            <Card.Section withBorder p="md">
                                 <Group>
                                     <IconExternalLink
                                         size={20}
@@ -1040,7 +1008,7 @@ export default function JobDetailsPage() {
 
                         {/* Job Timeline Card */}
                         <Card withBorder radius="md" hidden>
-                            <Card.Section withBorder p="md" bg="gray.0">
+                            <Card.Section withBorder p="md">
                                 <Group>
                                     <IconClock
                                         size={20}
@@ -1116,7 +1084,7 @@ const Applicants = ({ jobId }: { jobId: string }) => {
     });
     return (
         <Card withBorder radius="md" p={'md'}>
-            <Card.Section withBorder p="md" bg="gray.0">
+            <Card.Section withBorder p="md">
                 <Group justify="space-between">
                     <Group>
                         <IconUsers size={20} />
@@ -1154,7 +1122,6 @@ const Applicants = ({ jobId }: { jobId: string }) => {
                                         <Table.Td>
                                             <Text fw={500}>
                                                 {`${applicant?.firstName} 
-                                                    ' ' 
                                                     ${applicant?.lastName}`}
                                             </Text>
                                         </Table.Td>
@@ -1193,12 +1160,14 @@ const Applicants = ({ jobId }: { jobId: string }) => {
                     <Text c="dimmed">No applicants</Text>
                 )}
             </Card.Section>
-            {applicants?.totall > 5 && (
+            {applicants?.total > 5 && (
                 <Box className="flex items-center justify-end mt-4">
                     <Button
                         variant="transparent"
                         onClick={() =>
-                            router.push(`/work-provider/applicants/${jobId}`)
+                            router.push(
+                                `/work-provider/applicants?jobId=${jobId}`,
+                            )
                         }
                     >
                         Load More

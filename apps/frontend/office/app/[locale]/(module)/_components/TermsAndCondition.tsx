@@ -31,7 +31,7 @@ export function TermsAndConditions({
                             align="flex-start"
                             mb="md"
                         >
-                            <Title order={1} size="h2" c="primary.7">
+                            <Title order={1} size="h2" fw={600}>
                                 Shega Jobs Terms and Conditions
                             </Title>
                             <Badge color="primary" variant="light" size="lg">
@@ -61,7 +61,7 @@ export function TermsAndConditions({
 
                     {/* Section 1 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             1. Account Registration and Management
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -90,7 +90,7 @@ export function TermsAndConditions({
                                 immediately at{' '}
                                 <Anchor
                                     href="mailto:support@shegajobs.com"
-                                    c="primary.7"
+                                    fw={600}
                                 >
                                     support@shegajobs.com
                                 </Anchor>{' '}
@@ -109,7 +109,7 @@ export function TermsAndConditions({
 
                     {/* Section 2 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             2. Job Seekers (or Mentee)
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -145,7 +145,7 @@ export function TermsAndConditions({
 
                     {/* Section 3 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             3. Employers (or Mentor)
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -192,7 +192,7 @@ export function TermsAndConditions({
 
                     {/* Section 4 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             4. Privacy and Data Security
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -220,7 +220,7 @@ export function TermsAndConditions({
                                 activity to{' '}
                                 <Anchor
                                     href="mailto:support@shegajobs.com"
-                                    c="primary.7"
+                                    fw={600}
                                 >
                                     support@shegajobs.com
                                 </Anchor>
@@ -232,7 +232,7 @@ export function TermsAndConditions({
 
                     {/* Section 5 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             5. Intellectual Property
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -259,7 +259,7 @@ export function TermsAndConditions({
 
                     {/* Section 6 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             6. Disclaimers and Limitations
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -299,7 +299,7 @@ export function TermsAndConditions({
 
                     {/* Section 7 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             7. Modifications
                         </Title>
                         <Text>
@@ -312,7 +312,7 @@ export function TermsAndConditions({
 
                     {/* Section 8 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             8. Governing Law and Dispute Resolution
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -329,7 +329,7 @@ export function TermsAndConditions({
 
                     {/* Section 9 */}
                     <Stack gap="md">
-                        <Title order={2} size="h3" c="primary.7">
+                        <Title order={2} size="h3" fw={600}>
                             9. Miscellaneous
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
@@ -354,7 +354,7 @@ export function TermsAndConditions({
                                 For questions or concerns, email{' '}
                                 <Anchor
                                     href="mailto:support@shegajobs.com"
-                                    c="primary.7"
+                                    fw={600}
                                 >
                                     support@shegajobs.com
                                 </Anchor>
@@ -367,7 +367,7 @@ export function TermsAndConditions({
 
                     {/* Contact Information */}
                     <Paper p="md" radius="md">
-                        <Title order={3} size="h4" c="primary.7" mb="sm">
+                        <Title order={3} size="h4" fw={600} mb="sm">
                             Contact Information
                         </Title>
                         <Text>
@@ -378,7 +378,7 @@ export function TermsAndConditions({
                             <IconMail size={16} />
                             <Anchor
                                 href="mailto:support@shegajobs.com"
-                                c="primary.7"
+                                fw={600}
                             >
                                 support@shegajobs.com
                             </Anchor>
@@ -398,6 +398,9 @@ export function TermsAndConditions({
                             mt="xl"
                             wrap="wrap"
                         >
+                            <Button onClick={close} bg={'red.4'}>
+                                Decline
+                            </Button>
                             <Button
                                 onClick={() => {
                                     updateTerms(true);

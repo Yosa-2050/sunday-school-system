@@ -11,10 +11,10 @@ import {
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconBookmark, IconBriefcase } from '@tabler/icons-react';
-import type { UseMutationResult } from '@tanstack/react-query';
 import type { Response } from 'app/_api/jobs/fetch-jobs';
 import { useRouter } from 'next-nprogress-bar';
 
+import { useJobs } from '@/hooks/jobs.hook';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -22,33 +22,14 @@ dayjs.extend(relativeTime);
 
 type JobCardProps = {
     job: Response['data'][number];
-    likeMutation: UseMutationResult<
-        {
-            success: boolean;
-            message: string;
-        },
-        Error,
-        string,
-        unknown
-    >;
-    unlikeMutation: UseMutationResult<
-        {
-            success: boolean;
-            message: string;
-        },
-        Error,
-        string,
-        unknown
-    >;
 };
 
-export const JobCard = ({
-    job,
-    likeMutation,
-    unlikeMutation,
-}: JobCardProps) => {
+export const JobCard = ({ job }: JobCardProps) => {
     const router = useRouter();
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const { likeMutation, unlikeMutation } = useJobs({
+        isJob: job?.type === 'Job',
+    });
 
     const handleLikeUnlike = (saved: boolean, programId: string) => {
         if (saved) {
