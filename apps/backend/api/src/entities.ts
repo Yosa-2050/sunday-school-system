@@ -19,6 +19,7 @@ import { LocationInfo } from './location/entities/LocationInfo.entity';
 import { ContactDetails } from './location/entities/contact-details.entity';
 import { Country } from './location/entities/country.entity';
 import { Location } from './location/entities/location.entity';
+import { Notes } from './notification/entities/notes.entity';
 import { Notification } from './notification/entities/notification.entity';
 import { NotificationTemplate } from './notification/entities/notificationTemplate.entity';
 import { Branch } from './organization/entities/branch.entity';
@@ -62,4 +63,5 @@ export const AppEntities = [
     Mentorship,
     SavedPrograms,
     LookUps,
+    Notes,
 ];

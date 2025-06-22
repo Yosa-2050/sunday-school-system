@@ -18,6 +18,8 @@ import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
+import { NotesService } from '@shega/notification/notes.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
@@ -90,6 +92,7 @@ export class JobPortalService {
         private readonly passwordService: PasswordService,
         private readonly profileService: ProfileService,
         private readonly notificationService: NotificationService,
+        private readonly notesService: NotesService,
         private readonly dateService: DateService,
     ) {}
 
@@ -241,12 +244,12 @@ export class JobPortalService {
 
         const category = dto.catagories
             ?.map((category) => {
-                const newCatagory = categories.find((x) => x.id === category);
-                if (!newCatagory) {
+                const newCategory = categories.find((x) => x.id === category);
+                if (!newCategory) {
                     return null;
                 }
                 const jobCategory = this.jobCategoryRepo.create();
-                jobCategory.category = newCatagory;
+                jobCategory.category = newCategory;
                 if (program) {
                     jobCategory.program = program;
                 }
@@ -316,6 +319,8 @@ export class JobPortalService {
             program: { id: program.id },
             applicant: { id: applicantId },
         });
+
+        const notes = await this.notesService.getNotesByReference(id);
         if (program.programType === ProgramType.Job) {
             const job = await this.findOneJobByProgramId(id);
             return {
@@ -323,6 +328,7 @@ export class JobPortalService {
                 type: ProgramType.Job,
                 applied: !!jobsApplied,
                 saved: !!savedJob,
+                notes: notes,
             };
         }
 
@@ -333,6 +339,7 @@ export class JobPortalService {
                 type: ProgramType.Mentorship,
                 applied: !!jobsApplied,
                 saved: !!savedJob,
+                notes: notes,
             };
         }
     }
@@ -595,12 +602,15 @@ export class JobPortalService {
         }
         const updatedJob = await this.programRepo.update(id, {
             status,
-            notes: note,
             postedDate:
                 status === ApprovalType.Approved
                     ? this.dateService.getCurrentDate()
                     : null,
         });
+
+        if (note) {
+            await this.notesService.create(id, note, 'Program approved');
+        }
 
         const result = UtilityServices.EnsureUpdated(updatedJob, id);
         const job = await this.jobRepo.findOneBy({ program: { id } });
@@ -800,7 +810,7 @@ export class JobPortalService {
                 ? updateJob.salaryFrom
                 : updateJob.salaryTo;
 
-        return UtilityServices.EnsureMultipleUpdateds(updated, updatedProg, id);
+        return UtilityServices.EnsureMultipleUpdated(updated, updatedProg, id);
     }
 
     remove(id: number) {

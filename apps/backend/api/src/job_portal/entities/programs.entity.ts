@@ -7,7 +7,7 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EducationalRequirementType } from '../enums/education-requirment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '../enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProgramType } from '../enums/program-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -44,7 +44,7 @@ export class Programs extends BaseModel {
     city: LocationInfo;
 
     @Column({ nullable: true })
-    experianceLevel: ExperianceLevelType;
+    experianceLevel: ExperienceLevelType;
 
     @Column({ nullable: true })
     experiance: number;
@@ -54,9 +54,6 @@ export class Programs extends BaseModel {
 
     @Column({ nullable: true })
     educationalRequirment: EducationalRequirementType;
-
-    @Column({ nullable: true })
-    notes: string;
 
     @OneToMany(
         () => ProgramSkills,
