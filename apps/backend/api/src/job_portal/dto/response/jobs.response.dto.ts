@@ -7,7 +7,7 @@ import { CurrencyType } from '@shega/job_portal/enums/currency-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 
@@ -27,7 +27,6 @@ export class JobResponseDto {
         this.title = job.program.title;
         this.orgName = job.organization?.name;
         this.description = job.program.description;
-        this.note = job.program.notes;
         this.currency = job.currency;
         this.isPublished = job.program.isPublished;
         this.applied = appliedJobs ? appliedJobs.includes(job.id) : false;
@@ -62,7 +61,7 @@ export class JobResponseDto {
 
     //city: LocationInfo;
 
-    experianceLevel: ExperianceLevelType;
+    experianceLevel: ExperienceLevelType;
 
     //experiance: number;
 
@@ -83,7 +82,6 @@ export class JobResponseDto {
     //postedBy: EmployeeOrganization;
 
     createdDate: Date;
-    note: string;
     currency: CurrencyType;
     applied: boolean;
     saved: boolean;

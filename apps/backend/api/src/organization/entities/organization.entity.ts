@@ -6,6 +6,8 @@ import { Category } from '@shega/job_portal/entities/category.entity';
 import { ContactDetails } from '@shega/location/entities/contact-details.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Location } from '@shega/location/entities/location.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Notes } from '@shega/notification/entities/notes.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CompanySize } from '../enums/company-size.enum';
@@ -27,9 +29,6 @@ export class Organization extends BaseModel {
 
     @Column({ nullable: true })
     displayName: string;
-
-    @Column({ nullable: true })
-    note: string;
 
     @Column({ nullable: true })
     type: CompanyType;
@@ -70,4 +69,5 @@ export class Organization extends BaseModel {
 
     locations: Location[];
     contacts: ContactDetails[];
+    notes: Notes[];
 }

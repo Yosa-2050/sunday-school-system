@@ -13,7 +13,7 @@ export class UtilityServices {
         }
         return UtilityServices.SuccessIdResponse(id);
     }
-    static EnsureMultipleUpdateds(
+    static EnsureMultipleUpdated(
         result1: UpdateResult,
         result2: UpdateResult,
         id: string,
@@ -29,7 +29,7 @@ export class UtilityServices {
     static EnsureDeleted(result: DeleteResult, id: string) {
         if (result.affected === 0) {
             throw new BadRequestException(
-                `Delete with ID ${id} failed, please contact your administartor`,
+                `Delete with ID ${id} failed, please contact your administrator`,
             );
         }
         return UtilityServices.SuccessIdResponse();

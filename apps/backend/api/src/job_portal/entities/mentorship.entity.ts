@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CommitmentType } from '../enums/commitment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExperianceLevelType } from '../enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '../enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { MentorshipType } from '../enums/mentorship-type.enum';
 import { Mentors } from './mentor.entity';
@@ -21,7 +21,7 @@ export class Mentorship extends BaseModel {
     duration: number;
 
     @Column({ nullable: true })
-    audience: ExperianceLevelType;
+    audience: ExperienceLevelType;
 
     @ManyToOne(() => Mentors, { eager: true, nullable: true })
     mentor: Mentors;

@@ -7,7 +7,7 @@ import { CurrencyType } from '@shega/job_portal/enums/currency-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 
@@ -23,7 +23,6 @@ export class ProgramsResponseDto {
         this.status = program.status;
         this.title = program.title;
         this.description = program.description;
-        this.note = program.notes;
         this.isPublished = program.isPublished;
         this.applied = appliedprograms
             ? appliedprograms.includes(program.id)
@@ -45,11 +44,10 @@ export class ProgramsResponseDto {
     salaryType: SalaryType;
 
     status: ApprovalType;
-    experianceLevel: ExperianceLevelType;
+    experianceLevel: ExperienceLevelType;
     isPublished: boolean;
     postedDate: Date;
     createdDate: Date;
-    note: string;
     currency: CurrencyType;
     applied: boolean;
     saved: boolean;

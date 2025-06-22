@@ -17,7 +17,7 @@ import {
 import { CurrencyType } from '../../enums/currency-type.enum';
 import { EducationalRequirementType } from '../../enums/education-requirment-type.enum';
 import { EmploymentType } from '../../enums/employment-type.enum';
-import { ExperianceLevelType } from '../../enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '../../enums/experiance-level-type.enum';
 import { SalaryFrequencyType } from '../../enums/salary-frequency-type.enum';
 import { SalaryType } from '../../enums/salary-type.enum';
 import { WorkPlaceType } from '../../enums/work-place-type.enum';
@@ -63,11 +63,11 @@ export class ProgramRequestDto {
     numberOfApplicants?: number;
 
     @ApiProperty({
-        example: ExperianceLevelType.Entry,
+        example: ExperienceLevelType.Entry,
         description: 'Entry level experiance',
     })
-    @OptionalEnum(ExperianceLevelType)
-    experianceLevel?: ExperianceLevelType;
+    @OptionalEnum(ExperienceLevelType)
+    experianceLevel?: ExperienceLevelType;
 
     @ApiProperty()
     @IsNumber()

@@ -19,6 +19,7 @@ import { LocationModel } from '@shega/location/dto/model/location.model';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotesService } from '@shega/notification/notes.service';
 import { NotificationService } from '@shega/notification/notification.service';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
@@ -68,6 +69,8 @@ export class OrganizationService {
         @Inject(ProfileService) private profileService: ProfileService,
         @Inject(NotificationService)
         private notificationService: NotificationService,
+        @Inject(NotesService)
+        private notesService: NotesService,
         @Inject(PasswordService)
         private readonly passwordService: PasswordService,
         private queryBuilderService: QueryBuilderService,
@@ -90,11 +93,19 @@ export class OrganizationService {
 
         const updatedOrg = await this.organizationRepo.update(
             { id },
-            { status, note },
+            { status },
         );
 
         const result = UtilityServices.EnsureUpdated(updatedOrg, id);
         if (result.success) {
+            if (note) {
+                await this.notesService.create(
+                    id,
+                    note,
+                    'Organization approval',
+                );
+            }
+
             let emailTemplate = null;
             const employeeList = await this.findEmployee(id);
             const profile = employeeList[0].employee.profile;
@@ -263,18 +274,21 @@ export class OrganizationService {
     async findOne(id: string) {
         const organization = await this.organizationRepo.findOneBy({ id: id });
         if (!organization) {
-            throw new EntityNotFoundException('Organization');
+            throw new EntityNotFoundException(typeof Organization);
         }
-        const contactDetails = await this.addressService.getContactByRefernce(
+        const contactDetails = await this.addressService.getContactByReference(
             organization.id,
             ReferenceType.Organization,
         );
-        const location = await this.addressService.getLocationByRefernce(
+        const location = await this.addressService.getLocationByReference(
             organization.id,
             ReferenceType.Organization,
         );
+
+        const notes = await this.notesService.getNotesByReference(id);
         organization.contacts = contactDetails;
         organization.locations = location;
+        organization.notes = notes;
         return organization;
     }
 
@@ -357,7 +371,7 @@ export class OrganizationService {
     async getOrganizationDetail(profileId: string) {
         const employee =
             await this.employeeService.getEmployeeByProfileId(profileId);
-        //assumpiton Employee only have one active org assignment
+        //assumption Employee only have one active org assignment
         const assignEmployee = await this.findAssignedEmployeeByEmployeeId(
             employee.id,
         );
@@ -368,13 +382,9 @@ export class OrganizationService {
         userDetails.employeeId = employee?.id;
         userDetails.employeeOrgId = assignEmployee.id;
         userDetails.profileId = employee?.profile?.id;
+        userDetails.organizationName = organization?.name;
+        userDetails.organizationStatus = organization?.status;
         return userDetails;
-        // return {
-        //     employeeId: employee?.id,
-        //     assignedEmployeeId: assignEmployee?.id,
-        //     organizationId: organization?.id,
-        //     branchId: branch?.id,
-        // };
     }
 
     async CreateEmployeeQDE(dto: CreateOrganizationEmployeeDto) {
@@ -475,12 +485,25 @@ export class OrganizationService {
         const update = await this.organizationRepo.preload({
             id: orgId,
             isActive: isOrgActive,
-            note: note,
         });
+
         if (!update) {
             throw new EntityNotFoundException('Organization');
         }
-        return this.organizationRepo.save(update);
+
+        const ordUpdated = await this.organizationRepo.save(update);
+
+        if (ordUpdated) {
+            if (note) {
+                await this.notesService.create(
+                    orgId,
+                    note,
+                    'Organization Active/Inactive status',
+                );
+            }
+            return UtilityServices.SuccessDataResponse();
+        }
+        throw new BadRequestException('Unable to update');
     }
 
     updateOrganizationContactDetails(

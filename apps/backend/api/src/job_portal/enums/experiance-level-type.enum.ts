@@ -1,4 +1,4 @@
-export enum ExperianceLevelType {
+export enum ExperienceLevelType {
     Student = 'Student',
     Entry = 'Entry',
     Professional = 'Professional',

@@ -5,7 +5,7 @@ import {
 } from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
-import { ExperianceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
 import { ProgramType } from '@shega/job_portal/enums/program-type.enum';
 import { Type } from 'class-transformer';
 import {
@@ -49,8 +49,8 @@ export class GetJobsRequestDto {
     type?: EmploymentType;
 
     @ApiProperty()
-    @OptionalEnum(ExperianceLevelType)
-    experianceLevel?: ExperianceLevelType;
+    @OptionalEnum(ExperienceLevelType)
+    experianceLevel?: ExperienceLevelType;
 
     @ApiProperty()
     @IsNumber()
