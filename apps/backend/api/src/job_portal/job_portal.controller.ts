@@ -14,7 +14,7 @@ import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
-    ExportWithQuesryRequestModel,
+    ExportWithQueryRequestModel,
     ListStringRequestModel,
     StringRequestModel,
 } from '@shega/Utilities/models/list-string.model';
@@ -73,7 +73,7 @@ export class JobPortalController {
     @Post('jobsByStatus/exportSelected')
     async exportSelected(
         @Res() res: Response,
-        @Body() dto: ExportWithQuesryRequestModel,
+        @Body() dto: ExportWithQueryRequestModel,
     ) {
         let data = [];
 

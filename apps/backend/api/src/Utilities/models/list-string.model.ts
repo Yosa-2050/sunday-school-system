@@ -7,7 +7,7 @@ export class ListStringRequestModel {
     list: string[];
 }
 
-export class ExportWithQuesryRequestModel extends ListStringRequestModel {
+export class ExportWithQueryRequestModel extends ListStringRequestModel {
     @ApiProperty()
     @IsString()
     @IsOptional()

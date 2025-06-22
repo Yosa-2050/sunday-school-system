@@ -15,7 +15,7 @@ import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
-    ExportWithQuesryRequestModel,
+    ExportWithQueryRequestModel,
     StringRequestModel,
 } from '@shega/Utilities/models/list-string.model';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
@@ -123,7 +123,7 @@ export class OrganizationController {
     @Post('/exportSelected')
     async exportSelected(
         @Res() res: Response,
-        @Body() dto: ExportWithQuesryRequestModel,
+        @Body() dto: ExportWithQueryRequestModel,
     ) {
         let data: GetOrganizationListResponseDto[] = [];
         if (dto.list?.length > 0) {
