@@ -1,4 +1,6 @@
 // biome-ignore lint/style/useImportType: <explanation>
+import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 
 export class UserDetails {
@@ -10,6 +12,8 @@ export class UserDetails {
     profileId: string;
     userId: string;
     email: string;
+    organizationName?: string;
+    organizationStatus?: ApprovalType;
 }
 
 export class UserResponsePayload {

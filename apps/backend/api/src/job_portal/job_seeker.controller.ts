@@ -81,25 +81,6 @@ export class JobSeekerController {
         return this.jobsService.uploadCv(CurrentUser.getApplicantId(req), file);
     }
 
-    // @Post('jobs')
-    // getAllPending(@Body() dto: { q: string }, @Request() req) {
-    //     const deserialized = entityParamDeserializer(dto.q);
-
-    //     const searchableColumns = [];
-
-    //     const queryString = entityParamSerializer({
-    //         ...deserialized,
-    //         f: [
-    //             { f: 'status', v: ApprovalType.Approved, o: 'eq' },
-    //             ...(deserialized.f ?? []),
-    //         ],
-    //     });
-    //     return this.jobPortalService.getJobsByStatusPaginated(
-    //         queryString,
-    //         CurrentUser.getApplicantId(req),
-    //     );
-    // }
-
     @Get('program/:id')
     findOneByProgramId(
         @Param('id', new ParseUUIDPipe()) id: string,
@@ -196,7 +177,7 @@ export class JobSeekerController {
     }
 
     @Patch('experiance/:id')
-    updateExperiance(
+    updateExperience(
         @Request() req,
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: UpdateExperianceRequestDto,

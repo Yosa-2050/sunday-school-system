@@ -188,7 +188,7 @@ export class AddressService {
         return this.locationInfoRepo.findOneBy({ id });
     }
 
-    getLocationByRefernce(referenceId: string, referenceType: ReferenceType) {
+    getLocationByReference(referenceId: string, referenceType: ReferenceType) {
         return this.locationRepo.findBy({
             reference: referenceId,
             referenceType: referenceType,
@@ -196,7 +196,7 @@ export class AddressService {
         });
     }
 
-    getContactByRefernce(referenceId: string, referenceType: ReferenceType) {
+    getContactByReference(referenceId: string, referenceType: ReferenceType) {
         return this.addressRepo.findBy({
             reference: referenceId,
             referenceType: referenceType,

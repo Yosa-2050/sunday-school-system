@@ -99,7 +99,7 @@ export class AddressController {
         @Param('referenceId') referenceId: string,
         @Param('referenceType') referenceType: ReferenceType,
     ) {
-        return this.addressService.getContactByRefernce(
+        return this.addressService.getContactByReference(
             referenceId,
             referenceType,
         );
