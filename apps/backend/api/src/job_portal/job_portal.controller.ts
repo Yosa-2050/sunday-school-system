@@ -15,6 +15,7 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     ExportWithQuesryRequestModel,
+    ListStringRequestModel,
     StringRequestModel,
 } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
@@ -131,17 +132,41 @@ export class JobPortalController {
         );
     }
 
-    @Roles(UserRoleType.WorkProvider)
-    @Post('applications/:jobId')
+    @Roles(UserRoleType.WorkProvider, UserRoleType.Mentor)
+    @Post('applications/:programId')
     findAppliedPrograms(
         @Request() req,
-        @Param('jobId', new ParseUUIDPipe()) id: string,
+        @Param('programId', new ParseUUIDPipe()) id: string,
         @Body() request: GetJobApplicationsRequestDto,
     ) {
-        return this.jobPortalService.jobsAppliedByJobId(
+        return this.jobPortalService.jobsAppliedByJobId(id, request);
+    }
+
+    @Roles(UserRoleType.WorkProvider, UserRoleType.Mentor)
+    @Post('shortList/:programId')
+    shortlistApplicants(
+        @Request() req,
+        @Param('programId', new ParseUUIDPipe()) id: string,
+        @Body() request: ListStringRequestModel,
+    ) {
+        return this.jobPortalService.shortlistApplicants(
             id,
-            CurrentUser.getOrganizationId(req),
-            request,
+            request.list,
+            CurrentUser.getOrganizationId(req, false),
+            CurrentUser.getMentorId(req, false),
+        );
+    }
+
+    @Roles(UserRoleType.WorkProvider, UserRoleType.Mentor)
+    @Patch('rejectNotShortList/:programId')
+    rejectNotShortlisted(
+        @Request() req,
+        @Param('programId', new ParseUUIDPipe()) id: string,
+    ) {
+        return this.jobPortalService.rejectNotShortlisted(
+            id,
+            CurrentUser.getOrganizationId(req, false),
+            CurrentUser.getMentorId(req, false),
         );
     }
 
