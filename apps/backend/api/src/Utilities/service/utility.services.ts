@@ -45,7 +45,7 @@ export class UtilityServices {
     static SuccessIdResponse(id?: string) {
         return {
             data: id,
-            sucess: true,
+            success: true,
         };
     }
 
@@ -53,7 +53,7 @@ export class UtilityServices {
     static SuccessDataResponse(data?: any) {
         return {
             data: data,
-            sucess: true,
+            success: true,
         };
     }
 

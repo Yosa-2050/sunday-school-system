@@ -607,7 +607,7 @@ export class JobPortalService {
         if (job) {
             await this.SendJobApprovedNotification(
                 job,
-                result.sucess,
+                result.success,
                 status,
                 note,
             );

@@ -90,6 +90,19 @@ export class OrganizationController {
         );
     }
 
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
+    @Patch('return/:id')
+    returnOrganization(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: StringRequestModel,
+    ) {
+        return this.organizationService.organizationApproval(
+            id,
+            ApprovalType.Returned,
+            dto?.note,
+        );
+    }
+
     @Post()
     create(@Body() createOrganizationDto: CreateOrganizationDto) {
         return this.organizationService.create(createOrganizationDto);
