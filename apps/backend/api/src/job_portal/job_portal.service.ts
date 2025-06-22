@@ -55,6 +55,7 @@ import { Mentorship } from './entities/mentorship.entity';
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
 import { Skills } from './entities/skills.entity';
+import { ApplicationStatus } from './enums/job-application-status.enum';
 import { ProgramType } from './enums/program-type.enum';
 import { SalaryType } from './enums/salary-type.enum';
 
@@ -606,7 +607,7 @@ export class JobPortalService {
         if (job) {
             await this.SendJobApprovedNotification(
                 job,
-                result.sucess,
+                result.success,
                 status,
                 note,
             );
@@ -901,19 +902,80 @@ export class JobPortalService {
         return this.categoryRepo.save(update);
     }
 
-    async jobsAppliedByJobId(
-        jobId: string,
+    async shortlistApplicants(
+        programId: string,
+        applications: string[],
         organizationId: string,
+        mentorId: string,
+    ) {
+        this.validateProgramIdOnUser(programId, organizationId, mentorId);
+
+        const result = await this.jobApplicationRepo.update(
+            {
+                id: In(applications),
+                program: { id: programId },
+            },
+            { status: ApplicationStatus.SHORT_LISTED },
+        );
+
+        return UtilityServices.EnsureUpdated(result, programId);
+    }
+
+    async rejectNotShortlisted(
+        programId: string,
+        organizationId: string,
+        mentorId: string,
+    ) {
+        this.validateProgramIdOnUser(programId, organizationId, mentorId);
+
+        const result = await this.jobApplicationRepo.update(
+            {
+                status: ApplicationStatus.PENDING,
+                program: { id: programId },
+            },
+            { status: ApplicationStatus.REJECTED },
+        );
+
+        return UtilityServices.EnsureUpdated(result, programId);
+    }
+
+    async validateProgramIdOnUser(
+        programId: string,
+        organizationId: string,
+        mentorId: string,
+    ) {
+        const program = await this.programRepo.findOneBy({ id: programId });
+        if (!program) {
+            throw new EntityNotFoundException('Program', programId);
+        }
+
+        if (program.programType === ProgramType.Job) {
+            const job = await this.jobRepo.findOneBy({
+                program: { id: program.id },
+                organization: { id: organizationId },
+            });
+            if (!job) {
+                throw new ForbiddenException('Unable to access program');
+            }
+        } else if (program.programType === ProgramType.Mentorship) {
+            const mentorship = await this.mentorshipRepo.findOneBy({
+                program: { id: program.id },
+                mentor: { id: mentorId },
+            });
+            if (!mentorship) {
+                throw new ForbiddenException('Unable to access program');
+            }
+        } else {
+            throw new BadRequestException('Unknown program type');
+        }
+
+        return true;
+    }
+
+    async jobsAppliedByJobId(
+        programId: string,
         request: GetJobApplicationsRequestDto,
     ) {
-        const job = await this.jobRepo.findOneBy({
-            id: jobId,
-            //organization: { id: organizationId },
-        });
-        if (!job) {
-            throw new EntityNotFoundException('Job');
-        }
-        const programId = job.program.id;
         const query = this.jobApplicationRepo
             .createQueryBuilder('applications')
             .leftJoinAndSelect('applications.program', 'program')

@@ -3,10 +3,13 @@ import { BadRequestException } from '@nestjs/common';
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CurrentUser {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    static getMentorId(req: any): string {
+    static getMentorId(req: any, validate = true): string {
         const mentorId = req?.user?.details?.mentorId;
         if (!mentorId) {
-            throw new BadRequestException('Unable to find mentor id');
+            if (validate) {
+                throw new BadRequestException('Unable to find mentor id');
+            }
+            return null;
         }
         return mentorId;
     }
@@ -19,18 +22,21 @@ export class CurrentUser {
         const employeeOrgId = req?.user?.details?.employeeOrgId;
         if (!employeeOrgId) {
             throw new BadRequestException(
-                'Unable to find employee organiazation id',
+                'Unable to find employee organization id',
             );
         }
         return employeeOrgId;
     }
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    static getOrganizationId(req: any): string {
+    static getOrganizationId(req: any, validate = true): string {
         const organizationId = req?.user?.details?.organizationId;
         if (!organizationId) {
-            throw new BadRequestException(
-                'Unable to find linked organiazation id',
-            );
+            if (validate) {
+                throw new BadRequestException(
+                    'Unable to find linked organization id',
+                );
+            }
+            return null;
         }
         return organizationId;
     }

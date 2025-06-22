@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    ForbiddenException,
+    Inject,
+    Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
@@ -76,7 +81,11 @@ export class OrganizationService {
     ) {
         const org = await this.organizationRepo.findOneBy({ id });
         if (!org) {
-            throw new EntityNotFoundException('Organization');
+            throw new EntityNotFoundException(typeof Organization);
+        }
+
+        if (org.status === ApprovalType.Declined) {
+            throw new ForbiddenException('Organization is declined');
         }
 
         const updatedOrg = await this.organizationRepo.update(
@@ -85,7 +94,7 @@ export class OrganizationService {
         );
 
         const result = UtilityServices.EnsureUpdated(updatedOrg, id);
-        if (result.sucess) {
+        if (result.success) {
             let emailTemplate = null;
             const employeeList = await this.findEmployee(id);
             const profile = employeeList[0].employee.profile;

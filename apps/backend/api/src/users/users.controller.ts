@@ -13,7 +13,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
-    ExportWithQuesryRequestModel,
+    ExportWithQueryRequestModel,
     StringRequestModel,
 } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
@@ -59,7 +59,7 @@ export class UsersController {
 
     @Post('exportSelected')
     async exportSelected(
-        @Body() dto: ExportWithQuesryRequestModel,
+        @Body() dto: ExportWithQueryRequestModel,
         @Res() res: Response,
     ) {
         let data = [];

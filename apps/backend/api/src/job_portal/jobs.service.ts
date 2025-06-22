@@ -454,7 +454,7 @@ export class JobsService {
         );
 
         const result = UtilityServices.EnsureUpdated(updated, applicantId);
-        if (result.sucess) {
+        if (result.success) {
             return canApply;
         }
     }
