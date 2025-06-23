@@ -54,6 +54,7 @@ interface Job {
     postedBy: PostedBy;
     currency: string;
     salaryType: string;
+    programId: string;
 }
 
 export interface JobsResponse {
@@ -119,6 +120,36 @@ export const fetchApplicants = async (
 ): Promise<any> => {
     const response: Result = await fetcher(
         `/job-portal/applications/${jobId}`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        },
+    );
+
+    return response as Result;
+};
+
+export const fetchShortListed = async (
+    payload: Page,
+    jobId: string,
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+): Promise<any> => {
+    const response: Result = await fetcher(`/job-portal/shortList/${jobId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
+
+    return response as Result;
+};
+export const fetchRejected = async (
+    payload: Page,
+    jobId: string,
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+): Promise<any> => {
+    const response: Result = await fetcher(
+        `/job-portal/rejectNotShortList/${jobId}`,
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

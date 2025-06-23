@@ -394,9 +394,10 @@ export function TermsAndConditions({
                     {updateTerms && close && (
                         <Flex
                             align="center"
-                            justify="center"
+                            justify="flex-end"
                             mt="xl"
                             wrap="wrap"
+                            gap={'md'}
                         >
                             <Button onClick={close} bg={'red.4'}>
                                 Decline
