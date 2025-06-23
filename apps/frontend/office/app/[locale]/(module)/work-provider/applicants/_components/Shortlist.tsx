@@ -3,20 +3,20 @@ import { EntityPagination } from '@/components/EntityPagination';
 import NoData from '@/components/NoData';
 import { Avatar, Button, Paper, Table, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { fetchApplicants } from 'app/[locale]/_api/organizations/fetch-jobs';
+import { fetchShortListed } from 'app/[locale]/_api/organizations/fetch-jobs';
 import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
 
-export const Applicants = ({
+export const ShortListed = ({
     jobId,
     search,
 }: { jobId: string; search: string }) => {
     const router = useRouter();
     const [page, setPage] = useState(1);
     const { data: applicants, isLoading } = useQuery({
-        queryKey: ['applicants', jobId, search],
+        queryKey: ['applicants', 'shortlisted', jobId, search],
         queryFn: () =>
-            fetchApplicants(
+            fetchShortListed(
                 { status: '', pagination: { page: page, limit: 10, search } },
                 jobId,
             ),
@@ -35,7 +35,7 @@ export const Applicants = ({
                     <Table.Tr>
                         <Table.Th>Avatar</Table.Th>
                         <Table.Th>Candidate</Table.Th>
-                        <Table.Th>Applied Date</Table.Th>
+                        <Table.Th>Shortlisted Date</Table.Th>
                         <Table.Th>Status</Table.Th>
                         <Table.Th>Actions</Table.Th>
                     </Table.Tr>
@@ -77,7 +77,7 @@ export const Applicants = ({
                                         variant="transparent"
                                         onClick={() =>
                                             router.push(
-                                                `/work-provider/applicants/${applicant?.profileId}`,
+                                                `/work-provider/applicants/${applicant?.id}`,
                                             )
                                         }
                                     >

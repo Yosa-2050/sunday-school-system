@@ -29,7 +29,7 @@ export function PrivacyPolicy() {
                             <Title order={1} size="h2" fw={600}>
                                 Shega Jobs Privacy Policy
                             </Title>
-                            <Badge color="primary" variant="light" size="lg">
+                            <Badge variant="light" size="lg">
                                 <Group gap={4}>
                                     <IconCalendar size={14} />
                                     <Text size="sm">Effective: 01/01/2025</Text>
@@ -48,7 +48,7 @@ export function PrivacyPolicy() {
                         <Group gap="sm">
                             <IconShield
                                 size={20}
-                                color="var(--mantine-color-primary-7)"
+                                // color="var(--mantine-color-primary-7)"
                             />
                             <Text fw={500}>Our Commitment to Your Privacy</Text>
                         </Group>
@@ -77,7 +77,7 @@ export function PrivacyPolicy() {
                                 <Title
                                     order={3}
                                     size="h4"
-                                    c="primary.6"
+                                    // c="primary.6"
                                     mb="sm"
                                 >
                                     A. Personal Information
@@ -106,7 +106,7 @@ export function PrivacyPolicy() {
                                 <Title
                                     order={3}
                                     size="h4"
-                                    c="primary.6"
+                                    // c="primary.6"
                                     mb="sm"
                                 >
                                     B. Usage Data

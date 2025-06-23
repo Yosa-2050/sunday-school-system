@@ -769,7 +769,7 @@ export default function JobDetailsPage() {
 
                         {/* Recent Applicants Card */}
                         {job?.status === 'APPROVED' && (
-                            <Applicants jobId={jobId} />
+                            <Applicants jobId={job.programId} />
                         )}
                     </Stack>
                 </Grid.Col>

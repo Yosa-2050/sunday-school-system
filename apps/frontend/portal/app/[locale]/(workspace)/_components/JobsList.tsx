@@ -8,7 +8,7 @@ import { JobCard } from './JobCard';
 export function JobList() {
     const router = useRouter();
 
-    const { data, isLoading, error, likeMutation, unlikeMutation } = useJobs({
+    const { data, isLoading, error, refetch } = useJobs({
         filters: {
             pagination: {
                 page: 1,
@@ -27,7 +27,7 @@ export function JobList() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             {data?.data.slice(0, 4).map((job) => (
-                <JobCard job={job} key={job.id} />
+                <JobCard job={job} key={job.id} refetch={refetch} />
             ))}
 
             <div className="col-span-full flex justify-center mt-4">
