@@ -1,3 +1,11 @@
+## [1.4.1](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.4.0...v1.4.1) (2025-06-23)
+
+
+### Bug Fixes
+
+* **shega:** collection fix ([d2f45e0](https://gitlab.heranitech.com/meklit/shega-jobs/commit/d2f45e01df1ff951d7cfba75b92157745a56c52c))
+* **shega:** collection fix ([786ed4c](https://gitlab.heranitech.com/meklit/shega-jobs/commit/786ed4ca6d01659ebefccef1098c67423ad964b4))
+
 # [1.4.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.3.0...v1.4.0) (2025-06-20)
 
 
