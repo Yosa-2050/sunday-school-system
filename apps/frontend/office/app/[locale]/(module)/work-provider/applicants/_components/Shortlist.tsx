@@ -13,20 +13,23 @@ export const ShortListed = ({
 }: { jobId: string; search: string }) => {
     const router = useRouter();
     const [page, setPage] = useState(1);
-    const { data: applicants, isLoading, isFetching } = useQuery({
+    const {
+        data: applicants,
+        isLoading,
+        isFetching,
+    } = useQuery({
         queryKey: ['applicants', 'ACCEPTED', jobId, search],
         queryFn: () =>
             fetchApplicants(
                 { status: '', pagination: { page: page, limit: 10, search } },
                 jobId,
-                "ACCEPTED"
-
+                'ACCEPTED',
             ),
     });
 
     if (isLoading || isFetching) {
-            <EntityPageLoading />;
-        }
+        <EntityPageLoading />;
+    }
     if (!applicants?.data?.length) {
         return <NoData />;
     }

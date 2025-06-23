@@ -36,7 +36,7 @@ import {
     Group,
     Stack,
     Text,
-    Title
+    Title,
 } from '@mantine/core';
 import {
     IconCalendar,
@@ -45,7 +45,7 @@ import {
     IconPhone,
     IconShield,
     IconUser,
-    IconX
+    IconX,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -84,7 +84,6 @@ const formatGender = (gender?: string) => {
     return gender.charAt(0) + gender.slice(1).toLowerCase();
 };
 
-
 // Info item component
 const InfoItem = ({
     label,
@@ -117,8 +116,9 @@ export default function ApplicantProfile() {
     const { data: profilePicture } = useDownloadProfilePicture(
         applicantData?.profile_picture_id ?? '',
     );
-    const {mutate,isPending} = useShortLIstMutation(id);
-    const {mutate: rejectMutation, isPending: unShortListPending} = useShortRejectedMutation(id);
+    const { mutate, isPending } = useShortLIstMutation(id);
+    const { mutate: rejectMutation, isPending: unShortListPending } =
+        useShortRejectedMutation(id);
 
     const fullName = [
         applicantData?.firstName,
@@ -150,11 +150,12 @@ export default function ApplicantProfile() {
                         radius={100}
                         style={{ cursor: 'pointer' }}
                     >
-                        {!profilePicture && getInitials(
-                            applicantData?.firstName,
-                            applicantData?.lastName,
-                        )}
-                        </Avatar>
+                        {!profilePicture &&
+                            getInitials(
+                                applicantData?.firstName,
+                                applicantData?.lastName,
+                            )}
+                    </Avatar>
 
                     <Box style={{ flex: 1 }}>
                         <Flex
@@ -175,7 +176,18 @@ export default function ApplicantProfile() {
                                 )}
                             </Box>
                             <Flex>
-                                <Button loading={isPending} onClick={() => mutate({applicants:[applicantData?.id ?? ""]})}>Shortlist</Button>
+                                <Button
+                                    loading={isPending}
+                                    onClick={() =>
+                                        mutate({
+                                            applicants: [
+                                                applicantData?.id ?? '',
+                                            ],
+                                        })
+                                    }
+                                >
+                                    Shortlist
+                                </Button>
                                 <Button
                                     variant="outline"
                                     color="red"

@@ -78,40 +78,35 @@ export const useDownloadProfilePicture = (id: string) => {
     });
 };
 
-
 const shortListedApplicants = async (
     programId: string,
-    applicants: string[]
+    applicants: string[],
 ) => {
+    const response = await fetcher(`/job-portal/shortList/${programId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ list: applicants }),
+    });
+
+    return response;
+};
+const shortRejectedLists = async (programId: string) => {
     const response = await fetcher(
-            `/job-portal/shortList/${programId}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({list: applicants }),
-            },
-        );
-    
-        return response;
-}
-const shortRejectedLists = async (
-    programId: string
-) => {
-    const response = await fetcher(
-            `/job-portal/rejectNotShortList/${programId}`,
-            {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' }
-            },
-        );
-    
-        return response;
-}
+        `/job-portal/rejectNotShortList/${programId}`,
+        {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+        },
+    );
+
+    return response;
+};
 
 const useShortLIstMutation = (programId: string) => {
     return useMutation({
         mutationKey: ['shortListedApplicants', programId],
-        mutationFn: async ({applicants}:{applicants: string[]}) => await shortListedApplicants(programId, applicants),
+        mutationFn: async ({ applicants }: { applicants: string[] }) =>
+            await shortListedApplicants(programId, applicants),
         onSuccess: (data) => {
             notifications.show({
                 title: 'Success',
@@ -127,9 +122,9 @@ const useShortLIstMutation = (programId: string) => {
                 color: 'red',
             });
             throw error;
-        }
+        },
     });
-}
+};
 
 const useShortRejectedMutation = (programId: string) => {
     return useMutation({
@@ -150,7 +145,7 @@ const useShortRejectedMutation = (programId: string) => {
                 color: 'red',
             });
             throw error;
-        }
+        },
     });
-}
+};
 export { useShortLIstMutation, useShortRejectedMutation };

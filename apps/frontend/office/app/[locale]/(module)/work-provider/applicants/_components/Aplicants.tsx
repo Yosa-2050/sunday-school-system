@@ -13,13 +13,17 @@ export const Applicants = ({
 }: { jobId: string; search: string }) => {
     const router = useRouter();
     const [page, setPage] = useState(1);
-    const { data: applicants, isLoading, isFetching } = useQuery({
-        queryKey: ['applicants', jobId, search,"PENDING"],
+    const {
+        data: applicants,
+        isLoading,
+        isFetching,
+    } = useQuery({
+        queryKey: ['applicants', jobId, search, 'PENDING'],
         queryFn: () =>
             fetchApplicants(
                 { status: '', pagination: { page: page, limit: 10, search } },
                 jobId,
-                "PENDING"
+                'PENDING',
             ),
     });
 

@@ -116,7 +116,7 @@ export interface Daum {
 export const fetchApplicants = async (
     payload: Page,
     jobId: string,
-    status: "PENDING" | "REJECTED" | "ACCEPTED",
+    status: 'PENDING' | 'REJECTED' | 'ACCEPTED',
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ): Promise<any> => {
     const response: Result = await fetcher(
@@ -124,7 +124,7 @@ export const fetchApplicants = async (
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({...payload, status }),
+            body: JSON.stringify({ ...payload, status }),
         },
     );
 
