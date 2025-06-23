@@ -25,7 +25,6 @@ export const useJobs = ({
         mutationFn: likeJob,
         mutationKey: ['like-job'],
         onSuccess: () => {
-            refetch();
             notifications.show({
                 title: 'Job Liked',
                 message: isJob
@@ -33,6 +32,7 @@ export const useJobs = ({
                     : 'Mentorship Program saved successfully',
                 color: 'green',
             });
+            refetch();
         },
         onError: (error) => {
             notifications.show({
@@ -51,7 +51,6 @@ export const useJobs = ({
         mutationFn: unlikeJob,
         mutationKey: ['unlike-job'],
         onSuccess: () => {
-            refetch();
             notifications.show({
                 title: 'Job Unliked',
                 message: isJob
@@ -59,6 +58,7 @@ export const useJobs = ({
                     : 'Mentorship Program unsaved successfully',
                 color: 'green',
             });
+            refetch();
         },
         onError: (error) => {
             notifications.show({

@@ -22,20 +22,23 @@ dayjs.extend(relativeTime);
 
 type JobCardProps = {
     job: Response['data'][number];
+    refetch: () => void;
 };
 
-export const JobCard = ({ job }: JobCardProps) => {
+export const JobCard = ({ job, refetch }: JobCardProps) => {
     const router = useRouter();
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { likeMutation, unlikeMutation } = useJobs({
         isJob: job?.type === 'Job',
     });
 
-    const handleLikeUnlike = (saved: boolean, programId: string) => {
+    const handleLikeUnlike = async (saved: boolean, programId: string) => {
         if (saved) {
-            unlikeMutation.mutate(programId);
+            await unlikeMutation.mutate(programId);
+            await refetch();
         } else {
-            likeMutation.mutate(programId);
+            await likeMutation.mutate(programId);
+            await refetch();
         }
     };
 

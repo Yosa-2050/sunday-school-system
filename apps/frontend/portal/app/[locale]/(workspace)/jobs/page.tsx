@@ -46,8 +46,9 @@ export default function JobsPage() {
         }));
     };
 
-    const { data, isLoading, refetch, error, likeMutation, unlikeMutation } =
-        useJobs({});
+    const { data, isLoading, refetch } = useJobs({
+        filters,
+    });
     const isEmpty = !!data?.data?.length;
     const [entityParams, setEntityParams] = useQueryState(
         'job-seeker-jbs',
@@ -158,7 +159,11 @@ export default function JobsPage() {
                             {isEmpty ? (
                                 <div className="grid grid-cols-2 gap-4">
                                     {data?.data.map((job) => (
-                                        <JobCard key={job.id} job={job} />
+                                        <JobCard
+                                            key={job.id}
+                                            job={job}
+                                            refetch={refetch}
+                                        />
                                     ))}
                                 </div>
                             ) : (
