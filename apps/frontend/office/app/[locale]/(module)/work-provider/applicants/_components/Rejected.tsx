@@ -3,7 +3,7 @@ import { EntityPagination } from '@/components/EntityPagination';
 import NoData from '@/components/NoData';
 import { Avatar, Button, Paper, Table, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { fetchRejected } from 'app/[locale]/_api/organizations/fetch-jobs';
+import { fetchApplicants } from 'app/[locale]/_api/organizations/fetch-jobs';
 import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
 
@@ -13,16 +13,17 @@ export const RejectedList = ({
 }: { jobId: string; search: string }) => {
     const router = useRouter();
     const [page, setPage] = useState(1);
-    const { data: applicants, isLoading } = useQuery({
-        queryKey: ['applicants', 'rejected', jobId, search],
+    const { data: applicants, isLoading,isFetching } = useQuery({
+        queryKey: ['applicants', 'REJECTED', jobId, search],
         queryFn: () =>
-            fetchRejected(
+            fetchApplicants(
                 { status: '', pagination: { page: page, limit: 10, search } },
                 jobId,
+                "REJECTED"
             ),
     });
 
-    if (isLoading) {
+    if (isLoading || isFetching) {
         <EntityPageLoading />;
     }
     if (!applicants?.data?.length) {

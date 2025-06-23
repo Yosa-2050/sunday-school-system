@@ -116,6 +116,7 @@ export interface Daum {
 export const fetchApplicants = async (
     payload: Page,
     jobId: string,
+    status: "PENDING" | "REJECTED" | "ACCEPTED",
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ): Promise<any> => {
     const response: Result = await fetcher(
@@ -123,37 +124,7 @@ export const fetchApplicants = async (
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        },
-    );
-
-    return response as Result;
-};
-
-export const fetchShortListed = async (
-    payload: Page,
-    jobId: string,
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-): Promise<any> => {
-    const response: Result = await fetcher(`/job-portal/shortList/${jobId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-    });
-
-    return response as Result;
-};
-export const fetchRejected = async (
-    payload: Page,
-    jobId: string,
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-): Promise<any> => {
-    const response: Result = await fetcher(
-        `/job-portal/rejectNotShortList/${jobId}`,
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
+            body: JSON.stringify({...payload, status }),
         },
     );
 
