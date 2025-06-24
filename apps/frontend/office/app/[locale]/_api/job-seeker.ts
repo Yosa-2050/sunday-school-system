@@ -1,5 +1,6 @@
+import { notifications } from '@mantine/notifications';
 import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 
 interface Role {
@@ -76,3 +77,75 @@ export const useDownloadProfilePicture = (id: string) => {
         enabled: !!id, // Only enable the query if id is truthy
     });
 };
+
+const shortListedApplicants = async (
+    programId: string,
+    applicants: string[],
+) => {
+    const response = await fetcher(`/job-portal/shortList/${programId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ list: applicants }),
+    });
+
+    return response;
+};
+const shortRejectedLists = async (programId: string) => {
+    const response = await fetcher(
+        `/job-portal/rejectNotShortList/${programId}`,
+        {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+        },
+    );
+
+    return response;
+};
+
+const useShortLIstMutation = (programId: string) => {
+    return useMutation({
+        mutationKey: ['shortListedApplicants', programId],
+        mutationFn: async ({ applicants }: { applicants: string[] }) =>
+            await shortListedApplicants(programId, applicants),
+        onSuccess: (data) => {
+            notifications.show({
+                title: 'Success',
+                message: 'Applicants shortlisted successfully.',
+                color: 'green',
+            });
+            return data;
+        },
+        onError: (error) => {
+            notifications.show({
+                title: 'Error',
+                message: `Failed to shortlist applicants: ${error.message}`,
+                color: 'red',
+            });
+            throw error;
+        },
+    });
+};
+
+const useShortRejectedMutation = (programId: string) => {
+    return useMutation({
+        mutationKey: ['shortRejectedLists', programId],
+        mutationFn: async () => await shortRejectedLists(programId),
+        onSuccess: (data) => {
+            notifications.show({
+                title: 'Success',
+                message: 'Applicants rejected successfully.',
+                color: 'green',
+            });
+            return data;
+        },
+        onError: (error) => {
+            notifications.show({
+                title: 'Error',
+                message: `Failed to reject applicants: ${error.message}`,
+                color: 'red',
+            });
+            throw error;
+        },
+    });
+};
+export { useShortLIstMutation, useShortRejectedMutation };

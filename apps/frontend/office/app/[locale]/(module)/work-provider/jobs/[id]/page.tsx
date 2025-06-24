@@ -1080,6 +1080,7 @@ const Applicants = ({ jobId }: { jobId: string }) => {
             fetchApplicants(
                 { status: '', pagination: { page: 1, limit: 5, search: '' } },
                 jobId,
+                'PENDING',
             ),
     });
     return (

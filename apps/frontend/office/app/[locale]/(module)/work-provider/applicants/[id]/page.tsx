@@ -25,10 +25,10 @@ import type React from 'react';
 
 import { EntityPageLoading } from '@/components/EntityPageLoading';
 import {
-    Alert,
     Avatar,
     Badge,
     Box,
+    Button,
     Card,
     Divider,
     Flex,
@@ -39,7 +39,6 @@ import {
     Title,
 } from '@mantine/core';
 import {
-    IconAlertCircle,
     IconCalendar,
     IconCheck,
     IconMail,
@@ -52,12 +51,11 @@ import { useQuery } from '@tanstack/react-query';
 import {
     applicantDetails,
     useDownloadProfilePicture,
+    useShortLIstMutation,
+    useShortRejectedMutation,
 } from 'app/[locale]/_api/job-seeker';
 import { useParams } from 'next/navigation';
 
-// Type definitions
-
-// Utility functions
 const formatDate = (dateString?: string) => {
     if (!dateString) {
         return 'Not provided';
@@ -85,25 +83,6 @@ const formatGender = (gender?: string) => {
     }
     return gender.charAt(0) + gender.slice(1).toLowerCase();
 };
-
-const formatRole = (role: string) => {
-    return role
-        .split('_')
-        .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
-        .join(' ');
-};
-
-// Error boundary component
-const ErrorDisplay = ({ message }: { message: string }) => (
-    <Alert
-        icon={<IconAlertCircle size="1rem" />}
-        title="Error"
-        color="red"
-        mb="xl"
-    >
-        {message}
-    </Alert>
-);
 
 // Info item component
 const InfoItem = ({
@@ -137,6 +116,9 @@ export default function ApplicantProfile() {
     const { data: profilePicture } = useDownloadProfilePicture(
         applicantData?.profile_picture_id ?? '',
     );
+    const { mutate, isPending } = useShortLIstMutation(id);
+    const { mutate: rejectMutation, isPending: unShortListPending } =
+        useShortRejectedMutation(id);
 
     const fullName = [
         applicantData?.firstName,
@@ -167,7 +149,13 @@ export default function ApplicantProfile() {
                         size={100}
                         radius={100}
                         style={{ cursor: 'pointer' }}
-                    />
+                    >
+                        {!profilePicture &&
+                            getInitials(
+                                applicantData?.firstName,
+                                applicantData?.lastName,
+                            )}
+                    </Avatar>
 
                     <Box style={{ flex: 1 }}>
                         <Flex
@@ -187,6 +175,29 @@ export default function ApplicantProfile() {
                                     </Text>
                                 )}
                             </Box>
+                            <Flex>
+                                <Button
+                                    loading={isPending}
+                                    onClick={() =>
+                                        mutate({
+                                            applicants: [
+                                                applicantData?.id ?? '',
+                                            ],
+                                        })
+                                    }
+                                >
+                                    Shortlist
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    color="red"
+                                    ml="md"
+                                    onClick={() => rejectMutation()}
+                                    loading={unShortListPending}
+                                >
+                                    Reject
+                                </Button>
+                            </Flex>
                         </Flex>
 
                         <Group gap="xs">
