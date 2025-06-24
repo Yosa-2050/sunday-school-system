@@ -1,3 +1,12 @@
+## [1.4.2](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.4.1...v1.4.2) (2025-06-24)
+
+
+### Bug Fixes
+
+* **shega:** shortlist and reject ([c97a3bc](https://gitlab.heranitech.com/meklit/shega-jobs/commit/c97a3bce4b7efc0a6d088f65764c36fc4a9daea2))
+* **shega:** shortlist and reject ([f575c29](https://gitlab.heranitech.com/meklit/shega-jobs/commit/f575c291bcea425d42c1c3a72512d919eee7043e))
+* **shega:** shortlist and reject ([2bd6458](https://gitlab.heranitech.com/meklit/shega-jobs/commit/2bd6458436791d9c6f5d46d46a98a5f328053363))
+
 ## [1.4.1](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.4.0...v1.4.1) (2025-06-23)
 
 
