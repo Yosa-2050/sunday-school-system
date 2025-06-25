@@ -4,7 +4,7 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { Profile } from '@shega/users/entities/profile.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { EducationHistory } from './educational-history.entity';
-import { Experiance } from './experiance.entity';
+import { Experiance } from './experience.entity';
 
 @Entity()
 export class Mentors extends BaseModel {

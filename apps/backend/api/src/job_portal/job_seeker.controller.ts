@@ -224,11 +224,6 @@ export class JobSeekerController {
         return this.jobsService.getDetails(CurrentUser.getApplicantId(req));
     }
 
-    @Get('details/:applicantId')
-    getApplicantDetails(@Param('applicantId') applicantId: string) {
-        return this.jobsService.getDetails(applicantId);
-    }
-
     @Post('saveProgram/:programId')
     saveProgram(@Request() req, @Param('programId') programId: string) {
         return this.jobsService.saveProgram(

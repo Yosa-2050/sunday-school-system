@@ -3,7 +3,7 @@ import { Profile } from '@shega/users/entities/profile.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { ApplicantSkills } from './applicants-skills.entity';
 import { EducationHistory } from './educational-history.entity';
-import { Experiance } from './experiance.entity';
+import { Experiance } from './experience.entity';
 import { Applications } from './job-application.entity';
 
 @Entity()
@@ -39,14 +39,14 @@ export class Applicants extends BaseModel {
     @OneToMany(
         () => EducationHistory,
         (history) => history.applicant,
-        { cascade: true, lazy: true },
+        { cascade: true },
     )
     educationalHistory: EducationHistory[];
 
     @OneToMany(
         () => Experiance,
-        (experiance) => experiance.applicant,
-        { cascade: true, lazy: true },
+        (experience) => experience.applicant,
+        { cascade: true },
     )
     experiance: Experiance[];
 

@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CommitmentType } from '../enums/commitment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExperienceLevelType } from '../enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '../enums/experience-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { MentorshipType } from '../enums/mentorship-type.enum';
 import { Mentors } from './mentor.entity';

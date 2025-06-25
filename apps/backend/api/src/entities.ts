@@ -4,7 +4,7 @@ import { ApplicantSkills } from './job_portal/entities/applicants-skills.entity'
 import { Applicants } from './job_portal/entities/applicants.entity';
 import { Category } from './job_portal/entities/category.entity';
 import { EducationHistory } from './job_portal/entities/educational-history.entity';
-import { Experiance } from './job_portal/entities/experiance.entity';
+import { Experiance } from './job_portal/entities/experience.entity';
 import { Applications } from './job_portal/entities/job-application.entity';
 import { ProgramCategory } from './job_portal/entities/job-category.entity';
 import { ProgramDescription } from './job_portal/entities/job-description.entity';
