@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { EducationalRequirementType } from '@shega/job_portal/enums/education-requirment-type.enum';
+import { EducationalRequirementType } from '@shega/job_portal/enums/education-requirement-type.enum';
 import { Transform } from 'class-transformer';
 import {
     IsDateString,

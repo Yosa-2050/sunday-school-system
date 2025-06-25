@@ -7,7 +7,7 @@ import { CurrencyType } from '@shega/job_portal/enums/currency-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExperienceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '@shega/job_portal/enums/experience-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProgramType } from '@shega/job_portal/enums/program-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -16,8 +16,8 @@ import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 export class ProgramsResponseDto {
     constructor(
         program: Programs,
-        appliedprograms: string[] = null,
-        savedprograms: string[] = null,
+        appliedPrograms: string[] = null,
+        savedPrograms: string[] = null,
     ) {
         this.id = program.id;
         this.createdDate = program.createdAt;
@@ -26,10 +26,10 @@ export class ProgramsResponseDto {
         this.title = program.title;
         this.description = program.description;
         this.isPublished = program.isPublished;
-        this.applied = appliedprograms
-            ? appliedprograms.includes(program.id)
+        this.applied = appliedPrograms
+            ? appliedPrograms.includes(program.id)
             : false;
-        this.saved = savedprograms ? savedprograms.includes(program.id) : false;
+        this.saved = savedPrograms ? savedPrograms.includes(program.id) : false;
         this.experianceLevel = program.experianceLevel;
         this.programType = program.programType;
     }

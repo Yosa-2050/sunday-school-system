@@ -5,9 +5,9 @@ import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
 import { Country } from '@shega/location/entities/country.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EducationalRequirementType } from '../enums/education-requirment-type.enum';
+import { EducationalRequirementType } from '../enums/education-requirement-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ExperienceLevelType } from '../enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '../enums/experience-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProgramType } from '../enums/program-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>

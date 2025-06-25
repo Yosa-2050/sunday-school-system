@@ -35,7 +35,7 @@ import { UpdateApplicantRequestDto } from './dto/request/update-applicant.reques
 import { ApplicantSkills } from './entities/applicants-skills.entity';
 import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
-import { Experiance } from './entities/experiance.entity';
+import { Experiance } from './entities/experience.entity';
 import { Applications } from './entities/job-application.entity';
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';

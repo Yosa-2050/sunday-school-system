@@ -15,9 +15,9 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { CurrencyType } from '../../enums/currency-type.enum';
-import { EducationalRequirementType } from '../../enums/education-requirment-type.enum';
+import { EducationalRequirementType } from '../../enums/education-requirement-type.enum';
 import { EmploymentType } from '../../enums/employment-type.enum';
-import { ExperienceLevelType } from '../../enums/experiance-level-type.enum';
+import { ExperienceLevelType } from '../../enums/experience-level-type.enum';
 import { SalaryFrequencyType } from '../../enums/salary-frequency-type.enum';
 import { SalaryType } from '../../enums/salary-type.enum';
 import { WorkPlaceType } from '../../enums/work-place-type.enum';
