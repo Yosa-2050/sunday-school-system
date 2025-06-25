@@ -8,7 +8,7 @@ import { JobCard } from './JobCard';
 export function JobList() {
     const router = useRouter();
 
-    const { data, isLoading, error, refetch } = useJobs({
+    const { data, isLoading, isFetching, error, refetch } = useJobs({
         filters: {
             pagination: {
                 page: 1,
@@ -17,7 +17,7 @@ export function JobList() {
         },
     });
 
-    if (isLoading) {
+    if (isLoading || isFetching) {
         return <LoadingOverlay visible={true} h="100vh" />;
     }
     if (error) {

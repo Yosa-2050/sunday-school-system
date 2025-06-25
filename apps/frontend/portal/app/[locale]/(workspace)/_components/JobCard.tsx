@@ -29,16 +29,14 @@ export const JobCard = ({ job, refetch }: JobCardProps) => {
     const router = useRouter();
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { likeMutation, unlikeMutation } = useJobs({
-        isJob: job?.type === 'Job',
+        isJob: job?.programType === 'Job',
     });
 
     const handleLikeUnlike = async (saved: boolean, programId: string) => {
         if (saved) {
             await unlikeMutation.mutate(programId);
-            await refetch();
         } else {
             await likeMutation.mutate(programId);
-            await refetch();
         }
     };
 
@@ -55,13 +53,6 @@ export const JobCard = ({ job, refetch }: JobCardProps) => {
                 <Group gap="sm" className="w-full">
                     <Flex align={'center'} justify={'space-between'} w={'100%'}>
                         <div className="flex items-center flex-1">
-                            {/* <Avatar
-                                size={isMobile ? 'sm' : 'lg'}
-                                color="blue"
-                                radius="xl"
-                            > */}
-                            {/* {job.organization?.name.slice(0, 2)} */}
-                            {/* </Avatar> */}
                             <Title
                                 order={isMobile ? 5 : 4}
                                 className="font-semibold line-clamp-1 cursor-pointer transition-colors"
@@ -76,24 +67,36 @@ export const JobCard = ({ job, refetch }: JobCardProps) => {
                             <Button
                                 variant="subtle"
                                 size="xs"
-                                onClick={() =>
-                                    handleLikeUnlike(job.saved, job.id)
-                                }
+                                onClick={async () => {
+                                    await handleLikeUnlike(job.saved, job.id);
+                                }}
                                 className="flex items-center font-semibold justify-end cursor-pointer w-fit gap-1.5"
                                 color={job.saved ? 'green' : 'gray'}
+                                loading={
+                                    likeMutation.isPending ||
+                                    unlikeMutation.isPending
+                                }
+                                disabled={
+                                    likeMutation.isPending ||
+                                    unlikeMutation.isPending
+                                }
                             >
                                 <IconBookmark size={14} stroke={2} />
                                 <Text>{job.saved ? 'Saved' : 'Save'}</Text>
                             </Button>
                         )}
                     </Flex>
-                    <Text size="sm" c="dimmed" className="line-clamp-1">
-                        {/* {job.organization?.name} */}
-                    </Text>
                 </Group>
             </Group>
 
             <Group mt="sm" gap="xs">
+                <Badge
+                    color="green"
+                    variant="light"
+                    leftSection={<IconBriefcase size={14} />}
+                >
+                    {job.programType}
+                </Badge>
                 <Badge
                     color="green"
                     variant="light"

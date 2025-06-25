@@ -1,5 +1,5 @@
 import { notifications } from '@mantine/notifications';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     type Filter,
     fetchJobs,
@@ -7,32 +7,37 @@ import {
     unlikeJob,
 } from 'app/_api/jobs/fetch-jobs';
 
+const getJobQueryKey = (filters?: Filter) => [
+    'job-seeker-jbs',
+    filters?.pagination?.page ?? 1,
+    filters?.pagination?.limit ?? 5,
+];
+
 export const useJobs = ({
     filters,
     isJob,
 }: { filters?: Filter; isJob?: boolean }) => {
-    const { data, isLoading, error, refetch } = useQuery({
-        queryKey: [
-            'job-seeker-jbs',
-            filters?.pagination?.page,
-            filters?.pagination.limit,
-        ],
+    const queryClient = useQueryClient();
+
+    const { data, isLoading, isFetching, error, refetch } = useQuery({
+        queryKey: getJobQueryKey(filters),
         queryFn: () => fetchJobs(filters as Filter),
         enabled: !!filters,
+        staleTime: 0,
     });
 
     const likeMutation = useMutation({
         mutationFn: likeJob,
-        mutationKey: ['like-job'],
-        onSuccess: () => {
+        onSuccess: async () => {
+            await refetch();
+
             notifications.show({
-                title: 'Job Liked',
+                title: 'Job Saved',
                 message: isJob
-                    ? 'Job saved successfully'
+                    ? 'Job saved successfully'
                     : 'Mentorship Program saved successfully',
                 color: 'green',
             });
-            refetch();
         },
         onError: (error) => {
             notifications.show({
@@ -49,16 +54,16 @@ export const useJobs = ({
 
     const unlikeMutation = useMutation({
         mutationFn: unlikeJob,
-        mutationKey: ['unlike-job'],
-        onSuccess: () => {
+        onSuccess: async () => {
+            await refetch();
+
             notifications.show({
-                title: 'Job Unliked',
+                title: 'Job Unsaved',
                 message: isJob
-                    ? 'Job unsaved successfully'
-                    : 'Mentorship Program unsaved successfully',
+                    ? 'Job unsaved successfully'
+                    : 'Mentorship Program unsaved successfully',
                 color: 'green',
             });
-            refetch();
         },
         onError: (error) => {
             notifications.show({
@@ -73,5 +78,13 @@ export const useJobs = ({
         retry: false,
     });
 
-    return { data, isLoading, error, likeMutation, unlikeMutation, refetch };
+    return {
+        data,
+        isLoading,
+        isFetching,
+        error,
+        likeMutation,
+        unlikeMutation,
+        refetch,
+    };
 };

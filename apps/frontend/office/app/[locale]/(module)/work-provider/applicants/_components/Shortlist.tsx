@@ -18,12 +18,12 @@ export const ShortListed = ({
         isLoading,
         isFetching,
     } = useQuery({
-        queryKey: ['applicants', 'ACCEPTED', jobId, search],
+        queryKey: ['applicants', 'SHORT_LISTED', jobId, search],
         queryFn: () =>
             fetchApplicants(
                 { status: '', pagination: { page: page, limit: 10, search } },
                 jobId,
-                'ACCEPTED',
+                'SHORT_LISTED',
             ),
     });
 
@@ -82,7 +82,7 @@ export const ShortListed = ({
                                         variant="transparent"
                                         onClick={() =>
                                             router.push(
-                                                `/work-provider/applicants/${applicant?.id}`,
+                                                `/work-provider/applicants/${applicant?.applicantId}`,
                                             )
                                         }
                                     >
