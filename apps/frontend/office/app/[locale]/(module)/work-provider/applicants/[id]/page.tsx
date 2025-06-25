@@ -1,49 +1,33 @@
-// 'use client';
-
-// import { EntityPageLoading } from '@/components/EntityPageLoading';
-// import { useQuery } from '@tanstack/react-query';
-// import { applicantDetails } from 'app/[locale]/_api/job-seeker';
-// import { useParams } from 'next/navigation';
-
-// const Page = () => {
-// const { id } = useParams<{ id: string }>();
-// const { data, isLoading } = useQuery({
-//     queryKey: ['applicants', id],
-//     queryFn: () => applicantDetails(id),
-// });
-//     if (isLoading) {
-//         return <EntityPageLoading />;
-//     }
-//     return <div>Page {JSON.stringify(data)}</div>;
-// };
-
-// export default Page;
-
 'use client';
-
-import type React from 'react';
 
 import { EntityPageLoading } from '@/components/EntityPageLoading';
 import {
     Avatar,
     Badge,
     Box,
-    Button,
     Card,
     Divider,
     Flex,
     Grid,
     Group,
+    Progress,
     Stack,
+    Tabs,
     Text,
+    ThemeIcon,
+    Timeline,
     Title,
 } from '@mantine/core';
 import {
+    IconAward,
+    IconBriefcase,
+    IconBuilding,
     IconCalendar,
     IconCheck,
+    IconFileText,
     IconMail,
     IconPhone,
-    IconShield,
+    IconSchool,
     IconUser,
     IconX,
 } from '@tabler/icons-react';
@@ -55,15 +39,16 @@ import {
     useShortRejectedMutation,
 } from 'app/[locale]/_api/job-seeker';
 import { useParams } from 'next/navigation';
+import type React from 'react';
 
 const formatDate = (dateString?: string) => {
     if (!dateString) {
-        return 'Not provided';
+        return 'Present';
     }
     try {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric',
         });
     } catch {
@@ -82,6 +67,43 @@ const formatGender = (gender?: string) => {
         return 'Not specified';
     }
     return gender.charAt(0) + gender.slice(1).toLowerCase();
+};
+
+const calculateAge = (birthDate?: string) => {
+    if (!birthDate) {
+        return null;
+    }
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+        age--;
+    }
+    return age;
+};
+
+const formatWorkType = (type?: string) => {
+    if (!type) {
+        return '';
+    }
+    return type
+        .replace('_', ' ')
+        .toLowerCase()
+        .replace(/^\w/, (c) => c.toUpperCase());
+};
+
+const formatWorkPlace = (workPlace?: string) => {
+    if (!workPlace) {
+        return '';
+    }
+    return workPlace
+        .replace('_', ' ')
+        .toLowerCase()
+        .replace(/^\w/, (c) => c.toUpperCase());
 };
 
 // Info item component
@@ -105,7 +127,6 @@ const InfoItem = ({
     </Box>
 );
 
-// Main component
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function ApplicantProfile() {
     const { id } = useParams<{ id: string }>();
@@ -114,23 +135,45 @@ export default function ApplicantProfile() {
         queryFn: () => applicantDetails(id),
     });
     const { data: profilePicture } = useDownloadProfilePicture(
-        applicantData?.profile_picture_id ?? '',
+        applicantData?.profile?.profile_picture_id ?? '',
     );
-    const { mutate, isPending } = useShortLIstMutation(id);
-    const { mutate: rejectMutation, isPending: unShortListPending } =
+    const { mutate: shortlistMutation, isPending: isShortlisting } =
+        useShortLIstMutation(id);
+    const { mutate: rejectMutation, isPending: isRejecting } =
         useShortRejectedMutation(id);
-
-    const fullName = [
-        applicantData?.firstName,
-        applicantData?.middleName,
-        applicantData?.lastName,
-    ]
-        .filter(Boolean)
-        .join(' ');
 
     if (isLoading) {
         return <EntityPageLoading />;
     }
+
+    if (!applicantData) {
+        return (
+            <Box ta="center" py="xl">
+                <Text>Applicant not found</Text>
+            </Box>
+        );
+    }
+
+    const fullName = [
+        applicantData.profile?.firstName,
+        applicantData.profile?.middleName,
+        applicantData.profile?.lastName,
+    ]
+        .filter(Boolean)
+        .join(' ');
+
+    const age = calculateAge(applicantData.profile?.birthDate);
+
+    const handleShortlist = () => {
+        shortlistMutation({
+            applicants: [applicantData.id],
+        });
+    };
+
+    const handleReject = () => {
+        rejectMutation();
+    };
+
     return (
         <Box>
             {/* Header Section */}
@@ -146,14 +189,13 @@ export default function ApplicantProfile() {
                                 ? URL.createObjectURL(profilePicture)
                                 : undefined
                         }
-                        size={100}
-                        radius={100}
-                        style={{ cursor: 'pointer' }}
+                        size={120}
+                        radius={120}
                     >
                         {!profilePicture &&
                             getInitials(
-                                applicantData?.firstName,
-                                applicantData?.lastName,
+                                applicantData.profile?.firstName,
+                                applicantData.profile?.lastName,
                             )}
                     </Avatar>
 
@@ -169,231 +211,525 @@ export default function ApplicantProfile() {
                                 <Title order={1} size="h2" mb="xs">
                                     {fullName}
                                 </Title>
-                                {applicantData?.title && (
-                                    <Text size="lg" c="dimmed">
-                                        {applicantData?.title}
+                                {applicantData.profile?.title && (
+                                    <Text size="lg" c="dimmed" mb="xs">
+                                        {applicantData.profile.title}
+                                    </Text>
+                                )}
+                                {applicantData.headline && (
+                                    <Text
+                                        size="sm"
+                                        c="dimmed"
+                                        style={{ maxWidth: 500 }}
+                                    >
+                                        {applicantData.headline}
                                     </Text>
                                 )}
                             </Box>
-                            <Flex>
-                                <Button
-                                    loading={isPending}
-                                    onClick={() =>
-                                        mutate({
-                                            applicants: [
-                                                applicantData?.id ?? '',
-                                            ],
-                                        })
-                                    }
-                                >
-                                    Shortlist
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    color="red"
-                                    ml="md"
-                                    onClick={() => rejectMutation()}
-                                    loading={unShortListPending}
-                                >
-                                    Reject
-                                </Button>
-                            </Flex>
+                            {/* {  <Flex gap="md">
+                <Button loading={isShortlisting} onClick={handleShortlist} leftSection={<IconCheck size="1rem" />}>
+                  Shortlist
+                </Button>
+                <Button
+                  variant="outline"
+                  color="red"
+                  onClick={handleReject}
+                  loading={isRejecting}
+                  leftSection={<IconX size="1rem" />}
+                >
+                  Reject
+                </Button>
+                <ActionIcon variant="outline" size="lg">
+                  <IconDownload size="1.2rem" />
+                </ActionIcon>
+              </Flex>} */}
                         </Flex>
 
-                        <Group gap="xs">
+                        <Group gap="xs" mb="md">
                             <Badge
                                 color={
-                                    applicantData?.isActive ? 'green' : 'gray'
+                                    applicantData.isActive ? 'green' : 'gray'
                                 }
                                 variant="light"
                             >
-                                {applicantData?.isActive
-                                    ? 'Active'
-                                    : 'Inactive'}
+                                {applicantData.isActive ? 'Active' : 'Inactive'}
                             </Badge>
+                            {applicantData.__user__?.email_confirmed && (
+                                <Badge color="green" variant="light">
+                                    <IconCheck
+                                        size="0.8rem"
+                                        style={{ marginRight: 4 }}
+                                    />
+                                    Verified Email
+                                </Badge>
+                            )}
+                            {applicantData.percentageCompleted !==
+                                undefined && (
+                                <Badge variant="outline">
+                                    {applicantData.percentageCompleted}%
+                                    Complete
+                                </Badge>
+                            )}
                         </Group>
+
+                        {applicantData.percentageCompleted !== undefined && (
+                            <Box>
+                                <Text size="sm" mb="xs">
+                                    Profile Completion
+                                </Text>
+                                <Progress
+                                    value={applicantData.percentageCompleted}
+                                    size="sm"
+                                    color={
+                                        applicantData.percentageCompleted > 80
+                                            ? 'green'
+                                            : 'blue'
+                                    }
+                                />
+                            </Box>
+                        )}
                     </Box>
                 </Flex>
             </Card>
 
-            <Grid>
-                {/* Personal Information */}
-                <Grid.Col span={{ base: 12, lg: 6 }}>
-                    <Card shadow="sm" padding="lg" radius="md" h="100%">
-                        <Group gap="xs" mb="md">
-                            <IconUser size="1.2rem" />
-                            <Title order={3}>Personal Information</Title>
-                        </Group>
+            {/* Main Content Tabs */}
+            <Tabs defaultValue="overview">
+                <Tabs.List>
+                    <Tabs.Tab
+                        value="overview"
+                        leftSection={<IconUser size="0.8rem" />}
+                    >
+                        Overview
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                        value="experience"
+                        leftSection={<IconBriefcase size="0.8rem" />}
+                    >
+                        Experience
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                        value="education"
+                        leftSection={<IconSchool size="0.8rem" />}
+                    >
+                        Education
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                        value="skills"
+                        leftSection={<IconAward size="0.8rem" />}
+                    >
+                        Skills
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                        value="documents"
+                        leftSection={<IconFileText size="0.8rem" />}
+                    >
+                        Documents
+                    </Tabs.Tab>
+                </Tabs.List>
 
-                        <Stack gap="md">
-                            <Grid>
-                                <Grid.Col span={6}>
-                                    <InfoItem
-                                        label="First Name"
-                                        value={
-                                            applicantData?.firstName ||
-                                            'Not provided'
-                                        }
-                                    />
-                                </Grid.Col>
-                                <Grid.Col span={6}>
-                                    <InfoItem
-                                        label="Last Name"
-                                        value={
-                                            applicantData?.lastName ||
-                                            'Not provided'
-                                        }
-                                    />
-                                </Grid.Col>
-                            </Grid>
+                <Tabs.Panel value="overview" pt="md">
+                    <Grid>
+                        {/* Personal Information */}
+                        <Grid.Col span={{ base: 12, lg: 6 }}>
+                            <Card shadow="sm" padding="lg" radius="md" h="100%">
+                                <Group gap="xs" mb="md">
+                                    <IconUser size="1.2rem" />
+                                    <Title order={3}>
+                                        Personal Information
+                                    </Title>
+                                </Group>
 
-                            {applicantData?.middleName && (
-                                <InfoItem
-                                    label="Middle Name"
-                                    value={applicantData?.middleName}
-                                />
-                            )}
+                                <Stack gap="md">
+                                    <Grid>
+                                        <Grid.Col span={6}>
+                                            <InfoItem
+                                                label="First Name"
+                                                value={
+                                                    applicantData.profile
+                                                        ?.firstName ||
+                                                    'Not provided'
+                                                }
+                                            />
+                                        </Grid.Col>
+                                        <Grid.Col span={6}>
+                                            <InfoItem
+                                                label="Last Name"
+                                                value={
+                                                    applicantData.profile
+                                                        ?.lastName ||
+                                                    'Not provided'
+                                                }
+                                            />
+                                        </Grid.Col>
+                                    </Grid>
 
-                            <Divider />
+                                    {applicantData.profile?.middleName && (
+                                        <InfoItem
+                                            label="Middle Name"
+                                            value={
+                                                applicantData.profile.middleName
+                                            }
+                                        />
+                                    )}
 
-                            <Grid>
-                                <Grid.Col span={6}>
-                                    <InfoItem
-                                        label="Gender"
-                                        value={formatGender(
-                                            applicantData?.gender,
-                                        )}
-                                    />
-                                </Grid.Col>
-                                <Grid.Col span={6}>
+                                    <Divider />
+
+                                    <Grid>
+                                        <Grid.Col span={6}>
+                                            <InfoItem
+                                                label="Gender"
+                                                value={formatGender(
+                                                    applicantData.profile
+                                                        ?.gender,
+                                                )}
+                                            />
+                                        </Grid.Col>
+                                        <Grid.Col span={6}>
+                                            <InfoItem
+                                                label="Age"
+                                                value={
+                                                    age
+                                                        ? `${age} years`
+                                                        : 'Not specified'
+                                                }
+                                            />
+                                        </Grid.Col>
+                                    </Grid>
+
                                     <InfoItem
                                         label="Birth Date"
                                         value={formatDate(
-                                            applicantData?.birthDate,
+                                            applicantData.profile?.birthDate,
                                         )}
                                         icon={<IconCalendar size="1rem" />}
                                     />
-                                </Grid.Col>
-                            </Grid>
 
-                            {applicantData?.marriageStatus && (
-                                <InfoItem
-                                    label="Marital Status"
-                                    value={applicantData?.marriageStatus}
-                                />
-                            )}
-                        </Stack>
-                    </Card>
-                </Grid.Col>
+                                    {applicantData.profile?.marriageStatus && (
+                                        <InfoItem
+                                            label="Marital Status"
+                                            value={
+                                                applicantData.profile
+                                                    .marriageStatus
+                                            }
+                                        />
+                                    )}
+                                </Stack>
+                            </Card>
+                        </Grid.Col>
 
-                {/* Contact Information */}
-                <Grid.Col span={{ base: 12, lg: 6 }}>
-                    <Card shadow="sm" padding="lg" radius="md" h="100%">
-                        <Group gap="xs" mb="md">
-                            <IconPhone size="1.2rem" />
-                            <Title order={3}>Contact Information</Title>
-                        </Group>
-
-                        <Stack gap="md">
-                            <Box>
-                                <Text size="sm" c="dimmed" fw={500} mb={4}>
-                                    Email Address
-                                </Text>
-                                <Flex align="center" gap="xs" mb="xs">
-                                    <IconMail size="1rem" />
-                                    <Text size="sm">
-                                        {applicantData?.__user__?.email ||
-                                            'Not provided'}
-                                    </Text>
-                                </Flex>
-                                {applicantData?.__user__ && (
-                                    <Badge
-                                        color={
-                                            applicantData?.__user__
-                                                .email_confirmed
-                                                ? 'green'
-                                                : 'red'
-                                        }
-                                        variant="light"
-                                        size="xs"
-                                        leftSection={
-                                            applicantData?.__user__
-                                                .email_confirmed ? (
-                                                <IconCheck size="0.8rem" />
-                                            ) : (
-                                                <IconX size="0.8rem" />
-                                            )
-                                        }
-                                    >
-                                        {applicantData?.__user__.email_confirmed
-                                            ? 'Verified'
-                                            : 'Unverified'}
-                                    </Badge>
-                                )}
-                            </Box>
-
-                            <InfoItem
-                                label="Phone Number"
-                                value={
-                                    applicantData?.phoneNumber || 'Not provided'
-                                }
-                                icon={<IconPhone size="1rem" />}
-                            />
-
-                            {applicantData?.__user__?.userName && (
-                                <InfoItem
-                                    label="Username"
-                                    value={applicantData?.__user__.userName}
-                                />
-                            )}
-                        </Stack>
-                    </Card>
-                </Grid.Col>
-
-                {/* Account Information */}
-                <Grid.Col span={{ base: 12, lg: 6 }}>
-                    <Card shadow="sm" padding="lg" radius="md" h="100%">
-                        <Group gap="xs" mb="md">
-                            <IconShield size="1.2rem" />
-                            <Title order={3}>Account Information</Title>
-                        </Group>
-
-                        <Stack gap="md">
-                            <Box>
-                                <Text size="sm" c="dimmed" fw={500} mb={4}>
-                                    Account Status
-                                </Text>
-                                <Group gap="xs">
-                                    <Badge
-                                        color={
-                                            applicantData?.isActive
-                                                ? 'green'
-                                                : 'gray'
-                                        }
-                                        variant="light"
-                                    >
-                                        {applicantData?.isActive
-                                            ? 'Active'
-                                            : 'Inactive'}
-                                    </Badge>
+                        {/* Contact Information */}
+                        <Grid.Col span={{ base: 12, lg: 6 }}>
+                            <Card shadow="sm" padding="lg" radius="md" h="100%">
+                                <Group gap="xs" mb="md">
+                                    <IconPhone size="1.2rem" />
+                                    <Title order={3}>Contact Information</Title>
                                 </Group>
-                            </Box>
 
-                            <InfoItem
-                                label="Member Since"
-                                value={formatDate(applicantData?.createdAt)}
-                            />
+                                <Stack gap="md">
+                                    <Box>
+                                        <Text
+                                            size="sm"
+                                            c="dimmed"
+                                            fw={500}
+                                            mb={4}
+                                        >
+                                            Email Address
+                                        </Text>
+                                        <Flex align="center" gap="xs" mb="xs">
+                                            <IconMail size="1rem" />
+                                            <Text size="sm">
+                                                {applicantData.__user__
+                                                    ?.email || 'Not provided'}
+                                            </Text>
+                                        </Flex>
+                                        {applicantData.__user__ && (
+                                            <Badge
+                                                color={
+                                                    applicantData.__user__
+                                                        .email_confirmed
+                                                        ? 'green'
+                                                        : 'red'
+                                                }
+                                                variant="light"
+                                                size="xs"
+                                                leftSection={
+                                                    applicantData.__user__
+                                                        .email_confirmed ? (
+                                                        <IconCheck size="0.8rem" />
+                                                    ) : (
+                                                        <IconX size="0.8rem" />
+                                                    )
+                                                }
+                                            >
+                                                {applicantData.__user__
+                                                    .email_confirmed
+                                                    ? 'Verified'
+                                                    : 'Unverified'}
+                                            </Badge>
+                                        )}
+                                    </Box>
 
-                            {applicantData?.__user__?.note && (
-                                <InfoItem
-                                    label="Notes"
-                                    value={applicantData?.__user__.note}
-                                />
-                            )}
-                        </Stack>
+                                    <InfoItem
+                                        label="Phone Number"
+                                        value={
+                                            applicantData.profile
+                                                ?.phoneNumber || 'Not provided'
+                                        }
+                                        icon={<IconPhone size="1rem" />}
+                                    />
+
+                                    {applicantData.__user__?.userName && (
+                                        <InfoItem
+                                            label="Username"
+                                            value={
+                                                applicantData.__user__.userName
+                                            }
+                                        />
+                                    )}
+
+                                    <Divider />
+
+                                    <InfoItem
+                                        label="Member Since"
+                                        value={formatDate(
+                                            applicantData.createdAt,
+                                        )}
+                                        icon={<IconCalendar size="1rem" />}
+                                    />
+                                </Stack>
+                            </Card>
+                        </Grid.Col>
+
+                        {/* Bio Section */}
+                        {applicantData.bio && (
+                            <Grid.Col span={12}>
+                                <Card shadow="sm" padding="lg" radius="md">
+                                    <Group gap="xs" mb="md">
+                                        <IconFileText size="1.2rem" />
+                                        <Title order={3}>
+                                            Professional Bio
+                                        </Title>
+                                    </Group>
+                                    <Text
+                                        size="sm"
+                                        style={{
+                                            whiteSpace: 'pre-line',
+                                            lineHeight: 1.6,
+                                        }}
+                                    >
+                                        {applicantData.bio}
+                                    </Text>
+                                </Card>
+                            </Grid.Col>
+                        )}
+                    </Grid>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="experience" pt="md">
+                    <Card shadow="sm" padding="lg" radius="md">
+                        <Group gap="xs" mb="md">
+                            <IconBriefcase size="1.2rem" />
+                            <Title order={3}>Work Experience</Title>
+                        </Group>
+
+                        {applicantData.experiance &&
+                        applicantData.experiance.length > 0 ? (
+                            <Timeline
+                                active={applicantData.experiance.length}
+                                bulletSize={24}
+                                lineWidth={2}
+                            >
+                                {applicantData.experiance.map((exp) => (
+                                    <Timeline.Item
+                                        key={exp.id}
+                                        bullet={
+                                            <ThemeIcon
+                                                size={24}
+                                                variant="filled"
+                                                radius="xl"
+                                            >
+                                                <IconBuilding size="0.8rem" />
+                                            </ThemeIcon>
+                                        }
+                                        title={exp.title}
+                                    >
+                                        <Text c="dimmed" size="sm" mb="xs">
+                                            {exp.company}
+                                        </Text>
+                                        <Group gap="xs" mb="xs">
+                                            <Badge variant="light" size="xs">
+                                                {formatWorkType(exp.type)}
+                                            </Badge>
+                                            <Badge variant="light" size="xs">
+                                                {formatWorkPlace(exp.workPlace)}
+                                            </Badge>
+                                        </Group>
+                                        <Text size="xs" c="dimmed">
+                                            <IconCalendar
+                                                size="0.8rem"
+                                                style={{ marginRight: 4 }}
+                                            />
+                                            {formatDate(
+                                                exp.startDate ?? undefined,
+                                            )}{' '}
+                                            -{' '}
+                                            {formatDate(
+                                                exp.endDate ?? undefined,
+                                            )}
+                                        </Text>
+                                    </Timeline.Item>
+                                ))}
+                            </Timeline>
+                        ) : (
+                            <Text c="dimmed" ta="center" py="xl">
+                                No work experience added yet
+                            </Text>
+                        )}
                     </Card>
-                </Grid.Col>
-            </Grid>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="education" pt="md">
+                    <Card shadow="sm" padding="lg" radius="md">
+                        <Group gap="xs" mb="md">
+                            <IconSchool size="1.2rem" />
+                            <Title order={3}>Educational Background</Title>
+                        </Group>
+
+                        {applicantData.educationalHistory &&
+                        applicantData.educationalHistory.length > 0 ? (
+                            <Timeline
+                                active={applicantData.educationalHistory.length}
+                                bulletSize={24}
+                                lineWidth={2}
+                            >
+                                {applicantData.educationalHistory.map((edu) => (
+                                    <Timeline.Item
+                                        key={edu.id}
+                                        bullet={
+                                            <ThemeIcon
+                                                size={24}
+                                                variant="filled"
+                                                radius="xl"
+                                                color="blue"
+                                            >
+                                                <IconSchool size="0.8rem" />
+                                            </ThemeIcon>
+                                        }
+                                        title={edu.school}
+                                    >
+                                        <Text c="dimmed" size="sm" mb="xs">
+                                            {edu.fieldOfStudy?.name} -{' '}
+                                            {edu.level}
+                                        </Text>
+                                        <Group gap="xs" mb="xs">
+                                            <Badge
+                                                variant="light"
+                                                size="xs"
+                                                color="blue"
+                                            >
+                                                Grade: {edu.grade}
+                                            </Badge>
+                                        </Group>
+                                        <Text size="xs" c="dimmed" mb="xs">
+                                            <IconCalendar
+                                                size="0.8rem"
+                                                style={{ marginRight: 4 }}
+                                            />
+                                            {formatDate(edu.startDate)} -{' '}
+                                            {formatDate(edu.endDate)}
+                                        </Text>
+                                        {edu.description && (
+                                            <Text size="sm" c="dimmed">
+                                                {edu.description}
+                                            </Text>
+                                        )}
+                                    </Timeline.Item>
+                                ))}
+                            </Timeline>
+                        ) : (
+                            <Text c="dimmed" ta="center" py="xl">
+                                No educational history added yet
+                            </Text>
+                        )}
+                    </Card>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="skills" pt="md">
+                    <Card shadow="sm" padding="lg" radius="md">
+                        <Group gap="xs" mb="md">
+                            <IconAward size="1.2rem" />
+                            <Title order={3}>Skills & Expertise</Title>
+                        </Group>
+
+                        {applicantData.skills &&
+                        applicantData.skills.length > 0 ? (
+                            <Group gap="xs">
+                                {applicantData.skills.map((skill) => (
+                                    <Badge
+                                        key={skill.id}
+                                        variant="light"
+                                        size="md"
+                                        radius="md"
+                                    >
+                                        {skill.skill}
+                                    </Badge>
+                                ))}
+                            </Group>
+                        ) : (
+                            <Text c="dimmed" ta="center" py="xl">
+                                No skills added yet
+                            </Text>
+                        )}
+                    </Card>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="documents" pt="md">
+                    <Grid>
+                        <Grid.Col span={{ base: 12, md: 6 }}>
+                            <Card shadow="sm" padding="lg" radius="md" h="100%">
+                                <Group justify="space-between" mb="md">
+                                    <Group gap="xs">
+                                        <IconFileText size="1.2rem" />
+                                        <Title order={4}>Resume/CV</Title>
+                                    </Group>
+                                    {/* <ActionIcon variant="outline">
+                    <IconDownload size="1rem" />
+                  </ActionIcon> */}
+                                </Group>
+                                <Text size="sm" c="dimmed">
+                                    {applicantData.cv
+                                        ? 'CV uploaded'
+                                        : 'No CV uploaded'}
+                                </Text>
+                            </Card>
+                        </Grid.Col>
+
+                        <Grid.Col span={{ base: 12, md: 6 }}>
+                            <Card shadow="sm" padding="lg" radius="md" h="100%">
+                                <Group justify="space-between" mb="md">
+                                    <Group gap="xs">
+                                        <IconFileText size="1.2rem" />
+                                        <Title order={4}>Cover Letter</Title>
+                                    </Group>
+                                    {/* <ActionIcon variant="outline">
+                    <IconDownload size="1rem" />
+                  </ActionIcon> */}
+                                </Group>
+                                <Text size="sm" c="dimmed">
+                                    {applicantData.coverLetter
+                                        ? 'Cover letter available'
+                                        : 'No cover letter'}
+                                </Text>
+                                {applicantData.coverLetter && (
+                                    <Text size="xs" c="dimmed" mt="xs">
+                                        {applicantData.coverLetter}
+                                    </Text>
+                                )}
+                            </Card>
+                        </Grid.Col>
+                    </Grid>
+                </Tabs.Panel>
+            </Tabs>
         </Box>
     );
 }

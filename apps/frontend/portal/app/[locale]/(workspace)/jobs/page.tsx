@@ -46,7 +46,7 @@ export default function JobsPage() {
         }));
     };
 
-    const { data, isLoading, refetch } = useJobs({
+    const { data, isLoading, isFetching, refetch } = useJobs({
         filters,
     });
     const isEmpty = !!data?.data?.length;
@@ -115,7 +115,7 @@ export default function JobsPage() {
         setShouldApplyFilters(true);
     };
 
-    if (isLoading) {
+    if (isLoading || isFetching) {
         return <LoadingOverlay visible={true} h="100vh" />;
     }
     return (

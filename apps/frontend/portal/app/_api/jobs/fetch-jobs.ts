@@ -19,6 +19,7 @@ export type ResponseItem = {
     programId: string;
     experianceLevel: string;
     type: string;
+    programType: 'Job' | 'Mentorship';
 };
 
 export type Response = {

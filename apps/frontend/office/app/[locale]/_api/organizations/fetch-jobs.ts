@@ -55,6 +55,7 @@ interface Job {
     currency: string;
     salaryType: string;
     programId: string;
+    applicantId: string;
 }
 
 export interface JobsResponse {
@@ -111,12 +112,14 @@ export interface Daum {
     middleName: string;
     dateOfApplicaton: string;
     applicationStatus: string;
+    applicationId: string;
+    applicantId: string;
 }
 
 export const fetchApplicants = async (
     payload: Page,
     jobId: string,
-    status: 'PENDING' | 'REJECTED' | 'ACCEPTED',
+    status: 'PENDING' | 'REJECTED' | 'ACCEPTED' | 'SHORT_LISTED',
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ): Promise<any> => {
     const response: Result = await fetcher(

@@ -82,7 +82,7 @@ export const RejectedList = ({
                                         variant="transparent"
                                         onClick={() =>
                                             router.push(
-                                                `/work-provider/applicants/${applicant?.id}`,
+                                                `/work-provider/applicants/${applicant?.applicantId}`,
                                             )
                                         }
                                     >
