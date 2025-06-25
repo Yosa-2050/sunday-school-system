@@ -350,7 +350,7 @@ export class JobsService {
         });
 
         if (!applicant) {
-            throw new EntityNotFoundException('Applicant');
+            throw new EntityNotFoundException(typeof Applicants);
         }
 
         return applicant;

@@ -9,6 +9,8 @@ import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ExperienceLevelType } from '@shega/job_portal/enums/experiance-level-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ProgramType } from '@shega/job_portal/enums/program-type.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { SalaryType } from '@shega/job_portal/enums/salary-type.enum';
 
 export class ProgramsResponseDto {
@@ -29,6 +31,7 @@ export class ProgramsResponseDto {
             : false;
         this.saved = savedprograms ? savedprograms.includes(program.id) : false;
         this.experianceLevel = program.experianceLevel;
+        this.programType = program.programType;
     }
     id: string;
     title: string;
@@ -51,4 +54,5 @@ export class ProgramsResponseDto {
     currency: CurrencyType;
     applied: boolean;
     saved: boolean;
+    programType: ProgramType;
 }

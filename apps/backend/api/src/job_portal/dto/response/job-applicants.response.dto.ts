@@ -12,6 +12,7 @@ export class JobApplicantsResponseDto {
         this.profileId = res.applicants.profile.id;
         this.dateOfApplicaton = res.createdAt;
         this.applicationStatus = res.status;
+        this.applicationId = res.id;
     }
     applicantId: string;
     profileId: string;
@@ -20,4 +21,5 @@ export class JobApplicantsResponseDto {
     middleName: string;
     dateOfApplicaton: Date;
     applicationStatus: ApplicationStatus;
+    applicationId: string;
 }

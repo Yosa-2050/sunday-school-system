@@ -8,7 +8,7 @@ import { Category } from './category.entity';
 @Entity()
 export class EducationHistory extends BaseModel {
     @ManyToOne(() => Applicants, {
-        eager: true,
+        lazy: true,
         nullable: false,
     })
     applicant: Applicants;
