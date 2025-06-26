@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     ParseUUIDPipe,
@@ -196,5 +197,11 @@ export class JobPortalController {
             updateJobPortalDto,
             CurrentUser.getOrganizationId(req),
         );
+    }
+
+    @Roles(UserRoleType.WorkProvider)
+    @Delete(':id')
+    deletePostedJob(@Param('id') id: string) {
+        return this.jobPortalService.remove(id);
     }
 }
