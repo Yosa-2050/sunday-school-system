@@ -813,8 +813,14 @@ export class JobPortalService {
         return UtilityServices.EnsureMultipleUpdated(updated, updatedProg, id);
     }
 
-    remove(id: number) {
-        throw new NotImplementedException();
+    async remove(id: string) {
+        const job = await this.jobRepo.findOneBy({ id });
+
+        if (!job) {
+            throw new EntityNotFoundException('Job not found');
+        }
+
+        return this.jobRepo.softDelete(id);
     }
 
     async getCategoriesByParentId(id: string) {
