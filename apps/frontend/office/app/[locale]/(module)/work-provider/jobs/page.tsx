@@ -12,6 +12,7 @@ import {
     LoadingOverlay,
     Menu,
     MenuItem,
+    Modal,
     Paper,
     Stack,
     Table,
@@ -19,6 +20,7 @@ import {
     Text,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import {
     PER_PAGE,
     entityParamSchema,
@@ -32,11 +34,13 @@ import {
     IconPlus,
     IconTrash,
 } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { deleteJob } from 'app/[locale]/_api/organizations/deleteJob';
 import { fetchJobs } from 'app/[locale]/_api/organizations/fetch-jobs';
 import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
+import { useState } from 'react';
 
 interface Organization {
     id: string;
@@ -69,7 +73,9 @@ const JobsList = () => {
     const router = useRouter();
     const t = useTranslations('jobsListPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
-
+    const [modalOpened, setModalOpened] = useState(false);
+    const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+    const queryClient = useQueryClient();
     const [entityParams] = useQueryState(
         'jobs',
         parseAsJson(entityParamSchema.parse).withDefault({
@@ -96,7 +102,35 @@ const JobsList = () => {
         queryFn: () => fetchJobs(entityParamSerializer(entityParams)),
     });
 
+    const { mutate: deleteJobMutation } = useMutation({
+        mutationFn: async (jobId: string) => {
+            const response = await deleteJob(jobId);
+            return response;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['jobs'] });
+            setModalOpened(false);
+            notifications.show({
+                title: 'Job Deletion',
+                message: 'The job has been successfully deleted.',
+                color: 'green',
+            });
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'An error occurred while deleting the job.',
+                color: 'red',
+            });
+        },
+    });
+
     const jobs = data?.data || [];
+    const handleDelete = () => {
+        if (selectedJobId) {
+            deleteJobMutation(selectedJobId);
+        }
+    };
 
     if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
@@ -354,10 +388,18 @@ const JobsList = () => {
                                                             />
                                                         }
                                                         color="red"
-                                                        // onClick={() => handleDeactivateJob(job.id)}
+                                                        onClick={() => {
+                                                            setSelectedJobId(
+                                                                job.id,
+                                                            );
+                                                            setModalOpened(
+                                                                true,
+                                                            );
+                                                        }}
                                                     >
                                                         Delete
                                                     </MenuItem>
+
                                                     {job.status ===
                                                         'Approved' && (
                                                         <MenuItem
@@ -377,6 +419,39 @@ const JobsList = () => {
                                                     )}
                                                 </Menu.Dropdown>
                                             </Menu>
+                                            <Modal
+                                                opened={modalOpened}
+                                                onClose={() =>
+                                                    setModalOpened(false)
+                                                }
+                                                title="Confirm Deletion"
+                                            >
+                                                <Text>
+                                                    Are you sure you want to
+                                                    delete this Job?
+                                                </Text>
+                                                <Group
+                                                    justify="center"
+                                                    style={{ marginTop: 20 }}
+                                                >
+                                                    <Button
+                                                        variant="outline"
+                                                        onClick={() =>
+                                                            setModalOpened(
+                                                                false,
+                                                            )
+                                                        }
+                                                    >
+                                                        No
+                                                    </Button>
+                                                    <Button
+                                                        color="red"
+                                                        onClick={handleDelete}
+                                                    >
+                                                        Yes
+                                                    </Button>
+                                                </Group>
+                                            </Modal>
                                         </Table.Td>
                                     </Table.Tr>
                                 ))}
