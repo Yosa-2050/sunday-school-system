@@ -67,7 +67,7 @@ staging:
         --data '{
           "key": "APP_VERSION",
           "value": "'"$NEXT_PUBLIC_APP_VERSION"'",
-          "is_build_time": false,
+          "is_build_time": true,
           "is_literal": true,
           "is_preview": false
         }'
