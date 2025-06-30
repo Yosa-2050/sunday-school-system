@@ -1,3 +1,11 @@
+## [1.4.5](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.4.4...v1.4.5) (2025-06-30)
+
+
+### Bug Fixes
+
+* **sourcepin:** reinstalled packages ([4efdcb9](https://gitlab.heranitech.com/meklit/shega-jobs/commit/4efdcb9273da68ad8d84e71ef88371146c90c01d))
+* **sourcepin:** reinstalled packages ([d7e381c](https://gitlab.heranitech.com/meklit/shega-jobs/commit/d7e381c6bde492a3df07e52328a0f564659e4b5b))
+
 ## [1.4.4](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.4.3...v1.4.4) (2025-06-30)
 
 
