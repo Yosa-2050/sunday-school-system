@@ -6,6 +6,7 @@ import { Card, Grid, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { IconDashboard } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchReportAdmin } from 'app/[locale]/_api/admin/fetch-count-totals';
+import RecentUsers from './_components/RecentUser';
 import { type StatKeys, stats } from './const/stats.const';
 
 export default function Dashboard() {
@@ -49,6 +50,7 @@ export default function Dashboard() {
                     </Grid>
                 </Stack>
             </PageBody>
+            <RecentUsers />
         </PageContainer>
     );
 }

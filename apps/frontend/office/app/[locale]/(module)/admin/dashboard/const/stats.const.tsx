@@ -1,8 +1,10 @@
 import {
     IconBriefcase,
+    IconHierarchy,
     IconShieldCheck,
     IconUser,
     IconUserSearch,
+    IconUserSquare,
     IconUsersGroup,
 } from '@tabler/icons-react';
 
@@ -11,9 +13,9 @@ const stats = {
         title: 'Total Registered Users',
         icon: <IconUsersGroup size={20} />,
     },
-    totalPostedJobs: {
-        title: 'Total Posted Jobs',
-        icon: <IconBriefcase size={20} />,
+    totalRegisteredMentors: {
+        title: 'Total Registered Mentors',
+        icon: <IconUserSquare size={20} />,
     },
     totalRegisteredEmployer: {
         title: 'Total Registered Employers',
@@ -26,6 +28,14 @@ const stats = {
     totalRegisteredAdmin: {
         title: 'Total Registered Admins',
         icon: <IconShieldCheck size={20} />,
+    },
+    totalPostedJobs: {
+        title: 'Total Posted Jobs',
+        icon: <IconBriefcase size={20} />,
+    },
+    totalMentorshipprogram: {
+        title: 'Total Mentorship Program',
+        icon: <IconHierarchy size={20} />,
     },
 } as const;
 
