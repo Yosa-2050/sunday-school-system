@@ -43,7 +43,10 @@ const cleanFilters = (filters: Filters) => {
 export const Applicants = ({
     jobId,
     search,
-}: { jobId: string; search: string }) => {
+}: {
+    jobId: string;
+    search: string;
+}) => {
     const router = useRouter();
     const [page, setPage] = useState(1);
     const [selectedApplicants, setSelectedApplicants] = useState<string[]>([]);
@@ -298,11 +301,10 @@ export const Applicants = ({
 
             {/* Table Section */}
 
-            {/* biome-ignore lint/nursery/noNestedTernary: <explanation> */}
             {isLoading || isFetching ? (
                 <EntityPageLoading />
-                // biome-ignore lint/nursery/noNestedTernary: <explanation>
-            ) : applicants?.data?.length ? (
+            ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+            applicants?.data?.length ? (
                 <Paper withBorder radius="md" p="md">
                     <Table>
                         <Table.Thead>
@@ -333,8 +335,6 @@ export const Applicants = ({
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
-                            {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-                            {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                             {applicants.data?.map(
                                 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
