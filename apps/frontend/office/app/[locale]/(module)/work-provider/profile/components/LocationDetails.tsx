@@ -4,6 +4,7 @@ import {
     Button,
     Divider,
     Group,
+    Paper,
     Text,
     TextInput,
     Title,
@@ -75,24 +76,32 @@ export const LocationSection = ({ defaultLocation }: LocationSectionProps) => {
     const onSubmit = (data: LocationFormData) => mutation.mutate(data);
 
     return (
-        <Box mt="xl">
+        <Paper p="md" mt="xl">
             <Group justify="space-between" align="center" mb="xs">
                 <Title order={6}>Location Details</Title>
 
-                <Button
-                    size="xs"
-                    variant={isEditingLocation ? 'filled' : 'light'}
-                    leftSection={<IconEdit size={14} />}
-                    onClick={() => {
-                        if (isEditingLocation) {
-                            handleSubmit(onSubmit)();
-                        } else {
-                            setIsEditingLocation(true);
-                        }
-                    }}
-                >
-                    {isEditingLocation ? 'Save' : 'Edit'}
-                </Button>
+               
+                     {isEditingLocation ? (
+                <Box className='flex items-center gap-2'>
+                    <Button
+                        variant="outline"
+                        onClick={() => {
+                            reset();
+                            setIsEditingLocation(false);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        loading={mutation.isPending}
+                        onClick={handleSubmit(onSubmit)}
+                    >
+                        Save Changes
+                    </Button>
+                </Box>
+            ) :  <Button variant="light" leftSection={<IconEdit size={16} />} onClick={() => setIsEditingLocation(true)}>
+                Edit
+              </Button>}
             </Group>
 
             <Divider mb="md" />
@@ -127,25 +136,7 @@ export const LocationSection = ({ defaultLocation }: LocationSectionProps) => {
                 ))}
             </Group>
 
-            {isEditingLocation && (
-                <Group justify="flex-end" mt="lg">
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            reset();
-                            setIsEditingLocation(false);
-                        }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        loading={mutation.isPending}
-                        onClick={handleSubmit(onSubmit)}
-                    >
-                        Save Changes
-                    </Button>
-                </Group>
-            )}
-        </Box>
+           
+        </Paper>
     );
 };

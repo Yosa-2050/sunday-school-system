@@ -1,202 +1,387 @@
-'use client';
+"use client"
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import type React from "react"
+
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
-    Box,
-    Button,
-    Divider,
-    Group,
-    Text,
-    TextInput,
-    Title,
-} from '@mantine/core';
-import { IconEdit } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
-import { updateContactInfo } from 'app/[locale]/_api/organizations/updateOrganization';
-import { getCookie } from 'cookies-next';
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
+  ActionIcon,
+  Badge,
+  Box,
+  Button, Divider, Group,
+  Paper, SimpleGrid,
+  Stack,
+  Text, TextInput,
+  Title
+} from "@mantine/core"
+import {
+  IconBuilding,
+  IconDeviceFloppy,
+  IconEdit, IconMail, IconPhone,
+  IconUser,
+  IconX
+} from "@tabler/icons-react"
+import { useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import { z } from "zod"
+import { useMutation } from "@tanstack/react-query"
+import { updateOrganization } from "app/[locale]/_api/organizations/updateOrganization"
+import { getCookie } from "cookies-next"
 
-const contactTypes = ['Mobile', 'Communication', 'Default'] as const;
+const contactSchema = z.object({
+  // Business Information
+  businessAddress: z.string().min(1, "Official business address is required"),
 
-export const contactSchema = z.object({
-    contacts: z
-        .array(
-            z.object({
-                type: z.enum(contactTypes),
-                value: z.string().min(1, 'Required'),
-                isPreferred: z.boolean().optional(),
-            }),
-        )
-        .min(1, 'At least one contact required'),
-});
+  // Primary Contact Person
+  contactPersonName: z.string().min(1, "Contact person name is required"),
+  contactPersonRole: z.string().min(1, "Contact person role is required"),
+  contactPersonPhone: z.string().min(1, "Contact person phone number is required"),
+  contactPersonEmail: z
+    .string()
+    .min(1, "Contact person email is required")
+    .email("Please enter a valid email address")
+    .refine((email) => {
+      const domain = email.split("@")[1]
+      return domain && !["gmail.com", "yahoo.com", "hotmail.com", "outlook.com"].includes(domain.toLowerCase())
+    }, "Please use a corporate email address (not personal email)"),
 
-export type ContactFormData = z.infer<typeof contactSchema>;
+  // Optional fields
+  companyWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
 
-type RawContact = {
-    id?: string;
-    type: 'Mobile' | 'Communication' | 'Default';
-    value: string;
-    isPreferred: boolean;
-};
+  // Existing contact fields
+  companyPhone: z.string().min(1, "Company phone is required"),
+  companyEmail: z.string().min(1, "Company email is required").email("Please enter a valid email address"),
+  additionalAddress: z.string().optional(),
+})
 
-type ContactSectionProps = {
-    contactsFromServer?: RawContact[];
-};
+export type ContactFormData = z.infer<typeof contactSchema>
 
-// UI → API mapping
-const DEFAULT_CONTACTS = [
-    { label: 'Phone', type: 'Mobile', placeholder: '+251912345678' },
-    { label: 'Email', type: 'Communication', placeholder: 'example@email.com' },
-    {
-        label: 'Other Address',
-        type: 'Default',
-        placeholder: '123 Main Street, City',
+interface ContactSectionProps {
+  initialData?: Partial<ContactFormData>
+}
+
+export default function ContactSection({ initialData }: ContactSectionProps) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+   
+const organizationId =getCookie('organization_id')?.toString()??
+ 
+''
+;
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      businessAddress: initialData?.businessAddress || "",
+      contactPersonName: initialData?.contactPersonName || "",
+      contactPersonRole: initialData?.contactPersonRole || "",
+      contactPersonPhone: initialData?.contactPersonPhone || "",
+      contactPersonEmail: initialData?.contactPersonEmail || "",
+      companyWebsite: initialData?.companyWebsite || "",
+      companyPhone: initialData?.companyPhone || "",
+      companyEmail: initialData?.companyEmail || "",
+      additionalAddress: initialData?.additionalAddress || "",
     },
-];
+  })
 
-export const ContactSection = ({
-    contactsFromServer = [],
-}: ContactSectionProps) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const organizationId = getCookie('organization_id')?.toString() ?? '';
+  const mutation = useMutation({
+    mutationFn: async (data: ContactFormData) => {
+        await updateOrganization(organizationId, data)
+    },
+    onSuccess: () => {
+      setIsLoading(false)
+      setIsEditing(false)
+    },
+  })
 
-    const {
-        control,
-        getValues,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<ContactFormData>({
-        resolver: zodResolver(contactSchema),
-        defaultValues: {
-            contacts: contactsFromServer?.length
-                ? contactsFromServer.map((contact) => ({
-                      type: contact.type as (typeof contactTypes)[number],
-                      value: contact.value,
-                      isPreferred: contact.isPreferred,
-                  }))
-                : DEFAULT_CONTACTS.map(({ type }) => ({
-                      type: type as (typeof contactTypes)[number],
-                      value: '',
-                      isPreferred: false,
-                  })),
-        },
-    });
+  const handleCancel = () => {
+    reset()
+    setIsEditing(false)
+  }
 
-    const mutation = useMutation({
-        mutationFn: async (data: ContactFormData) =>
-            updateContactInfo(organizationId, data),
-        onSuccess: () => setIsEditing(false),
-    });
+  const handleSubmitForm = async (data: ContactFormData) => {
+    setIsLoading(true)
+    try {
+      await mutation.mutateAsync(data)
 
-    const onSubmit = (data: ContactFormData) => mutation.mutate(data);
+    } catch (error) {
+      // biome-ignore lint/suspicious/noConsole: <explanation>
+      console.error("Error updating contact information:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-    const findValueByType = (type: string) =>
-        getValues('contacts')?.find((c) => c.type === type)?.value || '';
+  const RequiredBadge = () => (
+    <Badge size="xs" color="red" variant="light">
+      *
+    </Badge>
+  )
 
-    return (
-        <Box>
-            <Group justify="space-between" align="center" mb="xs">
-                <Title order={6}>Contact Information</Title>
+
+
+  const DisplayField = ({ value, icon }: { value?: string; icon?: React.ReactNode }) => (
+    <Group gap="xs" wrap="nowrap">
+      {icon}
+      <Text size="sm" c={value ? "dark" : "dimmed"}>
+        {value || "Not provided"}
+      </Text>
+    </Group>
+  )
+
+  return (
+    <Paper withBorder={false} p={"md"} mt={"md"} shadow="xs">
+      <Box py="md">
+        <Group justify="space-between" align="center">
+          <Group gap="sm">
+            <IconBuilding size={24} stroke={1.5} />
+            <div>
+              <Title order={3}>Contact Information</Title>
+              <Text size="sm" c="dimmed">
+                Manage your organization&apos;s contact details and primary contact person
+              </Text>
+            </div>
+          </Group>
+
+          <Group gap="xs">
+            {isEditing ? (
+              <>
+                <ActionIcon variant="light" color="gray" size="lg" onClick={handleCancel} disabled={isLoading}>
+                  <IconX size={16} />
+                </ActionIcon>
                 <Button
-                    size="xs"
-                    variant={isEditing ? 'filled' : 'light'}
-                    leftSection={<IconEdit size={14} />}
-                    onClick={() => {
-                        if (isEditing) {
-                            handleSubmit(onSubmit)();
-                        } else {
-                            setIsEditing(true);
-                        }
-                    }}
+                  leftSection={<IconDeviceFloppy size={16} />}
+                  onClick={handleSubmit(handleSubmitForm)}
+                  loading={isLoading}
+                  size="sm"
                 >
-                    {isEditing ? 'Save' : 'Edit'}
+                  Save Changes
                 </Button>
-            </Group>
-            <Divider mb="md" />
-            <Group wrap="wrap" gap="md">
-                {DEFAULT_CONTACTS.map(({ label, type, placeholder }) => (
-                    <Box
-                        key={type}
-                        p="md"
-                        w={{ base: '100%', sm: '48%', md: '30%' }}
-                    >
-                        <Text size="xs" color="dimmed" mb={4}>
-                            {label}
-                        </Text>
-
-                        {isEditing ? (
-                            <Controller
-                                control={control}
-                                name="contacts"
-                                render={({ field: { value, onChange } }) => {
-                                    const index = value.findIndex(
-                                        (c) => c.type === type,
-                                    );
-                                    const currentValue =
-                                        index >= 0
-                                            ? (value[index]?.value ?? '')
-                                            : '';
-
-                                    return (
-                                        <TextInput
-                                            placeholder={placeholder}
-                                            value={currentValue}
-                                            error={
-                                                errors.contacts?.[index]?.value
-                                                    ?.message
-                                            }
-                                            onChange={(e) => {
-                                                const updated = [...value];
-                                                if (index >= 0) {
-                                                    updated[index] = {
-                                                        ...updated[index],
-                                                        value: e.currentTarget
-                                                            .value,
-                                                        type: type as (typeof contactTypes)[number],
-                                                    };
-                                                } else {
-                                                    updated.push({
-                                                        type: type as (typeof contactTypes)[number],
-                                                        value: e.currentTarget
-                                                            .value,
-                                                        isPreferred: false,
-                                                    });
-                                                }
-                                                onChange(updated);
-                                            }}
-                                        />
-                                    );
-                                }}
-                            />
-                        ) : (
-                            <Text fw={400}>{findValueByType(type) || '-'}</Text>
-                        )}
-                    </Box>
-                ))}
-            </Group>
-
-            {isEditing && (
-                <Group justify="flex-end" mt="lg">
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            reset();
-                            setIsEditing(false);
-                        }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        loading={mutation.isPending}
-                        onClick={handleSubmit(onSubmit)}
-                    >
-                        Save Changes
-                    </Button>
-                </Group>
+              </>
+            ) : (
+              <Button variant="light" leftSection={<IconEdit size={16} />} onClick={() => setIsEditing(true)} size="sm">
+                Edit
+              </Button>
             )}
+          </Group>
+        </Group>
+      </Box>
+
+<Divider />
+
+      <Stack gap="xl" mt="md">
+        {/* Primary Contact Person Section */}
+        <Box>
+          <Group gap="xs" mb="md">
+            <IconUser size={20} stroke={1.5} />
+            <Title order={4}>Primary Contact Person</Title>
+          </Group>
+
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+            <Controller
+              control={control}
+              name="contactPersonName"
+              render={({ field }) => (
+                <Box>
+                  <Group gap="xs" mb="xs">
+                    <Text size="sm" fw={500}>
+                      Full Name
+                    </Text>
+                    <RequiredBadge />
+                  </Group>
+                  {isEditing ? (
+                    <TextInput
+                      {...field}
+                      placeholder="Enter contact person's full name"
+                      error={errors.contactPersonName?.message}
+                    />
+                  ) : (
+                    <>
+                      <DisplayField value={field.value} icon={<IconUser size={16} />} />
+                    </>
+                  )}
+                </Box>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="contactPersonRole"
+              render={({ field }) => (
+                <Box>
+                  <Group gap="xs" mb="xs">
+                    <Text size="sm" fw={500}>
+                      Role/Position
+                    </Text>
+                    <RequiredBadge />
+                  </Group>
+                  {isEditing ? (
+                    <TextInput
+                      {...field}
+                      placeholder="e.g., HR Manager, Recruiter"
+                      error={errors.contactPersonRole?.message}
+                    />
+                  ) : (
+                    <>
+                      <DisplayField value={field.value} icon={<IconUser size={16} />} />
+                    </>
+                  )}
+                </Box>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="contactPersonPhone"
+              render={({ field }) => (
+                <Box>
+                  <Group gap="xs" mb="xs">
+                    <Text size="sm" fw={500}>
+                      Phone Number
+                    </Text>
+                    <RequiredBadge />
+                  </Group>
+                  {isEditing ? (
+                    <TextInput
+                      {...field}
+                      placeholder="+1 (555) 123-4567"
+                      leftSection={<IconPhone size={16} />}
+                      error={errors.contactPersonPhone?.message}
+                    />
+                  ) : (
+                    <>
+                      <DisplayField value={field.value} icon={<IconPhone size={16} />} />
+                    </>
+                  )}
+                </Box>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="contactPersonEmail"
+              render={({ field }) => (
+                <Box>
+                  <Group gap="xs" mb="xs">
+                    <Text size="sm" fw={500}>
+                      Corporate Email
+                    </Text>
+                    <RequiredBadge />
+                  </Group>
+                  {isEditing ? (
+                    <TextInput
+                      {...field}
+                      placeholder="contact@company.com"
+                      leftSection={<IconMail size={16} />}
+                      error={errors.contactPersonEmail?.message}
+                    />
+                  ) : (
+                    <>
+                      <DisplayField value={field.value} icon={<IconMail size={16} />} />
+                    </>
+                  )}
+                </Box>
+              )}
+            />
+          </SimpleGrid>
         </Box>
-    );
-};
+      </Stack>
+
+<Divider my={"md"}/>
+      <Stack gap="xl" mt="md">
+        {/* Primary Contact Person Section */}
+        <Box>
+          <Group gap="xs" mb="md">
+            <IconUser size={20} stroke={1.5} />
+            <Title order={4}>Hiring Manager</Title>
+          </Group>
+
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+            <Controller
+              control={control}
+              name="contactPersonName"
+              render={({ field }) => (
+                <Box>
+                  <Group gap="xs" mb="xs">
+                    <Text size="sm" fw={500}>
+                      Full Name
+                    </Text>
+                    <RequiredBadge />
+                  </Group>
+                  {isEditing ? (
+                    <TextInput
+                      {...field}
+                      placeholder="Enter contact person's full name"
+                      error={errors.contactPersonName?.message}
+                    />
+                  ) : (
+                    <>
+                      <DisplayField value={field.value} icon={<IconUser size={16} />} />
+                    </>
+                  )}
+                </Box>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="contactPersonRole"
+              render={({ field }) => (
+                <Box>
+                  <Group gap="xs" mb="xs">
+                    <Text size="sm" fw={500}>
+                      Role/Position
+                    </Text>
+                    <RequiredBadge />
+                  </Group>
+                  {isEditing ? (
+                    <TextInput
+                      {...field}
+                      placeholder="e.g., HR Manager, Recruiter"
+                      error={errors.contactPersonRole?.message}
+                    />
+                  ) : (
+                    <>
+                      <DisplayField value={field.value} icon={<IconUser size={16} />} />
+                    </>
+                  )}
+                </Box>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="contactPersonPhone"
+              render={({ field }) => (
+                <Box>
+                  <Group gap="xs" mb="xs">
+                    <Text size="sm" fw={500}>
+                      Phone Number
+                    </Text>
+                    <RequiredBadge />
+                  </Group>
+                  {isEditing ? (
+                    <TextInput
+                      {...field}
+                      placeholder="+1 (555) 123-4567"
+                      leftSection={<IconPhone size={16} />}
+                      error={errors.contactPersonPhone?.message}
+                    />
+                  ) : (
+                    <>
+                      <DisplayField value={field.value} icon={<IconPhone size={16} />} />
+                    </>
+                  )}
+                </Box>
+              )}
+            />
+          </SimpleGrid>
+        </Box>
+      </Stack>
+    </Paper>
+  )
+}

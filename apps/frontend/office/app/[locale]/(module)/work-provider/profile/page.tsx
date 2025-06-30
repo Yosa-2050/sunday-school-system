@@ -5,13 +5,12 @@ import {
     Badge,
     Box,
     Button,
-    Card,
-    Container,
-    Group,
+    Card, Group,
     Loader,
+    Paper,
     Text,
     ThemeIcon,
-    Title,
+    Title
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconAt, IconEdit, IconMapPin } from '@tabler/icons-react';
@@ -26,9 +25,9 @@ import type { UpdateLocationPayload } from 'app/[locale]/_api/organizations/upda
 import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import { AddOrganizationDetail } from './components/AddOrganizationDetail';
-import { ContactSection } from './components/ContactInformation';
 import { LocationSection } from './components/LocationDetails';
 import UploadFile from './components/UploadFile';
+import ContactSection from './components/ContactInformation';
 
 type FormDataType = Partial<Organization & UpdateLocationPayload>;
 
@@ -61,21 +60,21 @@ function UserProfile() {
 
     if (orgLoading || !formData) {
         return (
-            <Container size="md" mt="lg">
+            <Box className='flex flex-col items-center justify-center h-full'>
                 <Loader size="sm" />
                 <Text mt="sm">Loading organization data...</Text>
-            </Container>
+            </Box>
         );
     }
     return (
-        <Container size="md" mt="lg">
+        <Box>
             <AddOrganizationDetail
                 close={close}
                 opened={opened}
                 categories={categories}
                 categoriesLoading={categoriesLoading}
             />
-            <Card withBorder radius="md" padding="xl" shadow="sm">
+            <Paper p={'md'}  shadow='xs'>
                 {/* Header Section */}
                 <Group justify="space-between" align="start">
                     <Group align="center">
@@ -164,19 +163,17 @@ function UserProfile() {
                     <Title order={5} mb="xs" fw={600}>
                         Description
                     </Title>
-                    <Card withBorder radius="sm" padding="md" bg="gray.0">
+                    <Card withBorder radius="sm" padding="md">
                         <Text size="sm" color="dimmed" lh={1.6}>
                             {formData.description || 'No description provided.'}
                         </Text>
                     </Card>
                 </Box>
-            </Card>
+            </Paper>
 
-            {/* Contact + Location Info Card */}
-            <Card withBorder radius="md" padding="lg" shadow="sm" mt="xl">
                 <ContactSection
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    contactsFromServer={(organization?.contacts as any) ?? []}
+                    initialData={(organization?.contacts as any) ?? []}
                 />
 
                 <LocationSection
@@ -186,10 +183,9 @@ function UserProfile() {
                         {}
                     }
                 />
-            </Card>
 
             {organizationId && <UploadFile orgId={organizationId} />}
-        </Container>
+        </Box>
     );
 }
 

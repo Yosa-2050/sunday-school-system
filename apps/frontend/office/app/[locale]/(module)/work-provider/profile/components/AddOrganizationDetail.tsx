@@ -2,13 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Button,
     Divider,
-    Group,
-    Modal,
-    NumberInput,
+    Drawer,
+    Group, NumberInput,
     Select,
     TextInput,
     Textarea,
-    Title,
+    Title
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
@@ -80,11 +79,12 @@ export const AddOrganizationDetail = ({
     const onSubmit = (data: OrganizationFormData) => mutation.mutate(data);
 
     return (
-        <Modal
+        <Drawer
             opened={opened}
             onClose={close}
             title="Edit Organization"
-            size="lg"
+            size="md"
+
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Title order={4} mb="xs">
@@ -211,6 +211,6 @@ export const AddOrganizationDetail = ({
                     </Button>
                 </Group>
             </form>
-        </Modal>
+        </Drawer>
     );
 };

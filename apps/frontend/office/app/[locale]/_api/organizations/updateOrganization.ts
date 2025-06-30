@@ -10,6 +10,15 @@ interface UpdateOrganizationPayload {
     sectorId: string;
     yearFounded: number;
     companySize: string;
+    businessAddress: string;
+    contactPersonName: string;
+    contactPersonRole: string;
+    contactPersonPhone: string;
+    contactPersonEmail: string;
+    companyWebsite?: string;
+    companyPhone: string;
+    companyEmail: string;
+    additionalAddress?: string;
 }
 
 export const updateOrganization = async (
@@ -77,9 +86,20 @@ export const updateContactInfo = async (
     data: ContactFormData,
 ) => {
     const grouped = {
-        phoneNumbers: data.contacts.filter((c) => c.type === 'Mobile'),
-        emailAddress: data.contacts.filter((c) => c.type === 'Communication'),
-        otherAddress: data.contacts.filter((c) => c.type === 'Default'),
+        phoneNumbers: {
+            type: 'Phone',
+            value: data.contactPersonPhone,
+            isPreferred: true,},
+        emailAddress: {
+            type: 'Communication',
+            value: data.contactPersonEmail,
+            isPreferred: true,
+        },
+        otherAddress: {
+            type: 'Other',
+            value: data.additionalAddress || '',
+            isPreferred: false,
+        },
     };
 
     const response = await fetcher(
