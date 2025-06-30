@@ -24,7 +24,7 @@ type EnumType =
     | 'Gender'
     | 'MarriageStatus'
     | 'Title'
-    | 'EducationalRequirmentType'
+    | 'EducationalRequirementType'
     | 'EmployeeType'
     | 'EmploymentType'
     | 'SalaryFrequencyType'
