@@ -248,7 +248,7 @@ const DraftJobEdit = () => {
 
     const { data: educationalRequirmentType = { data: {} } } = useQuery({
         queryKey: ['educationalRequirmentType'],
-        queryFn: () => fetchEnum('EducationalRequirmentType'),
+        queryFn: () => fetchEnum('EducationalRequirementType'),
     });
 
     // Fetch regions based on selected country
