@@ -159,6 +159,7 @@
 import { ActionIcon, Box, Drawer, useComputedColorScheme } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMenu2 } from '@tabler/icons-react';
+import NotificationDrawer from 'app/[locale]/(module)/work-provider/notification/page';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
@@ -251,6 +252,7 @@ export default function Shell({
                         </Box>
                         <Box className="flex gap-2 items-center">
                             <ColorSchemeControl />
+                            <NotificationDrawer />
                             <UserProfile />
                         </Box>
                     </header>
