@@ -68,6 +68,15 @@ export class CurrentUser {
         return user.myInfo;
     }
 
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static getUserId(req: any): string {
+        const userId = req?.user?.userId;
+        if (!userId) {
+            throw new BadRequestException('Unable to find userId');
+        }
+        return userId;
+    }
+
     // static getMyStudentRegisteredId(user: any) {
     //   constclassId = user?.myInfo?.studentInfo?.registeredClassId;
     //   if (!IsUUID(classId)) {
