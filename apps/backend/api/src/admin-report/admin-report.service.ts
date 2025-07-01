@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Jobs } from '@shega/job_portal/entities/jobs.entity';
+import { Mentors } from '@shega/job_portal/entities/mentor.entity';
+import { Mentorship } from '@shega/job_portal/entities/mentorship.entity';
 import { Organization } from '@shega/organization/entities/organization.entity';
 import { User } from '@shega/users/entities/user.entity';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
@@ -15,11 +17,16 @@ export class AdminReportService {
         @InjectRepository(Jobs) private jobRepo: Repository<Jobs>,
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
+        @InjectRepository(Mentors) private mentorsRepo: Repository<Mentors>,
+        @InjectRepository(Mentorship)
+        private mentorshipRepo: Repository<Mentorship>,
     ) {}
 
     async getCountTotals(): Promise<CountTotalsResponseDto> {
         const response = new CountTotalsResponseDto();
         response.totalRegisteredUsers = await this.userRepo.count();
+        response.totalRegisteredMentors = await this.mentorsRepo.count();
+        response.totalMentorshipProgram = await this.mentorshipRepo.count();
         response.totalPostedJobs = await this.jobRepo.count();
         response.totalRegisteredEmployer = await this.organizationRepo.count();
         response.totalRegisteredJobSeekers = await this.getCountUserByRole(
