@@ -33,11 +33,13 @@ import {
 } from './dto/request/add-education-history.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
-    AddExperianceRequestDto,
+    AddExperienceRequestDto,
     UpdateExperianceRequestDto,
 } from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobApplicationRequestDto } from './dto/request/job-application.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -127,10 +129,12 @@ export class JobSeekerController {
     apply(
         @Request() req,
         @Param('programId', new ParseUUIDPipe()) programId: string,
+        @Body() dto: JobApplicationRequestDto,
     ) {
         return this.jobsService.apply(
             programId,
             CurrentUser.getApplicantId(req),
+            dto,
         );
     }
 
@@ -151,7 +155,7 @@ export class JobSeekerController {
     }
 
     @Post('experiance')
-    addExperiance(@Request() req, @Body() dto: AddExperianceRequestDto) {
+    addExperiance(@Request() req, @Body() dto: AddExperienceRequestDto) {
         return this.jobsService.addExperiance(
             CurrentUser.getApplicantId(req),
             dto,

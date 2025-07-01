@@ -1,4 +1,5 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { YesOrNoOptions } from '@shega/Utilities/enums/yes-or-no-options.enums';
 import {
     Column,
     CreateDateColumn,
@@ -38,4 +39,17 @@ export class Applications extends BaseModel {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @Column({ nullable: true })
+    coverLetter: string;
+
+    @Column({ nullable: true })
+    noticePeriod: number;
+
+    @Column({
+        type: 'enum',
+        enum: YesOrNoOptions,
+        default: YesOrNoOptions.NO,
+    })
+    relocationOption: YesOrNoOptions;
 }
