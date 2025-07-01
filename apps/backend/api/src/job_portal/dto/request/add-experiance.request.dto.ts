@@ -10,7 +10,7 @@ import {
     IsUUID,
 } from 'class-validator';
 
-export class AddExperianceRequestDto {
+export class AddExperienceRequestDto {
     @ApiProperty()
     @IsString()
     title: string;
@@ -60,5 +60,5 @@ export class AddExperianceRequestDto {
 }
 
 export class UpdateExperianceRequestDto extends PartialType(
-    AddExperianceRequestDto,
+    AddExperienceRequestDto,
 ) {}

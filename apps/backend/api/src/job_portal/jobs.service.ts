@@ -27,9 +27,11 @@ import {
 } from './dto/request/add-education-history.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
-    AddExperianceRequestDto,
+    AddExperienceRequestDto,
     UpdateExperianceRequestDto,
 } from './dto/request/add-experiance.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { JobApplicationRequestDto } from './dto/request/job-application.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 import { ApplicantSkills } from './entities/applicants-skills.entity';
@@ -76,7 +78,11 @@ export class JobsService {
         return userDetails;
     }
 
-    async apply(programId: string, applicantId: string) {
+    async apply(
+        programId: string,
+        applicantId: string,
+        dto: JobApplicationRequestDto,
+    ) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
         if (!(await this.GetCanApplyApplicant(applicant))?.canApply) {
             throw new BadRequestException('User can not apply');
@@ -95,7 +101,7 @@ export class JobsService {
             throw new EntityNotFoundException('Program');
         }
 
-        const application = this.jobApplicantRepo.create();
+        const application = this.jobApplicantRepo.create(dto);
         application.program = program;
         application.applicants = applicant;
 
@@ -238,7 +244,7 @@ export class JobsService {
         return UtilityServices.SuccessIdResponse();
     }
 
-    async addExperiance(applicantId: string, dto: AddExperianceRequestDto) {
+    async addExperiance(applicantId: string, dto: AddExperienceRequestDto) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
         const experiance = this.experianceRepo.create(dto);
