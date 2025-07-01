@@ -1,5 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Request,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateNotificationDto } from './dto/create-notification.dto';
@@ -17,9 +26,11 @@ export class NotificationController {
         return this.notificationService.send(req);
     }
 
-    @Get('getUserInAppNotifications/:userId')
-    getUserInAppNotifications(@Param('userId') userId: string) {
-        return this.notificationService.getUserInAppNotifications(userId);
+    @Get('getUserInAppNotifications')
+    getUserInAppNotifications(@Request() req) {
+        return this.notificationService.getUserInAppNotifications(
+            CurrentUser.getUserId(req),
+        );
     }
 
     @Patch('markNotificationAsRead/:notificationId')
