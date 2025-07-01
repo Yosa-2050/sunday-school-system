@@ -5,5 +5,5 @@ export class CountTotalsResponseDto {
     totalRegisteredJobSeekers: number;
     totalRegisteredAdmin: number;
     totalPostedJobs: number;
-    totalMentorshipprogram: number;
+    totalMentorshipProgram: number;
 }
