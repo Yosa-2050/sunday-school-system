@@ -1,7 +1,7 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { LookUps } from '@shega/Utilities/entities/lookups.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
-import { Category } from '@shega/job_portal/entities/category.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetails } from '@shega/location/entities/contact-details.entity';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -33,8 +33,8 @@ export class Organization extends BaseModel {
     @Column({ nullable: true })
     type: CompanyType;
 
-    @ManyToOne(() => Category, { eager: true, nullable: true })
-    sector: Category;
+    @ManyToOne(() => LookUps, { eager: true, nullable: true })
+    industry: LookUps;
 
     @Column({ nullable: true })
     yearFounded: string;
@@ -66,6 +66,9 @@ export class Organization extends BaseModel {
 
     @Column({ nullable: true })
     status: ApprovalType;
+
+    @Column({ nullable: true })
+    corporateEmail: string;
 
     locations: Location[];
     contacts: ContactDetails[];

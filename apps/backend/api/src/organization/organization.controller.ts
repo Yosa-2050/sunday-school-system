@@ -20,7 +20,6 @@ import {
 } from '@shega/Utilities/models/list-string.model';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
-import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
@@ -38,7 +37,10 @@ import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateOrganizationEmployeeDto } from './dto/request/create-employee.dto';
+import {
+    CreateOrgEmployeeWithContactDto,
+    CreateOrganizationEmployeeWithOrgDto,
+} from './dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -56,7 +58,7 @@ export class OrganizationController {
     ) {}
 
     @Post('createEmployee')
-    createEmployee(@Body() dto: CreateOrganizationEmployeeDto) {
+    createEmployee(@Body() dto: CreateOrganizationEmployeeWithOrgDto) {
         return this.organizationService.CreateEmployeeQDE(dto);
     }
 
@@ -160,7 +162,6 @@ export class OrganizationController {
         return this.organizationService.findBranches(id);
     }
 
-    @Public()
     @Get('documentToUpload')
     GetDocumentsToUpload() {
         const enumType = 'DocumentType';
@@ -250,6 +251,18 @@ export class OrganizationController {
             false,
             isIncludeEmployees,
             dto.note,
+        );
+    }
+
+    @Roles(UserRoleType.WorkProvider)
+    @Post('contactPerson')
+    addContactPerson(
+        @Request() req,
+        @Body() dto: CreateOrgEmployeeWithContactDto,
+    ) {
+        return this.organizationService.addContactPerson(
+            CurrentUser.getOrganizationId(req),
+            dto,
         );
     }
 }

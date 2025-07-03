@@ -10,8 +10,8 @@ import { Repository } from 'typeorm';
 import { LookUps } from '../entities/lookups.entity';
 
 @Injectable()
-export class LookupSeederService {
-    private readonly logger = new Logger(LookupSeederService.name);
+export class LookupService {
+    private readonly logger = new Logger(LookupService.name);
     private readonly seedFlagFile = path.resolve(__dirname, 'lookups');
 
     constructor(
@@ -37,7 +37,6 @@ export class LookupSeederService {
 
                 for (const raw of records) {
                     const record = this.lookUpsRepo.create(raw);
-
                     const existing = allLookUps.find(
                         (x) =>
                             x.code === record.code && x.group === record.group,
@@ -63,5 +62,13 @@ export class LookupSeederService {
             return this.lookUpsRepo.findBy({ group, subGroup });
         }
         return this.lookUpsRepo.findBy({ group });
+    }
+
+    findByCode(code: string) {
+        return this.lookUpsRepo.findOneByOrFail({ code });
+    }
+
+    findById(id: string) {
+        return this.lookUpsRepo.findOneByOrFail({ id });
     }
 }

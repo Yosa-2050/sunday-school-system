@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UsersService } from './users/users.service';
-import { LookupSeederService } from './Utilities/service/lookup-seeder.service';
+import { LookupService } from './Utilities/service/lookup-seeder.service';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -40,7 +40,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     const userService = app.get(UsersService);
-    const seeder = app.get(LookupSeederService);
+    const seeder = app.get(LookupService);
 
     const seedUser = new CreateUserDto();
     seedUser.email = process.env.default_user || 'heraniadmin@yopmail.com';

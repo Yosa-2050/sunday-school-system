@@ -10,6 +10,8 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { LookupService } from '@shega/Utilities/service/lookup-seeder.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
 import { Category } from '@shega/job_portal/entities/category.entity';
@@ -39,7 +41,11 @@ import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateOrganizationEmployeeDto } from './dto/request/create-employee.dto';
+import {
+    CreateOrgEmployeeWithContactDto,
+    CreateOrganizationEmployeeDto,
+    CreateOrganizationEmployeeWithOrgDto,
+} from './dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -54,6 +60,36 @@ import { EmployeeType } from './enums/employee-type.enum';
 
 @Injectable()
 export class OrganizationService {
+    async addContactPerson(
+        organizationId: string,
+        dto: CreateOrgEmployeeWithContactDto,
+    ) {
+        const organization = await this.organizationRepo.findOneBy({
+            id: organizationId,
+        });
+        if (!organization) {
+            throw new EntityNotFoundException(
+                typeof Organization,
+                organizationId,
+            );
+        }
+        const profile = this.profileService.createProfileQDE(
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            dto.phoneNumber,
+        );
+
+        const model = this.employeeRepo.create();
+        model.profile = profile;
+        const employee = model;
+        const empOrg = await this.employeeOrgRepo.create();
+        empOrg.employee = employee;
+        empOrg.type = dto.position;
+        empOrg.organization = organization;
+
+        return await this.employeeOrgRepo.save(empOrg);
+    }
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
@@ -75,6 +111,7 @@ export class OrganizationService {
         private readonly passwordService: PasswordService,
         private queryBuilderService: QueryBuilderService,
         private readonly usersService: UsersService,
+        private readonly lookupService: LookupService,
     ) {}
 
     async organizationApproval(
@@ -289,6 +326,7 @@ export class OrganizationService {
         organization.contacts = contactDetails;
         organization.locations = location;
         organization.notes = notes;
+        organization.employee = await organization.employee;
         return organization;
     }
 
@@ -297,14 +335,12 @@ export class OrganizationService {
         dto: Partial<UpdateOrganizationInfoDto>,
     ) {
         const organization = await this.findOne(id);
-        if (dto.sectorId) {
-            const sector = await this.categoryRepo.findOneBy({
-                id: dto.sectorId,
-            });
-            if (!sector) {
-                throw new EntityNotFoundException('Category', dto.sectorId);
+        if (dto.industryId) {
+            const industry = await this.lookupService.findById(dto.industryId);
+            if (!industry) {
+                throw new EntityNotFoundException('Lookup', dto.industryId);
             }
-            organization.sector = sector;
+            organization.industry = industry;
         }
         Object.assign(organization, dto);
         return this.organizationRepo.save(organization);
@@ -387,7 +423,7 @@ export class OrganizationService {
         return userDetails;
     }
 
-    async CreateEmployeeQDE(dto: CreateOrganizationEmployeeDto) {
+    async CreateEmployeeQDE(dto: CreateOrganizationEmployeeWithOrgDto) {
         const organization = await this.organizationRepo.findOneBy({
             name: dto.organizationName,
         });
@@ -397,7 +433,6 @@ export class OrganizationService {
             );
         }
         const pwdGenerated = this.passwordService.generatePassword();
-        //const pwdGenerated = "12345678";
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
             UserRoleType.WorkProvider,
@@ -421,6 +456,23 @@ export class OrganizationService {
         });
 
         const saved = await this.employeeOrgRepo.save(empOrg);
+
+        if (saved?.id) {
+            await this.SendOrganizationCreatedNotification(
+                dto,
+                pwdGenerated,
+                saved,
+            );
+            return saved;
+        }
+        return saved;
+    }
+
+    private async SendOrganizationCreatedNotification(
+        dto: CreateOrganizationEmployeeDto,
+        pwdGenerated: string,
+        saved: EmployeeOrganization,
+    ) {
         const signupEmailTemplate = await this.notificationService.getTemplate(
             'signupEmailTemplate',
             {
@@ -432,17 +484,14 @@ export class OrganizationService {
             },
             null,
         );
-        if (saved?.id) {
-            this.notificationService.send({
-                channel: NotificationChannel.Email,
-                content: signupEmailTemplate.content,
-                to: dto.email,
-                subject: signupEmailTemplate.subject,
-                reference: saved.id,
-            });
-            return saved;
-        }
-        return saved;
+
+        this.notificationService.send({
+            channel: NotificationChannel.Email,
+            content: signupEmailTemplate.content,
+            to: dto.email,
+            subject: signupEmailTemplate.subject,
+            reference: saved.id,
+        });
     }
 
     async setOrgActivationStatus(

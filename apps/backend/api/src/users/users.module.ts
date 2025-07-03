@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DateService } from '@shega/Utilities/date.service';
 import { LookUps } from '@shega/Utilities/entities/lookups.entity';
 import { PasswordService } from '@shega/Utilities/password.service';
-import { LookupSeederService } from '@shega/Utilities/service/lookup-seeder.service';
+import { LookupService } from '@shega/Utilities/service/lookup-seeder.service';
 import { DocumentModule } from '@shega/document/document.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { Otp } from './entities/otp.entity';
@@ -36,7 +36,7 @@ import { UsersService } from './users.service';
         ProfileService,
         OtpService,
         DateService,
-        LookupSeederService,
+        LookupService,
     ],
     exports: [
         UsersService,
@@ -44,7 +44,7 @@ import { UsersService } from './users.service';
         OtpService,
         DateService,
         PasswordService,
-        LookupSeederService,
+        LookupService,
     ],
 })
 export class UsersModule {}
