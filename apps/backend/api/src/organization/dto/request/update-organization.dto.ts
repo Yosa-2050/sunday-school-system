@@ -19,6 +19,11 @@ export class UpdateOrganizationInfoDto {
     @ApiProperty()
     @IsString()
     @IsOptional()
+    corporateEmail: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
     description: string;
 
     @ApiProperty()
@@ -32,7 +37,7 @@ export class UpdateOrganizationInfoDto {
 
     @ApiProperty()
     @OptionalUUID()
-    sectorId: string;
+    industryId: string;
 
     @ApiProperty()
     @IsNumber()

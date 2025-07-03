@@ -90,6 +90,20 @@ export class ProfileService {
         throw new EntityNotFoundException('User');
     }
 
+    createProfileQDE(
+        firstName: string,
+        middleName: string,
+        lastName: string,
+        phoneNumber: string,
+    ) {
+        return this.repo.create({
+            firstName,
+            middleName,
+            lastName,
+            phoneNumber,
+        });
+    }
+
     async createProfilePic(profileId: string, file: Express.Multer.File) {
         const profile = await this.repo.findOneBy({ id: profileId });
         if (profile && file) {
