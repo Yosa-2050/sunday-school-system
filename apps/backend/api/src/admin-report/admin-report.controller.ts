@@ -15,4 +15,10 @@ export class AdminReportController {
     async getCountTotals() {
         return await this.adminReportService.getCountTotals();
     }
+
+    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
+    @Get('getRecentRegisteredUsers')
+    async getRecentRegisteredUsers() {
+        return await this.adminReportService.getRecentRegisteredUsers();
+    }
 }
