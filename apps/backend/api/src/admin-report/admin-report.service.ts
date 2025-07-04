@@ -46,4 +46,13 @@ export class AdminReportService {
             .where('userRoles.role = :role', { role: roleType })
             .getCount();
     }
+
+    async getRecentRegisteredUsers() {
+        return await this.userRepo.find({
+            order: {
+                createdAt: 'DESC',
+            },
+            take: 5,
+        });
+    }
 }

@@ -35,6 +35,17 @@ export class NotificationController {
 
     @Patch('markNotificationAsRead/:notificationId')
     markNotificationAsRead(@Param('notificationId') notificationId: string) {
-        return this.notificationService.markNotificationAsRead(notificationId);
+        return this.notificationService.markNotificationAsReadOrUnRead(
+            notificationId,
+            'MARK_AS_READ',
+        );
+    }
+
+    @Patch('markNotificationAsUnRead/:notificationId')
+    markNotificationAsUnRead(@Param('notificationId') notificationId: string) {
+        return this.notificationService.markNotificationAsReadOrUnRead(
+            notificationId,
+            'MARK_AS_UNREAD',
+        );
     }
 }

@@ -82,7 +82,10 @@ export class NotificationService {
         });
     }
 
-    async markNotificationAsRead(notificationId: string) {
+    async markNotificationAsReadOrUnRead(
+        notificationId: string,
+        action: string,
+    ) {
         const notification = await this.notificationRepo.findOneBy({
             id: notificationId,
         });
@@ -91,9 +94,17 @@ export class NotificationService {
             throw new EntityNotFoundException('Notification');
         }
 
+        let statusToUpdate = null;
+
+        if (action === 'MARK_AS_READ') {
+            statusToUpdate = NotificationStatus.Read;
+        } else {
+            statusToUpdate = NotificationStatus.Pending;
+        }
+
         const updatedNotification = await this.notificationRepo.update(
             { id: notificationId },
-            { status: NotificationStatus.Read },
+            { status: statusToUpdate },
         );
 
         const result = UtilityServices.EnsureUpdated(
