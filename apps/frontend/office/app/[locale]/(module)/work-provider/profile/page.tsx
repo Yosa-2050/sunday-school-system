@@ -6,6 +6,7 @@ import {
     Box,
     Button,
     Divider,
+    Flex,
     Group,
     Loader,
     Paper,
@@ -15,13 +16,15 @@ import {
     Title,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
 import {
     IconBuilding,
     IconCalendar,
     IconEdit,
     IconMapPin,
 } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchCategories } from 'app/[locale]/_api/job-details';
 import {
     type Category,
@@ -147,6 +150,19 @@ function CompanyOverviewSection({ formData }: { formData: FormDataType }) {
     );
 }
 
+const submitOrganizationProfile = async () => {
+    const token = getCookie(COOKIE_ACCESS_TOKEN)?.toString();
+    const response = await fetcher('/organization/submit', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    return response;
+};
+
 function UserProfile() {
     const [opened, { open, close }] = useDisclosure(false);
 
@@ -160,6 +176,23 @@ function UserProfile() {
                 await getOrganizationById(organizationId ?? ''),
             enabled: !!organizationId,
         });
+    const submitMutation = useMutation({
+        mutationFn: submitOrganizationProfile,
+        onSuccess: () => {
+            notifications.show({
+                title: 'Success',
+                message: 'Profile updated successfully',
+                color: 'green',
+            });
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'Failed to update profile',
+                color: 'red',
+            });
+        },
+    });
     const { contacts, locations, ...organizationDetail } =
         organization ?? DefaultProps;
 
@@ -230,6 +263,15 @@ function UserProfile() {
             />
 
             {organizationId && <UploadFile orgId={organizationId} />}
+
+            <Flex align="center" justify="flex-end" mt={'md'}>
+                <Button
+                    onClick={() => submitMutation.mutate()}
+                    loading={submitMutation.isPending}
+                >
+                    Submit
+                </Button>
+            </Flex>
         </Box>
     );
 }
