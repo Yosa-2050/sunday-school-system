@@ -1,202 +1,200 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
+    ActionIcon,
     Box,
     Button,
     Divider,
     Group,
+    Paper,
+    ScrollArea,
+    Table,
     Text,
-    TextInput,
     Title,
 } from '@mantine/core';
-import { IconEdit } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
+import { IconBuilding, IconEdit, IconX } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
-import { updateContactInfo } from 'app/[locale]/_api/organizations/updateOrganization';
-import { getCookie } from 'cookies-next';
+import { submitContactPerson } from 'app/[locale]/_api/submit-contact-person';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { type ContactFormData, ContactFormDrawer } from './ContactFormDrawer';
 
-const contactTypes = ['Mobile', 'Communication', 'Default'] as const;
+interface Worker {
+    id: string;
+    type: string;
+    createdBy: string;
+    employee: {
+        profile: {
+            firstName: string;
+            middleName?: string | null;
+            lastName?: string | null;
+            phoneNumber?: string | null;
+        };
+    };
+}
 
-export const contactSchema = z.object({
-    contacts: z
-        .array(
-            z.object({
-                type: z.enum(contactTypes),
-                value: z.string().min(1, 'Required'),
-                isPreferred: z.boolean().optional(),
-            }),
-        )
-        .min(1, 'At least one contact required'),
-});
+interface ContactSectionProps {
+    workers: Worker[];
+}
 
-export type ContactFormData = z.infer<typeof contactSchema>;
+export default function ContactSection({ workers }: ContactSectionProps) {
+    const [opened, setOpened] = useState(false);
+    const [selectedType, setSelectedType] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedWorker, setSelectedWorker] =
+        useState<ContactFormData | null>(null);
 
-type RawContact = {
-    id?: string;
-    type: 'Mobile' | 'Communication' | 'Default';
-    value: string;
-    isPreferred: boolean;
-};
-
-type ContactSectionProps = {
-    contactsFromServer?: RawContact[];
-};
-
-// UI → API mapping
-const DEFAULT_CONTACTS = [
-    { label: 'Phone', type: 'Mobile', placeholder: '+251912345678' },
-    { label: 'Email', type: 'Communication', placeholder: 'example@email.com' },
-    {
-        label: 'Other Address',
-        type: 'Default',
-        placeholder: '123 Main Street, City',
-    },
-];
-
-export const ContactSection = ({
-    contactsFromServer = [],
-}: ContactSectionProps) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const organizationId = getCookie('organization_id')?.toString() ?? '';
-
-    const {
-        control,
-        getValues,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<ContactFormData>({
-        resolver: zodResolver(contactSchema),
-        defaultValues: {
-            contacts: contactsFromServer?.length
-                ? contactsFromServer.map((contact) => ({
-                      type: contact.type as (typeof contactTypes)[number],
-                      value: contact.value,
-                      isPreferred: contact.isPreferred,
-                  }))
-                : DEFAULT_CONTACTS.map(({ type }) => ({
-                      type: type as (typeof contactTypes)[number],
-                      value: '',
-                      isPreferred: false,
-                  })),
+    const mutation = useMutation({
+        mutationFn: async (formData: ContactFormData) => {
+            const [firstNameRaw, middleName = '', lastName = ''] =
+                formData.contactPersonName.trim().split(' ');
+            const firstName = firstNameRaw || '';
+            const payload = {
+                phoneNumber: formData.contactPersonPhone,
+                firstName,
+                middleName,
+                lastName,
+                position: formData.contactPersonRole,
+            };
+            return await submitContactPerson(payload);
+        },
+        onSuccess: () => {
+            notifications.show({
+                title: 'Saved',
+                message: 'Contact info saved successfully',
+                color: 'green',
+            });
+            setOpened(false);
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'Something went wrong while saving',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
+        },
+        onSettled: () => {
+            setIsLoading(false);
         },
     });
 
-    const mutation = useMutation({
-        mutationFn: async (data: ContactFormData) =>
-            updateContactInfo(organizationId, data),
-        onSuccess: () => setIsEditing(false),
-    });
-
-    const onSubmit = (data: ContactFormData) => mutation.mutate(data);
-
-    const findValueByType = (type: string) =>
-        getValues('contacts')?.find((c) => c.type === type)?.value || '';
+    const handleSubmitForm = async (data: ContactFormData) => {
+        setIsLoading(true);
+        await mutation.mutateAsync(data);
+    };
 
     return (
-        <Box>
-            <Group justify="space-between" align="center" mb="xs">
-                <Title order={6}>Contact Information</Title>
-                <Button
-                    size="xs"
-                    variant={isEditing ? 'filled' : 'light'}
-                    leftSection={<IconEdit size={14} />}
-                    onClick={() => {
-                        if (isEditing) {
-                            handleSubmit(onSubmit)();
-                        } else {
-                            setIsEditing(true);
-                        }
-                    }}
-                >
-                    {isEditing ? 'Save' : 'Edit'}
-                </Button>
-            </Group>
-            <Divider mb="md" />
-            <Group wrap="wrap" gap="md">
-                {DEFAULT_CONTACTS.map(({ label, type, placeholder }) => (
-                    <Box
-                        key={type}
-                        p="md"
-                        w={{ base: '100%', sm: '48%', md: '30%' }}
-                    >
-                        <Text size="xs" color="dimmed" mb={4}>
-                            {label}
-                        </Text>
+        <>
+            <ContactFormDrawer
+                opened={opened}
+                onClose={() => setOpened(false)}
+                onSubmit={handleSubmitForm}
+                loading={isLoading}
+                initialType={selectedType}
+                setInitialType={setSelectedType}
+                defaultValues={selectedWorker}
+            />
 
-                        {isEditing ? (
-                            <Controller
-                                control={control}
-                                name="contacts"
-                                render={({ field: { value, onChange } }) => {
-                                    const index = value.findIndex(
-                                        (c) => c.type === type,
-                                    );
-                                    const currentValue =
-                                        index >= 0
-                                            ? (value[index]?.value ?? '')
-                                            : '';
+            <Paper withBorder={false} p="md" mt="md" shadow="xs">
+                <Box py="md">
+                    <Group justify="space-between" align="center">
+                        <Group gap="sm">
+                            <IconBuilding size={24} stroke={1.5} />
+                            <div>
+                                <Title order={3}>Contact Information</Title>
+                                <Text size="sm" c="dimmed">
+                                    Choose position and update primary contact
+                                    info
+                                </Text>
+                            </div>
+                        </Group>
 
+                        <Button
+                            variant="light"
+                            leftSection={<IconEdit size={16} />}
+                            size="sm"
+                            onClick={() => {
+                                setOpened(true);
+                            }}
+                        >
+                            Add / Edit Contact
+                        </Button>
+                    </Group>
+                </Box>
+
+                <Divider my="sm" />
+
+                <Box mt="lg">
+                    <Title order={4} mb="sm">
+                        Assigned Employees
+                    </Title>
+
+                    <ScrollArea>
+                        <Table striped highlightOnHover withTableBorder>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th>Position</Table.Th>
+                                    <Table.Th>Full Name</Table.Th>
+                                    <Table.Th>Phone</Table.Th>
+                                    <Table.Th>Created By</Table.Th>
+                                    <Table.Th>Actions</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {workers.map((worker) => {
+                                    const profile = worker.employee.profile;
+                                    const fullName = [
+                                        profile.firstName,
+                                        profile.middleName,
+                                        profile.lastName,
+                                    ]
+                                        .filter(Boolean)
+                                        .join(' ');
                                     return (
-                                        <TextInput
-                                            placeholder={placeholder}
-                                            value={currentValue}
-                                            error={
-                                                errors.contacts?.[index]?.value
-                                                    ?.message
-                                            }
-                                            onChange={(e) => {
-                                                const updated = [...value];
-                                                if (index >= 0) {
-                                                    updated[index] = {
-                                                        ...updated[index],
-                                                        value: e.currentTarget
-                                                            .value,
-                                                        type: type as (typeof contactTypes)[number],
-                                                    };
-                                                } else {
-                                                    updated.push({
-                                                        type: type as (typeof contactTypes)[number],
-                                                        value: e.currentTarget
-                                                            .value,
-                                                        isPreferred: false,
-                                                    });
-                                                }
-                                                onChange(updated);
-                                            }}
-                                        />
+                                        <Table.Tr
+                                            key={worker.id}
+                                            className="group "
+                                        >
+                                            <Table.Td>{worker.type}</Table.Td>
+                                            <Table.Td>{fullName}</Table.Td>
+                                            <Table.Td>
+                                                {profile.phoneNumber || '—'}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                {worker.createdBy}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                {' '}
+                                                <ActionIcon
+                                                    onClick={() => {
+                                                        setOpened(true);
+                                                        setSelectedWorker({
+                                                            contactPersonEmail:
+                                                                '',
+                                                            contactPersonName: `${profile.firstName} ${profile.middleName} ${profile.lastName}`,
+                                                            contactPersonPhone:
+                                                                profile.phoneNumber ||
+                                                                '',
+                                                            contactPersonRole:
+                                                                worker.type,
+                                                        });
+                                                    }}
+                                                    size="sm"
+                                                    radius="sm"
+                                                    className="hidden group-hover:block"
+                                                >
+                                                    <IconEdit size={16} />
+                                                </ActionIcon>
+                                            </Table.Td>
+                                        </Table.Tr>
                                     );
-                                }}
-                            />
-                        ) : (
-                            <Text fw={400}>{findValueByType(type) || '-'}</Text>
-                        )}
-                    </Box>
-                ))}
-            </Group>
-
-            {isEditing && (
-                <Group justify="flex-end" mt="lg">
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            reset();
-                            setIsEditing(false);
-                        }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        loading={mutation.isPending}
-                        onClick={handleSubmit(onSubmit)}
-                    >
-                        Save Changes
-                    </Button>
-                </Group>
-            )}
-        </Box>
+                                })}
+                            </Table.Tbody>
+                        </Table>
+                    </ScrollArea>
+                </Box>
+            </Paper>
+        </>
     );
-};
+}

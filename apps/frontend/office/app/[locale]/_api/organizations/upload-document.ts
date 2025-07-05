@@ -5,8 +5,11 @@ import { getCookie } from 'cookies-next';
 export const uploadDocument = async (
     referenceId: string,
     documentType: string,
-    file: File,
+    file?: File,
 ): Promise<{ success: boolean; message?: string }> => {
+    if (!file) {
+        throw new Error('No file selected');
+    }
     const formData = new FormData();
     formData.append('file', file);
 
@@ -37,7 +40,7 @@ export const uploadDocument = async (
 export const useUploadDocument = (
     referenceId: string,
     documentType: string,
-    file: File,
+    file?: File,
 ) => {
     const queryClient = useQueryClient();
 

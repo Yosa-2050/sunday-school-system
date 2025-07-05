@@ -1,4 +1,5 @@
 import { fetcher } from '@shega/shared';
+import type { DocumentData } from 'app/[locale]/(module)/work-provider/profile/components/UploadFile';
 
 export const getDocumentType = async () => {
     const response = await fetcher(
@@ -16,5 +17,5 @@ export const getDocumentById = async (id: string) => {
         method: 'GET',
     });
 
-    return response as { name: string };
+    return response as DocumentData;
 };

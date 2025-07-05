@@ -1,22 +1,36 @@
+'use client';
+
 import {
+    ActionIcon,
+    Badge,
+    Box,
     Button,
-    Divider,
     FileInput,
     Group,
+    Image,
     Modal,
     Paper,
-    Select,
+    Progress,
     Stack,
+    Table,
     Text,
     Title,
+    Tooltip,
+    rem,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { COOKIE_ACCESS_TOKEN, logger } from '@shega/shared';
 import {
-    getDocumentById,
-    getDocumentType,
-} from 'app/[locale]/_api/organizations/getDocumentType';
+    IconAlertCircle,
+    IconCheck,
+    IconEye,
+    IconFileText,
+    IconReplace,
+    IconUpload,
+} from '@tabler/icons-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getDocumentById } from 'app/[locale]/_api/organizations/getDocumentType';
 import { useUploadDocument } from 'app/[locale]/_api/organizations/upload-document';
+import { getCookie } from 'cookies-next';
 import type React from 'react';
 import { useState } from 'react';
 
@@ -24,155 +38,392 @@ interface UploadFileProps {
     orgId: string;
 }
 
-type DocumentType = {
-    code: string;
-    value: string;
+export interface DocumentData {
+    id: string;
+    createdBy: string;
+    createdAt: string;
+    isActive: boolean;
+    fileName: string;
+    filePath: string;
+    fileType: string;
+    fileSize: number;
+    referenceId: string;
+    docType: string;
+}
+
+const REQUIRED_DOCUMENTS = [
+    { code: 'BusinessLicense', label: 'Business License' },
+    { code: 'TinCertificate', label: 'TIN Certificate' },
+    { code: 'Payroll', label: 'Payroll Records' },
+    { code: 'ProofOfAddress', label: 'Proof of Address' },
+];
+
+export const downloadDocument = async (id: string): Promise<Blob> => {
+    const token = getCookie(COOKIE_ACCESS_TOKEN)?.toString();
+    const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/document/${id}`,
+        {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                accept: '*/*',
+            },
+        },
+    );
+    if (!response.ok) {
+        throw new Error('Failed to download document');
+    }
+    return response.blob();
 };
 
 const UploadFile: React.FC<UploadFileProps> = ({ orgId }) => {
-    const [
-        uploadModalOpened,
-        { open: openUploadModal, close: closeUploadModal },
-    ] = useDisclosure(false);
-
     const queryClient = useQueryClient();
-
     const [uploadForm, setUploadForm] = useState<{
-        documentType: string;
-        file: File | null;
-    }>({
-        documentType: '',
-        file: null,
-    });
+        [key: string]: File | null;
+    }>({});
+    const [selectedDocType, setSelectedDocType] = useState<string | null>(null);
+    const [previewModalOpen, setPreviewModalOpen] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [previewFileName, setPreviewFileName] = useState<string>('');
+    const [previewFileType, setPreviewFileType] = useState<string>('');
 
-    const { data: documentTypeData = [], isLoading: loadingTypes } = useQuery<
-        DocumentType[]
-    >({
-        queryKey: ['documentType'],
-        queryFn: getDocumentType,
-    });
-
-    const { data: uploadedDocs = {} } = useQuery({
+    const { data } = useQuery<DocumentData[]>({
         queryKey: ['organizationDocuments', orgId],
-        queryFn: () => getDocumentById(orgId),
+        queryFn: async () => {
+            const result = await getDocumentById(orgId);
+            return Array.isArray(result) ? result : [result];
+        },
         enabled: !!orgId,
     });
+    const uploadedDocs: DocumentData[] = Array.isArray(data) ? data : [];
 
-    const documentTypeOptions = documentTypeData
-        .filter((item): item is DocumentType => !!item.code && !!item.value)
-        .map((item) => ({
-            label: item.value,
-            value: item.code,
-        }));
-
-    const handleUploadFormChange = (
-        field: 'documentType' | 'file',
-        value: string | File | null,
-    ) => {
-        setUploadForm((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const { mutate, isPending } = useUploadDocument(
+    const { mutate: uploadDocument, isPending } = useUploadDocument(
         orgId,
-        uploadForm.documentType,
-        uploadForm.file as File,
+        selectedDocType || '',
+        selectedDocType ? (uploadForm[selectedDocType] as File) : undefined,
     );
 
-    // biome-ignore lint/suspicious/useAwait: <explanation>
-    const handleFileUpload = async () => {
-        mutate();
+    const handleUploadFormChange = (docType: string, file: File | null) => {
+        setUploadForm((prev) => ({ ...prev, [docType]: file }));
     };
 
-    const documentTypeValue =
-        documentTypeOptions.find((opt) => opt.value === uploadForm.documentType)
-            ?.value || '';
+    const handleFileUpload = async (docType: string) => {
+        setSelectedDocType(docType);
+        uploadDocument(undefined, {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['organizationDocuments', orgId],
+                });
+                setUploadForm((prev) => ({ ...prev, [docType]: null }));
+            },
+        });
+    };
+
+    const handleFilePreview = async (docData: DocumentData) => {
+        try {
+            const blob = await downloadDocument(docData.id);
+            const url = URL.createObjectURL(blob);
+            setPreviewUrl(url);
+            setPreviewFileName(docData.fileName);
+            setPreviewFileType(docData.fileType);
+            setPreviewModalOpen(true);
+        } catch (error) {
+            logger.error('Failed to preview file:', error);
+        }
+    };
+
+    const handleLocalFilePreview = (file: File) => {
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+        setPreviewFileName(file.name);
+        setPreviewFileType(file.type);
+        setPreviewModalOpen(true);
+    };
+
+    const closePreview = () => {
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+        }
+        setPreviewModalOpen(false);
+        setPreviewUrl(null);
+        setPreviewFileName('');
+        setPreviewFileType('');
+    };
+
+    const getUploadedDoc = (docType: string): DocumentData | null => {
+        return (
+            uploadedDocs.find((doc: DocumentData) => doc.docType === docType) ||
+            null
+        );
+    };
+
+    const formatFileSize = (bytes: number): string => {
+        if (bytes === 0) {
+            return '0 Bytes';
+        }
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
+    };
+
+    const completedDocs = uploadedDocs.length;
+    const totalDocs = REQUIRED_DOCUMENTS.length;
+    const progressPercentage = (completedDocs / totalDocs) * 100;
+
+    // Extracted button rendering to reduce complexity
+    function renderUploadButton({
+        isUploading,
+        isUploaded,
+        localFile,
+        handleFileUpload,
+        docCode,
+    }: {
+        isUploading: boolean;
+        isUploaded: boolean;
+        localFile: File | null | undefined;
+        handleFileUpload: (docCode: string) => void;
+        docCode: string;
+    }) {
+        let buttonLabel = 'Upload';
+        if (isUploading) {
+            buttonLabel = '...';
+        } else if (isUploaded) {
+            buttonLabel = 'Replace';
+        }
+        return (
+            <Button
+                size="xs"
+                onClick={() => handleFileUpload(docCode)}
+                disabled={!localFile || isUploading}
+                loading={isUploading}
+                leftSection={
+                    isUploaded ? (
+                        <IconReplace size={12} />
+                    ) : (
+                        <IconUpload size={12} />
+                    )
+                }
+                variant={isUploaded ? 'light' : 'filled'}
+                color={isUploaded ? 'orange' : 'blue'}
+            >
+                {buttonLabel}
+            </Button>
+        );
+    }
+
+    const rows = REQUIRED_DOCUMENTS.map((doc) => {
+        const uploadedDoc = getUploadedDoc(doc.code);
+        const localFile = uploadForm[doc.code];
+        const isUploaded = !!uploadedDoc;
+        const isUploading = selectedDocType === doc.code && isPending;
+
+        return (
+            <Table.Tr key={doc.code}>
+                {/* Document Name & Status */}
+                <Table.Td>
+                    <Group gap="xs">
+                        <IconFileText size={16} />
+                        <Box>
+                            <Text size="sm" fw={500}>
+                                {doc.label}
+                            </Text>
+                            <Badge
+                                size="xs"
+                                color={isUploaded ? 'green' : 'orange'}
+                                variant="light"
+                                leftSection={
+                                    isUploaded ? (
+                                        <IconCheck
+                                            style={{
+                                                width: rem(10),
+                                                height: rem(10),
+                                            }}
+                                        />
+                                    ) : (
+                                        <IconAlertCircle
+                                            style={{
+                                                width: rem(10),
+                                                height: rem(10),
+                                            }}
+                                        />
+                                    )
+                                }
+                            >
+                                {isUploaded ? 'Uploaded' : 'Required'}
+                            </Badge>
+                        </Box>
+                    </Group>
+                </Table.Td>
+
+                {/* Current File */}
+                <Table.Td>
+                    {isUploaded ? (
+                        <Group gap="xs">
+                            <Box>
+                                <Text size="xs" truncate maw={150}>
+                                    {uploadedDoc.fileName}
+                                </Text>
+                                <Text size="xs" c="dimmed">
+                                    {formatFileSize(uploadedDoc.fileSize)}
+                                </Text>
+                            </Box>
+                            <Tooltip label="View">
+                                <ActionIcon
+                                    size="sm"
+                                    variant="subtle"
+                                    onClick={() =>
+                                        handleFilePreview(uploadedDoc)
+                                    }
+                                >
+                                    <IconEye size={14} />
+                                </ActionIcon>
+                            </Tooltip>
+                        </Group>
+                    ) : (
+                        <Text size="xs" c="dimmed">
+                            No file uploaded
+                        </Text>
+                    )}
+                </Table.Td>
+
+                {/* File Input */}
+                <Table.Td>
+                    <FileInput
+                        value={localFile}
+                        onChange={(file) =>
+                            handleUploadFormChange(doc.code, file)
+                        }
+                        placeholder="Choose file"
+                        accept="application/pdf,image/*"
+                        size="xs"
+                        w={200}
+                        clearable
+                        rightSection={
+                            localFile && (
+                                <ActionIcon
+                                    size="xs"
+                                    variant="subtle"
+                                    onClick={() =>
+                                        handleLocalFilePreview(localFile)
+                                    }
+                                >
+                                    <IconEye size={12} />
+                                </ActionIcon>
+                            )
+                        }
+                    />
+                </Table.Td>
+
+                {/* Actions */}
+                <Table.Td>
+                    <Group gap="xs">
+                        {renderUploadButton({
+                            isUploading,
+                            isUploaded,
+                            localFile,
+                            handleFileUpload,
+                            docCode: doc.code,
+                        })}
+                    </Group>
+                </Table.Td>
+            </Table.Tr>
+        );
+    });
 
     return (
-        <div className="mb-4">
-            <Paper withBorder shadow="sm" radius="md" p="lg" mt="xl">
-                <Group justify="space-between" align="center" mb="xs">
-                    <Title order={6}>Required Documents</Title>
-                    <Button size="xs" onClick={openUploadModal} variant="light">
-                        Upload Document
-                    </Button>
+        <Stack gap="md">
+            {/* Compact Header */}
+            <Paper p="md" withBorder>
+                <Group justify="space-between" align="center" mb="sm">
+                    <Box>
+                        <Title order={5}>Verification Documents</Title>
+                        <Text size="xs" c="dimmed">
+                            Upload required documents (one per type)
+                        </Text>
+                    </Box>
+                    <Badge
+                        size="lg"
+                        color={completedDocs === totalDocs ? 'green' : 'blue'}
+                    >
+                        {completedDocs}/{totalDocs}
+                    </Badge>
                 </Group>
-                <Text size="xs" c="dimmed" mb="sm">
-                    Upload your organization’s legal documents like Business
-                    License and Trade Certificate.
-                </Text>
-                <Divider mb="md" />
-
-                <Stack gap="xs">
-                    <Group justify="space-between">
-                        <Text size="sm">Business License:</Text>
-                        <Text size="sm" c="dimmed">
-                            {/* {uploadedDocs?.BusinessLicense ? "Uploaded" : "Not uploaded"} */}
-                            BusinessLicense
-                        </Text>
-                    </Group>
-                    <Group justify="space-between">
-                        <Text size="sm">Trade Certificate:</Text>
-                        <Text size="sm" c="dimmed">
-                            {/* {uploadedDocs?.TinCertificate ? "Uploaded" : "Not uploaded"} */}
-                            TinCertificate
-                        </Text>
-                    </Group>
-                </Stack>
+                <Progress value={progressPercentage} size="sm" />
             </Paper>
 
+            {/* Compact Table */}
+            <Paper withBorder>
+                <Table striped highlightOnHover>
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th>Document Type</Table.Th>
+                            <Table.Th>Current File</Table.Th>
+                            <Table.Th>Select New File</Table.Th>
+                            <Table.Th>Action</Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>{rows}</Table.Tbody>
+                </Table>
+            </Paper>
+
+            {/* Preview Modal */}
             <Modal
-                opened={uploadModalOpened}
-                onClose={closeUploadModal}
-                title="Upload Document"
-                size="lg"
+                opened={previewModalOpen}
+                onClose={closePreview}
+                title={
+                    <Group gap="sm">
+                        <IconFileText size={16} />
+                        <Text size="sm" fw={500}>
+                            {previewFileName}
+                        </Text>
+                    </Group>
+                }
+                size="xl"
+                centered
             >
-                <Stack>
-                    <Select
-                        label="Select Document Type"
-                        placeholder="Choose document type"
-                        data={documentTypeOptions}
-                        value={
-                            documentTypeOptions.some(
-                                (opt) => opt.value === uploadForm.documentType,
-                            )
-                                ? uploadForm.documentType
-                                : null
-                        }
-                        onChange={(value) => {
-                            if (value) {
-                                handleUploadFormChange('documentType', value);
-                            }
-                        }}
-                        disabled={loadingTypes}
-                        required
-                    />
-
-                    <FileInput
-                        label="Select File"
-                        placeholder="Upload file"
-                        value={uploadForm.file}
-                        onChange={(file) =>
-                            handleUploadFormChange('file', file)
-                        }
-                        accept="application/pdf,image/*"
-                        required
-                    />
-                </Stack>
-
-                <Group justify="flex-end" mt="lg">
-                    <Button variant="outline" onClick={closeUploadModal}>
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleFileUpload}
-                        loading={isPending}
-                        disabled={!(uploadForm.file && uploadForm.documentType)}
-                    >
-                        Upload
-                    </Button>
-                </Group>
+                <Box mih={400}>
+                    {previewFileType?.startsWith('image/') && previewUrl && (
+                        <Image
+                            src={previewUrl || '/placeholder.svg'}
+                            alt="Document Preview"
+                            radius="md"
+                            fit="contain"
+                            mah={600}
+                        />
+                    )}
+                    {previewFileType === 'application/pdf' && previewUrl && (
+                        <iframe
+                            src={previewUrl}
+                            title="PDF Preview"
+                            width="100%"
+                            height="600px"
+                            style={{ border: 'none', borderRadius: rem(8) }}
+                        />
+                    )}
+                    {!previewFileType?.startsWith('image/') &&
+                        previewFileType !== 'application/pdf' && (
+                            <Stack
+                                align="center"
+                                justify="center"
+                                h={400}
+                                gap="md"
+                            >
+                                <IconFileText
+                                    size={48}
+                                    color="var(--mantine-color-gray-5)"
+                                />
+                                <Text ta="center" c="dimmed" size="sm">
+                                    Preview not available for this file type
+                                </Text>
+                                <Text size="xs" ta="center" c="dimmed">
+                                    {previewFileName}
+                                </Text>
+                            </Stack>
+                        )}
+                </Box>
             </Modal>
-        </div>
+        </Stack>
     );
 };
 
