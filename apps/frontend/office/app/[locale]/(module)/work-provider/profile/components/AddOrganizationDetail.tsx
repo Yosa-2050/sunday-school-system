@@ -3,11 +3,12 @@ import {
     Button,
     Divider,
     Drawer,
-    Group, NumberInput,
+    Group,
+    NumberInput,
     Select,
     TextInput,
     Textarea,
-    Title
+    Title,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
@@ -21,10 +22,11 @@ export const organizationSchema = z.object({
     registrationNumber: z.string().min(1, 'Required'),
     displayName: z.string().min(1, 'Required'),
     type: z.string().min(1, 'Required'),
-    sectorId: z.string().min(1, 'Required'),
+    industryId: z.string().min(1, 'Required'),
     yearFounded: z.number().int().min(1900).max(new Date().getFullYear()),
     companySize: z.string().min(1, 'Required'),
     description: z.string().optional(),
+    corporateEmail: z.string().email().optional(),
 });
 
 export type OrganizationFormData = z.infer<typeof organizationSchema>;
@@ -34,6 +36,7 @@ type AddOrganizationDetailProps = {
     close: () => void;
     categories: { id: string; name: string }[];
     categoriesLoading: boolean;
+    defaultValues: OrganizationFormData;
 };
 
 export const AddOrganizationDetail = ({
@@ -41,6 +44,7 @@ export const AddOrganizationDetail = ({
     close,
     categories,
     categoriesLoading,
+    defaultValues,
 }: AddOrganizationDetailProps) => {
     const id = getCookie('organization_id')?.toString();
     const {
@@ -50,14 +54,15 @@ export const AddOrganizationDetail = ({
         formState: { errors },
     } = useForm<OrganizationFormData>({
         resolver: zodResolver(organizationSchema),
-        defaultValues: {
+        defaultValues: defaultValues ?? {
             registrationNumber: '',
             displayName: '',
             type: '',
-            sectorId: '',
+            industryId: '',
             yearFounded: new Date().getFullYear(),
             companySize: '',
             description: '',
+            corporateEmail: '',
         },
     });
 
@@ -82,12 +87,13 @@ export const AddOrganizationDetail = ({
         <Drawer
             opened={opened}
             onClose={close}
-            title="Edit Organization"
+            title="Update Organization"
             size="md"
-
+            position="right"
+            overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
         >
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Title order={4} mb="xs">
+                <Title order={6} mb="xs">
                     General Info
                 </Title>
                 <Divider mb="sm" />
@@ -98,6 +104,7 @@ export const AddOrganizationDetail = ({
                     render={({ field }) => (
                         <TextInput
                             label="Registration Number"
+                            placeholder="Enter registration number"
                             required
                             error={errors.registrationNumber?.message}
                             {...field}
@@ -111,6 +118,7 @@ export const AddOrganizationDetail = ({
                     render={({ field }) => (
                         <TextInput
                             label="Display Name"
+                            placeholder="Enter display name"
                             mt="sm"
                             error={errors.displayName?.message}
                             {...field}
@@ -124,6 +132,7 @@ export const AddOrganizationDetail = ({
                     render={({ field }) => (
                         <TextInput
                             label="Type"
+                            placeholder="Enter type"
                             mt="sm"
                             error={errors.type?.message}
                             {...field}
@@ -132,7 +141,7 @@ export const AddOrganizationDetail = ({
                 />
 
                 <Controller
-                    name="sectorId"
+                    name="industryId"
                     control={control}
                     render={({ field }) => (
                         <Select
@@ -144,7 +153,21 @@ export const AddOrganizationDetail = ({
                             }))}
                             disabled={categoriesLoading}
                             mt="sm"
-                            error={errors.sectorId?.message}
+                            error={errors.industryId?.message}
+                            {...field}
+                        />
+                    )}
+                />
+
+                <Controller
+                    name="corporateEmail"
+                    control={control}
+                    render={({ field }) => (
+                        <TextInput
+                            label="Corporate Email"
+                            placeholder="Enter corporate email"
+                            mt="sm"
+                            error={errors.corporateEmail?.message}
                             {...field}
                         />
                     )}
@@ -156,6 +179,7 @@ export const AddOrganizationDetail = ({
                     render={({ field }) => (
                         <NumberInput
                             label="Year Founded"
+                            placeholder="Enter year founded"
                             mt="sm"
                             error={errors.yearFounded?.message}
                             {...field}
@@ -169,14 +193,16 @@ export const AddOrganizationDetail = ({
                     render={({ field }) => (
                         <Select
                             label="Company Size"
+                            placeholder="Select company size"
                             mt="sm"
                             data={[
-                                '1-10',
-                                '11-50',
-                                '51-200',
-                                '201-500',
-                                '500+',
+                                'Micro-sized: 1 to 9 employees',
+
                                 'Small-sized: 10 to 49 employees',
+
+                                'Medium-sized: 50 to 249 employees',
+
+                                'Large-sized: 250+ employees',
                             ]}
                             error={errors.companySize?.message}
                             {...field}
@@ -184,7 +210,7 @@ export const AddOrganizationDetail = ({
                     )}
                 />
 
-                <Title order={4} mt="xl" mb="xs">
+                <Title order={6} mt="xl" mb="xs">
                     Description
                 </Title>
                 <Divider mb="sm" />
@@ -195,6 +221,7 @@ export const AddOrganizationDetail = ({
                     render={({ field }) => (
                         <Textarea
                             label="Description"
+                            placeholder="Enter description"
                             mt="sm"
                             error={errors.description?.message}
                             {...field}

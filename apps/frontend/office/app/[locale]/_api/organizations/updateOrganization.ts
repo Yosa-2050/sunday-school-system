@@ -1,5 +1,5 @@
 import { fetcher } from '@shega/shared';
-import type { ContactFormData } from 'app/[locale]/(module)/work-provider/profile/components/ContactInformation';
+import type { ContactFormData } from 'app/[locale]/(module)/work-provider/profile/components/ContactFormDrawer';
 import type { LocationFormData } from 'app/[locale]/(module)/work-provider/profile/components/LocationDetails';
 
 interface UpdateOrganizationPayload {
@@ -55,41 +55,31 @@ export const updateLocation = async (
     organizationId: string,
     data: LocationFormData,
 ) => {
-    const response = await fetcher(
-        `/address/location/${organizationId}/Organization`,
-        {
-            method: 'POST',
-            body: JSON.stringify({
-                location: [
-                    {
-                        ...data.locationData,
-                        addressType: '',
-                        addressText: '',
-                        latitude: '',
-                        longitude: '',
-                        isPreferred: true,
-                        village: '',
-                    },
-                ],
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
+    const response = await fetcher(`/address/location/${organizationId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+            ...data,
+            addressType: 'Other',
+            isPreferred: true,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
         },
-    );
+    });
 
     return response as { success: boolean; message?: string };
 };
 
 export const updateContactInfo = async (
     organizationId: string,
-    data: ContactFormData,
+    data: ContactFormData & { additionalAddress?: string },
 ) => {
     const grouped = {
         phoneNumbers: {
             type: 'Phone',
             value: data.contactPersonPhone,
-            isPreferred: true,},
+            isPreferred: true,
+        },
         emailAddress: {
             type: 'Communication',
             value: data.contactPersonEmail,

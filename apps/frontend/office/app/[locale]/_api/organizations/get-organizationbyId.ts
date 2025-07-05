@@ -26,7 +26,7 @@ export interface Organization {
     displayName: string;
     registrationNumber: string;
     type: string;
-    sectorId: string;
+    industryId: string;
     sector?: Category;
     yearFounded: number;
     companySize: string;
@@ -36,6 +36,8 @@ export interface Organization {
     locations?: Array<{
         locationData: LocationData;
     }>;
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    __employee__: any;
 }
 
 export const getOrganizationById = async (id: string) => {
