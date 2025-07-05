@@ -33,7 +33,7 @@ const stats = {
         title: 'Total Posted Jobs',
         icon: <IconBriefcase size={20} />,
     },
-    totalMentorshipprogram: {
+    totalMentorshipProgram: {
         title: 'Total Mentorship Program',
         icon: <IconHierarchy size={20} />,
     },
