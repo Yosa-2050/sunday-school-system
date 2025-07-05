@@ -1,3 +1,16 @@
+# [1.5.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.4.5...v1.5.0) (2025-07-05)
+
+
+### Bug Fixes
+
+* **shega:** profile update ([838bf90](https://gitlab.heranitech.com/meklit/shega-jobs/commit/838bf9007b361edee739c8db667766cba1f73626))
+* **shega:** profile update ([7a6317b](https://gitlab.heranitech.com/meklit/shega-jobs/commit/7a6317b5229f96d246b6f0648bfc3c380132366e))
+
+
+### Features
+
+* **shega:** update organization profile fix ([b9cb7b2](https://gitlab.heranitech.com/meklit/shega-jobs/commit/b9cb7b27cebafe0e52f01ab63c587262fb5f2544))
+
 ## [1.4.5](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.4.4...v1.4.5) (2025-06-30)
 
 
