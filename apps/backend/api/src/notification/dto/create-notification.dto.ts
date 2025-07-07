@@ -26,7 +26,7 @@ export class CreateNotificationDto {
     @ApiProperty()
     @IsBoolean()
     @IsOptional()
-    isRealTimeNofitication?: boolean = false;
+    isRealTimeNotification?: boolean = false;
 
     @ApiProperty()
     @IsBoolean()

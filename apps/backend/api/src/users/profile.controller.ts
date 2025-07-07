@@ -130,7 +130,7 @@ export class ProfileController {
 
     @Get('/getByPhone')
     getByPhone(@Query('phone') phone: string) {
-        return this.profileService.findbyPhone(phone);
+        return this.profileService.findByPhone(phone);
     }
 
     @Post('/profilepicture/:profileId')
