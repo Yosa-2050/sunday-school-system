@@ -250,10 +250,7 @@ function UserProfile() {
                 </Stack>
             </Paper>
 
-            <ContactSection
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                workers={organization?.__employee__ ?? []}
-            />
+            <ContactSection workers={organization?.__employee__ ?? []} />
 
             <LocationSection
                 defaultLocation={

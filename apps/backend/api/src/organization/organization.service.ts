@@ -187,8 +187,8 @@ export class OrganizationService {
         return result;
     }
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     private SendNotificationForApprovals(
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         emailTemplate: any,
         user: User,
         status: ApprovalType,
