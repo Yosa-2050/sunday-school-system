@@ -620,6 +620,7 @@ export class JobPortalService {
                 result.success,
                 status,
                 note,
+                program,
             );
         }
 
@@ -631,10 +632,18 @@ export class JobPortalService {
         result: boolean,
         status: ApprovalType,
         note: string,
+        program: Programs,
     ) {
         if (result) {
             let emailTemplate = null;
-
+            const title = program.title;
+            const type =
+                program.programType === ProgramType.Job
+                    ? 'Job'
+                    : 'Mentorship program';
+            const user = await this.profileService.findUserByProfileId(
+                job.postedBy.employee.profile.id,
+            );
             if (status === ApprovalType.Approved) {
                 emailTemplate = await this.notificationService.getTemplate(
                     'jobPostApprovedEmailTemplate',
@@ -647,6 +656,16 @@ export class JobPortalService {
                         jobTitle: job.program.title,
                     },
                 );
+
+                this.notificationService.send({
+                    channel: NotificationChannel.InApp,
+                    subject: `your ${type} is Approved`,
+                    content: `${type} with tile ${title} is approved.`,
+                    to: user.id,
+                    reference: user.id,
+                    isRealTimeNotification: true,
+                    isNotifyToAllUser: false,
+                });
             }
 
             if (status === ApprovalType.Declined) {
@@ -662,18 +681,27 @@ export class JobPortalService {
                         jobTitle: job.program.title,
                     },
                 );
-            }
-            const user = await this.profileService.findUserByProfileId(
-                job.postedBy.employee.profile.id,
-            );
 
-            this.notificationService.send({
-                channel: NotificationChannel.Email,
-                content: emailTemplate.content,
-                to: user.email,
-                subject: emailTemplate.subject,
-                reference: user.id,
-            });
+                this.notificationService.send({
+                    channel: NotificationChannel.InApp,
+                    subject: `your ${type} is Declined`,
+                    content: `${type} with tile ${title} is declined, please contact administrator.`,
+                    to: user.id,
+                    reference: user.id,
+                    isRealTimeNotification: true,
+                    isNotifyToAllUser: false,
+                });
+            }
+
+            if (emailTemplate) {
+                this.notificationService.send({
+                    channel: NotificationChannel.Email,
+                    content: emailTemplate.content,
+                    to: user.email,
+                    subject: emailTemplate.subject,
+                    reference: user.id,
+                });
+            }
         }
     }
 

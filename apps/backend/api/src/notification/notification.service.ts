@@ -54,7 +54,7 @@ export class NotificationService {
         //send real time notification to all users or specific user
         if (
             req.channel === NotificationChannel.InApp &&
-            req.isRealTimeNofitication
+            req.isRealTimeNotification
         ) {
             if (req.isNotifyToAllUser) {
                 this.notificationGateway.sendNotificationToAllUsers({

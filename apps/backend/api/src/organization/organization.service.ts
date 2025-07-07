@@ -23,6 +23,8 @@ import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detai
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotesService } from '@shega/notification/notes.service';
 import { NotificationService } from '@shega/notification/notification.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { User } from '@shega/users/entities/user.entity';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -177,32 +179,51 @@ export class OrganizationService {
             const user = await this.profileService.findUserByProfileId(
                 profile.id,
             );
-
-            //send email notification
-            this.notificationService.send({
-                channel: NotificationChannel.Email,
-                content: emailTemplate.content,
-                to: user.email,
-                subject: emailTemplate.subject,
-                reference: user.id,
-            });
-
-            //For testing
-            //send real time in-app nofitcation
-            if (status === ApprovalType.Approved) {
-                this.notificationService.send({
-                    channel: NotificationChannel.InApp,
-                    subject: 'Organization Approved',
-                    content:
-                        'Your Organization has been approved and is now live on the shega platform.',
-                    to: user.id,
-                    reference: user.id,
-                    isRealTimeNofitication: true,
-                    isNotifyToAllUser: false,
-                });
+            if (emailTemplate) {
+                //send email notification
+                this.SendNotificationForApprovals(emailTemplate, user, status);
             }
         }
         return result;
+    }
+
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    private SendNotificationForApprovals(
+        emailTemplate: any,
+        user: User,
+        status: ApprovalType,
+    ) {
+        this.notificationService.send({
+            channel: NotificationChannel.Email,
+            content: emailTemplate.content,
+            to: user.email,
+            subject: emailTemplate.subject,
+            reference: user.id,
+        });
+
+        if (status === ApprovalType.Approved) {
+            this.notificationService.send({
+                channel: NotificationChannel.InApp,
+                subject: 'Organization Approved',
+                content:
+                    'Your Organization has been approved and is now live on the shega platform.',
+                to: user.id,
+                reference: user.id,
+                isRealTimeNotification: true,
+                isNotifyToAllUser: false,
+            });
+        } else if (status === ApprovalType.Declined) {
+            this.notificationService.send({
+                channel: NotificationChannel.InApp,
+                subject: 'Organization Declined',
+                content:
+                    'Your Organization has been declined, please contact administrator.',
+                to: user.id,
+                reference: user.id,
+                isRealTimeNotification: true,
+                isNotifyToAllUser: false,
+            });
+        }
     }
 
     async create(request: CreateOrganizationDto) {

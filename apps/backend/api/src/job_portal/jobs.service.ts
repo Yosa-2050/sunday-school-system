@@ -41,6 +41,7 @@ import { Experiance } from './entities/experience.entity';
 import { Applications } from './entities/job-application.entity';
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
+import { ProgramType } from './enums/program-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
 
@@ -118,13 +119,18 @@ export class JobsService {
             const user = await this.profileService.findUserByProfileId(
                 applicant.profile.id,
             );
-
+            const programType =
+                program.programType === ProgramType.Job
+                    ? 'Job'
+                    : 'Mentorship program';
             this.notificationService.send({
-                channel: NotificationChannel.Email,
-                content: content,
-                to: user.email,
-                subject: subject,
+                channel: NotificationChannel.InApp,
+                subject: 'Job applied',
+                content: `User ${applicant.profile.firstName} has applied to your ${programType} with title ${program.title}.`,
+                to: user.id,
                 reference: user.id,
+                isRealTimeNotification: true,
+                isNotifyToAllUser: false,
             });
         }
         return UtilityServices.SuccessIdResponse();

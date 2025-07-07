@@ -151,12 +151,12 @@ export class ProfileService {
     async findByEmail(email: string) {
         return await this.repo.findBy({
             user: {
-                email: ILike(`%${email}%`),
+                email,
             },
         });
     }
 
-    async findbyPhone(phone: string) {
+    async findByPhone(phone: string) {
         return await this.repo.findBy({ phoneNumber: ILike(`%${phone}%`) });
     }
 
