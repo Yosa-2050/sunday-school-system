@@ -44,17 +44,18 @@ export const Menus = (): MenuTree[] => {
             role: 'administrator',
         },
         {
-            label: t('mentorship'),
-            icon: <IconHierarchy stroke={1.4} size={20} />,
-            link: '/admin/mentorships',
-            role: 'administrator',
-        },
-        {
             label: t('job-explorer'),
             icon: <IconBriefcase stroke={1.4} size={20} />,
             link: '/admin/jobs',
             role: 'administrator',
         },
+        {
+            label: t('mentorship'),
+            icon: <IconHierarchy stroke={1.4} size={20} />,
+            link: '/admin/programs',
+            role: 'administrator',
+        },
+
         {
             isGroup: true,
             label: 'Lookup',

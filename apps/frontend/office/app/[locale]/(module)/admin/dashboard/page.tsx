@@ -50,6 +50,7 @@ export default function Dashboard() {
                     </Grid>
                 </Stack>
             </PageBody>
+
             <RecentUsers />
         </PageContainer>
     );

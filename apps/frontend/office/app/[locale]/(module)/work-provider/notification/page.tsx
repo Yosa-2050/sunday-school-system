@@ -4,6 +4,7 @@ import {
     ActionIcon,
     Drawer,
     Group,
+    Indicator,
     ScrollArea,
     Tabs,
     TabsList,
@@ -56,8 +57,7 @@ export default function NotificationDrawer() {
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['userId', userId],
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-        queryFn: () => getNotificationById(userId!),
+        queryFn: () => getNotificationById(),
         enabled: !!userId,
     });
     const [notificationss, setNotificationss] = useState<NotificationItem[]>(
@@ -105,8 +105,10 @@ export default function NotificationDrawer() {
             icon: mapStatusToIcon(item.status),
             message: <Text size="sm">{item.content}</Text>,
             time: new Date(item.createdAt).toLocaleString(),
-            read: item.deliveryStatus === 'DELIVERED',
+            //   read: item.deliveryStatus === "DELIVERED",
+            read: item.status === 'Read',
         })) || [];
+    const unreadCount = notifications.filter((notif) => !notif.read).length;
 
     const recentNotifications = notifications.filter((notif) => {
         const createdDate = new Date(notif.time);
@@ -116,14 +118,14 @@ export default function NotificationDrawer() {
         return diffDays <= 2;
     });
 
-    const historyNotifications = notifications.filter((notif) => {
-        const createdDate = new Date(notif.time);
-        const now = new Date();
-        const diffMs = now.getTime() - createdDate.getTime();
-        const diffDays = diffMs / (1000 * 60 * 60 * 24);
-        return diffDays > 2;
-    });
-
+    //   const historyNotifications = notifications.filter((notif) => {
+    //     const createdDate = new Date(notif.time);
+    //     const now = new Date();
+    //     const diffMs = now.getTime() - createdDate.getTime();
+    //     const diffDays = diffMs / (1000 * 60 * 60 * 24);
+    //     return diffDays > 2;
+    //   });
+    const historyNotifications = notifications.filter((notif) => notif.read);
     const toggleRead = (id: string, type?: string) => {
         mutation.mutate(id);
     };
@@ -168,15 +170,24 @@ export default function NotificationDrawer() {
 
     return (
         <div>
-            <ActionIcon
-                onClick={open}
-                variant="light"
-                size="lg"
-                radius="md"
-                aria-label="Notifications"
+            <Indicator
+                disabled={unreadCount === 0}
+                label={unreadCount > 99 ? '99+' : unreadCount}
+                size={16}
+                color="red"
+                offset={7}
             >
-                <IconBell size={18} />
-            </ActionIcon>
+                <ActionIcon
+                    onClick={open}
+                    variant="light"
+                    size="lg"
+                    radius="md"
+                    aria-label="Notifications"
+                >
+                    <IconBell size={18} />
+                </ActionIcon>
+            </Indicator>
+
             <Drawer
                 opened={opened}
                 onClose={close}
@@ -187,7 +198,7 @@ export default function NotificationDrawer() {
                 <Tabs defaultValue="recent">
                     <TabsList grow mb="md">
                         <TabsTab value="recent">Recent</TabsTab>
-                        <TabsTab value="history">Last 30 Days</TabsTab>
+                        <TabsTab value="history">Read</TabsTab>
                     </TabsList>
 
                     <TabsPanel value="recent">
@@ -199,9 +210,9 @@ export default function NotificationDrawer() {
                     <TabsPanel value="history">
                         <ScrollArea h="calc(100vh - 170px)" px="md">
                             {renderList(historyNotifications, 'history')}
-                            <Text c="dimmed" mt="lg">
-                                End of 30-day history.
-                            </Text>
+                            {/* <Text c="dimmed" mt="lg">
+                End of 30-day history.
+              </Text> */}
                         </ScrollArea>
                     </TabsPanel>
                 </Tabs>

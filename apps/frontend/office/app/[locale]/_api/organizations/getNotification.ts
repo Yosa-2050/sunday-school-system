@@ -8,13 +8,10 @@ export interface NotificationResponse {
     deliveryStatus: string;
 }
 
-export const getNotificationById = async (id: string) => {
-    const response = await fetcher(
-        `/notification/getUserInAppNotifications/${id}`,
-        {
-            method: 'GET',
-        },
-    );
+export const getNotificationById = async () => {
+    const response = await fetcher('/notification/getUserInAppNotifications/', {
+        method: 'GET',
+    });
     return response as NotificationResponse[];
 };
 

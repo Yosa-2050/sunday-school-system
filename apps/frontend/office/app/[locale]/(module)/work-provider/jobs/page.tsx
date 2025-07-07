@@ -425,6 +425,7 @@ const JobsList = () => {
                                                     setModalOpened(false)
                                                 }
                                                 title="Confirm Deletion"
+                                                centered
                                             >
                                                 <Text>
                                                     Are you sure you want to

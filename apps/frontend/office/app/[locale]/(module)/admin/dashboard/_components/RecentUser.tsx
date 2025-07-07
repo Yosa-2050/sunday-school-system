@@ -3,10 +3,10 @@
 import NoData from '@/components/NoData';
 import { Link } from '@/i18n/routing';
 import {
+    Anchor,
     Badge,
     Button,
     Card,
-    Checkbox,
     Divider,
     Flex,
     Group,
@@ -174,45 +174,16 @@ const RecentUsers = () => {
         : [];
 
     return (
-        <PageContainer className="flex flex-col gap-2.5">
+        <PageContainer className="flex flex-col gap-2.5 mt-10">
             <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-                {/* Active Filters and Sort */}
-                <Title size={20}>Recent Users</Title>
+                <Flex justify="space-between" align="center" mb="md">
+                    <Title size={20}>Recent Users</Title>
+                    <Anchor href="/users" size="sm">
+                        View more
+                    </Anchor>
+                </Flex>
+
                 <Group gap="sm" className="mb-4">
-                    {activeFilters.map((group) => (
-                        <Group key={group.type} gap="sm">
-                            <Text size="sm" c="dimmed">
-                                {group.type}:
-                            </Text>
-                            {group.filters.map((filter) => (
-                                <Badge
-                                    key={filter.value}
-                                    rightSection={
-                                        <IconX
-                                            size={12}
-                                            onClick={() => {
-                                                if (group.type === 'Role') {
-                                                    handleRoleSelect(
-                                                        filters?.roles.filter(
-                                                            (r) =>
-                                                                r !==
-                                                                filter.value,
-                                                        ) || [],
-                                                    );
-                                                } else if (
-                                                    group.type === 'Status'
-                                                ) {
-                                                    handleStatusChange('');
-                                                }
-                                            }}
-                                        />
-                                    }
-                                >
-                                    {filter.label}
-                                </Badge>
-                            ))}
-                        </Group>
-                    ))}
                     {filters?.sort && Object.keys(filters.sort).length > 0 && (
                         <Group gap="sm">
                             <Text size="sm" c="dimmed">
@@ -295,20 +266,6 @@ const RecentUsers = () => {
                         >
                             <Table.Thead>
                                 <Table.Tr>
-                                    <Table.Th>
-                                        <Checkbox
-                                            onChange={toggleAll}
-                                            checked={
-                                                selection.length ===
-                                                users.length
-                                            }
-                                            indeterminate={
-                                                selection.length > 0 &&
-                                                selection.length !==
-                                                    users.length
-                                            }
-                                        />
-                                    </Table.Th>
                                     <Table.Th>{t('table.fullName')}</Table.Th>
                                     <Table.Th>{t('table.email')}</Table.Th>
                                     <Table.Th>{t('table.role')}</Table.Th>
@@ -332,16 +289,6 @@ const RecentUsers = () => {
                                 {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                                 {users.map((user: Daum) => (
                                     <Table.Tr key={user.id}>
-                                        <Table.Td>
-                                            <Checkbox
-                                                checked={selection.includes(
-                                                    user.id ?? '',
-                                                )}
-                                                onChange={() =>
-                                                    toggleRow(user.id ?? '')
-                                                }
-                                            />
-                                        </Table.Td>
                                         <Table.Td>{user.fullName}</Table.Td>
                                         <Table.Td>
                                             <Link
