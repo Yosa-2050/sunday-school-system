@@ -12,9 +12,12 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
+import { LoginBy } from '@shega/users/enums/login-by.enum';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -178,6 +181,7 @@ export class MentorshipService {
         private profileService: ProfileService,
         private notificationService: NotificationService,
         private queryBuilderService: QueryBuilderService,
+        private userService: UsersService,
     ) {}
 
     async createMentor(dto: CreateBasicUserDto) {
@@ -255,8 +259,32 @@ export class MentorshipService {
 
         mentorShip.program.status = ApprovalType.Waiting_Approval;
         mentorShip.mentor = mentor;
-        const jobCreated = await this.mentorshipRepo.save(mentorShip);
-        return UtilityServices.EnsureCreated(jobCreated.id);
+        const mentorshipRepoCreated =
+            await this.mentorshipRepo.save(mentorShip);
+        const created = UtilityServices.EnsureCreated(mentorshipRepoCreated.id);
+        if (created.success) {
+            await this.SendNotificationForJobCreatedToAdmin(
+                mentorshipRepoCreated,
+            );
+        }
+    }
+
+    private async SendNotificationForJobCreatedToAdmin(mentorShip: Mentorship) {
+        const user = await this.userService.findOneUser(
+            mentorShip.createdBy,
+            LoginBy.EMAIL,
+        );
+        if (mentorShip.program.isPublished) {
+            this.notificationService.send({
+                channel: NotificationChannel.InApp,
+                subject: `Mentorship program with title ${mentorShip.program.title} submitted for approval`,
+                content: `Mentorship program with title ${mentorShip.program.title} is submitted for approval from User ${user.profile.firstName}`,
+                to: user.id,
+                reference: user.id,
+                isRealTimeNotification: true,
+                isNotifyToAllUser: false,
+            });
+        }
     }
 
     async approve(id: string, status: ApprovalType, note?: string) {

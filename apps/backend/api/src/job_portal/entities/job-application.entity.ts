@@ -46,6 +46,12 @@ export class Applications extends BaseModel {
     @Column({ nullable: true })
     noticePeriod: number;
 
+    @Column({ nullable: true })
+    experience: number;
+
+    @Column({ nullable: true })
+    salaryExpectation: number;
+
     @Column({
         type: 'enum',
         enum: YesOrNoOptions,

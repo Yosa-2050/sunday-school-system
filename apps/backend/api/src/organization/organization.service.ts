@@ -181,17 +181,23 @@ export class OrganizationService {
             );
             if (emailTemplate) {
                 //send email notification
-                this.SendNotificationForApprovals(emailTemplate, user, status);
+                this.SendNotificationForApprovals(
+                    emailTemplate,
+                    user,
+                    status,
+                    org.name,
+                );
             }
         }
         return result;
     }
 
-    private SendNotificationForApprovals(
+    private async SendNotificationForApprovals(
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         emailTemplate: any,
         user: User,
         status: ApprovalType,
+        orgName = '',
     ) {
         this.notificationService.send({
             channel: NotificationChannel.Email,
@@ -220,6 +226,17 @@ export class OrganizationService {
                     'Your Organization has been declined, please contact administrator.',
                 to: user.id,
                 reference: user.id,
+                isRealTimeNotification: true,
+                isNotifyToAllUser: false,
+            });
+        } else if (status === ApprovalType.Waiting_Approval) {
+            const superAdmin = await this.usersService.GetSuperAdmin();
+            this.notificationService.send({
+                channel: NotificationChannel.InApp,
+                subject: 'A request for organization approval',
+                content: `An approval request has come for an Organization ${orgName}, please do the need full.`,
+                to: superAdmin.id,
+                reference: superAdmin.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
             });

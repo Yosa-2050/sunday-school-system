@@ -143,7 +143,7 @@ export class JobPortalController {
         @Param('programId', new ParseUUIDPipe()) id: string,
         @Body() request: GetJobApplicationsRequestDto,
     ) {
-        return this.jobPortalService.jobsAppliedByJobId(id, request);
+        return this.jobPortalService.applicationsByProgramId(id, request);
     }
 
     @Roles(UserRoleType.WorkProvider, UserRoleType.Mentor)

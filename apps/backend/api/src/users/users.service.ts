@@ -339,4 +339,8 @@ export class UsersService {
             pp,
         );
     }
+
+    GetSuperAdmin() {
+        return this.findOneUser(process.env.default_user, LoginBy.EMAIL);
+    }
 }

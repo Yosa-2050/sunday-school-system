@@ -17,4 +17,14 @@ export class JobApplicationRequestDto {
     @ApiProperty()
     @OptionalEnum(YesOrNoOptions)
     relocationOption: YesOrNoOptions;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    experience: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    salaryExpectation: number;
 }
