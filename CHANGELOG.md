@@ -1,3 +1,10 @@
+## [1.7.1](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.0...v1.7.1) (2025-07-08)
+
+
+### Bug Fixes
+
+* **shega:** fix date format for users list ([4925064](https://gitlab.heranitech.com/meklit/shega-jobs/commit/492506423c717d5da7d33b3a75239f1895ec27e9))
+
 # [1.7.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.6.0...v1.7.0) (2025-07-08)
 
 
