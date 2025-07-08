@@ -25,9 +25,12 @@ import { NotificationService } from '@shega/notification/notification.service';
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
+import { LoginBy } from '@shega/users/enums/login-by.enum';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
@@ -38,7 +41,6 @@ import {
     CreateJobPortalDto,
     ProgramRequestDto,
 } from './dto/request/create-job_portal.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { GetJobApplicationsRequestDto } from './dto/request/get-job-applications.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
@@ -94,6 +96,7 @@ export class JobPortalService {
         private readonly notificationService: NotificationService,
         private readonly notesService: NotesService,
         private readonly dateService: DateService,
+        private readonly userService: UsersService,
     ) {}
 
     async createJobSeeker(dto: CreateBasicUserDto) {
@@ -182,7 +185,26 @@ export class JobPortalService {
         job.salaryTo =
             job.salaryType === SalaryType.Fixed ? job.salaryFrom : dto.salaryTo;
         const jobCreated = await this.jobRepo.save(job);
+        await this.SendNotificationForJobCreatedToAdmin(jobCreated);
         return UtilityServices.EnsureCreated(jobCreated.id);
+    }
+
+    private async SendNotificationForJobCreatedToAdmin(jobCreated: Jobs) {
+        const user = await this.userService.findOneUser(
+            jobCreated.organization.createdBy,
+            LoginBy.EMAIL,
+        );
+        if (jobCreated.program.isPublished) {
+            this.notificationService.send({
+                channel: NotificationChannel.InApp,
+                subject: `Job with title ${jobCreated.program.title} submitted for approval`,
+                content: `Job with title ${jobCreated.program.title} is submitted for approval from Organization ${jobCreated.organization.name}`,
+                to: user.id,
+                reference: user.id,
+                isRealTimeNotification: true,
+                isNotifyToAllUser: false,
+            });
+        }
     }
 
     private async GetJob(dto: CreateJobPortalDto) {
@@ -320,6 +342,11 @@ export class JobPortalService {
             applicant: { id: applicantId },
         });
 
+        const jobApplication = await this.jobApplicationRepo.findOneBy({
+            applicants: { id: applicantId },
+            program: { id: program.id },
+        });
+
         const notes = await this.notesService.getNotesByReference(id);
         if (program.programType === ProgramType.Job) {
             const job = await this.findOneJobByProgramId(id);
@@ -329,6 +356,13 @@ export class JobPortalService {
                 applied: !!jobsApplied,
                 saved: !!savedJob,
                 notes: notes,
+                applicationData: {
+                    coverLetter: jobApplication?.coverLetter,
+                    noticePeriod: jobApplication?.noticePeriod,
+                    relocationOption: jobApplication?.relocationOption,
+                    experience: jobApplication?.experience,
+                    salaryExpectation: jobApplication?.salaryExpectation,
+                },
             };
         }
 
@@ -838,7 +872,18 @@ export class JobPortalService {
                 ? updateJob.salaryFrom
                 : updateJob.salaryTo;
 
-        return UtilityServices.EnsureMultipleUpdated(updated, updatedProg, id);
+        const confirmUpdated = UtilityServices.EnsureMultipleUpdated(
+            updated,
+            updatedProg,
+            id,
+        );
+        if (confirmUpdated.success) {
+            const jobUpdated = await this.jobRepo.findOneBy({
+                id,
+                organization: { id: organizationId },
+            });
+            await this.SendNotificationForJobCreatedToAdmin(jobUpdated);
+        }
     }
 
     async remove(id: string) {
@@ -952,7 +997,11 @@ export class JobPortalService {
         organizationId: string,
         mentorId: string,
     ) {
-        this.validateProgramIdOnUser(programId, organizationId, mentorId);
+        const validated = await this.validateProgramIdOnUser(
+            programId,
+            organizationId,
+            mentorId,
+        );
 
         const result = await this.jobApplicationRepo.update(
             {
@@ -962,7 +1011,14 @@ export class JobPortalService {
             { status: ApplicationStatus.SHORT_LISTED },
         );
 
-        return UtilityServices.EnsureUpdated(result, programId);
+        const updateResult = UtilityServices.EnsureUpdated(result, programId);
+
+        await this.SentNotificationForShortListing(
+            updateResult,
+            programId,
+            validated,
+            ApplicationStatus.SHORT_LISTED,
+        );
     }
 
     async rejectNotShortlisted(
@@ -970,7 +1026,11 @@ export class JobPortalService {
         organizationId: string,
         mentorId: string,
     ) {
-        this.validateProgramIdOnUser(programId, organizationId, mentorId);
+        const validated = await this.validateProgramIdOnUser(
+            programId,
+            organizationId,
+            mentorId,
+        );
 
         const result = await this.jobApplicationRepo.update(
             {
@@ -980,7 +1040,54 @@ export class JobPortalService {
             { status: ApplicationStatus.REJECTED },
         );
 
-        return UtilityServices.EnsureUpdated(result, programId);
+        const updateResult = UtilityServices.EnsureUpdated(result, programId);
+
+        await this.SentNotificationForShortListing(
+            updateResult,
+            programId,
+            validated,
+            ApplicationStatus.REJECTED,
+        );
+
+        return updateResult;
+    }
+
+    private async SentNotificationForShortListing(
+        updateResult: { data: string; success: boolean },
+        programId: string,
+        validated: { title: string; name: string; type: ProgramType },
+        status: ApplicationStatus,
+    ) {
+        if (updateResult.success) {
+            const request = new GetJobApplicationsRequestDto();
+            request.status = status;
+            const appliedUsers = await this.applicationsByProgramId(
+                programId,
+                request,
+            );
+            const subject =
+                status === ApplicationStatus.REJECTED
+                    ? `Your update for the role ${validated.title}`
+                    : `Congratulations you are short listed for the role ${validated.title}`;
+
+            const content =
+                status === ApplicationStatus.REJECTED
+                    ? 'Unfortunately, they will not be moving forward with your application'
+                    : `You are short listed for the role ${validated.title} for the ${validated.type} with ${validated.name}`;
+
+            for (let index = 0; index < appliedUsers.data.length; index++) {
+                const user = appliedUsers.data[index];
+                this.notificationService.send({
+                    channel: NotificationChannel.InApp,
+                    subject: subject,
+                    content: content,
+                    to: user.userId,
+                    reference: user.userId,
+                    isRealTimeNotification: true,
+                    isNotifyToAllUser: false,
+                });
+            }
+        }
     }
 
     async validateProgramIdOnUser(
@@ -988,6 +1095,7 @@ export class JobPortalService {
         organizationId: string,
         mentorId: string,
     ) {
+        let name = '';
         const program = await this.programRepo.findOneBy({ id: programId });
         if (!program) {
             throw new EntityNotFoundException('Program', programId);
@@ -1001,6 +1109,7 @@ export class JobPortalService {
             if (!job) {
                 throw new ForbiddenException('Unable to access program');
             }
+            name = job.organization.name;
         } else if (program.programType === ProgramType.Mentorship) {
             const mentorship = await this.mentorshipRepo.findOneBy({
                 program: { id: program.id },
@@ -1009,14 +1118,19 @@ export class JobPortalService {
             if (!mentorship) {
                 throw new ForbiddenException('Unable to access program');
             }
+            name = mentorship.mentor.profile.firstName;
         } else {
             throw new BadRequestException('Unknown program type');
         }
 
-        return true;
+        return {
+            title: program.title,
+            name: name,
+            type: program.programType,
+        };
     }
 
-    async jobsAppliedByJobId(
+    async applicationsByProgramId(
         programId: string,
         request: GetJobApplicationsRequestDto,
     ) {
