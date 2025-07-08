@@ -433,9 +433,11 @@ const UsersPage = () => {
                                 <Divider my="xs" />
                                 <Text size="sm">{user.email}</Text>
                                 <Text size="xs" c="dimmed">
-                                    {DateTime.fromISO(
-                                        user.createdDate ?? '',
-                                    ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                    {user.createdDate
+                                        ? DateTime.fromJSDate(
+                                              new Date(user.createdDate),
+                                          ).toFormat('dd-MM-yyyy')
+                                        : ''}
                                 </Text>
                                 <Group mt="md">
                                     <Button variant="light" size="xs">

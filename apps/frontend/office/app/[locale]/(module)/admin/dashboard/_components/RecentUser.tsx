@@ -3,7 +3,6 @@
 import NoData from '@/components/NoData';
 import { Link } from '@/i18n/routing';
 import {
-    Anchor,
     Badge,
     Button,
     Card,
@@ -11,7 +10,6 @@ import {
     Flex,
     Group,
     LoadingOverlay,
-    Menu,
     Paper,
     Pill,
     Stack,
@@ -20,24 +18,22 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
 import {
     PER_PAGE,
     entityParamSchema,
     entityParamSerializer,
 } from '@shega/shared';
 import { EntityColumn } from '@shega/ui';
-import { IconDotsVertical, IconX } from '@tabler/icons-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { IconX } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 
-import Can from '@/components/Can';
 import { PageContainer } from '@/components/PageContainer';
 import { type Daum, fetchUsers } from 'app/[locale]/_api/users/fetch-user';
 
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
-import { useState } from 'react';
 
 interface Filters {
     roles: string[];
@@ -46,19 +42,8 @@ interface Filters {
 }
 
 const RecentUsers = () => {
-    const queryClient = useQueryClient();
     const t = useTranslations('usersPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const [selection, setSelection] = useState<string[]>([]);
-    const [opened, { open, close }] = useDisclosure(false);
-    const [openedActivation, activationHandlers] = useDisclosure(false);
-
-    const [reason, setReason] = useState('');
-
-    const [selectedUser, setSelectedUser] = useState<{
-        id: string;
-        fullName: string;
-    } | null>(null);
 
     const [filters, setFilters] = useQueryState<Filters | null>('filters', {
         defaultValue: null,
@@ -134,53 +119,12 @@ const RecentUsers = () => {
 
     const users = data?.data.slice(0, 5) ?? [];
 
-    const toggleRow = (id: string) =>
-        setSelection((current) =>
-            current.includes(id)
-                ? current.filter((item) => item !== id)
-                : [...current, id],
-        );
-
-    const toggleAll = () =>
-        setSelection((current) =>
-            current.length === users.length
-                ? []
-                : users.map((user: Daum) => user.id ?? ''),
-        );
-
-    const activeFilters = filters
-        ? [
-              {
-                  type: 'Role',
-                  filters: filters.roles.map((role) => ({
-                      label: roles.find((r) => r.value === role)?.label,
-                      value: role,
-                  })),
-              },
-              {
-                  type: 'Status',
-                  filters: filters.status
-                      ? [
-                            {
-                                label: t(
-                                    `status.${filters.status.toLowerCase()}`,
-                                ),
-                                value: filters.status,
-                            },
-                        ]
-                      : [],
-              },
-          ].filter((group) => group.filters.length > 0)
-        : [];
-
     return (
         <PageContainer className="flex flex-col gap-2.5 mt-10">
             <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
                 <Flex justify="space-between" align="center" mb="md">
                     <Title size={20}>Recent Users</Title>
-                    <Anchor href="/users" size="sm">
-                        View more
-                    </Anchor>
+                    <Link href="/admin/users">View more</Link>
                 </Flex>
 
                 <Group gap="sm" className="mb-4">
@@ -237,9 +181,11 @@ const RecentUsers = () => {
                                 <Divider my="xs" />
                                 <Text size="sm">{user.email}</Text>
                                 <Text size="xs" c="dimmed">
-                                    {DateTime.fromISO(
-                                        user.createdDate ?? '',
-                                    ).toFormat('yyyy-MM-dd HH:mm:ss')}
+                                    {user.createdDate
+                                        ? DateTime.fromJSDate(
+                                              new Date(user.createdDate),
+                                          ).toFormat('yyyy-MM-dd')
+                                        : 'Unknown'}
                                 </Text>
                                 <Group mt="md">
                                     <Button variant="light" size="xs">
@@ -278,11 +224,6 @@ const RecentUsers = () => {
                                         />
                                     </Table.Th>
                                     <Table.Th>{t('table.status')}</Table.Th>
-                                    <Can roles={['super_admin']}>
-                                        <Table.Th>
-                                            {t('table.actions')}
-                                        </Table.Th>
-                                    </Can>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
@@ -311,9 +252,13 @@ const RecentUsers = () => {
                                         </Table.Td>
                                         <Table.Td>{user.createdBy}</Table.Td>
                                         <Table.Td>
-                                            {DateTime.fromISO(
-                                                user.createdDate ?? '',
-                                            ).toFormat('dd-mm-yyyy')}
+                                            {user.createdDate
+                                                ? DateTime.fromJSDate(
+                                                      new Date(
+                                                          user.createdDate,
+                                                      ),
+                                                  ).toFormat('dd-MM-yyyy')
+                                                : 'Unknown'}
                                         </Table.Td>
                                         <Table.Td>
                                             <Pill
@@ -325,55 +270,6 @@ const RecentUsers = () => {
                                                     : t('status.inactive')}
                                             </Pill>
                                         </Table.Td>
-
-                                        <Can roles={['super_admin']}>
-                                            <Table.Td>
-                                                <Menu width={200}>
-                                                    <Menu.Target>
-                                                        <IconDotsVertical
-                                                            size={18}
-                                                            className="cursor-pointer"
-                                                        />
-                                                    </Menu.Target>
-                                                    <Menu.Dropdown>
-                                                        {user.isActive ? (
-                                                            <Menu.Item
-                                                                color="red"
-                                                                onClick={() => {
-                                                                    setSelectedUser(
-                                                                        {
-                                                                            id: user.id,
-                                                                            fullName:
-                                                                                user.fullName ??
-                                                                                '',
-                                                                        },
-                                                                    );
-                                                                    open();
-                                                                }}
-                                                            >
-                                                                Deactivate
-                                                            </Menu.Item>
-                                                        ) : (
-                                                            <Menu.Item
-                                                                onClick={() => {
-                                                                    setSelectedUser(
-                                                                        {
-                                                                            id: user.id,
-                                                                            fullName:
-                                                                                user.fullName ??
-                                                                                '',
-                                                                        },
-                                                                    );
-                                                                    activationHandlers.open();
-                                                                }}
-                                                            >
-                                                                Activate
-                                                            </Menu.Item>
-                                                        )}
-                                                    </Menu.Dropdown>
-                                                </Menu>
-                                            </Table.Td>
-                                        </Can>
                                     </Table.Tr>
                                 ))}
                             </Table.Tbody>
