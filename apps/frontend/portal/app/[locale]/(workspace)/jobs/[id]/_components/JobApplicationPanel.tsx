@@ -83,10 +83,10 @@ export const JobApplicationPanel = ({
     } = useForm<FormData>({
         defaultValues: {
             coverLetter: job?.applicationData?.coverLetter || '',
-            noticePeriod: job?.applicationData?.noticePeriod || 14,
+            noticePeriod: job?.applicationData?.noticePeriod || 0,
             relocationOption: job?.applicationData?.relocationOption || 'NO',
-            experience: job?.applicationData?.experience || 3,
-            salaryExpectation: job?.applicationData?.salaryExpectation || 90000,
+            experience: job?.applicationData?.experience || 0,
+            salaryExpectation: job?.applicationData?.salaryExpectation || 0,
         },
         mode: 'onChange',
     });

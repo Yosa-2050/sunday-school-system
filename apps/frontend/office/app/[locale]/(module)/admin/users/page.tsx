@@ -436,8 +436,8 @@ const UsersPage = () => {
                                     {user.createdDate
                                         ? DateTime.fromJSDate(
                                               new Date(user.createdDate),
-                                          ).toFormat('dd-MM-yyyy')
-                                        : ''}
+                                          ).toFormat('yyyy-MM-dd')
+                                        : 'Unknown'}
                                 </Text>
                                 <Group mt="md">
                                     <Button variant="light" size="xs">
@@ -533,9 +533,13 @@ const UsersPage = () => {
                                         </Table.Td>
                                         <Table.Td>{user.createdBy}</Table.Td>
                                         <Table.Td>
-                                            {DateTime.fromISO(
-                                                user.createdDate ?? '',
-                                            ).toFormat('dd-mm-yyyy')}
+                                            {user.createdDate
+                                                ? DateTime.fromJSDate(
+                                                      new Date(
+                                                          user.createdDate,
+                                                      ),
+                                                  ).toFormat('yyyy-MM-dd')
+                                                : 'Unknown'}
                                         </Table.Td>
                                         <Table.Td>
                                             <Pill
