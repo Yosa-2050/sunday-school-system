@@ -50,7 +50,8 @@ staging:
   only:
     - develop
   before_script:
-    - npm install --global corepack@latest
+    - apt-get update && apt-get install -y jq
+    - npm install -g corepack@latest
     - corepack enable
     - corepack prepare pnpm@latest --activate
     - pnpm install
