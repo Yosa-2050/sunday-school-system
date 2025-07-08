@@ -33,6 +33,7 @@ export type LocationFormData = z.infer<typeof locationSchema>;
 
 type LocationSectionProps = {
     defaultLocation?: Partial<LocationFormData>;
+    canUpdateProfile: boolean;
 };
 
 const fields: { name: keyof LocationFormData; label: string }[] = [
@@ -44,7 +45,10 @@ const fields: { name: keyof LocationFormData; label: string }[] = [
     { name: 'addressText', label: 'Address Description' },
 ];
 
-export const LocationSection = ({ defaultLocation }: LocationSectionProps) => {
+export const LocationSection = ({
+    defaultLocation,
+    canUpdateProfile,
+}: LocationSectionProps) => {
     const [isEditingLocation, setIsEditingLocation] = useState(false);
     const id = getCookie('organization_id')?.toString();
 
@@ -73,32 +77,36 @@ export const LocationSection = ({ defaultLocation }: LocationSectionProps) => {
             <Group justify="space-between" align="center" mb="xs">
                 <Title order={6}>Location Details</Title>
 
-                {isEditingLocation ? (
+                {canUpdateProfile && (
                     <Group gap="xs">
-                        <Button
-                            variant="outline"
-                            onClick={() => {
-                                reset();
-                                setIsEditingLocation(false);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            loading={mutation.isPending}
-                            onClick={handleSubmit(onSubmit)}
-                        >
-                            Save Changes
-                        </Button>
+                        {isEditingLocation ? (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        reset();
+                                        setIsEditingLocation(false);
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    loading={mutation.isPending}
+                                    onClick={handleSubmit(onSubmit)}
+                                >
+                                    Save Changes
+                                </Button>
+                            </>
+                        ) : (
+                            <Button
+                                variant="light"
+                                leftSection={<IconEdit size={16} />}
+                                onClick={() => setIsEditingLocation(true)}
+                            >
+                                Edit
+                            </Button>
+                        )}
                     </Group>
-                ) : (
-                    <Button
-                        variant="light"
-                        leftSection={<IconEdit size={16} />}
-                        onClick={() => setIsEditingLocation(true)}
-                    >
-                        Edit
-                    </Button>
                 )}
             </Group>
 

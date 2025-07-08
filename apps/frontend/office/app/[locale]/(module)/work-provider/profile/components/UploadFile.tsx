@@ -36,6 +36,7 @@ import { useState } from 'react';
 
 interface UploadFileProps {
     orgId: string;
+    canUpdateProfile: boolean;
 }
 
 export interface DocumentData {
@@ -76,7 +77,7 @@ export const downloadDocument = async (id: string): Promise<Blob> => {
     return response.blob();
 };
 
-const UploadFile: React.FC<UploadFileProps> = ({ orgId }) => {
+const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
     const queryClient = useQueryClient();
     const [uploadForm, setUploadForm] = useState<{
         [key: string]: File | null;
@@ -294,11 +295,14 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId }) => {
                         onChange={(file) =>
                             handleUploadFormChange(doc.code, file)
                         }
-                        placeholder="Choose file"
+                        placeholder={
+                            canUpdateProfile ? 'Choose file' : 'Not allowed'
+                        }
                         accept="application/pdf,image/*"
                         size="xs"
                         w={200}
-                        clearable
+                        clearable={canUpdateProfile}
+                        disabled={!canUpdateProfile}
                         rightSection={
                             localFile && (
                                 <ActionIcon
@@ -318,13 +322,14 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId }) => {
                 {/* Actions */}
                 <Table.Td>
                     <Group gap="xs">
-                        {renderUploadButton({
-                            isUploading,
-                            isUploaded,
-                            localFile,
-                            handleFileUpload,
-                            docCode: doc.code,
-                        })}
+                        {canUpdateProfile &&
+                            renderUploadButton({
+                                isUploading,
+                                isUploaded,
+                                localFile,
+                                handleFileUpload,
+                                docCode: doc.code,
+                            })}
                     </Group>
                 </Table.Td>
             </Table.Tr>

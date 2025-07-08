@@ -24,6 +24,7 @@ import { useShortLIstMutation } from 'app/[locale]/_api/job-seeker';
 import { fetchApplicants } from 'app/[locale]/_api/organizations/fetch-jobs';
 import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
+import { RejectUnshortlistedSection } from './RejectApplicants';
 
 interface Filters {
     status: string;
@@ -140,6 +141,9 @@ export const Applicants = ({
 
     return (
         <Stack gap="md">
+            {applicants?.data?.length > 0 && (
+                <RejectUnshortlistedSection jobId={jobId} />
+            )}
             {/* Filter Section */}
             <Paper withBorder radius="md" p="md">
                 <Group justify="space-between" mb={showFilters ? 'md' : 0}>

@@ -141,7 +141,8 @@
             "actions": "Actions",
             "edit": "Edit",
             "delete": "Delete",
-            "name": "Name"
+            "name": "Name",
+            "approvalStatus": "Approval Status"
         },
         "status": {
             "all": "All Status",
@@ -176,7 +177,8 @@
             "actions": "Actions",
             "edit": "Edit",
             "delete": "Delete",
-            "name": "Organization Name"
+            "name": "Organization Name",
+            "approvalStatus": "Approval Status"
         },
         "status": {
             "active": "Active",

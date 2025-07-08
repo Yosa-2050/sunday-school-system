@@ -19,6 +19,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
 import {
+    IconAlertCircle,
     IconBuilding,
     IconCalendar,
     IconEdit,
@@ -44,7 +45,7 @@ const DefaultProps = {
     displayName: '',
     type: '',
     industryId: '',
-    yearFounded: 0,
+    yearFounded: '',
     companySize: '',
     description: '',
     logoUrl: '',
@@ -55,10 +56,19 @@ const DefaultProps = {
 
 type FormDataType = Partial<Organization & UpdateLocationPayload>;
 
+const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
+
 function HeaderSection({
     formData,
     open,
-}: { formData: FormDataType; open: () => void }) {
+    canUpdateProfile,
+}: { formData: FormDataType; open: () => void; canUpdateProfile: boolean }) {
     return (
         <Group justify="space-between" align="flex-start" wrap="nowrap">
             <Group align="flex-start" gap="lg">
@@ -105,14 +115,16 @@ function HeaderSection({
                     </Stack>
                 </Stack>
             </Group>
-            <Button
-                variant="light"
-                leftSection={<IconEdit size={16} />}
-                onClick={open}
-                radius="md"
-            >
-                Edit Profile
-            </Button>
+            {canUpdateProfile && (
+                <Button
+                    variant="light"
+                    leftSection={<IconEdit size={16} />}
+                    onClick={open}
+                    radius="md"
+                >
+                    Edit Profile
+                </Button>
+            )}
         </Group>
     );
 }
@@ -121,7 +133,7 @@ function TagsSection({ formData }: { formData: FormDataType }) {
     return (
         <Group gap="xs">
             <Badge color="teal" variant="light" size="md" radius="sm">
-                {formData.sector?.name || 'Unspecified Sector'}
+                {formData.industry?.value || 'Unspecified Sector'}
             </Badge>
             <Badge color="gray" variant="outline" size="md" radius="sm">
                 Reg No: {formData.registrationNumber}
@@ -141,6 +153,7 @@ function CompanyOverviewSection({ formData }: { formData: FormDataType }) {
                     Company Overview
                 </Title>
             </Group>
+            <Text>{formData.corporateEmail ?? ''}</Text>
             <Paper withBorder radius="md" p="md">
                 <Text size="sm" lh={1.6}>
                     {formData.description || 'No description provided.'}
@@ -163,6 +176,14 @@ const submitOrganizationProfile = async () => {
     return response;
 };
 
+const ApprovalType = {
+    New: 'New',
+    WAITINGAPPROVAL: 'WAITINGAPPROVAL',
+    APPROVED: 'APPROVED',
+    DECLINED: 'DECLINED',
+    RETURNED: 'RETURNED',
+};
+
 function UserProfile() {
     const [opened, { open, close }] = useDisclosure(false);
 
@@ -176,6 +197,10 @@ function UserProfile() {
                 await getOrganizationById(organizationId ?? ''),
             enabled: !!organizationId,
         });
+
+    const canUpdateProfile =
+        organization?.status === ApprovalType.New ||
+        organization?.status === ApprovalType.RETURNED;
     const submitMutation = useMutation({
         mutationFn: submitOrganizationProfile,
         onSuccess: () => {
@@ -227,48 +252,118 @@ function UserProfile() {
                 defaultValues={{
                     registrationNumber:
                         organizationDetail.registrationNumber ?? '',
-                    displayName: organizationDetail.displayName ?? '',
                     type: organizationDetail.type ?? '',
                     industryId: organizationDetail.industryId ?? '',
-                    yearFounded: organizationDetail.yearFounded ?? 0,
+                    yearFounded: organizationDetail.yearFounded ?? '',
                     companySize: organizationDetail.companySize ?? '',
                     description: organizationDetail.description ?? '',
                 }}
             />
+
+            {organization?.status === 'RETURNED' &&
+                organization?.notes &&
+                organization?.notes.length > 0 && (
+                    <Paper shadow="sm" p="lg" radius="md" withBorder mb="md">
+                        <Group mb="md">
+                            <ThemeIcon
+                                size="lg"
+                                radius="md"
+                                variant="light"
+                                color="orange"
+                            >
+                                <IconAlertCircle size={20} />
+                            </ThemeIcon>
+                            <Title order={3} c="orange.8">
+                                Adjustment History
+                            </Title>
+                        </Group>
+                        <Stack gap="md">
+                            {organization?.notes
+                                .sort(
+                                    (a, b) =>
+                                        new Date(b.createdAt).getTime() -
+                                        new Date(a.createdAt).getTime(),
+                                )
+                                .map((note, index) => (
+                                    <Paper
+                                        key={note.id}
+                                        p="md"
+                                        withBorder
+                                        radius="sm"
+                                    >
+                                        <Group justify="space-between" mb="xs">
+                                            <Badge
+                                                color="orange"
+                                                variant="light"
+                                                size="sm"
+                                            >
+                                                Adjustment #
+                                                {organization?.notes.length -
+                                                    index}
+                                            </Badge>
+                                            <Text size="xs" c="dimmed">
+                                                {formatDate(note.createdAt)}
+                                            </Text>
+                                        </Group>
+                                        <Text size="sm" mb="xs" fw={500}>
+                                            {note.type}
+                                        </Text>
+                                        <Text size="sm" mb="xs">
+                                            {note.note}
+                                        </Text>
+                                        <Text size="xs" c="dimmed">
+                                            Requested by: {note.createdBy}
+                                        </Text>
+                                    </Paper>
+                                ))}
+                        </Stack>
+                    </Paper>
+                )}
+
             <Paper p="xl" shadow="sm" radius="md" withBorder>
                 <Stack gap="xl">
-                    {/* Header Section */}
-                    <HeaderSection formData={formData} open={open} />
-
-                    {/* Tags Section */}
+                    <HeaderSection
+                        formData={formData}
+                        open={open}
+                        canUpdateProfile={canUpdateProfile}
+                    />
                     <TagsSection formData={formData} />
 
                     <Divider />
-
-                    {/* Company Overview Section */}
                     <CompanyOverviewSection formData={formData} />
                 </Stack>
             </Paper>
 
-            <ContactSection workers={organization?.__employee__ ?? []} />
+            <ContactSection
+                workers={organization?.__employee__ ?? []}
+                canUpdateProfile={canUpdateProfile}
+            />
 
             <LocationSection
                 defaultLocation={
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     (organization?.locations?.[0]?.locationData as any) ?? {}
                 }
+                canUpdateProfile={canUpdateProfile}
             />
 
-            {organizationId && <UploadFile orgId={organizationId} />}
+            {organizationId && (
+                <UploadFile
+                    orgId={organizationId}
+                    canUpdateProfile={canUpdateProfile}
+                />
+            )}
 
-            <Flex align="center" justify="flex-end" mt={'md'}>
-                <Button
-                    onClick={() => submitMutation.mutate()}
-                    loading={submitMutation.isPending}
-                >
-                    Submit
-                </Button>
-            </Flex>
+            {canUpdateProfile && (
+                <Flex align="center" justify="flex-end" mt={'md'}>
+                    <Button
+                        onClick={() => submitMutation.mutate()}
+                        loading={submitMutation.isPending}
+                    >
+                        Submit
+                    </Button>
+                </Flex>
+            )}
         </Box>
     );
 }

@@ -4,7 +4,6 @@ import {
     Divider,
     Drawer,
     Group,
-    NumberInput,
     Select,
     TextInput,
     Textarea,
@@ -13,6 +12,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
+import { useGetIndustry } from 'app/[locale]/_api/fetch-lookup';
 import { updateOrganization } from 'app/[locale]/_api/organizations/updateOrganization';
 import { getCookie } from 'cookies-next';
 import { Controller, useForm } from 'react-hook-form';
@@ -20,10 +20,20 @@ import { z } from 'zod';
 
 export const organizationSchema = z.object({
     registrationNumber: z.string().min(1, 'Required'),
-    displayName: z.string().min(1, 'Required'),
     type: z.string().min(1, 'Required'),
     industryId: z.string().min(1, 'Required'),
-    yearFounded: z.number().int().min(1900).max(new Date().getFullYear()),
+    yearFounded: z
+        .string()
+        .refine((val) => val?.length === 4 && /^\d+$/.test(val), {
+            message: 'Year founded should be a four digit number',
+        })
+        .refine(
+            (val) => {
+                const num = Number(val);
+                return num >= 1900 && num <= new Date().getFullYear();
+            },
+            { message: 'Year founded should be between 1900 and current year' },
+        ),
     companySize: z.string().min(1, 'Required'),
     description: z.string().optional(),
     corporateEmail: z.string().email().optional(),
@@ -47,6 +57,7 @@ export const AddOrganizationDetail = ({
     defaultValues,
 }: AddOrganizationDetailProps) => {
     const id = getCookie('organization_id')?.toString();
+    const { data: industries } = useGetIndustry();
     const {
         control,
         handleSubmit,
@@ -56,7 +67,6 @@ export const AddOrganizationDetail = ({
         resolver: zodResolver(organizationSchema),
         defaultValues: defaultValues ?? {
             registrationNumber: '',
-            displayName: '',
             type: '',
             industryId: '',
             yearFounded: new Date().getFullYear(),
@@ -68,7 +78,10 @@ export const AddOrganizationDetail = ({
 
     const mutation = useMutation({
         mutationFn: async (data: OrganizationFormData) =>
-            updateOrganization(id ?? '', data),
+            updateOrganization(id ?? '', {
+                ...data,
+                yearFounded: Number(data.yearFounded),
+            }),
         onSuccess: () => {
             notifications.show({
                 title: 'Success',
@@ -103,7 +116,7 @@ export const AddOrganizationDetail = ({
                     control={control}
                     render={({ field }) => (
                         <TextInput
-                            label="Registration Number"
+                            label="RBusiness Registration Number"
                             placeholder="Enter registration number"
                             required
                             error={errors.registrationNumber?.message}
@@ -113,27 +126,33 @@ export const AddOrganizationDetail = ({
                 />
 
                 <Controller
-                    name="displayName"
-                    control={control}
-                    render={({ field }) => (
-                        <TextInput
-                            label="Display Name"
-                            placeholder="Enter display name"
-                            mt="sm"
-                            error={errors.displayName?.message}
-                            {...field}
-                        />
-                    )}
-                />
-
-                <Controller
                     name="type"
                     control={control}
                     render={({ field }) => (
-                        <TextInput
+                        <Select
                             label="Type"
-                            placeholder="Enter type"
+                            placeholder="Select type"
                             mt="sm"
+                            data={[
+                                {
+                                    value: 'Sole proprietorship',
+                                    label: 'Sole proprietorship',
+                                },
+                                { value: 'Partnership', label: 'Partnership' },
+                                {
+                                    value: 'Limited Liability Company (LLC)',
+                                    label: 'Limited Liability Company (LLC)',
+                                },
+                                { value: 'Plc', label: 'Plc' },
+                                { value: 'S.C.', label: 'S.C.' },
+                                { value: 'Non-Profit', label: 'Non-Profit' },
+                                {
+                                    value: 'Joint Venture',
+                                    label: 'Joint Venture',
+                                },
+                                { value: 'Cooperative', label: 'Cooperative' },
+                                { value: 'Other', label: 'Other' },
+                            ]}
                             error={errors.type?.message}
                             {...field}
                         />
@@ -147,9 +166,9 @@ export const AddOrganizationDetail = ({
                         <Select
                             label="Sector"
                             placeholder="Select sector"
-                            data={categories.map((cat) => ({
+                            data={(industries ?? []).map((cat) => ({
                                 value: cat.id,
-                                label: cat.name,
+                                label: cat.value,
                             }))}
                             disabled={categoriesLoading}
                             mt="sm"
@@ -177,7 +196,7 @@ export const AddOrganizationDetail = ({
                     name="yearFounded"
                     control={control}
                     render={({ field }) => (
-                        <NumberInput
+                        <TextInput
                             label="Year Founded"
                             placeholder="Enter year founded"
                             mt="sm"
