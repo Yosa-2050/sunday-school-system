@@ -1,3 +1,15 @@
+# [1.6.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.5.0...v1.6.0) (2025-07-08)
+
+
+### Bug Fixes
+
+* **sheag:** update organization profile ([40535db](https://gitlab.heranitech.com/meklit/shega-jobs/commit/40535db2aa2a54a7926e7370168cc5e206b4b1ea))
+
+
+### Features
+
+* **shega:** rejected unshortlisted applicants ([b4930a8](https://gitlab.heranitech.com/meklit/shega-jobs/commit/b4930a863497ef4c10537072e08e2f6f98866c1b))
+
 # [1.5.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.4.5...v1.5.0) (2025-07-05)
 
 
