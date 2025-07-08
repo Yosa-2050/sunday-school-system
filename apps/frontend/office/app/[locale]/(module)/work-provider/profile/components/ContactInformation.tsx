@@ -35,9 +35,13 @@ interface Worker {
 
 interface ContactSectionProps {
     workers: Worker[];
+    canUpdateProfile: boolean;
 }
 
-export default function ContactSection({ workers }: ContactSectionProps) {
+export default function ContactSection({
+    workers,
+    canUpdateProfile,
+}: ContactSectionProps) {
     const [opened, setOpened] = useState(false);
     const [selectedType, setSelectedType] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -110,16 +114,18 @@ export default function ContactSection({ workers }: ContactSectionProps) {
                             </div>
                         </Group>
 
-                        <Button
-                            variant="light"
-                            leftSection={<IconEdit size={16} />}
-                            size="sm"
-                            onClick={() => {
-                                setOpened(true);
-                            }}
-                        >
-                            Add / Edit Contact
-                        </Button>
+                        {canUpdateProfile && (
+                            <Button
+                                variant="light"
+                                leftSection={<IconEdit size={16} />}
+                                size="sm"
+                                onClick={() => {
+                                    setOpened(true);
+                                }}
+                            >
+                                Add / Edit Contact
+                            </Button>
+                        )}
                     </Group>
                 </Box>
 

@@ -25,17 +25,39 @@ export interface LocationData {
 export interface Organization {
     displayName: string;
     registrationNumber: string;
+    corporateEmail: string;
     type: string;
     industryId: string;
+    status: string;
     sector?: Category;
-    yearFounded: number;
+    yearFounded: string;
     companySize: string;
     description: string;
     logoUrl?: string;
     contacts?: Contact[];
+    industry?: {
+        id: string;
+        createdBy: string;
+        createdAt: string;
+        isActive: boolean;
+        code: string;
+        value: string;
+        description: string;
+        group: string;
+        subGroup: string;
+    };
     locations?: Array<{
         locationData: LocationData;
     }>;
+    notes: {
+        id: string;
+        createdBy: string;
+        createdAt: string;
+        isActive: boolean;
+        reference: string;
+        type: string;
+        note: string;
+    }[];
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     __employee__: any;
 }

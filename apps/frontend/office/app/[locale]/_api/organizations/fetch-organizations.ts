@@ -31,6 +31,7 @@ export interface Daum {
     createdDate: string;
     isActive: boolean;
     name: string;
+    status: string;
 }
 
 export const fetchOrganizations = async (payload: string) => {
