@@ -1,3 +1,16 @@
+# [1.7.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.6.0...v1.7.0) (2025-07-08)
+
+
+### Bug Fixes
+
+* **shega:** gitlab ci fix for coolify ([ac5b5a7](https://gitlab.heranitech.com/meklit/shega-jobs/commit/ac5b5a7c381a4346faeb8507a8a672769107bf95))
+* **shega:** route and date format fix ([09fe07e](https://gitlab.heranitech.com/meklit/shega-jobs/commit/09fe07efe89d98f4911b47903f31011ae5fe7a9d))
+
+
+### Features
+
+* **shega:** application payload included for job seeker ([49cbdfb](https://gitlab.heranitech.com/meklit/shega-jobs/commit/49cbdfba2dcdc8eda2cb2c10f62a290c9ce0225a))
+
 # [1.6.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.5.0...v1.6.0) (2025-07-08)
 
 
