@@ -17,14 +17,12 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconBookmark } from '@tabler/icons-react';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { fetchJobsById } from 'app/_api/jobs/fetch-job-id';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { JobContent } from './_components/JobContent';
 import { JobDetailSideBar } from './_components/JobSidebar';
-
-const queryClient = new QueryClient();
 
 export default function JobDetailsPage() {
     const params = useParams<{ id: string }>();

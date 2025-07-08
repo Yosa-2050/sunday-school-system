@@ -59,19 +59,38 @@ staging:
     - pnpm run format
     - NEXT_PUBLIC_APP_VERSION=$NEXT_PUBLIC_APP_VERSION pnpm run build
     - |
-      echo "Updating APP_VERSION in Coolify environment variables to $NEXT_PUBLIC_APP_VERSION"
-      curl -X PATCH \
-        "$COOLIFY_URL/api/v1/applications/$COOLIFY_APPLICATION_UUID/envs" \
-        -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN" \
-        -H "Content-Type: application/json" \
-        --data '{
-          "key": "APP_VERSION",
-          "value": "'"$NEXT_PUBLIC_APP_VERSION"'",
-          "is_build_time": true,
-          "is_literal": true,
-          "is_preview": false
-        }'
+      echo "Checking if APP_VERSION already exists..."
+      ENV_ID=$(curl -s "$COOLIFY_URL/api/v1/applications/$COOLIFY_APPLICATION_UUID/envs" \
+        -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN" | jq -r '.[] | select(.key=="APP_VERSION") | .id')
+
+      if [ -n "$ENV_ID" ]; then
+        echo "Environment variable exists. Updating APP_VERSION..."
+        curl -X PATCH \
+          "$COOLIFY_URL/api/v1/applications/$COOLIFY_APPLICATION_UUID/envs/$ENV_ID" \
+          -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN" \
+          -H "Content-Type: application/json" \
+          --data '{
+            "key": "APP_VERSION",
+            "value": "'"$NEXT_PUBLIC_APP_VERSION"'",
+            "is_build_time": true,
+            "is_literal": true,
+            "is_preview": false
+          }'
+      else
+        echo "Environment variable does not exist. Creating APP_VERSION..."
+        curl -X POST \
+          "$COOLIFY_URL/api/v1/applications/$COOLIFY_APPLICATION_UUID/envs" \
+          -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN" \
+          -H "Content-Type: application/json" \
+          --data '{
+            "key": "APP_VERSION",
+            "value": "'"$NEXT_PUBLIC_APP_VERSION"'",
+            "is_build_time": true,
+            "is_literal": true,
+            "is_preview": false
+          }'
+      fi
     - |
+      echo "Triggering deployment..."
       curl -X GET "$COOLIFY_URL/api/v1/deploy?tag=shega&force=false" \
         -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN"
-

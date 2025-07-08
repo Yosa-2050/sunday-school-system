@@ -75,6 +75,13 @@ export interface Job {
     applied: boolean;
     programId: string;
     saved: boolean;
+    applicationData: {
+        coverLetter?: string;
+        noticePeriod?: number;
+        relocationOption?: string;
+        experience?: number;
+        salaryExpectation?: number;
+    };
 }
 
 export const fetchJobsById = async (id: string): Promise<Job> => {

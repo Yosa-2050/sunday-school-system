@@ -113,10 +113,6 @@ export default function JobApplicationDetail() {
         setUploadedFiles(uploadedFiles.filter((file) => file.id !== id));
     };
 
-    const toggleSaveJob = () => {
-        setSavedJob(!savedJob);
-    };
-
     const handleSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault();
         logger.log('Form submitted:', formData);

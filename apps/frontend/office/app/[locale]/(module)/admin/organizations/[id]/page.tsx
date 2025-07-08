@@ -131,7 +131,17 @@ interface Organization {
     hasBranches: boolean;
     status: string;
     corporateEmail: string | null;
-    industry: string | null;
+    industry: {
+        id: string;
+        createdBy: string;
+        createdAt: string;
+        isActive: boolean;
+        code: string;
+        value: string;
+        description: string;
+        group: string;
+        subGroup: string;
+    } | null;
     contacts: Contact[];
     locations: Location[];
     notes: Note[];
@@ -433,7 +443,7 @@ const OrganizationApproval = () => {
                                 <IconBuildingSkyscraper size={16} />
                                 <Text size="sm">
                                     <strong>Industry:</strong>{' '}
-                                    {organizationData.industry}
+                                    {organizationData.industry.value}
                                 </Text>
                             </Group>
                         </Grid.Col>
@@ -511,12 +521,7 @@ const OrganizationApproval = () => {
                         </Title>
                         <Stack gap="sm">
                             {organizationData.corporateEmail && (
-                                <Paper
-                                    p="xs"
-                                    withBorder
-                                    radius="sm"
-                                    bg="blue.0"
-                                >
+                                <Paper p="xs" withBorder radius="sm">
                                     <Group gap="xs">
                                         <ThemeIcon
                                             size="sm"
@@ -797,7 +802,7 @@ const OrganizationApproval = () => {
             </Paper>
 
             {organizationData.status === 'WAITINGAPPROVAL' && (
-                <Paper shadow="md" p="lg" radius="md" withBorder bg="gray.0">
+                <Paper shadow="md" p="lg" radius="md" withBorder>
                     <Group justify="space-between" align="center">
                         <div>
                             <Text fw={500} mb="xs">
