@@ -37,6 +37,8 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteJob } from 'app/[locale]/_api/organizations/deleteJob';
 import { fetchJobs } from 'app/[locale]/_api/organizations/fetch-jobs';
+import { getOrganizationById } from 'app/[locale]/_api/organizations/get-organizationbyId';
+import { getCookie } from 'cookies-next';
 import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
@@ -76,6 +78,13 @@ const JobsList = () => {
     const [modalOpened, setModalOpened] = useState(false);
     const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const queryClient = useQueryClient();
+    const organizationId = getCookie('organization_id')?.toString();
+
+    const { data: organization, isLoading: orgLoading } = useQuery({
+        queryKey: ['organization_id', organizationId],
+        queryFn: () => getOrganizationById(organizationId ?? ''),
+        enabled: !!organizationId,
+    });
     const [entityParams] = useQueryState(
         'jobs',
         parseAsJson(entityParamSchema.parse).withDefault({
@@ -153,16 +162,18 @@ const JobsList = () => {
             <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
                 <Flex align="center" justify="space-between" className="p-4">
                     <Text className="font-bold text-xl">{t('title')}</Text>
-                    <Button
-                        leftSection={<IconPlus size={18} />}
-                        variant="filled"
-                        color="primary"
-                        onClick={() =>
-                            router.push('/work-provider/jobs/create')
-                        }
-                    >
-                        {t('postJob')}
-                    </Button>
+                    {organization?.status === 'APPROVED' && (
+                        <Button
+                            leftSection={<IconPlus size={18} />}
+                            variant="filled"
+                            color="primary"
+                            onClick={() =>
+                                router.push('/work-provider/jobs/create')
+                            }
+                        >
+                            {t('postJob')}
+                        </Button>
+                    )}
                 </Flex>
                 <Divider my="md" />
 
