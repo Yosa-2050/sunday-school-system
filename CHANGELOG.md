@@ -1,3 +1,10 @@
+## [1.7.2](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.1...v1.7.2) (2025-07-09)
+
+
+### Bug Fixes
+
+* **shega:** fix notification and add organization ([ad4f57d](https://gitlab.heranitech.com/meklit/shega-jobs/commit/ad4f57d813bef605644b72d8c97f16af6e4a26e6))
+
 ## [1.7.1](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.0...v1.7.1) (2025-07-08)
 
 
