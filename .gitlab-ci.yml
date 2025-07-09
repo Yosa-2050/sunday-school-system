@@ -67,16 +67,11 @@ staging:
 
       echo "$ENV_RESPONSE" | jq '.'  # Optional debug
 
-      ENV_EXISTING=$(echo "$ENV_RESPONSE" | jq -r '.[] | select(.key=="NEXT_PUBLIC_APP_VERSION" and .is_preview==false)')
+      ENV_ID=$(echo "$ENV_RESPONSE" | jq -r '.[] | select(.key=="NEXT_PUBLIC_APP_VERSION" and .is_preview==false) | .uuid' | head -n 1)
 
-      if [ -n "$ENV_EXISTING" ]; then
-        echo "NEXT_PUBLIC_APP_VERSION exists. Updating it using POST..."
-      else
-        echo "NEXT_PUBLIC_APP_VERSION does not exist. Creating it..."
-      fi
-
-      # In both cases, send POST
-      curl -s -X POST \
+      if [ -n "$ENV_ID" ] && [ "$ENV_ID" != "null" ]; then
+        echo "Environment variable NEXT_PUBLIC_APP_VERSION exists with ID $ENV_ID. Updating it..."
+        curl -s -X PATCH \
         "$COOLIFY_URL/api/v1/applications/$COOLIFY_APPLICATION_UUID/envs" \
         -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN" \
         -H "Content-Type: application/json" \
@@ -85,8 +80,24 @@ staging:
           "value": "'"$NEXT_PUBLIC_APP_VERSION"'",
           "is_build_time": true,
           "is_literal": true,
-          "is_preview": false
+          "is_preview": false,
+          "is_multiline": false,
+          "is_shown_once": false
         }'
+      else
+        echo "NEXT_PUBLIC_APP_VERSION does not exist. Creating it..."
+        curl -s -X POST \
+          "$COOLIFY_URL/api/v1/applications/$COOLIFY_APPLICATION_UUID/envs" \
+          -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN" \
+          -H "Content-Type: application/json" \
+          --data '{
+            "key": "NEXT_PUBLIC_APP_VERSION",
+            "value": "'"$NEXT_PUBLIC_APP_VERSION"'",
+            "is_build_time": true,
+            "is_literal": true,
+            "is_preview": false
+          }'
+      fi
     - |
       echo "Triggering deployment on Coolify..."
       curl -s -X GET "$COOLIFY_URL/api/v1/deploy?tag=shega&force=false" \
