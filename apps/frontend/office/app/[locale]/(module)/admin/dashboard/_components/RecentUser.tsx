@@ -124,7 +124,9 @@ const RecentUsers = () => {
             <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
                 <Flex justify="space-between" align="center" mb="md">
                     <Title size={20}>Recent Users</Title>
-                    <Link href="/admin/users">View more</Link>
+                    <Link href="/admin/users" color="primary">
+                        View more
+                    </Link>
                 </Flex>
 
                 <Group gap="sm" className="mb-4">
