@@ -1,3 +1,12 @@
+## [1.7.3](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.2...v1.7.3) (2025-07-09)
+
+
+### Bug Fixes
+
+* **shega:** fix version control ci ([670b013](https://gitlab.heranitech.com/meklit/shega-jobs/commit/670b013d93e2090109589e16f8487ae160da62aa))
+* **shega:** hide post job button on the jobs list ([9816f58](https://gitlab.heranitech.com/meklit/shega-jobs/commit/9816f583e8b491b4f182d72aa6813380422a318d))
+* **shega:** hide post job button on the jobs list ([0b4ed51](https://gitlab.heranitech.com/meklit/shega-jobs/commit/0b4ed51e9e88841c5eed4d68594ed8a24ac07502))
+
 ## [1.7.2](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.1...v1.7.2) (2025-07-09)
 
 
