@@ -189,7 +189,7 @@ const AdjustmentModal = ({ close }: { close: () => void }) => {
 
         setIsSubmittingAdjustment(true);
         try {
-            await fetcher(`/organization/return/${id}`, {
+            await fetcher(`/organizations/return/${id}`, {
                 method: 'POST',
                 body: JSON.stringify({ note: adjustmentNote }),
                 headers: {

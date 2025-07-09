@@ -10,7 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 // API function for rejecting unshortlisted applicants
 const rejectNotShortlisted = async (jobId: string) => {
     const response = await fetcher(`/job-portal/rejectNotShortList/${jobId}`, {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
