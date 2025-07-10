@@ -1161,7 +1161,7 @@ const Applicants = ({ jobId }: { jobId: string }) => {
                     <Text c="dimmed">No applicants</Text>
                 )}
             </Card.Section>
-            {applicants?.total > 5 && (
+            {(applicants?.total ?? 0) > 5 && (
                 <Box className="flex items-center justify-end mt-4">
                     <Button
                         variant="transparent"

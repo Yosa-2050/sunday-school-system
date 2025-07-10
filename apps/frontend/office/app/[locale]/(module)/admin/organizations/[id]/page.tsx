@@ -189,8 +189,8 @@ const AdjustmentModal = ({ close }: { close: () => void }) => {
 
         setIsSubmittingAdjustment(true);
         try {
-            await fetcher(`/organizations/return/${id}`, {
-                method: 'POST',
+            await fetcher(`/organization/return/${id}`, {
+                method: 'PATCH',
                 body: JSON.stringify({ note: adjustmentNote }),
                 headers: {
                     'Content-Type': 'application/json',
@@ -325,7 +325,7 @@ const OrganizationApproval = () => {
     return (
         <Stack gap="lg">
             {/* Admin Alert for Pending Approval */}
-            {organizationData.status === 'New' && (
+            {organizationData.status === 'WAITINGAPPROVAL' && (
                 <Alert
                     icon={<IconAlertCircle size={16} />}
                     title="Approval Required"
