@@ -1,3 +1,11 @@
+## [1.7.4](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.3...v1.7.4) (2025-07-10)
+
+
+### Bug Fixes
+
+* **shega:** incorrect api method and filter fix ([08edb6a](https://gitlab.heranitech.com/meklit/shega-jobs/commit/08edb6a9f6700085fa2293c0ca88541536a84e3e))
+* **shega:** incorrect api method and filter fix ([4039875](https://gitlab.heranitech.com/meklit/shega-jobs/commit/4039875cedc06611341561537d2467f168b561d5))
+
 ## [1.7.3](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.2...v1.7.3) (2025-07-09)
 
 
