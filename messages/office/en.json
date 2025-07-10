@@ -122,6 +122,7 @@
         "exportCSV": "Export to CSV",
         "allRoles": "All Roles",
         "roles": {
+            "allroles": "All Roles",
             "jobSeeker": "Job Seeker",
             "workProvider": "Employer",
             "administrator": "Administrator",
@@ -326,7 +327,8 @@
         "cityAdded": "City added successfully",
         "cityNotAdded": "Something went wrong while adding city",
         "regionAdded": "Region added successfully",
-        "regionNotAdded": "Something went wrong while adding region"
+        "regionNotAdded": "Something went wrong while adding region",
+        "searchPlaceholder": "Search Location"
     },
     "skillsPage": {
         "title": "Skills List",
@@ -352,7 +354,7 @@
         "submit": "Submit",
         "isActive": "Is Active",
         "actions": "Actions",
-        "searchPlaceholder": "Search by Mentor Name or Email",
+        "searchPlaceholder": "Search by Program title or Mentor name",
         "exportCSV": "Export to CSV",
         "status": {
             "active": "Active",
