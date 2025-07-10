@@ -1,5 +1,10 @@
 import { fetcher } from '@shega/shared';
 
+export type MentorResponse = {
+    total: number;
+    totalPages: number;
+};
+
 export type Users = {
     id: string;
     firstName: string;
