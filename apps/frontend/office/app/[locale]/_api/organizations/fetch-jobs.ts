@@ -121,7 +121,7 @@ export const fetchApplicants = async (
     jobId: string,
     status: 'PENDING' | 'REJECTED' | 'ACCEPTED' | 'SHORT_LISTED',
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-): Promise<any> => {
+) => {
     const response: Result = await fetcher(
         `/job-portal/applications/${jobId}`,
         {

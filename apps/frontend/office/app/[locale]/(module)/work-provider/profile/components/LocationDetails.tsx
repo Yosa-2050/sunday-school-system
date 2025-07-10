@@ -7,19 +7,25 @@ import {
     Divider,
     Group,
     Paper,
+    Select,
     Text,
     TextInput,
     Title,
 } from '@mantine/core';
 import { IconEdit } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+    fetchCities,
+    fetchCountries,
+    fetchRegionsId,
+} from 'app/[locale]/_api/job-details';
 import { updateLocation } from 'app/[locale]/_api/organizations/updateOrganization';
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-// Updated schema with selected fields only
+// Schema definition
 export const locationSchema = z.object({
     country: z.string().optional(),
     region: z.string().optional(),
@@ -61,6 +67,30 @@ export const LocationSection = ({
     } = useForm<LocationFormData>({
         resolver: zodResolver(locationSchema),
         defaultValues: defaultLocation ?? {},
+    });
+
+    const selectedCountry = useWatch({ control, name: 'country' });
+    const selectedRegion = useWatch({ control, name: 'region' });
+
+    const { data: countries = [] } = useQuery({
+        queryKey: ['countries'],
+        queryFn: fetchCountries,
+    });
+
+    const { data: regions = [] } = useQuery({
+        queryKey: ['regions', selectedCountry],
+        queryFn: () =>
+            selectedCountry
+                ? fetchRegionsId(selectedCountry)
+                : Promise.resolve([]),
+        enabled: !!selectedCountry,
+    });
+
+    const { data: cities = [] } = useQuery({
+        queryKey: ['cities', selectedRegion],
+        queryFn: () =>
+            selectedRegion ? fetchCities(selectedRegion) : Promise.resolve([]),
+        enabled: !!selectedRegion,
     });
 
     const mutation = useMutation({
@@ -113,29 +143,71 @@ export const LocationSection = ({
             <Divider mb="md" />
 
             <Group gap="md" wrap="wrap">
-                {fields.map(({ name, label }) => (
-                    <Box key={name} w={{ base: '100%', sm: '45%', md: '30%' }}>
-                        <Text size="xs" c="dimmed" mb={4}>
-                            {label}
-                        </Text>
+                {fields.map(({ name, label }) => {
+                    const isSelect = ['country', 'region', 'city'].includes(
+                        name,
+                    );
+                    const options =
+                        name === 'country'
+                            ? countries.map((c) => ({
+                                  value: c.id,
+                                  label: c.name,
+                              }))
+                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                              name === 'region'
+                              ? regions.map((r) => ({
+                                    value: r.id,
+                                    label: r.name,
+                                }))
+                              : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                name === 'city'
+                                ? cities.map((c) => ({
+                                      value: c.id,
+                                      label: c.name,
+                                  }))
+                                : [];
 
-                        {isEditingLocation ? (
-                            <Controller
-                                name={name}
-                                control={control}
-                                render={({ field }) => (
-                                    <TextInput
-                                        {...field}
-                                        placeholder={`Enter ${label.toLowerCase()}`}
-                                        error={errors?.[name]?.message}
-                                    />
-                                )}
-                            />
-                        ) : (
-                            <Text fw={400}>{getValues(name) || '-'}</Text>
-                        )}
-                    </Box>
-                ))}
+                    return (
+                        <Box
+                            key={name}
+                            w={{ base: '100%', sm: '45%', md: '30%' }}
+                        >
+                            <Text size="xs" c="dimmed" mb={4}>
+                                {label}
+                            </Text>
+
+                            {isEditingLocation ? (
+                                <Controller
+                                    name={name}
+                                    control={control}
+                                    render={({ field }) =>
+                                        isSelect ? (
+                                            <Select
+                                                {...field}
+                                                data={options}
+                                                placeholder={`Select ${label.toLowerCase()}`}
+                                                onChange={(value) =>
+                                                    field.onChange(value)
+                                                }
+                                                value={field.value || null}
+                                                error={errors?.[name]?.message}
+                                                clearable
+                                            />
+                                        ) : (
+                                            <TextInput
+                                                {...field}
+                                                placeholder={`Enter ${label.toLowerCase()}`}
+                                                error={errors?.[name]?.message}
+                                            />
+                                        )
+                                    }
+                                />
+                            ) : (
+                                <Text fw={400}>{getValues(name) || '-'}</Text>
+                            )}
+                        </Box>
+                    );
+                })}
             </Group>
         </Paper>
     );
