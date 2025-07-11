@@ -1,7 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
+// biome-ignore lint/style/useImportType: <explanation>
+import { QueryBuilderService } from 'shared/query-builder.service';
+import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -28,6 +32,7 @@ export class NotificationService {
         @InjectRepository(NotificationTemplate)
         private notificationTemplateRepo: Repository<NotificationTemplate>,
         private readonly notificationGateway: NotificationGateway,
+        private readonly queryBuilderService: QueryBuilderService,
     ) {}
 
     send(req: CreateNotificationDto) {
@@ -71,6 +76,38 @@ export class NotificationService {
                 );
             }
         }
+    }
+
+    async getAllInAppNotifications(payload: string) {
+        const { p, pp } = entityParamDeserializer(payload);
+
+        const deserialized = entityParamDeserializer(payload);
+
+        const queryString = entityParamSerializer({
+            ...deserialized,
+            f: [
+                { f: 'channel', v: NotificationChannel.InApp, o: 'eq' },
+                ...(deserialized.f ?? []),
+            ],
+            o: [{ f: 'createdAt', d: 'desc' }],
+        });
+
+        const searchableColumns = ['subject', 'content'];
+
+        const { data: inAppNotifications, total } =
+            await this.queryBuilderService.buildQuery(
+                this.notificationRepo,
+                queryString,
+                [], // No joins needed for this query
+                searchableColumns,
+            );
+
+        return new PaginatedResponseDto<Notification[]>(
+            inAppNotifications,
+            total,
+            p,
+            pp,
+        );
     }
 
     async getUserInAppNotifications(userId: string) {

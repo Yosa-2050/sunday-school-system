@@ -3,6 +3,7 @@ import { getForgotPwdEmailTemplate } from './templates/forgotPwdEmailTemplate';
 import { getJobApplicationEmailTemplate } from './templates/jobApplicationEmailTemplate';
 import { getJobPostApprovedEmailTemplate } from './templates/jobPostApprovedEmailTemplate';
 import { getJobPostDeclinedEmailTemplate } from './templates/jobPostDeclinedEmailTemplate';
+import { getMentorshipPostApprovedEmailTemplate } from './templates/mentorshipPostApprovedEmailTemplate';
 import { getOrgActivateEmailTemplate } from './templates/orgActivateEmailTemplate';
 import { getOrgDeactivateEmailTemplate } from './templates/orgDeactivateEmailTemplate';
 import { getOrgRegistrationApprovedEmailTemplate } from './templates/orgRegistrationApprovedEmailTemplate';
@@ -84,6 +85,18 @@ export const NotificationTemplatesSeedData = [
         templateName: 'orgDeactivateEmailTemplate',
         subject: ' Account Deactivation - {{organizationName}}',
         content: getCleanedHtmlString(getOrgDeactivateEmailTemplate()),
+    },
+    {
+        channelType: NotificationChannel.Email,
+        templateName: 'mentorshipPostApprovedEmailTemplate',
+        subject: 'Mentorship Program Posting Approved - {{mentorshipTitle}}',
+        content: getCleanedHtmlString(getMentorshipPostApprovedEmailTemplate()),
+    },
+    {
+        channelType: NotificationChannel.Email,
+        templateName: 'mentorshipPostDeclinedEmailTemplate',
+        subject: 'Mentorship Program Posting Declined - {{mentorshipTitle}}',
+        content: getCleanedHtmlString(getMentorshipPostApprovedEmailTemplate()),
     },
 ];
 

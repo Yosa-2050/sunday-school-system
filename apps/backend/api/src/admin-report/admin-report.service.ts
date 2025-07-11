@@ -9,6 +9,7 @@ import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { CountTotalsResponseDto } from './dtos/response/count-totals.response.dto';
+import { GetRecentRegisteredUsersResponseDto } from './dtos/response/get-recent-registered-users.response.dto';
 
 @Injectable()
 export class AdminReportService {
@@ -48,11 +49,15 @@ export class AdminReportService {
     }
 
     async getRecentRegisteredUsers() {
-        return await this.userRepo.find({
+        const users = await this.userRepo.find({
             order: {
                 createdAt: 'DESC',
             },
             take: 5,
         });
+
+        return users
+            .filter((user) => user.profile)
+            .map((user) => new GetRecentRegisteredUsersResponseDto(user));
     }
 }
