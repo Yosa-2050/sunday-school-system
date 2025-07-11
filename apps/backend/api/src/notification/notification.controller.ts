@@ -26,6 +26,11 @@ export class NotificationController {
         return this.notificationService.send(req);
     }
 
+    @Get('getAllInAppNotifications')
+    getAllInAppNotifications(@Body() dto: { q: string }) {
+        return this.notificationService.getAllInAppNotifications(dto.q);
+    }
+
     @Get('getUserInAppNotifications')
     getUserInAppNotifications(@Request() req) {
         return this.notificationService.getUserInAppNotifications(

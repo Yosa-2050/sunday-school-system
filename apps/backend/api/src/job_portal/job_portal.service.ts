@@ -664,69 +664,28 @@ export class JobPortalService {
     private async SendJobApprovedNotification(
         job: Jobs,
         result: boolean,
-        status: ApprovalType,
+        approvalType: ApprovalType,
         note: string,
         program: Programs,
     ) {
         if (result) {
-            let emailTemplate = null;
-            const title = program.title;
-            const type =
+            const programType =
                 program.programType === ProgramType.Job
                     ? 'Job'
                     : 'Mentorship program';
             const user = await this.profileService.findUserByProfileId(
                 job.postedBy.employee.profile.id,
             );
-            if (status === ApprovalType.Approved) {
-                emailTemplate = await this.notificationService.getTemplate(
-                    'jobPostApprovedEmailTemplate',
-                    {
-                        employerName: job.postedBy.employee.profile.firstName,
-                        jobTitle: job.program.title,
-                        organizationName: job.organization.name,
-                    },
-                    {
-                        jobTitle: job.program.title,
-                    },
-                );
 
-                this.notificationService.send({
-                    channel: NotificationChannel.InApp,
-                    subject: `your ${type} is Approved`,
-                    content: `${type} with tile ${title} is approved.`,
-                    to: user.id,
-                    reference: user.id,
-                    isRealTimeNotification: true,
-                    isNotifyToAllUser: false,
-                });
-            }
-
-            if (status === ApprovalType.Declined) {
-                emailTemplate = await this.notificationService.getTemplate(
-                    'jobPostDeclinedEmailTemplate',
-                    {
-                        employerName: job.postedBy.employee.profile.firstName,
-                        jobTitle: job.program.title,
-                        organizationName: job.organization.name,
-                        reasonForDecline: note,
-                    },
-                    {
-                        jobTitle: job.program.title,
-                    },
-                );
-
-                this.notificationService.send({
-                    channel: NotificationChannel.InApp,
-                    subject: `your ${type} is Declined`,
-                    content: `${type} with tile ${title} is declined, please contact administrator.`,
-                    to: user.id,
-                    reference: user.id,
-                    isRealTimeNotification: true,
-                    isNotifyToAllUser: false,
-                });
-            }
-
+            //Get email template and send email
+            const emailTemplate = await this.getProgramApprovalEmailTempalte(
+                approvalType,
+                programType,
+                job.postedBy.employee.profile.firstName,
+                job.program.title,
+                job.organization.name,
+                note,
+            );
             if (emailTemplate) {
                 this.notificationService.send({
                     channel: NotificationChannel.Email,
@@ -736,7 +695,120 @@ export class JobPortalService {
                     reference: user.id,
                 });
             }
+
+            //Get InApp template and send InApp notification
+            const inApptemplate = this.getProgramApprovalInAppTempalte(
+                approvalType,
+                programType,
+                program.title,
+            );
+            if (inApptemplate) {
+                this.notificationService.send({
+                    channel: NotificationChannel.InApp,
+                    subject: inApptemplate.subject,
+                    content: inApptemplate.content,
+                    to: user.id,
+                    reference: user.id,
+                    isRealTimeNotification: false,
+                    isNotifyToAllUser: false,
+                });
+            }
         }
+    }
+
+    private async getProgramApprovalEmailTempalte(
+        approvalType: string,
+        programType: string,
+        employerName: string,
+        programTitle: string,
+        organizationName: string,
+        reasonForDecline: string,
+    ) {
+        let emailTemplate = null;
+
+        if (approvalType === ApprovalType.Approved) {
+            if (programType === 'Job') {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'jobPostApprovedEmailTemplate',
+                    {
+                        employerName: employerName,
+                        jobTitle: programTitle,
+                        organizationName: organizationName,
+                    },
+                    {
+                        jobTitle: programTitle,
+                    },
+                );
+            } else {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'mentorshipPostApprovedEmailTemplate',
+                    {
+                        mentorName: employerName,
+                        mentorshipTitle: programTitle,
+                    },
+                    {
+                        mentorshipTitle: programTitle,
+                    },
+                );
+            }
+        }
+
+        if (approvalType === ApprovalType.Declined) {
+            if (programType === 'Job') {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'jobPostDeclinedEmailTemplate',
+                    {
+                        employerName: employerName,
+                        jobTitle: programTitle,
+                        organizationName: organizationName,
+                        reasonForDecline: reasonForDecline,
+                    },
+                    {
+                        jobTitle: programTitle,
+                    },
+                );
+            } else {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'mentorshipPostDeclinedEmailTemplate',
+                    {
+                        mentorName: employerName,
+                        mentorshipTitle: programTitle,
+                        reasonForDecline: reasonForDecline,
+                    },
+                    {
+                        mentorshipTitle: programTitle,
+                    },
+                );
+            }
+        }
+
+        return emailTemplate;
+    }
+
+    private getProgramApprovalInAppTempalte(
+        approvalType: string,
+        programType: string,
+        programTitle: string,
+    ) {
+        let subject = null;
+        let content = null;
+
+        if (approvalType === ApprovalType.Approved) {
+            subject = `${programType} Posting Approved`;
+            content = `Posted ${programType} with title ${programTitle} has been approved.`;
+        }
+
+        if (approvalType === ApprovalType.Declined) {
+            subject = `${programType} Posting Declined`;
+            content = `Posted ${programType} with title ${programTitle} has been declined. Please contact the administrator.`;
+        }
+
+        const inApptemplate = {
+            subject: subject,
+            content: content,
+        };
+
+        return inApptemplate;
     }
 
     findAll() {
