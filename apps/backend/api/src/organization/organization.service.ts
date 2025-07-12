@@ -135,7 +135,7 @@ export class OrganizationService {
 
         if (
             org.status === ApprovalType.Waiting_Approval &&
-            (await this.CheckOrgCanBeSubmitted(id)).canSubmit
+            !(await this.CheckOrgCanBeSubmitted(id)).canSubmit
         ) {
             throw new ForbiddenException(
                 'Organization can not be submitted please provide all information',
