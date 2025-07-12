@@ -1196,20 +1196,49 @@ export class JobPortalService {
             });
         }
 
+        if (request.experienceFrom || request.experienceTo) {
+            query.andWhere('applicants.experience BETWEEN :from AND :to', {
+                from: request.experienceFrom, // 'YYYY-MM-DD'
+                to: request.experienceTo,
+            });
+        }
+
         if (request.gender) {
             query.andWhere('profile.gender = :gender', {
                 gender: request.gender,
             });
         }
 
-        if (request.category) {
+        if (request.educationalRequirement) {
             query.andWhere(
                 `EXISTS (
                   SELECT 1 FROM educational_history edu
                   WHERE edu.application_id = applications.id
-                    AND edu.field_of_study = :category
+                    AND edu.level = :level
                 )`,
-                { category: request.category },
+                { level: request.educationalRequirement },
+            );
+        }
+
+        if (request.category?.length > 0) {
+            query.andWhere(
+                `EXISTS (
+                SELECT 1 FROM educational_history edu
+                WHERE edu.application_id = applications.id
+                  AND edu.field_of_study IN (:...categories)
+              )`,
+                { categories: request.category },
+            );
+        }
+
+        if (request.skills?.length > 0) {
+            query.andWhere(
+                `EXISTS (
+                SELECT 1 FROM skills skill
+                WHERE skill.application_id = applications.id
+                  AND skill.skill IN (:...skills)
+              )`,
+                { skills: request.skills },
             );
         }
 
