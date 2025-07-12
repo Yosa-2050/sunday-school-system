@@ -30,6 +30,13 @@ export class DocumentService {
         referenceId: string,
         docType?: string,
     ) {
+        const existingDocument = await this.findOneDocumentByReferenceAndType(
+            referenceId,
+            docType,
+        );
+        if (existingDocument) {
+            this.repo.delete(existingDocument.id);
+        }
         const file_location = await this.documentService.upload(file);
 
         const document = this.repo.create({
@@ -61,6 +68,10 @@ export class DocumentService {
 
     findDocumentsByReferenceId(referenceId: string): Promise<Document[]> {
         return this.repo.find({ where: { referenceId } });
+    }
+
+    findOneDocumentByReferenceAndType(referenceId: string, docType: string) {
+        return this.repo.findOneBy({ referenceId, docType });
     }
 
     update(id: string, updateDocumentDto: UpdateDocumentDto) {

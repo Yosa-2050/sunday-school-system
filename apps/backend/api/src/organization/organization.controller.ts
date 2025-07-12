@@ -70,6 +70,13 @@ export class OrganizationController {
         );
     }
 
+    @Get('canSubmit')
+    canSubmit(@Request() req) {
+        return this.organizationService.CheckOrgCanBeSubmitted(
+            CurrentUser.getOrganizationId(req),
+        );
+    }
+
     @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
     @Patch('approve/:id')
     approveOrganization(@Param('id', new ParseUUIDPipe()) id: string) {

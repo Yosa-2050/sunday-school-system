@@ -246,7 +246,6 @@ const AdjustmentModal = ({ close }: { close: () => void }) => {
     );
 };
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 const OrganizationApproval = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const [adjustmentOpened, { open: openAdjustment, close: closeAdjustment }] =

@@ -1,16 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OptionalEnum } from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { EducationalRequirementType } from '@shega/job_portal/enums/education-requirement-type.enum';
 import { ApplicationStatus } from '@shega/job_portal/enums/job-application-status.enum';
 import { Gender } from '@shega/users/enums/profile-gender.enum';
 import { Type } from 'class-transformer';
 import {
+    IsArray,
     IsDefined,
     IsNotEmptyObject,
     IsNumber,
     IsObject,
     IsOptional,
-    IsString,
     ValidateNested,
 } from 'class-validator';
 
@@ -22,12 +23,22 @@ export class GetJobApplicationsRequestDto {
     @ApiProperty()
     @IsOptional()
     @IsNumber()
-    experience: number;
+    experienceFrom: number;
 
     @ApiProperty()
     @IsOptional()
-    @IsString()
-    category: string;
+    @IsNumber()
+    experienceTo: number;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsArray()
+    category: string[];
+
+    @ApiProperty()
+    @IsOptional()
+    @IsArray()
+    skills: string[];
 
     @ApiProperty()
     @OptionalEnum(Gender)
@@ -41,6 +52,10 @@ export class GetJobApplicationsRequestDto {
     @ApiProperty()
     @IsOptional()
     ageFrom: number;
+
+    @ApiProperty()
+    @OptionalEnum(EducationalRequirementType)
+    educationalRequirement: EducationalRequirementType;
 
     @ApiProperty()
     @IsDefined()

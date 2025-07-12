@@ -117,7 +117,7 @@ export class ProfileController {
 
     @ApiOperation({ deprecated: true })
     @Post('/new/:userId')
-    newProfle(@Param('userId') userId: string, @Body() body: NewProfileDto) {
+    newProfile(@Param('userId') userId: string, @Body() body: NewProfileDto) {
         //this.profileService.create(userId, body);
         throw new BadRequestException(
             'This API is deprecated please contact you administrator',

@@ -476,7 +476,6 @@ export class JobsService {
         const profile = applicant.profile;
         const applyObject = {
             cv: true,
-            coverLetter: true,
             profilePic: true,
             profile: true,
             education: true,
@@ -487,10 +486,6 @@ export class JobsService {
         if (!applicant.cv) {
             canApply = false;
             applyObject.cv = false;
-        }
-        if (!applicant.coverLetter) {
-            canApply = false;
-            applyObject.coverLetter = false;
         }
 
         if (!profile.profile_picture_id) {

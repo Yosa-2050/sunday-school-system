@@ -50,6 +50,7 @@ import { JobApplicantsResponseDto } from './dto/response/job-applicants.response
 import { JobResponseDto } from './dto/response/jobs.response.dto';
 import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
+import { EducationHistory } from './entities/educational-history.entity';
 import { Applications } from './entities/job-application.entity';
 import { ProgramCategory } from './entities/job-category.entity';
 import { ProgramDescription } from './entities/job-description.entity';
@@ -87,6 +88,8 @@ export class JobPortalService {
         private jobApplicationRepo: Repository<Applications>,
         @InjectRepository(SavedPrograms)
         private savedJobRepo: Repository<SavedPrograms>,
+        @InjectRepository(EducationHistory)
+        private educationHistory: Repository<EducationHistory>,
         @InjectRepository(Mentorship)
         private mentorshipRepo: Repository<Mentorship>,
         private readonly queryBuilderService: QueryBuilderService,
@@ -1038,10 +1041,28 @@ export class JobPortalService {
         return UtilityServices.EnsureDeleted(deleted, id);
     }
     async deleteCategories(id: string) {
-        const deleted = await this.skillRepo.delete(id);
+        await this.CheckIfCategoryIsInUse(id);
+
+        const deleted = await this.categoryRepo.delete(id);
 
         return UtilityServices.EnsureDeleted(deleted, id);
     }
+    private async CheckIfCategoryIsInUse(id: string) {
+        const isReferencedJOb = await this.jobCategoryRepo.count({
+            where: { category: { id } },
+        });
+
+        const isReferencedEdu = await this.educationHistory.count({
+            where: { fieldOfStudy: { id } },
+        });
+
+        if (isReferencedJOb > 0 || isReferencedEdu > 0) {
+            throw new BadRequestException(
+                'category is in use and cannot be edited or deleted.',
+            );
+        }
+    }
+
     async updateSkills(id: string, name: string) {
         const update = await this.skillRepo.preload({
             id,
@@ -1053,6 +1074,8 @@ export class JobPortalService {
         return this.skillRepo.save(update);
     }
     async updateCategories(id: string, name: string) {
+        await this.CheckIfCategoryIsInUse(id);
+
         const update = await this.categoryRepo.preload({
             id,
             name,
@@ -1211,6 +1234,11 @@ export class JobPortalService {
             .leftJoinAndSelect('applications.program', 'program')
             .leftJoinAndSelect('applications.applicants', 'applicants')
             .leftJoinAndSelect('applicants.profile', 'profile')
+            .leftJoinAndSelect(
+                'applicants.educationalHistory',
+                'educationalHistory',
+            )
+            .leftJoinAndSelect('applicants.skills', 'skills')
             .skip((request.pagination.page - 1) * request.pagination.limit)
             .take(request.pagination.limit)
             .orderBy('applications.createdAt', 'DESC');
@@ -1245,20 +1273,49 @@ export class JobPortalService {
             });
         }
 
+        if (request.experienceFrom || request.experienceTo) {
+            query.andWhere('applicants.experience BETWEEN :from AND :to', {
+                from: request.experienceFrom, // 'YYYY-MM-DD'
+                to: request.experienceTo,
+            });
+        }
+
         if (request.gender) {
             query.andWhere('profile.gender = :gender', {
                 gender: request.gender,
             });
         }
 
-        if (request.category) {
+        if (request.educationalRequirement) {
             query.andWhere(
                 `EXISTS (
-                  SELECT 1 FROM educational_history edu
-                  WHERE edu.application_id = applications.id
-                    AND edu.field_of_study = :category
+                  SELECT 1 FROM educationalHistory edu
+                  WHERE edu.applicantId = applicants.id
+                    AND edu.level = :level
                 )`,
-                { category: request.category },
+                { level: request.educationalRequirement },
+            );
+        }
+
+        if (request.category?.length > 0) {
+            query.andWhere(
+                `EXISTS (
+                SELECT 1 FROM educationalHistory edu
+                WHERE edu.applicantId = applicants.id
+                  AND edu.field_of_study IN (:...categories)
+              )`,
+                { categories: request.category },
+            );
+        }
+
+        if (request.skills?.length > 0) {
+            query.andWhere(
+                `EXISTS (
+                SELECT 1 FROM skills skill
+                WHERE skill.applicantId = applicants.id
+                  AND skill.skill IN (:...skills)
+              )`,
+                { skills: request.skills },
             );
         }
 

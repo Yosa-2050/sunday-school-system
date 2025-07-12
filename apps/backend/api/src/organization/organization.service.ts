@@ -14,6 +14,8 @@ import { PasswordService } from '@shega/Utilities/password.service';
 import { LookupService } from '@shega/Utilities/service/lookup-seeder.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
 import { Category } from '@shega/job_portal/entities/category.entity';
 import { AddressService } from '@shega/location/address.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -114,6 +116,7 @@ export class OrganizationService {
         private queryBuilderService: QueryBuilderService,
         private readonly usersService: UsersService,
         private readonly lookupService: LookupService,
+        private documentService: DocumentService,
     ) {}
 
     async organizationApproval(
@@ -128,6 +131,15 @@ export class OrganizationService {
 
         if (org.status === ApprovalType.Declined) {
             throw new ForbiddenException('Organization is declined');
+        }
+
+        if (
+            org.status === ApprovalType.Waiting_Approval &&
+            !(await this.CheckOrgCanBeSubmitted(id)).canSubmit
+        ) {
+            throw new ForbiddenException(
+                'Organization can not be submitted please provide all information',
+            );
         }
 
         const updatedOrg = await this.organizationRepo.update(
@@ -190,6 +202,57 @@ export class OrganizationService {
             }
         }
         return result;
+    }
+
+    async CheckOrgCanBeSubmitted(id: string) {
+        const applyObject = {
+            organizationDetail: true,
+            documents: true,
+            contactPerson: true,
+            location: true,
+            canSubmit: true,
+        };
+        const org = await this.findOne(id);
+        if (
+            !(
+                org.name ||
+                org.registrationNumber ||
+                org.type ||
+                org.industry ||
+                org.yearFounded ||
+                org.companySize
+            )
+        ) {
+            applyObject.canSubmit = false;
+            applyObject.organizationDetail = false;
+        }
+        //primary contact person
+        if (!org.employee?.find((x) => x.type === EmployeeType.ContactPerson)) {
+            applyObject.canSubmit = false;
+            applyObject.contactPerson = false;
+        }
+        //location
+        if (org.locations?.length === 0) {
+            applyObject.canSubmit = false;
+            applyObject.location = false;
+        }
+
+        //document
+        const documents =
+            await this.documentService.findDocumentsByReferenceId(id);
+        const lookups = await this.lookupService.findByGroup('DocumentType');
+        const documentTypes = documents.map((doc) => doc.docType);
+
+        const allTypesPresent = lookups.every((lookup) =>
+            documentTypes.includes(lookup.code),
+        );
+
+        if (!allTypesPresent) {
+            applyObject.canSubmit = false;
+            applyObject.documents = false;
+        }
+
+        return applyObject;
     }
 
     private async SendNotificationForApprovals(
