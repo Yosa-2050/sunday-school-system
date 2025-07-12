@@ -26,9 +26,12 @@ export class NotificationController {
         return this.notificationService.send(req);
     }
 
-    @Get('getAllInAppNotifications')
-    getAllInAppNotifications(@Body() dto: { q: string }) {
-        return this.notificationService.getAllInAppNotifications(dto.q);
+    @Post('getAllInAppNotifications')
+    getAllInAppNotifications(@Body() dto: { q: string }, @Request() req) {
+        return this.notificationService.getAllInAppNotifications(
+            dto.q,
+            CurrentUser.getUserId(req),
+        );
     }
 
     @Get('getUserInAppNotifications')

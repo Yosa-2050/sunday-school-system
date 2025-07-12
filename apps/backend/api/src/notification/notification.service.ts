@@ -78,7 +78,7 @@ export class NotificationService {
         }
     }
 
-    async getAllInAppNotifications(payload: string) {
+    async getAllInAppNotifications(payload: string, userId: string) {
         const { p, pp } = entityParamDeserializer(payload);
 
         const deserialized = entityParamDeserializer(payload);
@@ -87,6 +87,7 @@ export class NotificationService {
             ...deserialized,
             f: [
                 { f: 'channel', v: NotificationChannel.InApp, o: 'eq' },
+                { f: 'reference', v: userId, o: 'eq' },
                 ...(deserialized.f ?? []),
             ],
             o: [{ f: 'createdAt', d: 'desc' }],
@@ -115,6 +116,9 @@ export class NotificationService {
             where: {
                 reference: userId,
                 channel: NotificationChannel.InApp,
+            },
+            order: {
+                createdAt: 'DESC',
             },
         });
     }
