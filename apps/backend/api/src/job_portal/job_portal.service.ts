@@ -670,13 +670,11 @@ export class JobPortalService {
         program: Programs,
     ) {
         if (result) {
-            const programType =
-                program.programType === ProgramType.Job
-                    ? 'Job'
-                    : 'Mentorship program';
+            let programType = '';
             let emailTemplate = null;
             let user = null;
             if (program.programType === ProgramType.Job) {
+                programType = 'Job';
                 const job = await this.jobRepo.findOneBy({
                     program: { id: program.id },
                 });
@@ -692,6 +690,7 @@ export class JobPortalService {
                     note,
                 );
             } else if (program.programType === ProgramType.Mentorship) {
+                programType = 'Mentorship program';
                 const mentorship = await this.mentorshipRepo.findOneBy({
                     program: { id: program.id },
                 });
