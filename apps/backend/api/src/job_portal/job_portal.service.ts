@@ -1162,6 +1162,11 @@ export class JobPortalService {
             .leftJoinAndSelect('applications.program', 'program')
             .leftJoinAndSelect('applications.applicants', 'applicants')
             .leftJoinAndSelect('applicants.profile', 'profile')
+            .leftJoinAndSelect(
+                'applicants.educationalHistory',
+                'educationalHistory',
+            )
+            .leftJoinAndSelect('applicants.skills', 'skills')
             .skip((request.pagination.page - 1) * request.pagination.limit)
             .take(request.pagination.limit)
             .orderBy('applications.createdAt', 'DESC');
@@ -1212,8 +1217,8 @@ export class JobPortalService {
         if (request.educationalRequirement) {
             query.andWhere(
                 `EXISTS (
-                  SELECT 1 FROM educational_history edu
-                  WHERE edu.application_id = applications.id
+                  SELECT 1 FROM educationalHistory edu
+                  WHERE edu.applicantId = applicants.id
                     AND edu.level = :level
                 )`,
                 { level: request.educationalRequirement },
@@ -1223,8 +1228,8 @@ export class JobPortalService {
         if (request.category?.length > 0) {
             query.andWhere(
                 `EXISTS (
-                SELECT 1 FROM educational_history edu
-                WHERE edu.application_id = applications.id
+                SELECT 1 FROM educationalHistory edu
+                WHERE edu.applicantId = applicants.id
                   AND edu.field_of_study IN (:...categories)
               )`,
                 { categories: request.category },
@@ -1235,7 +1240,7 @@ export class JobPortalService {
             query.andWhere(
                 `EXISTS (
                 SELECT 1 FROM skills skill
-                WHERE skill.application_id = applications.id
+                WHERE skill.applicantId = applicants.id
                   AND skill.skill IN (:...skills)
               )`,
                 { skills: request.skills },
