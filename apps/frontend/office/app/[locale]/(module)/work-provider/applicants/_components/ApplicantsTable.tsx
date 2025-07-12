@@ -50,7 +50,6 @@ export const ApplicantsTable = ({
     };
 
     const handleSelectApplicant = (id: string, checked: boolean) => {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         setSelectedApplicants((prev: string[]) =>
             checked ? [...prev, id] : prev.filter((v: string) => v !== id),
         );
