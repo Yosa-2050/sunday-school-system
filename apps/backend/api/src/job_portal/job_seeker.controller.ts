@@ -34,7 +34,7 @@ import {
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     AddExperienceRequestDto,
-    UpdateExperianceRequestDto,
+    UpdateExperienceRequestDto,
 } from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
@@ -155,8 +155,8 @@ export class JobSeekerController {
     }
 
     @Post('experiance')
-    addExperiance(@Request() req, @Body() dto: AddExperienceRequestDto) {
-        return this.jobsService.addExperiance(
+    addExperience(@Request() req, @Body() dto: AddExperienceRequestDto) {
+        return this.jobsService.addExperience(
             CurrentUser.getApplicantId(req),
             dto,
         );
@@ -184,9 +184,9 @@ export class JobSeekerController {
     updateExperience(
         @Request() req,
         @Param('id', new ParseUUIDPipe()) id: string,
-        @Body() dto: UpdateExperianceRequestDto,
+        @Body() dto: UpdateExperienceRequestDto,
     ) {
-        return this.jobsService.updateExperiance(
+        return this.jobsService.updateExperience(
             CurrentUser.getApplicantId(req),
             id,
             dto,
@@ -207,11 +207,11 @@ export class JobSeekerController {
     @Delete('experiance/:experianceId')
     deleteExperiance(
         @Request() req,
-        @Param('experianceId', new ParseUUIDPipe()) experianceId: string,
+        @Param('experianceId', new ParseUUIDPipe()) experienceId: string,
     ) {
-        return this.jobsService.deleteExperiance(
+        return this.jobsService.deleteExperience(
             CurrentUser.getApplicantId(req),
-            experianceId,
+            experienceId,
         );
     }
 
