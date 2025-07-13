@@ -79,7 +79,7 @@ export const useUpdateExperience = () => {
         }: { id: string; payload: ExperiencePayload }) =>
             updateExperience(id, payload),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['experiences'] });
+            queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
         },
     });
 };
@@ -90,7 +90,7 @@ export const useDeleteExperience = () => {
     return useMutation({
         mutationFn: deleteExperience,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['experiences'] });
+            queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
         },
     });
 };

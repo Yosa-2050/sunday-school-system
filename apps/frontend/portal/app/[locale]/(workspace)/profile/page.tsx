@@ -17,7 +17,6 @@ import { IconCheck } from '@tabler/icons-react';
 import { useJobSeekerDetails } from 'app/_api/profile/queries';
 import { useState } from 'react';
 import AboutSection from './_components/about-section';
-import CoverLetterSection from './_components/cover-letter-section';
 import EducationSection from './_components/education-section';
 import ExperienceSection from './_components/experience-section';
 import PersonalInfoSection from './_components/personal-info-section';
@@ -162,8 +161,6 @@ export default function ProfilePage() {
                                             displayData.__educationalHistory__
                                         }
                                     />
-
-                                    <CoverLetterSection />
                                 </Stack>
                                 <Stack maw={'450px'} w={'450px'}>
                                     <SkillsSection

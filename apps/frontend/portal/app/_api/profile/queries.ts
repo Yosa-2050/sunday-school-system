@@ -334,7 +334,7 @@ export type EducationLevel = {
 
 export const fetchEducationLevels = async (): Promise<EducationLevel[]> => {
     const response = await fetcher<{ data: Record<string, string> }>(
-        '/enums/EducationalRequirmentType',
+        '/enums/EducationalRequirementType',
         {
             method: 'GET',
             headers: { accept: '*/*' },

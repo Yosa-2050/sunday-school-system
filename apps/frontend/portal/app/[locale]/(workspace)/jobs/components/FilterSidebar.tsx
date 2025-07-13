@@ -37,26 +37,6 @@ const EXPERIENCE_LEVELS: ExperienceLevel[] = [
     { value: 'SENIOR', label: 'Senior Level' },
 ];
 
-const calculateActiveFilters = (filters: Filter) => {
-    const baseFilters = Object.entries(filters).filter(([key, value]) => {
-        if (
-            key === 'salaryFrom' ||
-            key === 'salaryTo' ||
-            key === 'pagination'
-        ) {
-            return false;
-        }
-        if (Array.isArray(value)) {
-            return value.length > 0;
-        }
-        return value !== '' && value !== undefined;
-    }).length;
-
-    const hasSalaryFilter =
-        (filters.salaryFrom || 0) !== 0 || (filters.salaryTo || 0) !== 100000;
-    return baseFilters + (hasSalaryFilter ? 1 : 0);
-};
-
 interface FilterSidebarProps {
     filters: Filter;
     setFilters: (filters: Filter) => void;

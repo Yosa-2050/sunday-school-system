@@ -62,7 +62,7 @@ export default function ExperienceSection({
             await deleteExperienceMutation.mutateAsync(id);
             notifications.show({
                 title: 'Success',
-                message: 'Experience deleted successfully',
+                message: 'Education history deleted successfully',
                 color: 'teal',
                 icon: <IconCheck size={18} />,
             });
@@ -72,7 +72,7 @@ export default function ExperienceSection({
         } catch (error) {
             notifications.show({
                 title: 'Error',
-                message: 'Failed to delete experience. Please try again.',
+                message: 'Failed to delete education. Please try again.',
                 color: 'red',
                 icon: <IconX size={18} />,
             });
@@ -90,7 +90,7 @@ export default function ExperienceSection({
                 });
                 notifications.show({
                     title: 'Success',
-                    message: 'Experience updated successfully',
+                    message: 'Education history updated successfully',
                     color: 'teal',
                     icon: <IconCheck size={18} />,
                 });
@@ -98,7 +98,7 @@ export default function ExperienceSection({
                 await addExperienceMutation.mutateAsync(experience);
                 notifications.show({
                     title: 'Success',
-                    message: 'Experience added successfully',
+                    message: 'Education history added successfully',
                     color: 'teal',
                     icon: <IconCheck size={18} />,
                 });
