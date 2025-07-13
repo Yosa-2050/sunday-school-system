@@ -1,104 +1,150 @@
 'use client';
 
 import {
-    Box,
     Group,
     Loader,
     Pagination,
-    ScrollArea,
+    Paper,
     Select,
+    Stack,
     Text,
     TextInput,
-    useMantineTheme,
+    Title,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
+import { entityParamSerializer } from '@shega/shared';
 import { IconSearch } from '@tabler/icons-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+    getNotificationById,
+    updateNotificationById,
+} from 'app/[locale]/_api/organizations/getNotification';
+import { getCookie } from 'cookies-next';
+import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
+import NotificationCard from '../../_components/NotificationCard';
 
-interface NotificationItem {
-    id: string;
-    status: string;
-    content: string;
-    createdAt: string;
-    deliveryStatus: string;
+interface MyTokenPayload {
+    userId: string;
 }
 
-const PAGE_SIZE = 10;
+export default function AllNotificationsPage() {
+    const token = getCookie('job_access_token');
+    let userId: string | undefined;
 
-export default function NotificationPage() {
-    const theme = useMantineTheme();
-    const [page, setPage] = useState(1);
+    if (typeof token === 'string') {
+        const decoded = jwtDecode<MyTokenPayload>(token);
+        userId = decoded.userId;
+    }
+
     const [search, setSearch] = useState('');
     const [debouncedSearch] = useDebouncedValue(search, 300);
     const [status, setStatus] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
 
-    const { data, isLoading } = {
-        data: { data: [], total: 0 },
-        isLoading: false,
-    };
+    const queryClient = useQueryClient();
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['notifications', userId, page, debouncedSearch, status],
+        queryFn: () =>
+            getNotificationById(
+                entityParamSerializer({
+                    f: [
+                        ...(debouncedSearch
+                            ? [
+                                  {
+                                      f: 'content',
+                                      v: debouncedSearch,
+                                      o: 'ilike' as const,
+                                  },
+                                  {
+                                      f: 'subject',
+                                      v: debouncedSearch,
+                                      o: 'ilike' as const,
+                                  },
+                              ]
+                            : []),
+                        ...(status
+                            ? [{ f: 'status', v: status, o: 'eq' as const }]
+                            : []),
+                    ],
+                    p: page,
+                    pp: 4,
+                }),
+            ),
+        enabled: !!userId,
+    });
+
+    const mutation = useMutation({
+        mutationFn: (id: string) => updateNotificationById(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        },
+    });
+
+    const total = data?.totalPages ?? 1;
 
     return (
-        <Box p="md">
-            <Group mb="md" gap="sm" align="flex-end">
-                <TextInput
-                    label="Search"
-                    placeholder="Search notifications..."
-                    leftSection={<IconSearch size={16} />}
-                    value={search}
-                    onChange={(e) => setSearch(e.currentTarget.value)}
-                    w="300"
-                />
+        <Paper p={'md'}>
+            <Stack>
+                <Title order={2}>All Notifications</Title>
 
-                <Select
-                    label="Filter by status"
-                    placeholder="All"
-                    data={[
-                        { label: 'Read', value: 'READ' },
-                        { label: 'Pending', value: 'PENDING' },
-                        { label: 'Approved', value: 'APPROVED' },
-                        { label: 'Declined', value: 'DECLINED' },
-                    ]}
-                    clearable
-                    value={status}
-                    onChange={setStatus}
-                    w={200}
-                />
-            </Group>
+                <Group grow>
+                    <TextInput
+                        placeholder="Search notifications"
+                        leftSection={<IconSearch size={16} />}
+                        value={search}
+                        onChange={(e) => setSearch(e.currentTarget.value)}
+                    />
+                    <Select
+                        placeholder="Filter by status"
+                        data={[
+                            { value: 'Read', label: 'Read' },
+                            { value: 'Pending', label: 'Unread' },
+                        ]}
+                        clearable
+                        value={status}
+                        onChange={setStatus}
+                    />
+                </Group>
 
-            <ScrollArea h={'calc(100vh - 200px)'} type="auto">
-                {isLoading ? (
-                    <Group justify="center" mt="md">
-                        <Loader />
-                    </Group>
-                    // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                ) : data?.data?.length ? (
-                    data.data.map((item: NotificationItem) => (
-                        <Box key={item.id} p="md" mb="sm">
-                            <Text size="sm" fw={500}>
-                                {item.status}
-                            </Text>
-                            <Text size="sm" mt={4}>
-                                {item.content}
-                            </Text>
-                            <Text size="xs" c="dimmed" mt={6}>
-                                {new Date(item.createdAt).toLocaleString()}
-                            </Text>
-                        </Box>
-                    ))
-                ) : (
-                    <Text c="dimmed" ta="center" mt="xl">
-                        No notifications found.
-                    </Text>
-                )}
-            </ScrollArea>
-
-            <Group justify="center" mt="lg">
-                <Pagination
-                    total={Math.ceil((data?.total || 0) / PAGE_SIZE)}
-                    value={page}
-                    onChange={setPage}
-                />
-            </Group>
-        </Box>
+                {(() => {
+                    if (isLoading) {
+                        return (
+                            <Group justify="center" py="xl">
+                                <Loader />
+                            </Group>
+                        );
+                    }
+                    if (data?.data?.length) {
+                        return (
+                            <Stack>
+                                {data.data.map((notification) => (
+                                    <NotificationCard
+                                        key={notification.id}
+                                        notification={notification}
+                                        onToggleRead={() =>
+                                            mutation.mutate(notification.id)
+                                        }
+                                    />
+                                ))}
+                                <Group justify="center" mt="md">
+                                    <Pagination
+                                        value={page}
+                                        onChange={setPage}
+                                        total={total}
+                                    />
+                                </Group>
+                            </Stack>
+                        );
+                    }
+                    return (
+                        <Paper p="xl" withBorder>
+                            <Text ta="center">No notifications found.</Text>
+                        </Paper>
+                    );
+                })()}
+            </Stack>
+        </Paper>
     );
 }

@@ -9,6 +9,7 @@ import {
     Flex,
     Group,
     Loader,
+    Modal,
     Paper,
     Stack,
     Text,
@@ -17,7 +18,6 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
 import {
     IconAlertCircle,
     IconBuilding,
@@ -25,7 +25,11 @@ import {
     IconEdit,
     IconMapPin,
 } from '@tabler/icons-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
+import { useEffect, useState } from 'react';
+
+import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
 import { fetchCategories } from 'app/[locale]/_api/job-details';
 import {
     type Category,
@@ -33,8 +37,6 @@ import {
     getOrganizationById,
 } from 'app/[locale]/_api/organizations/get-organizationbyId';
 import type { UpdateLocationPayload } from 'app/[locale]/_api/organizations/updateOrganization';
-import { getCookie } from 'cookies-next';
-import { useEffect, useState } from 'react';
 import { AddOrganizationDetail } from './components/AddOrganizationDetail';
 import ContactSection from './components/ContactInformation';
 import { LocationSection } from './components/LocationDetails';
@@ -172,7 +174,6 @@ const submitOrganizationProfile = async () => {
             Authorization: `Bearer ${token}`,
         },
     });
-
     return response;
 };
 
@@ -185,7 +186,10 @@ const ApprovalType = {
 };
 
 function UserProfile() {
+    const queryClient = useQueryClient();
     const [opened, { open, close }] = useDisclosure(false);
+    const [confirmModalOpened, { open: openConfirm, close: closeConfirm }] =
+        useDisclosure(false);
 
     const organizationId = getCookie('organization_id')?.toString();
     const [formData, setFormData] = useState<FormDataType>({});
@@ -201,23 +205,30 @@ function UserProfile() {
     const canUpdateProfile =
         organization?.status === ApprovalType.New ||
         organization?.status === ApprovalType.RETURNED;
+
     const submitMutation = useMutation({
         mutationFn: submitOrganizationProfile,
         onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['organization_id', organizationId],
+            });
             notifications.show({
                 title: 'Success',
-                message: 'Profile updated successfully',
+                message: 'Profile Send for Approval',
                 color: 'green',
             });
+            closeConfirm();
         },
         onError: () => {
             notifications.show({
                 title: 'Error',
-                message: 'Failed to update profile',
+                message: 'Failed to submit profile for approval',
                 color: 'red',
             });
+            closeConfirm();
         },
     });
+
     const { contacts, locations, ...organizationDetail } =
         organization ?? DefaultProps;
 
@@ -242,6 +253,7 @@ function UserProfile() {
             </Box>
         );
     }
+
     return (
         <Box>
             <AddOrganizationDetail
@@ -328,7 +340,6 @@ function UserProfile() {
                         canUpdateProfile={canUpdateProfile}
                     />
                     <TagsSection formData={formData} />
-
                     <Divider />
                     <CompanyOverviewSection formData={formData} />
                 </Stack>
@@ -340,8 +351,8 @@ function UserProfile() {
             />
 
             <LocationSection
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                 defaultLocation={
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     (organization?.locations?.[0]?.locationData as any) ?? {}
                 }
                 canUpdateProfile={canUpdateProfile}
@@ -355,14 +366,42 @@ function UserProfile() {
             )}
 
             {canUpdateProfile && (
-                <Flex align="center" justify="flex-end" mt={'md'}>
-                    <Button
-                        onClick={() => submitMutation.mutate()}
-                        loading={submitMutation.isPending}
+                <>
+                    <Flex align="center" justify="flex-end" mt="md">
+                        <Button onClick={openConfirm}>
+                            Submit for Approval
+                        </Button>
+                    </Flex>
+
+                    <Modal
+                        opened={confirmModalOpened}
+                        onClose={closeConfirm}
+                        title="Submit Profile for Approval?"
+                        centered
                     >
-                        Submit
-                    </Button>
-                </Flex>
+                        <Stack>
+                            <Text>
+                                Are you ready to send your organization profile
+                                for admin review? You won&apos;t be able to edit
+                                it while it&apos;s under review.
+                            </Text>
+                            <Group justify="flex-end" mt="md">
+                                <Button
+                                    variant="outline"
+                                    onClick={closeConfirm}
+                                >
+                                    Edit Profile
+                                </Button>
+                                <Button
+                                    loading={submitMutation.isPending}
+                                    onClick={() => submitMutation.mutate()}
+                                >
+                                    Submit for Approval
+                                </Button>
+                            </Group>
+                        </Stack>
+                    </Modal>
+                </>
             )}
         </Box>
     );

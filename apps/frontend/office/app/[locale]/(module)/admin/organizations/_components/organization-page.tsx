@@ -33,7 +33,6 @@ const OrganizationsPage = () => {
     const t = useTranslations('organizationsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
-    // Modal states
     const [deactivationOpened, deactivationHandlers] = useDisclosure(false);
     const [activationOpened, activationHandlers] = useDisclosure(false);
     const [reason, setReason] = useState('');
@@ -42,10 +41,8 @@ const OrganizationsPage = () => {
         name: string;
     } | null>(null);
 
-    // Selection state
     const [selection, setSelection] = useState<string[]>([]);
 
-    // Query params
     const [entityParams] = useQueryState(
         'organizations',
         parseAsJson(entityParamSchema.parse).withDefault({
@@ -58,13 +55,11 @@ const OrganizationsPage = () => {
         }),
     );
 
-    // Fetch organizations
     const { data, isLoading, error } = useQuery({
         queryKey: ['organizations', entityParamSerializer(entityParams)],
         queryFn: () => fetchOrganizations(entityParamSerializer(entityParams)),
     });
 
-    // Mutations
     const deactivateUserMutation = useMutation({
         mutationFn: async ({
             userId,

@@ -117,7 +117,7 @@ const RecentUsers = () => {
     }
 
     if (error) {
-        return <Text color="red">{t('error')}</Text>;
+        return <Text c="red">{t('error')}</Text>;
     }
 
     const users = Array.isArray(data) ? data : data?.data || [];
@@ -127,9 +127,14 @@ const RecentUsers = () => {
             <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
                 <Flex justify="space-between" align="center" mb="md">
                     <Title size={20}>Recent Users</Title>
-                    <Link href="/admin/users" color="primary">
+                    <Button
+                        component={Link}
+                        href="/admin/users"
+                        variant="transparent"
+                        className="hover:underline"
+                    >
                         View more
-                    </Link>
+                    </Button>
                 </Flex>
 
                 <Group gap="sm" className="mb-4">
@@ -160,127 +165,161 @@ const RecentUsers = () => {
                 </Group>
 
                 {/* No Data State */}
-                {users.length === 0 ? (
-                    <NoData />
-                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                isMobile ? (
-                    <Stack>
-                        {users.map((user: Daum) => (
-                            <Card
-                                key={user.email}
-                                shadow="sm"
-                                p="lg"
-                                radius="md"
-                                withBorder
-                            >
-                                <Flex justify="space-between" align="center">
-                                    <Text fw={500}>{user.fullName}</Text>
-                                    <Badge
-                                        color={user.isActive ? 'green' : 'red'}
-                                    >
-                                        {user.isActive
-                                            ? t('status.active')
-                                            : t('status.inactive')}
-                                    </Badge>
-                                </Flex>
-                                <Divider my="xs" />
-                                <Text size="sm">{user.email}</Text>
-                                <Text size="xs" c="dimmed">
-                                    {user.createdDate
+                {(() => {
+                    if (users.length === 0) {
+                        return <NoData />;
+                    }
+
+                    if (isMobile) {
+                        return (
+                            <Stack>
+                                {users.map((user: Daum) => {
+                                    const createdDate = user.createdDate
                                         ? DateTime.fromJSDate(
                                               new Date(user.createdDate),
                                           ).toFormat('yyyy-MM-dd')
-                                        : 'Unknown'}
-                                </Text>
-                                <Group mt="md">
-                                    <Button variant="light" size="xs">
-                                        {t('table.edit')}
-                                    </Button>
-                                    <Button
-                                        variant="light"
-                                        size="xs"
-                                        color="red"
-                                    >
-                                        {t('table.delete')}
-                                    </Button>
-                                </Group>
-                            </Card>
-                        ))}
-                    </Stack>
-                ) : (
-                    <TableScrollContainer minWidth={800} type="native">
-                        <Table
-                            withRowBorders
-                            withColumnBorders
-                            striped
-                            verticalSpacing="xs"
-                        >
-                            <Table.Thead>
-                                <Table.Tr>
-                                    <Table.Th>{t('table.fullName')}</Table.Th>
-                                    <Table.Th>{t('table.email')}</Table.Th>
-                                    <Table.Th>{t('table.role')}</Table.Th>
-                                    <Table.Th>{t('table.createdBy')}</Table.Th>
-                                    <Table.Th>
-                                        <EntityColumn
-                                            entity="users"
-                                            field="createdAt"
-                                            label={t('table.createdAt')}
-                                        />
-                                    </Table.Th>
-                                    <Table.Th>{t('table.status')}</Table.Th>
-                                </Table.Tr>
-                            </Table.Thead>
-                            <Table.Tbody>
-                                {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
-                                {users.map((user: Daum) => (
-                                    <Table.Tr key={user.id}>
-                                        <Table.Td>{user.fullName}</Table.Td>
-                                        <Table.Td>
-                                            <Link
-                                                href={`mailto:${user.email}`}
-                                                className="hover:underline"
+                                        : 'Unknown';
+                                    const statusLabel = user.isActive
+                                        ? t('status.active')
+                                        : t('status.inactive');
+                                    const badgeColor = user.isActive
+                                        ? 'green'
+                                        : 'red';
+
+                                    return (
+                                        <Card
+                                            key={user.email}
+                                            shadow="sm"
+                                            p="lg"
+                                            radius="md"
+                                            withBorder
+                                        >
+                                            <Flex
+                                                justify="space-between"
+                                                align="center"
                                             >
-                                                {user.email}
-                                            </Link>
-                                        </Table.Td>
-                                        <Table.Td>
-                                            {user.role === 'WORK_PROVIDER'
-                                                ? 'Employer'
-                                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                                  user.role === 'ADMINISTRATOR'
-                                                  ? 'Administrator'
-                                                  : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                                    user.role === 'MENTOR'
-                                                    ? 'Mentor'
-                                                    : 'Job Seeker'}
-                                        </Table.Td>
-                                        <Table.Td>{user.createdBy}</Table.Td>
-                                        <Table.Td>
-                                            {user.createdDate
-                                                ? DateTime.fromJSDate(
-                                                      new Date(
-                                                          user.createdDate,
-                                                      ),
-                                                  ).toFormat('dd-MM-yyyy')
-                                                : 'Unknown'}
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Pill
-                                                variant="filled"
-                                                className={`bg-gray-100 ${user.isActive ? 'text-green-600' : 'text-red-600'}`}
-                                            >
-                                                {user.isActive
-                                                    ? t('status.active')
-                                                    : t('status.inactive')}
-                                            </Pill>
-                                        </Table.Td>
+                                                <Text fw={500}>
+                                                    {user.fullName}
+                                                </Text>
+                                                <Badge color={badgeColor}>
+                                                    {statusLabel}
+                                                </Badge>
+                                            </Flex>
+                                            <Divider my="xs" />
+                                            <Text size="sm">{user.email}</Text>
+                                            <Text size="xs" c="dimmed">
+                                                {createdDate}
+                                            </Text>
+                                            <Group mt="md">
+                                                <Button
+                                                    variant="light"
+                                                    size="xs"
+                                                >
+                                                    {t('table.edit')}
+                                                </Button>
+                                                <Button
+                                                    variant="light"
+                                                    size="xs"
+                                                    color="red"
+                                                >
+                                                    {t('table.delete')}
+                                                </Button>
+                                            </Group>
+                                        </Card>
+                                    );
+                                })}
+                            </Stack>
+                        );
+                    }
+
+                    return (
+                        <TableScrollContainer minWidth={800} type="native">
+                            <Table
+                                withRowBorders
+                                withColumnBorders
+                                striped
+                                verticalSpacing="xs"
+                            >
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th>
+                                            {t('table.fullName')}
+                                        </Table.Th>
+                                        <Table.Th>{t('table.email')}</Table.Th>
+                                        <Table.Th>{t('table.role')}</Table.Th>
+                                        <Table.Th>
+                                            {t('table.createdBy')}
+                                        </Table.Th>
+                                        <Table.Th>
+                                            <EntityColumn
+                                                entity="users"
+                                                field="createdAt"
+                                                label={t('table.createdAt')}
+                                            />
+                                        </Table.Th>
+                                        <Table.Th>{t('table.status')}</Table.Th>
                                     </Table.Tr>
-                                ))}
-                            </Table.Tbody>
-                        </Table>
-                    </TableScrollContainer>
-                )}
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
+                                    {users.map((user: Daum) => {
+                                        let roleLabel = 'Job Seeker';
+                                        if (user.role === 'WORK_PROVIDER') {
+                                            roleLabel = 'Employer';
+                                        } else if (
+                                            user.role === 'ADMINISTRATOR'
+                                        ) {
+                                            roleLabel = 'Administrator';
+                                        } else if (user.role === 'MENTOR') {
+                                            roleLabel = 'Mentor';
+                                        }
+
+                                        const createdDate = user.createdDate
+                                            ? DateTime.fromJSDate(
+                                                  new Date(user.createdDate),
+                                              ).toFormat('dd-MM-yyyy')
+                                            : 'Unknown';
+                                        const statusLabel = user.isActive
+                                            ? t('status.active')
+                                            : t('status.inactive');
+                                        const pillClass = `bg-gray-100 ${user.isActive ? 'text-green-600' : 'text-red-600'}`;
+
+                                        return (
+                                            <Table.Tr key={user.id}>
+                                                <Table.Td>
+                                                    {user.fullName}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Link
+                                                        href={`mailto:${user.email}`}
+                                                        className="hover:underline"
+                                                    >
+                                                        {user.email}
+                                                    </Link>
+                                                </Table.Td>
+                                                <Table.Td>{roleLabel}</Table.Td>
+                                                <Table.Td>
+                                                    {user.createdBy}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    {createdDate}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Pill
+                                                        variant="filled"
+                                                        className={pillClass}
+                                                    >
+                                                        {statusLabel}
+                                                    </Pill>
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        );
+                                    })}
+                                </Table.Tbody>
+                            </Table>
+                        </TableScrollContainer>
+                    );
+                })()}
             </Paper>
         </PageContainer>
     );

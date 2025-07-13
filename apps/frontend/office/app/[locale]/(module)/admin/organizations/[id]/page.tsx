@@ -1,6 +1,7 @@
 'use client';
 
 import { useOrganizationDetail } from '@/hooks/organization-detail';
+import { useRouter } from '@/i18n/routing';
 import {
     Alert,
     Anchor,
@@ -16,6 +17,7 @@ import {
     Title,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { fetcher, logger } from '@shega/shared';
 import {
     IconAlertCircle,
@@ -34,7 +36,7 @@ import {
     IconWorld,
     IconX,
 } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -151,6 +153,38 @@ interface Organization {
 
 // Mock DeclineModal component
 const DeclineModal = ({ close }: { close: () => void }) => {
+    const router = useRouter();
+    const [note, setNote] = useState('');
+    const { id } = useParams<{ id: string }>();
+    const { mutateAsync: decline, isPending } = useMutation({
+        mutationFn: async () => {
+            const response = await fetcher(`/organization/decline/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ note }),
+            });
+            return response;
+        },
+        onSuccess: () => {
+            router.push('/admin/organizations');
+            notifications.show({
+                title: 'Success',
+                message: 'Organization has been successfully declined',
+                color: 'green',
+            });
+        },
+        onError: (error) => {
+            notifications.show({
+                title: 'Error Declining Organization',
+                message: error.message,
+                color: 'red',
+            });
+        },
+    });
+    const handleDecline = () => {
+        decline();
+        close();
+    };
     return (
         <Stack gap="md">
             <Text size="sm" c="dimmed">
@@ -165,13 +199,17 @@ const DeclineModal = ({ close }: { close: () => void }) => {
                     borderRadius: '8px',
                     resize: 'vertical',
                 }}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
                 placeholder="Enter decline reason..."
             />
             <Group justify="flex-end" gap="sm">
                 <Button variant="outline" onClick={close}>
                     Cancel
                 </Button>
-                <Button color="red">Decline Request</Button>
+                <Button color="red" loading={isPending} onClick={handleDecline}>
+                    Decline Request
+                </Button>
             </Group>
         </Stack>
     );

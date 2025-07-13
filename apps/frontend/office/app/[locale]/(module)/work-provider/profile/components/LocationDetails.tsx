@@ -25,8 +25,7 @@ import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-// Schema definition
-export const locationSchema = z.object({
+const locationSchema = z.object({
     country: z.string().optional(),
     region: z.string().optional(),
     city: z.string().optional(),
@@ -42,15 +41,6 @@ type LocationSectionProps = {
     canUpdateProfile: boolean;
 };
 
-const fields: { name: keyof LocationFormData; label: string }[] = [
-    { name: 'country', label: 'Country' },
-    { name: 'region', label: 'Region' },
-    { name: 'city', label: 'City' },
-    { name: 'subCity', label: 'Sub City' },
-    { name: 'woreda', label: 'Woreda' },
-    { name: 'addressText', label: 'Address Description' },
-];
-
 export const LocationSection = ({
     defaultLocation,
     canUpdateProfile,
@@ -61,7 +51,6 @@ export const LocationSection = ({
     const {
         control,
         handleSubmit,
-        getValues,
         reset,
         formState: { errors },
     } = useForm<LocationFormData>({
@@ -71,6 +60,10 @@ export const LocationSection = ({
 
     const selectedCountry = useWatch({ control, name: 'country' });
     const selectedRegion = useWatch({ control, name: 'region' });
+    const selectedCity = useWatch({ control, name: 'city' });
+    const selectedSubCity = useWatch({ control, name: 'subCity' });
+    const selectedWoreda = useWatch({ control, name: 'woreda' });
+    const selectedAddressText = useWatch({ control, name: 'addressText' });
 
     const { data: countries = [] } = useQuery({
         queryKey: ['countries'],
@@ -95,12 +88,21 @@ export const LocationSection = ({
 
     const mutation = useMutation({
         mutationFn: (data: LocationFormData) => updateLocation(id ?? '', data),
-        onSuccess: () => {
-            setIsEditingLocation(false);
-        },
+        onSuccess: () => setIsEditingLocation(false),
     });
 
     const onSubmit = (data: LocationFormData) => mutation.mutate(data);
+
+    const getLabel = (
+        id: string | undefined,
+        list: { id: string; name: string }[],
+    ): string => {
+        if (!id) {
+            return '-';
+        }
+        const match = list.find((item) => item.id === id);
+        return match ? match.name : '-';
+    };
 
     return (
         <Paper p="md" mt="xl">
@@ -143,71 +145,99 @@ export const LocationSection = ({
             <Divider mb="md" />
 
             <Group gap="md" wrap="wrap">
-                {fields.map(({ name, label }) => {
-                    const isSelect = ['country', 'region', 'city'].includes(
-                        name,
-                    );
-                    const options =
-                        name === 'country'
-                            ? countries.map((c) => ({
-                                  value: c.id,
-                                  label: c.name,
-                              }))
-                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                              name === 'region'
-                              ? regions.map((r) => ({
-                                    value: r.id,
-                                    label: r.name,
-                                }))
-                              : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                name === 'city'
-                                ? cities.map((c) => ({
-                                      value: c.id,
-                                      label: c.name,
-                                  }))
-                                : [];
+                {[
+                    {
+                        name: 'country',
+                        label: 'Country',
+                        value: selectedCountry,
+                        options: countries,
+                        isSelect: true,
+                    },
+                    {
+                        name: 'region',
+                        label: 'Region',
+                        value: selectedRegion,
+                        options: regions,
+                        isSelect: true,
+                    },
+                    {
+                        name: 'city',
+                        label: 'City',
+                        value: selectedCity,
+                        options: cities,
+                        isSelect: true,
+                    },
+                    {
+                        name: 'subCity',
+                        label: 'Sub City',
+                        value: selectedSubCity,
+                        isSelect: false,
+                    },
+                    {
+                        name: 'woreda',
+                        label: 'Woreda',
+                        value: selectedWoreda,
+                        isSelect: false,
+                    },
+                    {
+                        name: 'addressText',
+                        label: 'Address Description',
+                        value: selectedAddressText,
+                        isSelect: false,
+                    },
+                ].map(({ name, label, value, options = [], isSelect }) => (
+                    <Box key={name} w={{ base: '100%', sm: '45%', md: '30%' }}>
+                        <Text size="xs" c="dimmed" mb={4}>
+                            {label}
+                        </Text>
 
-                    return (
-                        <Box
-                            key={name}
-                            w={{ base: '100%', sm: '45%', md: '30%' }}
-                        >
-                            <Text size="xs" c="dimmed" mb={4}>
-                                {label}
+                        {isEditingLocation ? (
+                            <Controller
+                                name={name as keyof LocationFormData}
+                                control={control}
+                                render={({ field }) =>
+                                    isSelect ? (
+                                        <Select
+                                            {...field}
+                                            data={options.map((o) => ({
+                                                value: o.id,
+                                                label: o.name,
+                                            }))}
+                                            placeholder={`Select ${label.toLowerCase()}`}
+                                            onChange={(val) =>
+                                                field.onChange(val)
+                                            }
+                                            value={field.value || null}
+                                            error={
+                                                errors?.[
+                                                    name as keyof LocationFormData
+                                                ]?.message
+                                            }
+                                            clearable
+                                            searchable
+                                        />
+                                    ) : (
+                                        <TextInput
+                                            {...field}
+                                            placeholder={`Enter ${label.toLowerCase()}`}
+                                            error={
+                                                errors?.[
+                                                    name as keyof LocationFormData
+                                                ]?.message
+                                            }
+                                        />
+                                    )
+                                }
+                            />
+                        ) : (
+                            <Text fw={400}>
+                                {isSelect
+                                    ? getLabel(value, options)
+                                    : value || '-'}
                             </Text>
-
-                            {isEditingLocation ? (
-                                <Controller
-                                    name={name}
-                                    control={control}
-                                    render={({ field }) =>
-                                        isSelect ? (
-                                            <Select
-                                                {...field}
-                                                data={options}
-                                                placeholder={`Select ${label.toLowerCase()}`}
-                                                onChange={(value) =>
-                                                    field.onChange(value)
-                                                }
-                                                value={field.value || null}
-                                                error={errors?.[name]?.message}
-                                                clearable
-                                            />
-                                        ) : (
-                                            <TextInput
-                                                {...field}
-                                                placeholder={`Enter ${label.toLowerCase()}`}
-                                                error={errors?.[name]?.message}
-                                            />
-                                        )
-                                    }
-                                />
-                            ) : (
-                                <Text fw={400}>{getValues(name) || '-'}</Text>
-                            )}
-                        </Box>
-                    );
-                })}
+                        )}
+                    </Box>
+                ))}
             </Group>
         </Paper>
     );

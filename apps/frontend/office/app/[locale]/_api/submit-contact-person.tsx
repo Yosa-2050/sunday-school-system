@@ -25,3 +25,31 @@ export const submitContactPerson = async (data: {
 
     return response;
 };
+
+export const updateContactPerson = async (
+    id: string,
+    data: {
+        phoneNumber: string;
+        firstName: string;
+        middleName?: string;
+        lastName?: string;
+        position: string;
+    },
+) => {
+    const token = getCookie(COOKIE_ACCESS_TOKEN)?.toString();
+    if (!token) {
+        throw new Error('Unauthorized: No access token found.');
+    }
+
+    const response = await fetcher(`/organization/contactPerson/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            Accept: '*/*',
+        },
+        body: JSON.stringify(data),
+    });
+
+    return response;
+};

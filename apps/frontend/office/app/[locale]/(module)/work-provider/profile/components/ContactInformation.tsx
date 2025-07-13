@@ -14,8 +14,11 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconBuilding, IconEdit, IconX } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
-import { submitContactPerson } from 'app/[locale]/_api/submit-contact-person';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+    submitContactPerson,
+    updateContactPerson,
+} from 'app/[locale]/_api/submit-contact-person';
 import { useState } from 'react';
 import { type ContactFormData, ContactFormDrawer } from './ContactFormDrawer';
 
@@ -41,7 +44,8 @@ interface ContactSectionProps {
 export default function ContactSection({
     workers,
     canUpdateProfile,
-}: ContactSectionProps) {
+}: Readonly<ContactSectionProps>) {
+    const queryClient = useQueryClient();
     const [opened, setOpened] = useState(false);
     const [selectedType, setSelectedType] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +57,7 @@ export default function ContactSection({
             const [firstNameRaw, middleName = '', lastName = ''] =
                 formData.contactPersonName.trim().split(' ');
             const firstName = firstNameRaw || '';
+
             const payload = {
                 phoneNumber: formData.contactPersonPhone,
                 firstName,
@@ -60,9 +65,18 @@ export default function ContactSection({
                 lastName,
                 position: formData.contactPersonRole,
             };
-            return await submitContactPerson(payload);
+
+            if (formData.id) {
+                return await updateContactPerson(formData.id, payload);
+            }
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            return (await submitContactPerson(payload)) as any;
         },
-        onSuccess: () => {
+
+        onSuccess: (res: { reference: string }) => {
+            queryClient.invalidateQueries({
+                queryKey: ['organization_id', res.reference],
+            });
             notifications.show({
                 title: 'Saved',
                 message: 'Contact info saved successfully',
@@ -70,6 +84,7 @@ export default function ContactSection({
             });
             setOpened(false);
         },
+
         onError: () => {
             notifications.show({
                 title: 'Error',
@@ -78,6 +93,7 @@ export default function ContactSection({
                 icon: <IconX size={16} />,
             });
         },
+
         onSettled: () => {
             setIsLoading(false);
         },
@@ -144,7 +160,9 @@ export default function ContactSection({
                                     <Table.Th>Full Name</Table.Th>
                                     <Table.Th>Phone</Table.Th>
                                     <Table.Th>Created By</Table.Th>
-                                    <Table.Th>Actions</Table.Th>
+                                    {canUpdateProfile && (
+                                        <Table.Th>Actions</Table.Th>
+                                    )}
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
@@ -170,29 +188,32 @@ export default function ContactSection({
                                             <Table.Td>
                                                 {worker.createdBy}
                                             </Table.Td>
-                                            <Table.Td>
-                                                {' '}
-                                                <ActionIcon
-                                                    onClick={() => {
-                                                        setOpened(true);
-                                                        setSelectedWorker({
-                                                            contactPersonEmail:
-                                                                '',
-                                                            contactPersonName: `${profile.firstName} ${profile.middleName} ${profile.lastName}`,
-                                                            contactPersonPhone:
-                                                                profile.phoneNumber ||
-                                                                '',
-                                                            contactPersonRole:
-                                                                worker.type,
-                                                        });
-                                                    }}
-                                                    size="sm"
-                                                    radius="sm"
-                                                    className="hidden group-hover:block"
-                                                >
-                                                    <IconEdit size={16} />
-                                                </ActionIcon>
-                                            </Table.Td>
+                                            {canUpdateProfile && (
+                                                <Table.Td>
+                                                    {' '}
+                                                    <ActionIcon
+                                                        onClick={() => {
+                                                            setOpened(true);
+                                                            setSelectedWorker({
+                                                                id: worker.id,
+                                                                contactPersonEmail:
+                                                                    '',
+                                                                contactPersonName: `${profile.firstName} ${profile.middleName} ${profile.lastName}`,
+                                                                contactPersonPhone:
+                                                                    profile.phoneNumber ||
+                                                                    '',
+                                                                contactPersonRole:
+                                                                    worker.type,
+                                                            });
+                                                        }}
+                                                        size="sm"
+                                                        radius="sm"
+                                                        className="hidden group-hover:block"
+                                                    >
+                                                        <IconEdit size={16} />
+                                                    </ActionIcon>
+                                                </Table.Td>
+                                            )}
                                         </Table.Tr>
                                     );
                                 })}

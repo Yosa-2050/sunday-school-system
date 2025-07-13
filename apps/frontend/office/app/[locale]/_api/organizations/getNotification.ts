@@ -8,11 +8,16 @@ export interface NotificationResponse {
     deliveryStatus: string;
 }
 
-export const getNotificationById = async () => {
-    const response = await fetcher('/notification/getUserInAppNotifications/', {
-        method: 'GET',
+export const getNotificationById = async (q: string) => {
+    const response = await fetcher('/notification/getAllInAppNotifications', {
+        method: 'POST',
+        body: JSON.stringify({ q }),
     });
-    return response as NotificationResponse[];
+    return response as {
+        data: NotificationResponse[];
+        total: number;
+        totalPages: number;
+    };
 };
 
 export const updateNotificationById = async (id: string) => {
