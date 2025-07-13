@@ -29,7 +29,10 @@ import { IconX } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { PageContainer } from '@/components/PageContainer';
-import { type Daum, fetchUsers } from 'app/[locale]/_api/users/fetch-user';
+import {
+    type Daum,
+    fetchRecentUsers,
+} from 'app/[locale]/_api/users/fetch-user';
 
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
@@ -105,7 +108,7 @@ const RecentUsers = () => {
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['users', entityParamSerializer(entityParams)],
-        queryFn: () => fetchUsers(entityParamSerializer(entityParams)),
+        queryFn: () => fetchRecentUsers(entityParamSerializer(entityParams)),
         enabled: !!entityParams,
     });
 
@@ -117,7 +120,7 @@ const RecentUsers = () => {
         return <Text color="red">{t('error')}</Text>;
     }
 
-    const users = data?.data.slice(0, 5) ?? [];
+    const users = Array.isArray(data) ? data : data?.data || [];
 
     return (
         <PageContainer className="flex flex-col gap-2.5 mt-10">

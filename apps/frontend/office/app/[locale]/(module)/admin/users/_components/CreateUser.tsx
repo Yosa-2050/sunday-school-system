@@ -1,3 +1,4 @@
+import Can from '@/components/Can';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Button,
@@ -100,56 +101,56 @@ export function CreateUser() {
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack gap="sm">
-                        {/* <Can roles={["super_admin"]}> */}
-                        <Controller
-                            name="role"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    label={t('roleLabel')}
-                                    placeholder={t('rolePlaceholder')}
-                                    data={[
-                                        {
-                                            value: 'JOB_SEEKER',
-                                            label: t('roles.jobSeeker'),
-                                        },
-                                        {
-                                            value: 'ADMINISTRATOR',
-                                            label: t('roles.administrator'),
-                                        },
-                                    ]}
-                                    error={errors.role?.message}
-                                    allowDeselect={false}
-                                    withAsterisk
-                                />
-                            )}
-                        />
-                        {/* </Can> */}
-                        {/* <Can roles={["administrator"]}>
-              <Controller
-                name="role"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    label={t("roleLabel")}
-                    placeholder={t("rolePlaceholder")}
-                    value={"JOB_SEEKER"}
-                    readOnly
-                    data={[
-                      {
-                        value: "JOB_SEEKER",
-                        label: t("roles.jobSeeker"),
-                      },
-                    ]}
-                    error={errors.role?.message}
-                    allowDeselect={false}
-                    withAsterisk
-                  />
-                )}
-              />
-            </Can> */}
+                        <Can roles={['super_admin']}>
+                            <Controller
+                                name="role"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        label={t('roleLabel')}
+                                        placeholder={t('rolePlaceholder')}
+                                        data={[
+                                            {
+                                                value: 'JOB_SEEKER',
+                                                label: t('roles.jobSeeker'),
+                                            },
+                                            {
+                                                value: 'ADMINISTRATOR',
+                                                label: t('roles.administrator'),
+                                            },
+                                        ]}
+                                        error={errors.role?.message}
+                                        allowDeselect={false}
+                                        withAsterisk
+                                    />
+                                )}
+                            />
+                        </Can>
+                        <Can roles={['administrator']}>
+                            <Controller
+                                name="role"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        label={t('roleLabel')}
+                                        placeholder={t('rolePlaceholder')}
+                                        value={'JOB_SEEKER'}
+                                        readOnly
+                                        data={[
+                                            {
+                                                value: 'JOB_SEEKER',
+                                                label: t('roles.jobSeeker'),
+                                            },
+                                        ]}
+                                        error={errors.role?.message}
+                                        allowDeselect={false}
+                                        withAsterisk
+                                    />
+                                )}
+                            />
+                        </Can>
                         <TextInput
                             label={t('firstNameLabel')}
                             placeholder={t('firstNamePlaceholder')}

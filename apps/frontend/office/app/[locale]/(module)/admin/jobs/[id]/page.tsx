@@ -68,7 +68,8 @@ const JobDetails = () => {
                 queryClient.invalidateQueries({
                     queryKey: ['job', job?.programId],
                 });
-                router.push('/admin/jobs');
+                // router.push('/admin/jobs');
+                window.location.replace('/admin/jobs');
                 notifications.show({
                     title: 'Job Approved',
                     message: 'The job has been successfully approved',

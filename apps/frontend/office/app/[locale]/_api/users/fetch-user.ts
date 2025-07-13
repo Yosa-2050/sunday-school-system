@@ -51,9 +51,16 @@ export const fetchUsers = async (payload: string) => {
     return response;
 };
 
-export const fetchRecentUsers = async () => {
-    const response = await fetcher('/admin-report/getRecentRegisteredUsers', {
-        method: 'GET',
-    });
+export const fetchRecentUsers = async (payload: string) => {
+    if (!payload) {
+        throw new Error('Payload can not be empty');
+    }
+    const response: Response = await fetcher(
+        '/admin-report/getRecentRegisteredUsers',
+        {
+            method: 'GET',
+        },
+    );
+
     return response;
 };

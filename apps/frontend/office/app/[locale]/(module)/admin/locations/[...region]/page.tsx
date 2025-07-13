@@ -15,7 +15,7 @@ import {
     TextInput,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconChevronRight, IconPin } from '@tabler/icons-react';
+import { IconPin } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     addRegion,
@@ -145,11 +145,11 @@ const CitiesPage = () => {
                                         <Table.Th style={{ textAlign: 'left' }}>
                                             {t('isActive')}
                                         </Table.Th>
-                                        <Table.Th
+                                        {/* <Table.Th
                                             style={{ textAlign: 'center' }}
                                         >
                                             {t('actions')}
-                                        </Table.Th>
+                                        </Table.Th> */}
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
@@ -159,7 +159,7 @@ const CitiesPage = () => {
                                             <Table.Td>
                                                 {city.isActive ? 'Yes' : 'No'}
                                             </Table.Td>
-                                            <Table.Td
+                                            {/* <Table.Td
                                                 style={{ textAlign: 'center' }}
                                             >
                                                 <Button
@@ -174,7 +174,7 @@ const CitiesPage = () => {
                                                         size={16}
                                                     />
                                                 </Button>
-                                            </Table.Td>
+                                            </Table.Td> */}
                                         </Table.Tr>
                                     ))}
                                 </Table.Tbody>

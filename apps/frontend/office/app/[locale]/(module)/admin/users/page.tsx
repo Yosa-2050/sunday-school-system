@@ -169,6 +169,7 @@ const UsersPage = () => {
     );
 
     const roles = [
+        { value: '', label: t('roles.allroles') },
         { value: 'ADMINISTRATOR', label: t('roles.administrator') },
         { value: 'WORK_PROVIDER', label: t('roles.workProvider') },
         { value: 'JOB_SEEKER', label: t('roles.jobSeeker') },
