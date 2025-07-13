@@ -627,7 +627,7 @@ export class JobPortalService {
     }
 
     async programApproval(id: string, status: ApprovalType, note = '') {
-        const program = await this.programRepo.findOneBy({ id });
+        let program = await this.programRepo.findOneBy({ id });
         if (!program) {
             throw new EntityNotFoundException('program');
         }
@@ -637,7 +637,7 @@ export class JobPortalService {
         if (program?.status !== ApprovalType.Waiting_Approval) {
             throw new EntityOperationNotAllowedException('Program', 'Approve');
         }
-        const updatedJob = await this.programRepo.update(id, {
+        const updatedProg = await this.programRepo.update(id, {
             status,
             postedDate:
                 status === ApprovalType.Approved
@@ -649,11 +649,10 @@ export class JobPortalService {
             await this.notesService.create(id, note, 'Program approved');
         }
 
-        const result = UtilityServices.EnsureUpdated(updatedJob, id);
-        const job = await this.jobRepo.findOneBy({ program: { id } });
-        if (job) {
+        const result = UtilityServices.EnsureUpdated(updatedProg, id);
+        if (result.success) {
+            program = await this.programRepo.findOneBy({ id });
             await this.SendJobApprovedNotification(
-                job,
                 result.success,
                 status,
                 note,
@@ -665,30 +664,51 @@ export class JobPortalService {
     }
 
     private async SendJobApprovedNotification(
-        job: Jobs,
         result: boolean,
         approvalType: ApprovalType,
         note: string,
         program: Programs,
     ) {
         if (result) {
-            const programType =
-                program.programType === ProgramType.Job
-                    ? 'Job'
-                    : 'Mentorship program';
-            const user = await this.profileService.findUserByProfileId(
-                job.postedBy.employee.profile.id,
-            );
+            let programType = '';
+            let emailTemplate = null;
+            let user = null;
+            if (program.programType === ProgramType.Job) {
+                programType = 'Job';
+                const job = await this.jobRepo.findOneBy({
+                    program: { id: program.id },
+                });
+                user = await this.profileService.findUserByProfileId(
+                    job.postedBy.employee.profile.id,
+                );
+                emailTemplate = await this.getProgramApprovalEmailTemplate(
+                    approvalType,
+                    programType,
+                    job.postedBy.employee.profile.firstName,
+                    job.program.title,
+                    job.organization.name,
+                    note,
+                );
+            } else if (program.programType === ProgramType.Mentorship) {
+                programType = 'Mentorship program';
+                const mentorship = await this.mentorshipRepo.findOneBy({
+                    program: { id: program.id },
+                });
+                user = await this.profileService.findUserByProfileId(
+                    mentorship.mentor.profile.id,
+                );
+                emailTemplate = await this.getProgramApprovalEmailTemplate(
+                    approvalType,
+                    programType,
+                    mentorship.mentor.profile.firstName,
+                    program.title,
+                    '',
+                    note,
+                );
+            }
 
             //Get email template and send email
-            const emailTemplate = await this.getProgramApprovalEmailTempalte(
-                approvalType,
-                programType,
-                job.postedBy.employee.profile.firstName,
-                job.program.title,
-                job.organization.name,
-                note,
-            );
+
             if (emailTemplate) {
                 this.notificationService.send({
                     channel: NotificationChannel.Email,
@@ -700,16 +720,16 @@ export class JobPortalService {
             }
 
             //Get InApp template and send InApp notification
-            const inApptemplate = this.getProgramApprovalInAppTempalte(
+            const inAppTemplate = this.getProgramApprovalInAppTemplate(
                 approvalType,
                 programType,
                 program.title,
             );
-            if (inApptemplate) {
+            if (inAppTemplate) {
                 this.notificationService.send({
                     channel: NotificationChannel.InApp,
-                    subject: inApptemplate.subject,
-                    content: inApptemplate.content,
+                    subject: inAppTemplate.subject,
+                    content: inAppTemplate.content,
                     to: user.id,
                     reference: user.id,
                     isRealTimeNotification: false,
@@ -719,7 +739,7 @@ export class JobPortalService {
         }
     }
 
-    private async getProgramApprovalEmailTempalte(
+    private async getProgramApprovalEmailTemplate(
         approvalType: string,
         programType: string,
         employerName: string,
@@ -788,7 +808,7 @@ export class JobPortalService {
         return emailTemplate;
     }
 
-    private getProgramApprovalInAppTempalte(
+    private getProgramApprovalInAppTemplate(
         approvalType: string,
         programType: string,
         programTitle: string,
