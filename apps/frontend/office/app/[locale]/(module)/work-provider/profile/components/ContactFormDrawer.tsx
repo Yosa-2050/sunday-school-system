@@ -9,6 +9,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const contactSchema = z.object({
+    id: z.string().optional(),
     contactPersonName: z.string().min(1, 'Full name is required'),
     contactPersonRole: z.string().min(1, 'Role is required'),
     contactPersonPhone: z.string().min(1, 'Phone number is required'),
@@ -30,7 +31,7 @@ const contactSchema = z.object({
         }, 'Use a corporate email'),
 });
 
-export type ContactFormData = z.infer<typeof contactSchema>;
+export type ContactFormData = z.infer<typeof contactSchema> & { id?: string };
 
 interface ContactFormDrawerProps {
     opened: boolean;
@@ -50,7 +51,7 @@ export function ContactFormDrawer({
     initialType,
     setInitialType,
     defaultValues,
-}: ContactFormDrawerProps) {
+}: Readonly<ContactFormDrawerProps>) {
     const {
         control,
         handleSubmit,
@@ -60,6 +61,7 @@ export function ContactFormDrawer({
     } = useForm<ContactFormData>({
         resolver: zodResolver(contactSchema),
         defaultValues: {
+            id: defaultValues?.id || '',
             contactPersonName: defaultValues?.contactPersonName || '',
             contactPersonRole: defaultValues?.contactPersonRole || '',
             contactPersonPhone: defaultValues?.contactPersonPhone || '',

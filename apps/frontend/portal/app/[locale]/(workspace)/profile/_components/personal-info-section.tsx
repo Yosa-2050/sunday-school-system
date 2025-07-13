@@ -246,17 +246,20 @@ export default function PersonalInfoSection({
                                                 name="birthDate"
                                                 control={control}
                                                 render={({ field }) => {
+                                                    // Max date = today's date minus 18 years
                                                     const maxDate = new Date();
                                                     maxDate.setFullYear(
                                                         maxDate.getFullYear() -
                                                             18,
                                                     );
+
                                                     return (
                                                         <DateInput
                                                             label="Birth Date"
                                                             placeholder="Select your birth date"
                                                             size="md"
                                                             hideOutsideDates
+                                                            maxDate={maxDate}
                                                             styles={{
                                                                 input: {
                                                                     '&:focus': {
@@ -272,7 +275,6 @@ export default function PersonalInfoSection({
                                                                     fontWeight: 500,
                                                                 },
                                                             }}
-                                                            {...field}
                                                             value={
                                                                 field.value
                                                                     ? new Date(
@@ -285,14 +287,6 @@ export default function PersonalInfoSection({
                                                                     value?.toISOString(),
                                                                 )
                                                             }
-                                                            maxDate={maxDate}
-                                                            minDate={
-                                                                new Date(
-                                                                    1900,
-                                                                    0,
-                                                                    1,
-                                                                )
-                                                            } // Optional: Set a reasonable minimum date
                                                         />
                                                     );
                                                 }}

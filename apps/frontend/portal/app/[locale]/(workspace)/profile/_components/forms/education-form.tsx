@@ -24,7 +24,6 @@ import {
     useDeleteEducation,
     useEducationLevels,
     useFieldsOfStudy,
-    useJobSeekerDetails,
     useUpdateEducationalHistoryEntry,
 } from 'app/_api/profile/queries';
 import { useState } from 'react';
@@ -63,9 +62,8 @@ interface EducationFormProps {
 export default function EducationForm({
     education,
     onCancel,
-}: EducationFormProps) {
+}: Readonly<EducationFormProps>) {
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-    const { data: jobSeeker } = useJobSeekerDetails();
     const [isCurrentlyStudying, setIsCurrentlyStudying] = useState(
         education ? !education.endDate : false,
     );
@@ -85,7 +83,6 @@ export default function EducationForm({
         handleSubmit,
         control,
         formState: { errors, isDirty },
-        setValue,
         watch,
     } = useForm<FormValues>({
         resolver: zodResolver(schema),
@@ -216,6 +213,7 @@ export default function EducationForm({
                         <IconSchool size={20} />
                         <TextInput
                             label="School"
+                            withAsterisk
                             placeholder="Enter school name"
                             {...register('school')}
                             error={errors.school?.message}
@@ -229,6 +227,7 @@ export default function EducationForm({
                         render={({ field }) => (
                             <Select
                                 label="Education Level"
+                                withAsterisk
                                 placeholder="Select education level"
                                 data={
                                     educationLevels?.map((level) => ({
@@ -250,6 +249,7 @@ export default function EducationForm({
                         render={({ field }) => (
                             <Select
                                 label="Field of Study"
+                                withAsterisk
                                 placeholder="Select field of study"
                                 data={
                                     fieldsOfStudy?.map((field) => ({
@@ -271,6 +271,7 @@ export default function EducationForm({
                             control={control}
                             render={({ field }) => (
                                 <DateInput
+                                    withAsterisk
                                     label="Start Date"
                                     placeholder="Select start date"
                                     valueFormat="MMMM YYYY"
@@ -313,8 +314,9 @@ export default function EducationForm({
                         control={control}
                         render={({ field }) => (
                             <NumberInput
+                                withAsterisk
                                 label="Grade/Score"
-                                placeholder="Enter your grade (0-100)"
+                                placeholder="Enter your grade"
                                 min={0}
                                 max={12}
                                 clampBehavior="strict"
@@ -343,18 +345,6 @@ export default function EducationForm({
                     <Divider my="sm" />
 
                     <Group justify="space-between">
-                        {education && (
-                            <Button
-                                variant="subtle"
-                                color="red"
-                                leftSection={<IconTrash size={16} />}
-                                onClick={() => setDeleteConfirmOpen(true)}
-                                disabled={isLoading}
-                            >
-                                Delete Education
-                            </Button>
-                        )}
-
                         <Group justify="flex-end" gap="sm">
                             <Button
                                 variant="default"

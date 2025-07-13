@@ -10,11 +10,9 @@ import {
     Image,
     Modal,
     Paper,
-    Progress,
     Stack,
     Table,
     Text,
-    Title,
     Tooltip,
     rem,
 } from '@mantine/core';
@@ -113,7 +111,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
         uploadDocument(undefined, {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['organizationDocuments', orgId],
+                    queryKey: ['organization_id', orgId],
                 });
                 setUploadForm((prev) => ({ ...prev, [docType]: null }));
             },
@@ -206,7 +204,6 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
                     )
                 }
                 variant={isUploaded ? 'light' : 'filled'}
-                color={isUploaded ? 'orange' : 'blue'}
             >
                 {buttonLabel}
             </Button>
@@ -337,27 +334,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
     });
 
     return (
-        <Stack gap="md">
-            {/* Compact Header */}
-            <Paper p="md" withBorder>
-                <Group justify="space-between" align="center" mb="sm">
-                    <Box>
-                        <Title order={5}>Verification Documents</Title>
-                        <Text size="xs" c="dimmed">
-                            Upload required documents (one per type)
-                        </Text>
-                    </Box>
-                    <Badge
-                        size="lg"
-                        color={completedDocs === totalDocs ? 'green' : 'blue'}
-                    >
-                        {completedDocs}/{totalDocs}
-                    </Badge>
-                </Group>
-                <Progress value={progressPercentage} size="sm" />
-            </Paper>
-
-            {/* Compact Table */}
+        <Stack gap="md" mt={'md'}>
             <Paper withBorder>
                 <Table striped highlightOnHover>
                     <Table.Thead>

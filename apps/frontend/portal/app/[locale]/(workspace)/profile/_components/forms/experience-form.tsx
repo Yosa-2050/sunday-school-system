@@ -15,8 +15,7 @@ import {
     Textarea,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { notifications } from '@mantine/notifications';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import { logger } from '@shega/shared';
 import {
     useCities,
     useCountries,
@@ -120,24 +119,8 @@ export default function ExperienceForm({
             };
 
             onSubmit(experienceData);
-
-            const baseMessage = 'Experience';
-            const actionType = experience ? 'updated' : 'added';
-            const message = `${baseMessage} ${actionType} successfully`;
-
-            notifications.show({
-                title: 'Success',
-                message,
-                color: 'green',
-                icon: <IconCheck size={16} />,
-            });
         } catch (error) {
-            notifications.show({
-                title: 'Error',
-                message: 'Failed to save experience. Please try again.',
-                color: 'red',
-                icon: <IconX size={16} />,
-            });
+            logger.error(error);
         }
     };
 
@@ -185,6 +168,7 @@ export default function ExperienceForm({
                         <Select
                             label="Employment Type"
                             placeholder="Select employment type"
+                            withAsterisk
                             data={employmentTypes.map((type) => ({
                                 value: type.value,
                                 label: type.key,
@@ -365,7 +349,11 @@ export default function ExperienceForm({
                     <Button variant="light" color="gray" onClick={onCancel}>
                         Cancel
                     </Button>
-                    <Button type="submit" disabled={!isDirty}>
+                    <Button
+                        type="submit"
+                        disabled={!isDirty}
+                        loading={isLoading}
+                    >
                         {experience ? 'Update Experience' : 'Add Experience'}
                     </Button>
                 </Group>

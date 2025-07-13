@@ -55,7 +55,7 @@ export const updateLocation = async (
     organizationId: string,
     data: LocationFormData,
 ) => {
-    const response = await fetcher(`/address/location/${organizationId}`, {
+    const response = await fetcher(`/organization/location/${organizationId}`, {
         method: 'PATCH',
         body: JSON.stringify({
             ...data,
