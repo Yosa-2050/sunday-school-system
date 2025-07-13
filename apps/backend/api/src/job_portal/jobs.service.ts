@@ -28,7 +28,7 @@ import {
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     AddExperienceRequestDto,
-    UpdateExperianceRequestDto,
+    UpdateExperienceRequestDto,
 } from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobApplicationRequestDto } from './dto/request/job-application.request.dto';
@@ -57,7 +57,7 @@ export class JobsService {
         @InjectRepository(ApplicantSkills)
         private readonly applicantSkillRepo: Repository<ApplicantSkills>,
         @InjectRepository(Experiance)
-        private readonly experianceRepo: Repository<Experiance>,
+        private readonly experienceRepo: Repository<Experiance>,
         @InjectRepository(EducationHistory)
         private readonly educationalHistoryRepo: Repository<EducationHistory>,
         private readonly notificationService: NotificationService,
@@ -135,6 +135,7 @@ export class JobsService {
         }
         return UtilityServices.SuccessIdResponse();
     }
+
     private async GetJobTemplate(
         applicant: Applicants,
         program: Programs,
@@ -189,6 +190,7 @@ export class JobsService {
             groups: ['internal'], // will include createdAt
         });
     }
+
     async jobsAppliedByProgramId(id: string) {
         const existingApp = await this.jobApplicantRepo.findOneBy({
             program: { id },
@@ -217,6 +219,7 @@ export class JobsService {
 
         return UtilityServices.EnsureUpdated(updated, applicantId);
     }
+
     async addSkills(applicantId: string, dto: ListStringRequestModel) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
@@ -250,14 +253,15 @@ export class JobsService {
         return UtilityServices.SuccessIdResponse();
     }
 
-    async addExperiance(applicantId: string, dto: AddExperienceRequestDto) {
+    async addExperience(applicantId: string, dto: AddExperienceRequestDto) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        const experiance = this.experianceRepo.create(dto);
-        experiance.applicant = applicant;
+        const experience = this.experienceRepo.create(dto);
+        experience.applicant = applicant;
 
-        return this.experianceRepo.save(experiance);
+        return this.experienceRepo.save(experience);
     }
+
     async addEducationalHistory(
         applicantId: string,
         dto: AddEducationalHistoryRequestDto,
@@ -280,25 +284,29 @@ export class JobsService {
         return this.educationalHistoryRepo.save(history);
     }
 
-    async updateExperiance(
+    async updateExperience(
         applicantId: string,
-        experianceId: string,
-        dto: UpdateExperianceRequestDto,
+        experienceId: string,
+        dto: UpdateExperienceRequestDto,
     ) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        const existingExperiance = await applicant.experiance;
+        const existingExperience = await this.experienceRepo.findOneBy({
+            applicant: { id: applicantId },
+            id: experienceId,
+        });
 
-        if (!existingExperiance.find((x) => x.id === experianceId)) {
-            throw new EntityNotFoundException('Experiance');
+        if (!existingExperience) {
+            throw new EntityNotFoundException('Experience');
         }
-        const experiance = await this.experianceRepo.preload({
-            id: experianceId,
+        const experience = await this.experienceRepo.preload({
+            id: experienceId,
             ...dto,
         });
 
-        return this.experianceRepo.save(experiance);
+        return this.experienceRepo.save(experience);
     }
+
     async updateEducationalHistory(
         applicantId: string,
         historyId: string,
@@ -306,8 +314,12 @@ export class JobsService {
     ) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        const educationHistory = await applicant.educationalHistory;
-        if (!educationHistory.find((x) => x.id === historyId)) {
+        const educationHistory = await this.educationalHistoryRepo.findOneBy({
+            applicant: { id: applicantId },
+            id: historyId,
+        });
+
+        if (!educationHistory) {
             throw new EntityNotFoundException('EducationalHistory');
         }
 
@@ -325,27 +337,30 @@ export class JobsService {
         return this.educationalHistoryRepo.save(history);
     }
 
-    async deleteExperiance(applicantId: string, experianceId: string) {
+    async deleteExperience(applicantId: string, experienceId: string) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        const existingExperiance = await applicant.experiance;
+        const experience = await this.experienceRepo.findOneBy({
+            applicant: { id: applicantId },
+            id: experienceId,
+        });
 
-        const experiance = existingExperiance.find(
-            (x) => x.id === experianceId,
-        );
-        if (!experiance) {
-            throw new EntityNotFoundException('Experiance');
+        if (!experience) {
+            throw new EntityNotFoundException('Experience');
         }
-        const deleted = await this.experianceRepo.delete(experiance.id);
+        const deleted = await this.experienceRepo.delete(experience.id);
 
-        return UtilityServices.EnsureDeleted(deleted, experianceId);
+        return UtilityServices.EnsureDeleted(deleted, experienceId);
     }
+
     async deleteEducationalHistory(applicantId: string, historyId: string) {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
-        const educationHistory = await applicant.educationalHistory;
+        const history = await this.educationalHistoryRepo.findOneBy({
+            applicant: { id: applicantId },
+            id: historyId,
+        });
 
-        const history = educationHistory.find((x) => x.id === historyId);
         if (!history) {
             throw new EntityNotFoundException('EducationalHistory');
         }
