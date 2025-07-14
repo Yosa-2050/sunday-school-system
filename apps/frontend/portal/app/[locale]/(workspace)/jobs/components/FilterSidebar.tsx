@@ -1,3 +1,5 @@
+'use client';
+
 import {
     Box,
     Button,
@@ -16,6 +18,7 @@ import { IconFilter, IconMapPin, IconSearch, IconX } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { type Filter, fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import { fetchCities, fetchCountries } from 'app/_api/location/fetch-countries';
+import { useGetCategories } from 'app/_api/profile/queries';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
@@ -60,6 +63,7 @@ export const FilterSidebar = ({
         queryKey: ['countries'],
         queryFn: () => fetchCountries(),
     });
+    const { data: categories } = useGetCategories();
 
     const countryCode = countries?.find(
         (country) => country.id === filters.countryId,
@@ -150,6 +154,33 @@ export const FilterSidebar = ({
                                 searchable
                                 clearable
                                 disabled={!countryCode}
+                            />
+                        </Box>
+                        <Box>
+                            <Text size="xs" fw={500} mb="xs">
+                                {t('category')}
+                            </Text>
+                            <Select
+                                key={`city-${filters.categoryId}`}
+                                value={filters.categoryId || null}
+                                onChange={(value) =>
+                                    setFilters({
+                                        ...filters,
+                                        categoryId: value || '',
+                                    })
+                                }
+                                placeholder="Select City"
+                                data={
+                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                    categories?.map((city) => ({
+                                        value: city.id ?? '',
+                                        label: city.name,
+                                    })) || []
+                                }
+                                leftSection={<IconMapPin size={16} />}
+                                radius="md"
+                                searchable
+                                clearable
                             />
                         </Box>
 

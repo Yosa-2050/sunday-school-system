@@ -115,7 +115,7 @@ export default function JobsPage() {
         setShouldApplyFilters(true);
     };
 
-    if (isLoading || isFetching) {
+    if (isLoading) {
         return <LoadingOverlay visible={true} h="100vh" />;
     }
     return (
