@@ -5,10 +5,11 @@ import { EntityNotFoundException } from '../ExceptionHandlers/Exceptions/notfoun
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class UtilityServices {
-    static EnsureUpdated(result: UpdateResult, id: string) {
+    static EnsureUpdated(result: UpdateResult, id: string, message = null) {
         if (result.affected === 0) {
             throw new BadRequestException(
-                `Update with ID ${id} failed, please contact your administrator`,
+                message ??
+                    `Update with ID ${id} failed, please contact your administrator`,
             );
         }
         return UtilityServices.SuccessIdResponse(id);

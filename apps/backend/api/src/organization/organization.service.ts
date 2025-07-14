@@ -13,7 +13,7 @@ import { PasswordService } from '@shega/Utilities/password.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LookupService } from '@shega/Utilities/service/lookup-seeder.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
-import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
+import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import { Category } from '@shega/job_portal/entities/category.entity';

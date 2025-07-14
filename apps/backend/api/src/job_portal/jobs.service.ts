@@ -7,9 +7,11 @@ import { ListStringRequestModel } from '@shega/Utilities/models/list-string.mode
 import { PaginationDto2 } from '@shega/Utilities/models/paginated.request2';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
-import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
+import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
@@ -65,6 +67,7 @@ export class JobsService {
         private savedProgramsRepo: Repository<SavedPrograms>,
         @InjectRepository(Programs)
         private programsRepo: Repository<Programs>,
+        private addressService: AddressService,
     ) {}
 
     async getApplicantDetail(id: string) {
@@ -257,6 +260,15 @@ export class JobsService {
         const applicant = await this.FindApplicantOrThrow(applicantId);
 
         const experience = this.experienceRepo.create(dto);
+        experience.country = dto.countryId
+            ? await this.addressService.findCountryById(dto.countryId)
+            : null;
+        experience.state = dto.stateId
+            ? await this.addressService.findLocationInfoById(dto.stateId)
+            : null;
+        experience.city = dto.cityId
+            ? await this.addressService.findLocationInfoById(dto.cityId)
+            : null;
         experience.applicant = applicant;
 
         return this.experienceRepo.save(experience);
@@ -303,6 +315,16 @@ export class JobsService {
             id: experienceId,
             ...dto,
         });
+
+        experience.country = dto.countryId
+            ? await this.addressService.findCountryById(dto.countryId)
+            : null;
+        experience.state = dto.stateId
+            ? await this.addressService.findLocationInfoById(dto.stateId)
+            : null;
+        experience.city = dto.cityId
+            ? await this.addressService.findLocationInfoById(dto.cityId)
+            : null;
 
         return this.experienceRepo.save(experience);
     }

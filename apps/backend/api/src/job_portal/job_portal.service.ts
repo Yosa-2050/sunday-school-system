@@ -1118,6 +1118,11 @@ export class JobPortalService {
             mentorId,
         );
 
+        const appliedUsers = await this.jobApplicationRepo.findBy({
+            program: { id: programId },
+            id: In(applications),
+        });
+
         const result = await this.jobApplicationRepo.update(
             {
                 id: In(applications),
@@ -1130,7 +1135,7 @@ export class JobPortalService {
 
         await this.SentNotificationForShortListing(
             updateResult,
-            programId,
+            appliedUsers,
             validated,
             ApplicationStatus.SHORT_LISTED,
         );
@@ -1141,27 +1146,37 @@ export class JobPortalService {
         organizationId: string,
         mentorId: string,
     ) {
+        const status = ApplicationStatus.REJECTED;
         const validated = await this.validateProgramIdOnUser(
             programId,
             organizationId,
             mentorId,
         );
 
+        const appliedUsers = await this.jobApplicationRepo.findBy({
+            program: { id: programId },
+            status: ApplicationStatus.PENDING,
+        });
+
         const result = await this.jobApplicationRepo.update(
             {
                 status: ApplicationStatus.PENDING,
                 program: { id: programId },
             },
-            { status: ApplicationStatus.REJECTED },
+            { status: status },
         );
 
-        const updateResult = UtilityServices.EnsureUpdated(result, programId);
+        const updateResult = UtilityServices.EnsureUpdated(
+            result,
+            programId,
+            'No applicants exists to be rejected',
+        );
 
         await this.SentNotificationForShortListing(
             updateResult,
-            programId,
+            appliedUsers,
             validated,
-            ApplicationStatus.REJECTED,
+            status,
         );
 
         return updateResult;
@@ -1169,17 +1184,13 @@ export class JobPortalService {
 
     private async SentNotificationForShortListing(
         updateResult: { data: string; success: boolean },
-        programId: string,
+        appliedUsers: Applications[],
         validated: { title: string; name: string; type: ProgramType },
         status: ApplicationStatus,
     ) {
         if (updateResult.success) {
             const request = new GetJobApplicationsRequestDto();
             request.status = status;
-            const appliedUsers = await this.applicationsByProgramId(
-                programId,
-                request,
-            );
             const subject =
                 status === ApplicationStatus.REJECTED
                     ? `Your update for the role ${validated.title}`
@@ -1190,14 +1201,17 @@ export class JobPortalService {
                     ? 'Unfortunately, they will not be moving forward with your application'
                     : `You are short listed for the role ${validated.title} for the ${validated.type} with ${validated.name}`;
 
-            for (let index = 0; index < appliedUsers.data.length; index++) {
-                const user = appliedUsers.data[index];
+            for (let index = 0; index < appliedUsers.length; index++) {
+                const applicant = appliedUsers[index];
+                const user = await this.profileService.findUserByProfileId(
+                    applicant.applicants.profile.id,
+                );
                 this.notificationService.send({
                     channel: NotificationChannel.InApp,
                     subject: subject,
                     content: content,
-                    to: user.userId,
-                    reference: user.userId,
+                    to: user.id,
+                    reference: user.id,
                     isRealTimeNotification: true,
                     isNotifyToAllUser: false,
                 });

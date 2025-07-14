@@ -28,12 +28,12 @@ import { ClsService } from 'nestjs-cls';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordResetDto } from './dtos/request/username.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
+import { ValidateResetRequestDto } from './dtos/request/validate-reset.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     UserDetails,
     UserResponsePayload,
-} from './dtos/response/user-response-payload.reponse.dto';
+} from './dtos/response/user-response-payload.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
 
@@ -45,7 +45,7 @@ export class AuthService {
         private otpService: OtpService,
         private notificationService: NotificationService,
         private organizationService: OrganizationService,
-        private clasService: ClsService,
+        private classService: ClsService,
         private jobService: JobsService,
         private mentorService: MentorshipService,
     ) {}
@@ -75,7 +75,7 @@ export class AuthService {
         }
         let details: UserDetails;
 
-        //checking only default roles as the assumption is the user only have one defaul user
+        //checking only default roles as the assumption is the user only have one default user
         switch (defaultRole) {
             case UserRoleType.Administrator:
                 break;
@@ -156,7 +156,7 @@ export class AuthService {
         }
         throw new EntityNotFoundException('User');
     }
-    async validateResetPassword(req: ValidateResteRequestDto) {
+    async validateResetPassword(req: ValidateResetRequestDto) {
         const user = await this.usersService.findOneUser(
             req.username,
             LoginBy.EMAIL,
@@ -190,7 +190,7 @@ export class AuthService {
     }
 
     CurrentUser() {
-        const token = this.clasService.get('token');
+        const token = this.classService.get('token');
         if (token) {
             const user = this.jwtService.decode(token);
             const detail = new UserDetails();
