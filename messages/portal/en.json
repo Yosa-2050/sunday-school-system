@@ -92,7 +92,8 @@
         "reports": "Reports",
         "messages": "Messages",
         "findWork": "Find Work",
-        "savedJobs": "Saved Jobs"
+        "savedJobs": "Saved Jobs",
+        "notifications": "Notifications"
     },
     "user": {
         "login": "Login",

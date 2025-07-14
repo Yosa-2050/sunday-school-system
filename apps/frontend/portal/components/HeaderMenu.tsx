@@ -15,9 +15,9 @@ import { useDisclosure } from '@mantine/hooks';
 import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import {
+    IconBookmark,
     IconBriefcase,
-    IconChartBar,
-    IconList,
+    IconListCheck,
     IconLogout2,
     IconMessage,
     IconUser,
@@ -52,34 +52,21 @@ export function HeaderMenu() {
             icon: <IconBriefcase size={16} className="text-primary" />,
         },
         {
-            label: t('jobs'),
-            icon: <IconList size={16} className="text-primary" />,
-            requiresAuth: true,
+            label: t('myJobs'),
+            href: '/my-jobs',
             matchPattern: '/my-jobs',
-            children: [
-                {
-                    label: t('myJobs'),
-                    href: '/my-jobs',
-                    matchPattern: '/my-jobs',
-                },
-                {
-                    label: t('savedJobs'),
-                    href: '/saved-jobs',
-                    matchPattern: '/saved-jobs',
-                },
-            ],
+            icon: <IconListCheck size={16} className="text-primary" />,
         },
         {
-            label: t('reports'),
-            href: '/reports',
-            matchPattern: '/reports',
-            requiresAuth: true,
-            icon: <IconChartBar size={16} className="text-primary" />,
+            label: t('savedJobs'),
+            href: '/saved-jobs',
+            matchPattern: '/saved-jobs',
+            icon: <IconBookmark size={16} className="text-primary" />,
         },
         {
-            label: t('messages'),
-            href: '/messages',
-            matchPattern: '/messages',
+            label: t('notifications'),
+            href: '/notifications',
+            matchPattern: '/notifications',
             requiresAuth: true,
             icon: <IconMessage size={16} className="text-primary" />,
         },
