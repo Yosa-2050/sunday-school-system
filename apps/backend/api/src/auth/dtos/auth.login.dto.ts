@@ -1,5 +1,5 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { UserDetails } from './response/user-response-payload.reponse.dto';
+import { UserDetails } from './response/user-response-payload.response.dto';
 
 export class AuthLoginDto {
     userId: string;

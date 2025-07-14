@@ -64,7 +64,7 @@ export class ProgramRequestDto {
 
     @ApiProperty({
         example: ExperienceLevelType.Entry,
-        description: 'Entry level experiance',
+        description: 'Entry level experience',
     })
     @OptionalEnum(ExperienceLevelType)
     experianceLevel?: ExperienceLevelType;

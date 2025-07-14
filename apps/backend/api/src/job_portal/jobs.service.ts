@@ -316,6 +316,16 @@ export class JobsService {
             ...dto,
         });
 
+        experience.country = dto.countryId
+            ? await this.addressService.findCountryById(dto.countryId)
+            : null;
+        experience.state = dto.stateId
+            ? await this.addressService.findLocationInfoById(dto.stateId)
+            : null;
+        experience.city = dto.cityId
+            ? await this.addressService.findLocationInfoById(dto.cityId)
+            : null;
+
         return this.experienceRepo.save(experience);
     }
 

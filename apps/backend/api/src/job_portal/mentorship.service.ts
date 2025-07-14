@@ -6,7 +6,7 @@ import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
-import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.reponse.dto';
+import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';

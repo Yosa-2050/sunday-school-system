@@ -9,7 +9,7 @@ import {
     UsernameRequestDto,
 } from './dtos/request/username.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { ValidateResteRequestDto } from './dtos/request/validate-reset.request.dto';
+import { ValidateResetRequestDto } from './dtos/request/validate-reset.request.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Public } from './jwt-public';
 
@@ -27,7 +27,7 @@ export class AuthController {
 
     @Public()
     @Post('validateResetPassword')
-    forgotPassword(@Body() req: ValidateResteRequestDto) {
+    forgotPassword(@Body() req: ValidateResetRequestDto) {
         return this.authService.validateResetPassword(req);
     }
 
