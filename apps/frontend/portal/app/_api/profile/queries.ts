@@ -360,6 +360,31 @@ export const useEducationLevels = () => {
     });
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const fetchCategories = async (): Promise<any[]> => {
+    const response = await fetcher('/job-detail/categories', {
+        method: 'GET',
+        headers: { accept: '*/*' },
+    });
+    return response as {
+        id: string;
+        isActive: boolean;
+        name: string;
+        type: string;
+        isRoot: boolean;
+        hasChild: boolean;
+    }[];
+};
+
+export const useGetCategories = () => {
+    return useQuery({
+        queryKey: ['categories-portal'],
+        queryFn: fetchCategories,
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
+    });
+};
+
 // Bio and Cover Letter
 export const updateBio = async (bio: string): Promise<void> => {
     await fetcher<void>('/job-seeker/detail', {

@@ -75,7 +75,8 @@
         "country": "Country",
         "city": "City",
         "noJobsFound": "No Jobs Found",
-        "searchAgain": "Search Again"
+        "searchAgain": "Search Again",
+        "categories": "Categories"
     },
     "header": {
         "title": "Job Portal",

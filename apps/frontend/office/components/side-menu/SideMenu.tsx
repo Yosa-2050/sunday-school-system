@@ -22,6 +22,7 @@ type MenuItemProps = {
     data: MenuTree;
     level?: number;
     role: 'super_admin' | 'administrator' | 'work_provider';
+    isSidebarOpen: boolean;
 };
 
 type MenuLabelProps = {
@@ -30,6 +31,7 @@ type MenuLabelProps = {
     label: string;
     level?: number;
     pathMatch?: number;
+    isSidebarOpen: boolean;
 };
 
 const startsWith = (str: string, prefix: string) => str.startsWith(prefix);
@@ -92,6 +94,7 @@ const MenuLabel = ({
     label,
     pathMatch = 3,
     level = 0,
+    isSidebarOpen,
 }: MenuLabelProps) => {
     const pathname = usePathname();
     const theme = useMantineColorScheme();
@@ -107,7 +110,7 @@ const MenuLabel = ({
         <div
             className={cn(
                 classes.menuItem,
-                `flex cursor-pointer items-center rounded-md px-2 py-1 transition duration-300 ease-in-out  ${theme.colorScheme === 'dark' ? 'text-gray-50' : 'text-gray-700'}`,
+                `flex cursor-pointer items-center rounded-md ${isSidebarOpen && 'px-2'} py-1 transition duration-300 ease-in-out  ${theme.colorScheme === 'dark' ? 'text-gray-50' : 'text-gray-700'}`,
                 active ? classes.active : '',
             )}
             style={{ paddingLeft: paddingLeft <= 0 ? 20 : paddingLeft }}
@@ -119,12 +122,12 @@ const MenuLabel = ({
                 )}
             />
             <div className={classes.labelIcon}>{icon}</div>
-            <span className="ml-2 truncate">{label}</span>
+            {isSidebarOpen && <span className="ml-2 truncate">{label}</span>}
         </div>
     );
 };
 
-const MenuItem = ({ data, level = 0, role }: MenuItemProps) => {
+const MenuItem = ({ data, level = 0, role, isSidebarOpen }: MenuItemProps) => {
     const { isGroup, label, link, icon, children, pathMatch: compare } = data;
     const pathname = usePathname();
 
@@ -155,6 +158,7 @@ const MenuItem = ({ data, level = 0, role }: MenuItemProps) => {
                             level={level}
                             link={link}
                             pathMatch={compare}
+                            isSidebarOpen={isSidebarOpen}
                         />
                     </NavigationLink>
                 ) : (
@@ -168,6 +172,7 @@ const MenuItem = ({ data, level = 0, role }: MenuItemProps) => {
                             label={label}
                             level={level}
                             pathMatch={compare}
+                            isSidebarOpen={isSidebarOpen}
                         />
                     </button>
                 ))}
@@ -183,7 +188,8 @@ const MenuItem = ({ data, level = 0, role }: MenuItemProps) => {
                             data={child}
                             level={level + 1}
                             key={`${child.label}-${child.link}`}
-                            role={role} // Added role prop
+                            role={role}
+                            isSidebarOpen={isSidebarOpen}
                         />
                     ))}
                 </ul>
@@ -195,13 +201,15 @@ const MenuItem = ({ data, level = 0, role }: MenuItemProps) => {
 export function SideMenu({
     menu,
     role,
-}: {
+    isSidebarOpen,
+}: Readonly<{
     menu: MenuTree[];
     role: 'super_admin' | 'administrator' | 'work_provider';
-}) {
+    isSidebarOpen: boolean;
+}>) {
     return (
         <ScrollArea
-            className="w-full px-4 py-4 overflow-x-hidden"
+            className={`w-full ${isSidebarOpen ? 'px-4' : 'px-1'} py-4 overflow-x-hidden`}
             scrollHideDelay={500}
         >
             <ul>
@@ -212,6 +220,7 @@ export function SideMenu({
                                 data={group}
                                 key={`${group.label}-${index}`}
                                 role={role}
+                                isSidebarOpen={isSidebarOpen}
                             />
                         );
                     }

@@ -14,7 +14,7 @@ function getContrastColor(bgColor: string): string {
     const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
     return luminance > 128 ? '#000000' : '#FFFFFF';
 }
-export const Sidebar = () => {
+export const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
     const networkStatus = useNetwork();
     const schema = useComputedColorScheme();
     const { user } = useAuth();
@@ -24,7 +24,7 @@ export const Sidebar = () => {
     return (
         <>
             <Box
-                className={`${schema === 'light' ? 'border-gray-200' : 'border-[var(--mantine-color-dark-4)]'} hidden md:flex h-10   border-b  px-4 max-h-14 overflow-hidden w-[255px] bg-primary-3`}
+                className={`${schema === 'light' ? 'border-gray-200' : 'border-[var(--mantine-color-dark-4)]'} hidden md:flex h-10   border-b  ${isSidebarOpen ? 'px-4' : 'px-1'} max-h-14 overflow-hidden w-[255px] bg-primary-3`}
             >
                 <Link
                     href="/dashboard"
@@ -50,6 +50,7 @@ export const Sidebar = () => {
             </Box>
             <Box className="flex-1 overflow-y-auto overflow-x-hidden">
                 <SideMenu
+                    isSidebarOpen={isSidebarOpen}
                     menu={Menus()}
                     role={
                         user?.role as
@@ -59,35 +60,32 @@ export const Sidebar = () => {
                     }
                 />
             </Box>
-            <Box
-                className={`${schema === 'light' ? 'border-gray-200 bg-white' : 'border-[var(--mantine-color-dark-4)]'} flex h-14 items-stretch border-t px-4 py-2 justify-between text-xs`}
-            >
-                <Box className="flex flex-col gap-1 justify-between">
-                    <span
-                        className={
-                            networkStatus.online
-                                ? 'text-green-500'
-                                : 'text-red-500'
-                        }
-                    >
-                        {networkStatus.online ? 'Online' : 'Offline'}
-                    </span>
-                    <Box className="text-center">
-                        {process.env.NEXT_PUBLIC_APP_VERSION ?? 'V 0.0.1'}
+            {isSidebarOpen && (
+                <Box
+                    className={`${schema === 'light' ? 'border-gray-200 bg-white' : 'border-[var(--mantine-color-dark-4)]'} flex h-14 items-stretch border-t px-4 py-2 justify-between text-xs`}
+                >
+                    <Box className="flex flex-col gap-1 justify-between">
+                        <span
+                            className={
+                                networkStatus.online
+                                    ? 'text-green-500'
+                                    : 'text-red-500'
+                            }
+                        >
+                            {networkStatus.online ? 'Online' : 'Offline'}
+                        </span>
+                        <Box className="text-center">
+                            {process.env.NEXT_PUBLIC_APP_VERSION ?? 'V 0.0.1'}
+                        </Box>
+                    </Box>
+                    <Box className="flex flex-col gap-1 justify-between">
+                        <Box className="text-right"> &copy; {year}</Box>
+                        <Box className="flex gap-2 justify-between items-center">
+                            <span className="text-xs">Powered by</span>
+                        </Box>
                     </Box>
                 </Box>
-                <Box className="flex flex-col gap-1 justify-between">
-                    <Box className="text-right">
-                        {' '}
-                        &copy; {year}{' '}
-                        {/* <LocaleText text={tenant.settings?.copyright?.short} /> */}
-                    </Box>
-                    <Box className="flex gap-2 justify-between items-center">
-                        <span className="text-xs">Powered by</span>
-                        {/* <Image alt="Perago" height={40} src={Perago} width={60} />{' '} */}
-                    </Box>
-                </Box>
-            </Box>
+            )}
         </>
     );
 };

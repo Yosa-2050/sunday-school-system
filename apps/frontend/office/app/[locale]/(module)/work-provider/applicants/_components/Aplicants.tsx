@@ -1,6 +1,6 @@
 'use client';
 
-import { Stack } from '@mantine/core';
+import { Button, Flex, Stack } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useShortLIstMutation } from 'app/[locale]/_api/job-seeker';
 import { fetchApplicants } from 'app/[locale]/_api/organizations/fetch-jobs';
@@ -111,6 +111,14 @@ export const Applicants = ({
                 page={page}
                 setPage={setPage}
             />
+            {selectedApplicants.length > 0 && (
+                <Flex justify="flex-end">
+                    <Button onClick={() => setSelectedApplicants([])}>
+                        Cancel
+                    </Button>
+                    <Button onClick={handleShortlist}>Shortlist</Button>
+                </Flex>
+            )}
         </Stack>
     );
 };

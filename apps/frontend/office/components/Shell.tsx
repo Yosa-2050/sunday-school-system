@@ -17,10 +17,7 @@ type ShellProps = {
     type?: 'office' | 'portal';
 };
 
-export default function Shell({
-    children,
-    type = 'office',
-}: ShellProps): ReactNode {
+export default function Shell({ children }: Readonly<ShellProps>): ReactNode {
     const schema = useComputedColorScheme();
     const [opened, { open, close }] = useDisclosure(false);
     const [isSidebarOpen, toggleSidebar] = useToggle(true);
@@ -66,10 +63,10 @@ export default function Shell({
                             ? 'bg-white border-gray-200'
                             : ' border-[var(--mantine-color-dark-4)]',
                         'flex-col border-r  hidden lg:flex !h-full',
-                        isSidebarOpen ? 'w-[265px]' : 'w-0 hidden',
+                        isSidebarOpen ? 'w-[265px]' : 'w-[60px] hidden',
                     )}
                 >
-                    {isSidebarOpen && <Sidebar />}
+                    <Sidebar isSidebarOpen={isSidebarOpen} />
                 </Box>
                 <Box
                     className={`${schema === 'light' ? ' bg-gray-50' : 'bg-[var(--mantine-color-dark-6)] border-[var(--mantine-color-dark-4)]'} w-full flex flex-col overflow-y-auto`}
@@ -110,7 +107,7 @@ export default function Shell({
                 </Box>
             </Box>
             <Drawer opened={opened} onClose={close} title="Menu">
-                <Sidebar />
+                <Sidebar isSidebarOpen={isSidebarOpen} />
             </Drawer>
         </>
     );
