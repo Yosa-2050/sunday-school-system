@@ -1,3 +1,10 @@
+## [1.7.6](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.5...v1.7.6) (2025-07-14)
+
+
+### Bug Fixes
+
+* **shega:** shortlist fix ([109a2b0](https://gitlab.heranitech.com/meklit/shega-jobs/commit/109a2b06cee33dd5d6ac097abaa1e05787e5ff54))
+
 ## [1.7.5](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.4...v1.7.5) (2025-07-13)
 
 
