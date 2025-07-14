@@ -227,7 +227,8 @@ export class OrganizationService {
             applyObject.organizationDetail = false;
         }
         //primary contact person
-        if (!org.employee?.find((x) => x.type === EmployeeType.ContactPerson)) {
+        const employee = await org.employee;
+        if (!employee?.find((x) => x.type === EmployeeType.ContactPerson)) {
             applyObject.canSubmit = false;
             applyObject.contactPerson = false;
         }
@@ -240,7 +241,10 @@ export class OrganizationService {
         //document
         const documents =
             await this.documentService.findDocumentsByReferenceId(id);
-        const lookups = await this.lookupService.findByGroup('DocumentType');
+        const lookups = await this.lookupService.findByGroup(
+            'DocumentType',
+            'OrganizationDocuments',
+        );
         const documentTypes = documents.map((doc) => doc.docType);
 
         const allTypesPresent = lookups.every((lookup) =>
