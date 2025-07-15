@@ -116,7 +116,7 @@ export const AddOrganizationDetail = ({
                     control={control}
                     render={({ field }) => (
                         <TextInput
-                            label="RBusiness Registration Number"
+                            label="Business Registration Number"
                             placeholder="Enter registration number"
                             required
                             error={errors.registrationNumber?.message}
@@ -132,6 +132,7 @@ export const AddOrganizationDetail = ({
                         <Select
                             label="Type"
                             placeholder="Select type"
+                            required
                             mt="sm"
                             data={[
                                 {
@@ -186,6 +187,7 @@ export const AddOrganizationDetail = ({
                             label="Corporate Email"
                             placeholder="Enter corporate email"
                             mt="sm"
+                            required
                             error={errors.corporateEmail?.message}
                             {...field}
                         />
@@ -200,6 +202,7 @@ export const AddOrganizationDetail = ({
                             label="Year Founded"
                             placeholder="Enter year founded"
                             mt="sm"
+                            required
                             error={errors.yearFounded?.message}
                             {...field}
                         />
@@ -214,6 +217,7 @@ export const AddOrganizationDetail = ({
                             label="Company Size"
                             placeholder="Select company size"
                             mt="sm"
+                            required
                             data={[
                                 'Micro-sized: 1 to 9 employees',
 
@@ -228,11 +232,6 @@ export const AddOrganizationDetail = ({
                         />
                     )}
                 />
-
-                <Title order={6} mt="xl" mb="xs">
-                    Description
-                </Title>
-                <Divider mb="sm" />
 
                 <Controller
                     name="description"

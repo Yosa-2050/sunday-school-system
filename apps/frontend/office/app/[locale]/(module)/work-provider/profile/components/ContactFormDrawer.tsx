@@ -98,7 +98,7 @@ export function ContactFormDrawer({
                 reset();
                 setInitialType(null);
             }}
-            title="Add / Edit Contact"
+            title="Add Employee"
             position="right"
             size="md"
         >

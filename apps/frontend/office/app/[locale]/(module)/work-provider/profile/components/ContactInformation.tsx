@@ -139,7 +139,7 @@ export default function ContactSection({
                                     setOpened(true);
                                 }}
                             >
-                                Add / Edit Contact
+                                Add Employee
                             </Button>
                         )}
                     </Group>
@@ -187,6 +187,29 @@ export default function ContactSection({
                                             </Table.Td>
                                             <Table.Td>
                                                 {worker.createdBy}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                {' '}
+                                                <ActionIcon
+                                                    onClick={() => {
+                                                        setOpened(true);
+                                                        setSelectedWorker({
+                                                            contactPersonEmail:
+                                                                '',
+                                                            contactPersonName: `${profile.firstName} ${profile.middleName} ${profile.lastName}`,
+                                                            contactPersonPhone:
+                                                                profile.phoneNumber ||
+                                                                '',
+                                                            contactPersonRole:
+                                                                worker.type,
+                                                        });
+                                                    }}
+                                                    size="sm"
+                                                    radius="sm"
+                                                    className=""
+                                                >
+                                                    <IconEdit size={16} />
+                                                </ActionIcon>
                                             </Table.Td>
                                             {canUpdateProfile && (
                                                 <Table.Td>
