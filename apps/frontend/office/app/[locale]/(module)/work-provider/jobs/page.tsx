@@ -2,7 +2,9 @@
 
 import { useRouter } from '@/i18n/routing';
 import {
+    Anchor,
     Badge,
+    Blockquote,
     Button,
     Card,
     Center,
@@ -31,6 +33,7 @@ import {
     IconDotsVertical,
     IconEdit,
     IconEye,
+    IconInfoCircle,
     IconPlus,
     IconTrash,
 } from '@tabler/icons-react';
@@ -175,6 +178,21 @@ const JobsList = () => {
                         </Button>
                     )}
                 </Flex>
+                {organization?.status !== 'APPROVED' && (
+                    <Blockquote color="blue" icon={<IconInfoCircle />} mb="lg">
+                        <Text size="sm">
+                            Welcome! To ensure a quality experience for all, you
+                            won't be able to post jobs until your account is
+                            approved. To initiate this, please{' '}
+                            <Anchor href="/work-provider/profile" color="blue">
+                                edit your employer profile
+                            </Anchor>{' '}
+                            and submit it for admin review. We'll notify you
+                            once it's approved.
+                        </Text>
+                    </Blockquote>
+                )}
+
                 <Divider my="md" />
 
                 <Group justify="space-between" className="mb-4">

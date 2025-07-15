@@ -8,7 +8,6 @@ import {
     Group,
     List,
     Paper,
-    Progress,
     Stack,
     Tabs,
     Text,
@@ -51,6 +50,7 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
         queryFn: () => getAddressById(formData.countryId),
         queryKey: ['country', formData.countryId],
     });
+
     const state = useQuery({
         queryFn: () => getAddressById(formData.stateId),
         queryKey: ['state', formData.stateId],
@@ -404,42 +404,33 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                             days left
                                         </Badge>
                                     </Group>
-                                    <div>
-                                        <Group justify="space-between" mb="xs">
-                                            <Text size="sm" fw={500}>
-                                                Time Remaining
-                                            </Text>
-                                            <Text size="sm" c="gray.6" fw={500}>
-                                                {Math.round(
-                                                    ((new Date(
-                                                        formData.deadline,
-                                                    ).getTime() -
-                                                        Date.now()) /
-                                                        (new Date(
-                                                            formData.deadline,
-                                                        ).getTime() -
-                                                            Date.now())) *
-                                                        100,
-                                                )}
-                                                %
-                                            </Text>
-                                        </Group>
-                                        <Progress
-                                            value={Math.round(
-                                                ((new Date(
-                                                    formData.deadline,
-                                                ).getTime() -
-                                                    Date.now()) /
-                                                    (new Date(
-                                                        formData.deadline,
-                                                    ).getTime() -
-                                                        Date.now())) *
-                                                    100,
-                                            )}
-                                            size="sm"
-                                            mb="xs"
-                                        />
-                                    </div>
+                                    {/* <div>
+                    <Group justify="space-between" mb="xs">
+                      <Text size="sm" fw={500}>
+                        Time Remaining
+                      </Text>
+                      <Text size="sm" c="gray.6" fw={500}>
+                        {Math.round(
+                          ((new Date(formData.deadline).getTime() -
+                            Date.now()) /
+                            (new Date(formData.deadline).getTime() -
+                              Date.now())) *
+                            100
+                        )}
+                        %
+                      </Text>
+                    </Group>
+                    <Progress
+                      value={Math.round(
+                        ((new Date(formData.deadline).getTime() - Date.now()) /
+                          (new Date(formData.deadline).getTime() -
+                            Date.now())) *
+                          100
+                      )}
+                      size="sm"
+                      mb="xs"
+                    />
+                  </div> */}
                                 </Stack>
                             </Card.Section>
                         </Card>
