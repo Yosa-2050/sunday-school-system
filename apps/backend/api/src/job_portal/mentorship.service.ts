@@ -160,13 +160,8 @@ export class MentorshipService {
             );
 
         // Map the results to the response DTO
-        return mentors;
-        //    return new PaginatedResponseDto<GetOrganizationListResponseDto[]>(
-        //        organizations.map((org) => new GetOrganizationListResponseDto(org)),
-        //        total,
-        //        p,
-        //        pp,
-        //    );
+        //return mentors;
+        return new PaginatedResponseDto<Mentors[]>(mentors, total, p, pp);
     }
 
     constructor(

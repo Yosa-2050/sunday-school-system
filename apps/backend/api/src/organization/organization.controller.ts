@@ -77,7 +77,7 @@ export class OrganizationController {
         );
     }
 
-    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
+    @Roles(UserRoleType.SuperAdmin)
     @Patch('approve/:id')
     approveOrganization(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.organizationService.organizationApproval(
@@ -86,7 +86,7 @@ export class OrganizationController {
         );
     }
 
-    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
+    @Roles(UserRoleType.SuperAdmin)
     @Patch('decline/:id')
     declineOrganization(
         @Param('id', new ParseUUIDPipe()) id: string,
@@ -99,7 +99,7 @@ export class OrganizationController {
         );
     }
 
-    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
+    @Roles(UserRoleType.SuperAdmin)
     @Patch('return/:id')
     returnOrganization(
         @Param('id', new ParseUUIDPipe()) id: string,
