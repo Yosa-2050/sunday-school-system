@@ -1167,6 +1167,7 @@ export class JobPortalService {
             validated,
             ApplicationStatus.SHORT_LISTED,
         );
+        return updateResult;
     }
 
     async rejectNotShortlisted(

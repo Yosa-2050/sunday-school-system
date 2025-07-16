@@ -191,15 +191,12 @@ export class OrganizationService {
             const user = await this.profileService.findUserByProfileId(
                 profile.id,
             );
-            if (emailTemplate) {
-                //send email notification
-                this.SendNotificationForApprovals(
-                    emailTemplate,
-                    user,
-                    status,
-                    org.name,
-                );
-            }
+            this.SendNotificationForApprovals(
+                emailTemplate,
+                user,
+                status,
+                org.name,
+            );
         }
         return result;
     }
@@ -266,13 +263,15 @@ export class OrganizationService {
         status: ApprovalType,
         orgName = '',
     ) {
-        this.notificationService.send({
-            channel: NotificationChannel.Email,
-            content: emailTemplate.content,
-            to: user.email,
-            subject: emailTemplate.subject,
-            reference: user.id,
-        });
+        if (emailTemplate) {
+            this.notificationService.send({
+                channel: NotificationChannel.Email,
+                content: emailTemplate.content,
+                to: user.email,
+                subject: emailTemplate.subject,
+                reference: user.id,
+            });
+        }
 
         if (status === ApprovalType.Approved) {
             this.notificationService.send({
