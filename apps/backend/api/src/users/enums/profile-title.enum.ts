@@ -1,5 +1,5 @@
 export enum Title {
-    Ato = 'ATO',
-    Weyzero = 'WEYZERO',
-    Weyzerit = 'WEYZERIT',
+    Mr = 'Mr',
+    Mrs = 'Mrs',
+    Miss = 'Miss',
 }

@@ -7,7 +7,7 @@ import {
     IsString,
 } from 'class-validator';
 import { Gender } from '../enums/profile-gender.enum';
-import { MarriageStatus } from '../enums/profile-marriagestatus.enum';
+import { MarriageStatus } from '../enums/profile-marriage-status.enum';
 import { Title } from '../enums/profile-title.enum';
 
 export class NewProfileDto {

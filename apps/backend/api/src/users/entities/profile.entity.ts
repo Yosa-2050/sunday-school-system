@@ -4,7 +4,7 @@ import { Column, Entity, OneToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Gender } from '../enums/profile-gender.enum';
 // biome-ignore lint/style/useImportType: <explanation>
-import { MarriageStatus } from '../enums/profile-marriagestatus.enum';
+import { MarriageStatus } from '../enums/profile-marriage-status.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Title } from '../enums/profile-title.enum';
 
