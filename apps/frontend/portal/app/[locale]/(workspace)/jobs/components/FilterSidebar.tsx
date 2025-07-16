@@ -171,7 +171,6 @@ export const FilterSidebar = ({
                                 }
                                 placeholder="Select City"
                                 data={
-                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                     categories?.map((city) => ({
                                         value: city.id ?? '',
                                         label: city.name,
