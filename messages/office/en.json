@@ -409,5 +409,8 @@
             "invalidEmail": "Invalid Email address",
             "companyNameRequired": "Organization name is required"
         }
+    },
+    "notification": {
+        "notifications": "Notifications"
     }
 }
