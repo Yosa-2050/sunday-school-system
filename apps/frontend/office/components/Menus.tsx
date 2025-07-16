@@ -1,4 +1,5 @@
 import {
+    IconBell,
     IconBriefcase,
     IconBuilding,
     IconCategory,
@@ -55,6 +56,12 @@ export const Menus = (): MenuTree[] => {
             link: '/admin/programs',
             role: 'administrator',
         },
+        {
+            label: t('notifications'),
+            icon: <IconBell stroke={1.4} size={20} />,
+            link: '/admin/notifications',
+            role: 'administrator',
+        },
 
         {
             isGroup: true,
@@ -98,6 +105,12 @@ export const Menus = (): MenuTree[] => {
             label: t('job-explorer-applicants'),
             icon: <IconFileText stroke={1.4} size={20} />,
             link: '/work-provider/applicants',
+            role: 'work_provider',
+        },
+        {
+            label: t('notifications'),
+            icon: <IconBell stroke={1.4} size={20} />,
+            link: '/work-provider/notifications',
             role: 'work_provider',
         },
         // Super Admin Role
@@ -173,6 +186,12 @@ export const Menus = (): MenuTree[] => {
             label: t('draft-mentorship'),
             icon: <IconPencil stroke={1.4} size={20} />,
             link: '/mentor/mentorship/draft',
+            role: 'mentor',
+        },
+        {
+            label: t('notifications'),
+            icon: <IconBell stroke={1.4} size={20} />,
+            link: '/mentor/notifications',
             role: 'mentor',
         },
     ];

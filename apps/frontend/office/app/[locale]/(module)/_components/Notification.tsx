@@ -24,7 +24,6 @@ import {
     IconCheck,
     IconChevronRight,
     IconClipboardList,
-    IconDots,
     IconEye,
     IconEyeOff,
     IconMailOpened,
@@ -33,6 +32,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     getNotificationById,
+    unreadNotificationById,
     updateNotificationById,
 } from 'app/[locale]/_api/organizations/getNotification';
 import { getCookie } from 'cookies-next';
@@ -84,12 +84,12 @@ export default function NotificationPopover() {
     const queryClient = useQueryClient();
 
     // Update notification mutation
-    const mutation = useMutation({
-        mutationFn: (id: string) => updateNotificationById(id),
-        onSuccess: (_, id) => {
-            queryClient.invalidateQueries({ queryKey: ['userId', userId] });
-        },
-    });
+    //   const mutation = useMutation({
+    //     mutationFn: (id: string) => updateNotificationById(id),
+    //     onSuccess: (_, id) => {
+    //       queryClient.invalidateQueries({ queryKey: ["userId", userId] });
+    //     },
+    //   });
 
     const mapStatusToIcon = (status: string) => {
         const iconSize = 16;
@@ -127,9 +127,21 @@ export default function NotificationPopover() {
         }
     };
 
-    const toggleRead = (id: string) => {
-        mutation.mutate(id);
+    const toggleRead = (notification: NotificationItem) => {
+        mutation.mutate(notification);
     };
+
+    const mutation = useMutation({
+        mutationFn: (notification: NotificationItem) => {
+            if (notification.status.toLowerCase() === 'read') {
+                return unreadNotificationById(notification.id);
+            }
+            return updateNotificationById(notification.id);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['userId', userId] });
+        },
+    });
 
     const formatTime = (dateString: string) => {
         const date = new Date(dateString);
@@ -280,12 +292,10 @@ export default function NotificationPopover() {
                                     <ActionIcon
                                         variant="subtle"
                                         size="sm"
-                                        color="gray"
-                                        onClick={() =>
-                                            toggleRead(notification.id)
-                                        }
+                                        color="primary"
+                                        onClick={() => toggleRead(notification)}
                                         loading={mutation.isPending}
-                                        style={{ opacity: 0 }}
+                                        // style={{ opacity: 0 }}
                                         className="group-hover:opacity-100"
                                     >
                                         {isRead ? (
@@ -358,13 +368,11 @@ export default function NotificationPopover() {
                                 Notifications
                             </Text>
                             <Text size="sm" opacity={0.8}>
-                                {unreadCount > 0
-                                    ? `${unreadCount} unread`
-                                    : 'All caught up!'}
+                                {unreadCount > 0 ? `${unreadCount} unread` : ''}
                             </Text>
                         </Stack>
 
-                        <Group gap="xs">
+                        {/* <Group gap="xs">
                             <ActionIcon
                                 variant="subtle"
                                 color="white"
@@ -372,7 +380,7 @@ export default function NotificationPopover() {
                             >
                                 <IconDots size={16} />
                             </ActionIcon>
-                        </Group>
+                        </Group> */}
                     </Group>
                 </Box>
 
@@ -411,10 +419,7 @@ export default function NotificationPopover() {
                     ) : (
                         <Stack gap={0}>
                             {notifications.length > 0 &&
-                                renderNotificationGroup(
-                                    notifications,
-                                    'Important',
-                                )}
+                                renderNotificationGroup(notifications)}
                         </Stack>
                     )}
                 </ScrollArea>
