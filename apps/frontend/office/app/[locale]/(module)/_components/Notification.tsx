@@ -17,6 +17,7 @@ import {
     useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications as noti } from '@mantine/notifications';
 import { entityParamSerializer } from '@shega/shared';
 import {
     IconBell,
@@ -139,7 +140,23 @@ export default function NotificationPopover() {
             return updateNotificationById(notification.id);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['userId', userId] });
+            queryClient.invalidateQueries({
+                queryKey: ['notifications', userId],
+            });
+            noti.show({
+                title: 'Success',
+                message: 'Notification updated successfully',
+                color: 'green',
+                icon: <IconCheck size="1.1rem" />,
+            });
+        },
+        onError: () => {
+            noti.show({
+                title: 'Error',
+                message: 'Failed to update notification',
+                color: 'red',
+                icon: <IconX size="1.1rem" />,
+            });
         },
     });
 

@@ -12,11 +12,13 @@ import {
     Title,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { entityParamSerializer } from '@shega/shared';
-import { IconSearch } from '@tabler/icons-react';
+import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     getNotificationById,
+    unreadNotificationById,
     updateNotificationById,
 } from 'app/[locale]/_api/organizations/getNotification';
 import { getCookie } from 'cookies-next';
@@ -76,9 +78,30 @@ export default function AllNotificationsPage() {
     });
 
     const mutation = useMutation({
-        mutationFn: (id: string) => updateNotificationById(id),
+        mutationFn: (notification: { id: string; status: string }) => {
+            if (notification.status.toLowerCase() === 'read') {
+                return unreadNotificationById(notification.id);
+            }
+            return updateNotificationById(notification.id);
+        },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+            queryClient.invalidateQueries({
+                queryKey: ['notifications', userId],
+            });
+            notifications.show({
+                title: 'Success',
+                message: 'Notification updated successfully',
+                color: 'green',
+                icon: <IconCheck size="1.1rem" />,
+            });
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'Failed to update notification',
+                color: 'red',
+                icon: <IconX size="1.1rem" />,
+            });
         },
     });
 
@@ -124,7 +147,7 @@ export default function AllNotificationsPage() {
                                         key={notification.id}
                                         notification={notification}
                                         onToggleRead={() =>
-                                            mutation.mutate(notification.id)
+                                            mutation.mutate(notification)
                                         }
                                     />
                                 ))}
