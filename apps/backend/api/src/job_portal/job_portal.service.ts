@@ -626,6 +626,34 @@ export class JobPortalService {
         return jobsList;
     }
 
+    async openCloseProgram(
+        id: string,
+        organizationId: string,
+        mentorId: string,
+        isClosed: boolean,
+    ) {
+        const validated = await this.validateProgramIdOnUser(
+            id,
+            organizationId,
+            mentorId,
+        );
+        const program = await this.programRepo.findOneBy({ id });
+        if (!program) {
+            throw new EntityNotFoundException('program');
+        }
+        if (!program?.isPublished) {
+            throw new ForbiddenException('Program is not published');
+        }
+        if (program?.status !== ApprovalType.Waiting_Approval) {
+            throw new EntityOperationNotAllowedException('Program', 'Approve');
+        }
+        const updatedProg = await this.programRepo.update(id, {
+            isClosed: isClosed,
+        });
+
+        return UtilityServices.EnsureUpdated(updatedProg, id);
+    }
+
     async programApproval(id: string, status: ApprovalType, note = '') {
         let program = await this.programRepo.findOneBy({ id });
         if (!program) {

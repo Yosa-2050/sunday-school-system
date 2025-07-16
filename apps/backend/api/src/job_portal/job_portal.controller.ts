@@ -180,6 +180,28 @@ export class JobPortalController {
         );
     }
 
+    @Roles(UserRoleType.WorkProvider)
+    @Patch('closeProgram/:id')
+    closeProgram(@Param('id', new ParseUUIDPipe()) id: string, @Request() req) {
+        return this.jobPortalService.openCloseProgram(
+            id,
+            CurrentUser.getOrganizationId(req, false),
+            CurrentUser.getMentorId(req, false),
+            true,
+        );
+    }
+
+    @Roles(UserRoleType.WorkProvider)
+    @Patch('openProgram/:id')
+    openProgram(@Param('id', new ParseUUIDPipe()) id: string, @Request() req) {
+        return this.jobPortalService.openCloseProgram(
+            id,
+            CurrentUser.getOrganizationId(req, false),
+            CurrentUser.getMentorId(req, false),
+            false,
+        );
+    }
+
     @Get(':id')
     findJobById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.jobPortalService.findOneByJobId(id);

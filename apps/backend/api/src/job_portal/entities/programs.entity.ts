@@ -52,6 +52,13 @@ export class Programs extends BaseModel {
     @Column({ nullable: true, type: 'timestamp with time zone' })
     deadline: Date;
 
+    get isExpired(): boolean {
+        return new Date() > new Date(this.deadline);
+    }
+
+    @Column({ default: false })
+    isClosed: boolean;
+
     @Column({ nullable: true })
     educationalRequirment: EducationalRequirementType;
 

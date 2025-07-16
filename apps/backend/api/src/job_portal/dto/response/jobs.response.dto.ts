@@ -34,6 +34,8 @@ export class JobResponseDto {
         this.salaryType = job.salaryType;
         this.programId = job.program.id;
         this.experianceLevel = job.program.experianceLevel;
+        this.isClosed = job.program.isClosed;
+        this.isExpired = job.program.isExpired;
     }
     id: string;
     programId: string;
@@ -85,4 +87,6 @@ export class JobResponseDto {
     currency: CurrencyType;
     applied: boolean;
     saved: boolean;
+    isClosed: boolean;
+    isExpired: boolean;
 }

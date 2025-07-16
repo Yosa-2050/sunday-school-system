@@ -32,6 +32,8 @@ export class ProgramsResponseDto {
         this.saved = savedPrograms ? savedPrograms.includes(program.id) : false;
         this.experianceLevel = program.experianceLevel;
         this.programType = program.programType;
+        this.isClosed = program.isClosed;
+        this.isExpired = program.isExpired;
     }
     id: string;
     title: string;
@@ -55,4 +57,6 @@ export class ProgramsResponseDto {
     applied: boolean;
     saved: boolean;
     programType: ProgramType;
+    isClosed: boolean;
+    isExpired: boolean;
 }

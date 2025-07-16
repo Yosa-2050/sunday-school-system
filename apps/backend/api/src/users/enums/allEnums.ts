@@ -9,7 +9,7 @@ import { WorkPlaceType } from '@shega/job_portal/enums/work-place-type.enum';
 import { EmployeeType } from '@shega/organization/enums/employee-type.enum';
 import { LoginBy } from './login-by.enum';
 import { Gender } from './profile-gender.enum';
-import { MarriageStatus } from './profile-marriagestatus.enum';
+import { MarriageStatus } from './profile-marriage-status.enum';
 import { Title } from './profile-title.enum';
 import { UserRoleType } from './user-role.enum';
 
