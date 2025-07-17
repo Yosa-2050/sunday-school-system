@@ -65,7 +65,7 @@ const JobsList = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     const [entityParams] = useQueryState(
-        'jobs',
+        'mentorships',
         parseAsJson(entityParamSchema.parse).withDefault({
             p: 1,
             pp: PER_PAGE,
@@ -107,12 +107,12 @@ const JobsList = () => {
 
                 <Group justify="space-between" className="my-4">
                     <EntitySearch
-                        entity="jobs"
+                        entity="mentorships"
                         placeholder={t('searchPlaceholder')}
                         className="!w-[300px]"
                     />
                     <EntityFilter
-                        entity="jobs"
+                        entity="mentorships"
                         filterOptions={[
                             { value: '', label: 'All Status' },
                             {
@@ -237,7 +237,10 @@ const JobsList = () => {
                     </TableScrollContainer>
                 )}
 
-                <EntityPagination entity="jobs" total={data?.total ?? 0} />
+                <EntityPagination
+                    entity="mentorships"
+                    total={data?.total ?? 0}
+                />
             </Paper>
         </PageContainer>
     );

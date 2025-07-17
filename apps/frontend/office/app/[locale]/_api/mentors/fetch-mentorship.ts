@@ -48,11 +48,15 @@ export interface Response {
     };
 }
 
-export const fetchMentorship = async () => {
-    const response: Response[] = await fetcher('/mentorship/allMentors', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-    });
+export const fetchMentorship = async (q: string) => {
+    const response: { data: Response[]; total: number } = await fetcher(
+        '/mentorship/allMentors',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ q }),
+        },
+    );
 
     return response;
 };
