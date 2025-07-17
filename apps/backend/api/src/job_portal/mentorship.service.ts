@@ -262,6 +262,8 @@ export class MentorshipService {
                 mentorshipRepoCreated,
             );
         }
+
+        return created;
     }
 
     private async SendNotificationForJobCreatedToAdmin(mentorShip: Mentorship) {

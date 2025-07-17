@@ -134,7 +134,7 @@ export class OrganizationService {
         }
 
         if (
-            org.status === ApprovalType.Waiting_Approval &&
+            status === ApprovalType.Waiting_Approval &&
             !(await this.CheckOrgCanBeSubmitted(id)).canSubmit
         ) {
             throw new ForbiddenException(
@@ -212,11 +212,11 @@ export class OrganizationService {
         const org = await this.findOne(id);
         if (
             !(
-                org.name ||
-                org.registrationNumber ||
-                org.type ||
-                org.industry ||
-                org.yearFounded ||
+                org.name &&
+                org.registrationNumber &&
+                org.type &&
+                org.industry &&
+                org.yearFounded &&
                 org.companySize
             )
         ) {
