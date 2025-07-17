@@ -1,3 +1,10 @@
+## [1.8.1](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.0...v1.8.1) (2025-07-17)
+
+
+### Bug Fixes
+
+* **shega:** portal notification ([028f08a](https://gitlab.heranitech.com/meklit/shega-jobs/commit/028f08ab5b8ca1fa6d76dc5fa9f0a3da629b5770))
+
 # [1.8.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.7...v1.8.0) (2025-07-17)
 
 
