@@ -12,6 +12,7 @@ import {
     Divider,
     Grid,
     Group,
+    Loader,
     Select,
     Stack,
     Text,
@@ -27,6 +28,7 @@ import {
     IconUser,
     IconX,
 } from '@tabler/icons-react';
+import { useTitles } from 'app/_api/profile/location';
 import { useUpdateProfile } from 'app/_api/profile/queries';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -39,7 +41,7 @@ interface PersonalInfoSectionProps {
 export default function PersonalInfoSection({
     data,
     onUpdate,
-}: PersonalInfoSectionProps) {
+}: Readonly<PersonalInfoSectionProps>) {
     const [isEditing, setIsEditing] = useState(false);
     const { mutate: updateProfile } = useUpdateProfile(data?.id || '');
 
@@ -53,6 +55,8 @@ export default function PersonalInfoSection({
         resolver: zodResolver(personalInfoSchema),
         defaultValues: data,
     });
+
+    const { data: titles, isFetching } = useTitles();
 
     const onSubmit = (formData: Partial<PersonalInfo>) => {
         updateProfile(formData);
@@ -341,7 +345,16 @@ export default function PersonalInfoSection({
                                             render={({ field }) => (
                                                 <Select
                                                     label="Title"
-                                                    placeholder="Select your title"
+                                                    placeholder={
+                                                        isFetching
+                                                            ? 'Loading...'
+                                                            : 'Select your title'
+                                                    }
+                                                    rightSection={
+                                                        isFetching ? (
+                                                            <Loader size="xs" />
+                                                        ) : null
+                                                    }
                                                     size="md"
                                                     styles={{
                                                         input: {
@@ -356,20 +369,14 @@ export default function PersonalInfoSection({
                                                             fontWeight: 500,
                                                         },
                                                     }}
-                                                    data={[
-                                                        {
-                                                            value: 'ATO',
-                                                            label: 'Ato',
-                                                        },
-                                                        {
-                                                            value: 'WEYZERO',
-                                                            label: 'Weyzero',
-                                                        },
-                                                        {
-                                                            value: 'WEYZERIT',
-                                                            label: 'Weyzerit',
-                                                        },
-                                                    ]}
+                                                    data={
+                                                        titles?.map(
+                                                            (title) => ({
+                                                                label: title.value,
+                                                                value: title.key,
+                                                            }),
+                                                        ) ?? []
+                                                    }
                                                     {...field}
                                                     error={
                                                         errors.title?.message

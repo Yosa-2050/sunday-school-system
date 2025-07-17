@@ -75,7 +75,7 @@ export const fetchCities = async (regionId: string): Promise<City[]> => {
 };
 
 export const fetchEnum = async (
-    enumType: 'EmploymentType' | 'WorkPlaceType',
+    enumType: 'EmploymentType' | 'WorkPlaceType' | 'Title',
 ): Promise<EnumValue[]> => {
     if (!enumType) {
         throw new Error('Enum type cannot be empty');
@@ -139,6 +139,15 @@ export const useWorkplaceTypes = () => {
     return useQuery({
         queryKey: ['workplaceTypes'],
         queryFn: () => fetchEnum('WorkPlaceType'),
+        staleTime: 1000 * 60 * 60, // 1 hour
+        refetchOnWindowFocus: false,
+    });
+};
+
+export const useTitles = () => {
+    return useQuery({
+        queryKey: ['titles'],
+        queryFn: () => fetchEnum('Title'),
         staleTime: 1000 * 60 * 60, // 1 hour
         refetchOnWindowFocus: false,
     });
