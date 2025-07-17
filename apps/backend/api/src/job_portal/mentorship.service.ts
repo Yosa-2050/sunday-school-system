@@ -230,11 +230,12 @@ export class MentorshipService {
     async create(mentorId: string, dto: CreateMentorShipProgramRequestDto) {
         const mentor = await this.mentorsRepo.findOneBy({ id: mentorId });
 
-        if (mentor?.status !== ApprovalType.Approved) {
-            throw new BadRequestException(
-                'Mentor is not approved, please contact your administrator',
-            );
-        }
+        //TODO: Removed until further notice
+        // if (mentor?.status !== ApprovalType.Approved) {
+        //     throw new BadRequestException(
+        //         'Mentor is not approved, please contact your administrator',
+        //     );
+        // }
 
         const mentorShip = await this.GetMentorship(dto);
         const skills = this.jobPortalService.GetSkills(dto);
