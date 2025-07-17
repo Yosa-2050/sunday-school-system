@@ -1,3 +1,11 @@
+# [1.8.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.7...v1.8.0) (2025-07-17)
+
+
+### Features
+
+* **shega:** paginaton fix ([1ebb844](https://gitlab.heranitech.com/meklit/shega-jobs/commit/1ebb844b92fda33b24451bc1e958ff2e2b135859))
+* **shega:** paginaton fix ([b0ff1de](https://gitlab.heranitech.com/meklit/shega-jobs/commit/b0ff1de9bc6523f090c4f7435c9483d7aef9d6d1))
+
 ## [1.7.7](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.7.6...v1.7.7) (2025-07-14)
 
 
