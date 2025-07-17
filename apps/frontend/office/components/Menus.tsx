@@ -113,7 +113,7 @@ export const Menus = (): MenuTree[] => {
             link: '/work-provider/notifications',
             role: 'work_provider',
         },
-        // Super Admin Role
+        // Super Admin Roles
         {
             label: t('dashboard'),
             icon: <IconHome stroke={1.4} size={20} />,
@@ -148,6 +148,12 @@ export const Menus = (): MenuTree[] => {
             label: t('mentorship'),
             icon: <IconHierarchy stroke={1.4} size={20} />,
             link: '/admin/programs',
+            role: 'super_admin',
+        },
+        {
+            label: t('notifications'),
+            icon: <IconBell stroke={1.4} size={20} />,
+            link: '/admin/notifications',
             role: 'super_admin',
         },
         {
