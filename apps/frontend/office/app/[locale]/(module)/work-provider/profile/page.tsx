@@ -30,7 +30,7 @@ import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 
 import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
-import { fetchCategories } from 'app/[locale]/_api/job-details';
+import { canSubmit, fetchCategories } from 'app/[locale]/_api/job-details';
 import {
     type Category,
     type Organization,
@@ -185,6 +185,7 @@ const ApprovalType = {
     RETURNED: 'RETURNED',
 };
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 function UserProfile() {
     const queryClient = useQueryClient();
     const [opened, { open, close }] = useDisclosure(false);
@@ -237,6 +238,11 @@ function UserProfile() {
     >({
         queryKey: ['categories'],
         queryFn: fetchCategories,
+    });
+
+    const { data: canOrganizationSubmit } = useQuery({
+        queryKey: ['can_organization_submit'],
+        queryFn: canSubmit,
     });
 
     useEffect(() => {
@@ -367,11 +373,13 @@ function UserProfile() {
 
             {canUpdateProfile && (
                 <>
-                    <Flex align="center" justify="flex-end" mt="md">
-                        <Button onClick={openConfirm}>
-                            Submit for Approval
-                        </Button>
-                    </Flex>
+                    {canOrganizationSubmit?.canSubmit && (
+                        <Flex align="center" justify="flex-end" mt="md">
+                            <Button onClick={openConfirm}>
+                                Submit for Approval
+                            </Button>
+                        </Flex>
+                    )}
 
                     <Modal
                         opened={confirmModalOpened}
