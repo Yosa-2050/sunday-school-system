@@ -295,6 +295,17 @@ export class OrganizationService {
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
             });
+        } else if (status === ApprovalType.Returned) {
+            this.notificationService.send({
+                channel: NotificationChannel.InApp,
+                subject: 'Request to correct information',
+                content:
+                    'Admin needs a correct information to approve your organization. Therefore, please check your profile section information',
+                to: user.id,
+                reference: user.id,
+                isRealTimeNotification: true,
+                isNotifyToAllUser: false,
+            });
         } else if (status === ApprovalType.Waiting_Approval) {
             const superAdmin = await this.usersService.GetSuperAdmin();
             this.notificationService.send({
