@@ -4,6 +4,7 @@ import { getJobApplicationEmailTemplate } from './templates/jobApplicationEmailT
 import { getJobPostApprovedEmailTemplate } from './templates/jobPostApprovedEmailTemplate';
 import { getJobPostDeclinedEmailTemplate } from './templates/jobPostDeclinedEmailTemplate';
 import { getMentorshipPostApprovedEmailTemplate } from './templates/mentorshipPostApprovedEmailTemplate';
+import { getMentorshipPostDeclinedEmailTemplate } from './templates/mentorshipPostDeclinedEmailTemplate';
 import { getOrgActivateEmailTemplate } from './templates/orgActivateEmailTemplate';
 import { getOrgDeactivateEmailTemplate } from './templates/orgDeactivateEmailTemplate';
 import { getOrgRegistrationApprovedEmailTemplate } from './templates/orgRegistrationApprovedEmailTemplate';
@@ -96,7 +97,7 @@ export const NotificationTemplatesSeedData = [
         channelType: NotificationChannel.Email,
         templateName: 'mentorshipPostDeclinedEmailTemplate',
         subject: 'Mentorship Program Posting Declined - {{mentorshipTitle}}',
-        content: getCleanedHtmlString(getMentorshipPostApprovedEmailTemplate()),
+        content: getCleanedHtmlString(getMentorshipPostDeclinedEmailTemplate()),
     },
 ];
 
