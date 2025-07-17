@@ -22,6 +22,27 @@ export const fetchCategories = async () => {
         hasChild: boolean;
     }[];
 };
+
+export const canSubmit = async (): Promise<{
+    canSubmit: boolean;
+    contactPerson: boolean;
+    documents: boolean;
+    location: boolean;
+    organizationDetail: boolean;
+}> => {
+    const response: {
+        canSubmit: boolean;
+        contactPerson: boolean;
+        documents: boolean;
+        location: boolean;
+        organizationDetail: boolean;
+    } = await fetcher('/organization/canSubmit', {
+        method: 'GET',
+        headers: { accept: '*/*' },
+    });
+    return response;
+};
+
 export const deleteCategory = async () => {
     const response = await fetcher('/job-detail/categories', {
         method: 'DELETE',
