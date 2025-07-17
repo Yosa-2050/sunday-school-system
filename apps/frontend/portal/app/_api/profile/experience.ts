@@ -2,9 +2,6 @@ import type { Experience } from '@/lib/types';
 import { fetcher } from '@shega/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
-
 // Types for the API payload
 export type ExperiencePayload = {
     title: string;

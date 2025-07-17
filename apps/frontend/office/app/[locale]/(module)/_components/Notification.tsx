@@ -14,7 +14,6 @@ import {
     ScrollArea,
     Stack,
     Text,
-    useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications as noti } from '@mantine/notifications';
@@ -38,7 +37,6 @@ import {
 } from 'app/[locale]/_api/organizations/getNotification';
 import { getCookie } from 'cookies-next';
 import { jwtDecode } from 'jwt-decode';
-import { useQueryState } from 'nuqs';
 
 interface MyTokenPayload {
     userId: string;
@@ -54,8 +52,7 @@ interface NotificationItem {
 }
 
 export default function NotificationPopover() {
-    const theme = useMantineTheme();
-    const [opened, { toggle, close }] = useDisclosure(false);
+    const [opened, { toggle }] = useDisclosure(false);
 
     // Get user ID from JWT token
     const token = getCookie('job_access_token');
@@ -66,11 +63,8 @@ export default function NotificationPopover() {
         userId = decoded.userId;
     }
 
-    const [param] = useQueryState('notification');
-
-    // Fetch notifications
     const { data } = useQuery({
-        queryKey: ['userId', userId],
+        queryKey: ['notifications', userId],
         queryFn: () =>
             getNotificationById(
                 entityParamSerializer({
@@ -83,14 +77,6 @@ export default function NotificationPopover() {
     });
 
     const queryClient = useQueryClient();
-
-    // Update notification mutation
-    //   const mutation = useMutation({
-    //     mutationFn: (id: string) => updateNotificationById(id),
-    //     onSuccess: (_, id) => {
-    //       queryClient.invalidateQueries({ queryKey: ["userId", userId] });
-    //     },
-    //   });
 
     const mapStatusToIcon = (status: string) => {
         const iconSize = 16;
