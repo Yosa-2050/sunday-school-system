@@ -111,7 +111,11 @@ const ChangePassword = ({ userId }: { userId: string }) => {
         mutate(data);
     };
 
-    const isButtonDisabled = !(newPasswordValue && confirmPasswordValue);
+    const isButtonDisabled = !(
+        newPasswordValue &&
+        confirmPasswordValue &&
+        watch('agreeToTermsandPrivacyPolicy')
+    );
 
     return (
         <>
