@@ -1,3 +1,10 @@
+## [1.8.2](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.1...v1.8.2) (2025-07-17)
+
+
+### Bug Fixes
+
+* **shega:** add can submit check for organizatoup profle update submit ([36b8b8f](https://gitlab.heranitech.com/meklit/shega-jobs/commit/36b8b8f36712f773ae7c771bb1e8b7123561b3f6))
+
 ## [1.8.1](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.0...v1.8.1) (2025-07-17)
 
 
