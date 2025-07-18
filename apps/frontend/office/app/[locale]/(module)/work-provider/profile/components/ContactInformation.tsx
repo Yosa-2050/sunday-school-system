@@ -213,32 +213,6 @@ export default function ContactSection({
                                                     <IconEdit size={16} />
                                                 </ActionIcon>
                                             </Table.Td>
-                                            {canUpdateProfile && (
-                                                <Table.Td>
-                                                    {' '}
-                                                    <ActionIcon
-                                                        onClick={() => {
-                                                            setOpened(true);
-                                                            setSelectedWorker({
-                                                                id: worker.id,
-                                                                contactPersonEmail:
-                                                                    '',
-                                                                contactPersonName: `${profile.firstName} ${profile.middleName} ${profile.lastName}`,
-                                                                contactPersonPhone:
-                                                                    profile.phoneNumber ||
-                                                                    '',
-                                                                contactPersonRole:
-                                                                    worker.type,
-                                                            });
-                                                        }}
-                                                        size="sm"
-                                                        radius="sm"
-                                                        className="hidden group-hover:block"
-                                                    >
-                                                        <IconEdit size={16} />
-                                                    </ActionIcon>
-                                                </Table.Td>
-                                            )}
                                         </Table.Tr>
                                     );
                                 })}

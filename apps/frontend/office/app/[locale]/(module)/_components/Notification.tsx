@@ -37,6 +37,7 @@ import {
 } from 'app/[locale]/_api/organizations/getNotification';
 import { getCookie } from 'cookies-next';
 import { jwtDecode } from 'jwt-decode';
+import { useState } from 'react';
 
 interface MyTokenPayload {
     userId: string;
@@ -52,6 +53,10 @@ interface NotificationItem {
 }
 
 export default function NotificationPopover() {
+    const [activeNotificationId, setActiveNotificationId] = useState<
+        string | null
+    >(null);
+
     const [opened, { toggle }] = useDisclosure(false);
 
     // Get user ID from JWT token
@@ -115,7 +120,12 @@ export default function NotificationPopover() {
     };
 
     const toggleRead = (notification: NotificationItem) => {
-        mutation.mutate(notification);
+        setActiveNotificationId(notification.id);
+        mutation.mutate(notification, {
+            onSettled: () => {
+                setActiveNotificationId(null);
+            },
+        });
     };
 
     const mutation = useMutation({
@@ -291,9 +301,11 @@ export default function NotificationPopover() {
                                         size="sm"
                                         color="primary"
                                         onClick={() => toggleRead(notification)}
-                                        loading={mutation.isPending}
-                                        // style={{ opacity: 0 }}
-                                        className="group-hover:opacity-100"
+                                        loading={
+                                            activeNotificationId ===
+                                                notification.id &&
+                                            mutation.isPending
+                                        }
                                     >
                                         {isRead ? (
                                             <IconEyeOff size={14} />

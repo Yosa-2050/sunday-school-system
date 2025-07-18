@@ -96,26 +96,26 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
     });
     const uploadedDocs: DocumentData[] = Array.isArray(data) ? data : [];
 
-    const { mutate: uploadDocument, isPending } = useUploadDocument(
-        orgId,
-        selectedDocType || '',
-        selectedDocType ? (uploadForm[selectedDocType] as File) : undefined,
-    );
-
     const handleUploadFormChange = (docType: string, file: File | null) => {
         setUploadForm((prev) => ({ ...prev, [docType]: file }));
     };
 
+    const { mutate: uploadDocument, isPending } = useUploadDocument(orgId);
+
     const handleFileUpload = async (docType: string) => {
-        setSelectedDocType(docType);
-        uploadDocument(undefined, {
-            onSuccess: () => {
-                queryClient.invalidateQueries({
-                    queryKey: ['organization_id', orgId],
-                });
-                setUploadForm((prev) => ({ ...prev, [docType]: null }));
+        const file = uploadForm[docType] as File | undefined;
+        if (!file) {
+            return;
+        }
+
+        uploadDocument(
+            { file, docType },
+            {
+                onSuccess: () => {
+                    setUploadForm((prev) => ({ ...prev, [docType]: null }));
+                },
             },
-        });
+        );
     };
 
     const handleFilePreview = async (docData: DocumentData) => {

@@ -35,6 +35,7 @@ export interface Organization {
     description: string;
     logoUrl?: string;
     contacts?: Contact[];
+    name: string;
     industry?: {
         id: string;
         createdBy: string;

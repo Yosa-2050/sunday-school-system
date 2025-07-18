@@ -81,11 +81,11 @@ function HeaderSection({
                     }
                     size={80}
                     radius="md"
-                    alt={`${formData.displayName} logo`}
+                    alt={`${formData.name} logo`}
                 />
                 <Stack gap="xs" flex={1}>
                     <Title order={2} fw={700}>
-                        {formData.displayName}
+                        {formData.name}
                     </Title>
                     <Stack gap="xs">
                         <Group gap="xs" align="center">

@@ -33,22 +33,19 @@ export const uploadDocument = async (
         throw new Error(error.message || 'Failed to upload profile picture');
     }
 
-    const data = await response.json();
-    return data;
+    const data = await response.text();
+    return { success: true, message: data };
 };
 
-export const useUploadDocument = (
-    referenceId: string,
-    documentType: string,
-    file?: File,
-) => {
+export const useUploadDocument = (referenceId: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: () => uploadDocument(referenceId, documentType, file),
+        mutationFn: ({ file, docType }: { file: File; docType: string }) =>
+            uploadDocument(referenceId, docType, file),
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ['organization_id', referenceId],
+                queryKey: ['organizationDocuments', referenceId],
             });
         },
     });
