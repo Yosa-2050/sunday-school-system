@@ -1,3 +1,10 @@
+## [1.8.3](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.2...v1.8.3) (2025-07-18)
+
+
+### Bug Fixes
+
+* **shega:** fixed pagination issue, removed success message on notification and others ([51e8497](https://gitlab.heranitech.com/meklit/shega-jobs/commit/51e849763a8a899167743c7f1dba209bd5baf157))
+
 ## [1.8.2](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.1...v1.8.2) (2025-07-17)
 
 
