@@ -47,7 +47,9 @@ export const useUploadDocument = (
     return useMutation({
         mutationFn: () => uploadDocument(referenceId, documentType, file),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
+            queryClient.invalidateQueries({
+                queryKey: ['organization_id', referenceId],
+            });
         },
     });
 };

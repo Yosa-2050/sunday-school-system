@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGetIndustry } from 'app/[locale]/_api/fetch-lookup';
 import { updateOrganization } from 'app/[locale]/_api/organizations/updateOrganization';
 import { getCookie } from 'cookies-next';
@@ -56,6 +56,7 @@ export const AddOrganizationDetail = ({
     categoriesLoading,
     defaultValues,
 }: AddOrganizationDetailProps) => {
+    const queryClient = useQueryClient();
     const id = getCookie('organization_id')?.toString();
     const { data: industries } = useGetIndustry();
     const {
@@ -83,6 +84,9 @@ export const AddOrganizationDetail = ({
                 yearFounded: Number(data.yearFounded),
             }),
         onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['organization_id', id],
+            });
             notifications.show({
                 title: 'Success',
                 message: 'Organization updated successfully',

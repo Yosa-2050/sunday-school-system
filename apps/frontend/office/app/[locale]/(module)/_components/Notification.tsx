@@ -129,12 +129,6 @@ export default function NotificationPopover() {
             queryClient.invalidateQueries({
                 queryKey: ['notifications', userId],
             });
-            noti.show({
-                title: 'Success',
-                message: 'Notification updated successfully',
-                color: 'green',
-                icon: <IconCheck size="1.1rem" />,
-            });
         },
         onError: () => {
             noti.show({

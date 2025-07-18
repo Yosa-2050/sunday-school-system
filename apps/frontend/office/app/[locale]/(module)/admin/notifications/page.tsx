@@ -14,7 +14,7 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { entityParamSerializer } from '@shega/shared';
-import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     getNotificationById,
@@ -87,12 +87,6 @@ export default function AllNotificationsPage() {
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ['notifications', userId],
-            });
-            notifications.show({
-                title: 'Success',
-                message: 'Notification updated successfully',
-                color: 'green',
-                icon: <IconCheck size="1.1rem" />,
             });
         },
         onError: () => {

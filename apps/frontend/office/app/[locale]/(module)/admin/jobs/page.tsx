@@ -394,7 +394,7 @@ const JobsList = () => {
                     total={data?.total ?? 0}
                     defaultSorting={{
                         o: [
-                            { f: 'status', d: 'desc' },
+                            { f: 'program.status', d: 'desc' },
                             { f: 'createdAt', d: 'asc' },
                         ],
                     }}

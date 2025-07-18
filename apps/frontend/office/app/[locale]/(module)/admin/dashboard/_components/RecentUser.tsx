@@ -19,11 +19,7 @@ import {
     Title,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import {
-    PER_PAGE,
-    entityParamSchema,
-    entityParamSerializer,
-} from '@shega/shared';
+import { entityParamSchema, entityParamSerializer } from '@shega/shared';
 import { EntityColumn } from '@shega/ui';
 import { IconX } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
@@ -65,7 +61,7 @@ const RecentUsers = () => {
         'users',
         parseAsJson(entityParamSchema.parse).withDefault({
             p: 1,
-            pp: PER_PAGE,
+            pp: 5,
         }),
     );
 
@@ -75,36 +71,6 @@ const RecentUsers = () => {
         { value: 'JOB_SEEKER', label: t('roles.jobSeeker') },
         { value: 'MENTOR', label: t('roles.mentor') },
     ];
-
-    const handleRoleSelect = (selectedRoles: string[]) => {
-        const newFilters = {
-            ...filters,
-            roles: selectedRoles,
-            status: filters?.status || '',
-            sort: filters?.sort || { createdAt: 'desc' },
-        };
-
-        if (selectedRoles.length > 0 || newFilters.status) {
-            setFilters(newFilters);
-        } else {
-            setFilters(null);
-        }
-    };
-
-    const handleStatusChange = (status: string) => {
-        const newFilters = {
-            ...filters,
-            status,
-            roles: filters?.roles || [],
-            sort: filters?.sort || { createdAt: 'desc' },
-        };
-
-        if (newFilters.roles.length > 0 || newFilters.status) {
-            setFilters(newFilters);
-        } else {
-            setFilters(null);
-        }
-    };
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['users', entityParamSerializer(entityParams)],

@@ -19,6 +19,7 @@ import {
     submitContactPerson,
     updateContactPerson,
 } from 'app/[locale]/_api/submit-contact-person';
+import { getCookie } from 'cookies-next';
 import { useState } from 'react';
 import { type ContactFormData, ContactFormDrawer } from './ContactFormDrawer';
 
@@ -46,6 +47,7 @@ export default function ContactSection({
     canUpdateProfile,
 }: Readonly<ContactSectionProps>) {
     const queryClient = useQueryClient();
+    const organization_id = getCookie('organization_id')?.toString();
     const [opened, setOpened] = useState(false);
     const [selectedType, setSelectedType] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +77,7 @@ export default function ContactSection({
 
         onSuccess: (res: { reference: string }) => {
             queryClient.invalidateQueries({
-                queryKey: ['organization_id', res.reference],
+                queryKey: ['organization_id', organization_id],
             });
             notifications.show({
                 title: 'Saved',

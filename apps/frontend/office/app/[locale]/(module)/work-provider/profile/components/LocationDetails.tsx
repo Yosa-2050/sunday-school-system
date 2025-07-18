@@ -13,7 +13,7 @@ import {
     Title,
 } from '@mantine/core';
 import { IconEdit } from '@tabler/icons-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     fetchCities,
     fetchCountries,
@@ -45,6 +45,7 @@ export const LocationSection = ({
     defaultLocation,
     canUpdateProfile,
 }: LocationSectionProps) => {
+    const queryClient = useQueryClient();
     const [isEditingLocation, setIsEditingLocation] = useState(false);
     const id = getCookie('organization_id')?.toString();
 
@@ -88,7 +89,12 @@ export const LocationSection = ({
 
     const mutation = useMutation({
         mutationFn: (data: LocationFormData) => updateLocation(id ?? '', data),
-        onSuccess: () => setIsEditingLocation(false),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['organization_id', id],
+            });
+            setIsEditingLocation(false);
+        },
     });
 
     const onSubmit = (data: LocationFormData) => mutation.mutate(data);

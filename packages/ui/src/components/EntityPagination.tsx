@@ -29,10 +29,10 @@ export function EntityPagination({
     const currentPage = entityParams.p || 1;
     const createPageURL = (pageNumber: number | string) => {
         setEntityParams({
+            ...(defaultSorting ?? {}),
             ...entityParams,
             p: Number.parseInt(pageNumber.toString()),
             pp: perPage,
-            ...(defaultSorting ?? {}),
         });
     };
 
