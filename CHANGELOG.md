@@ -1,3 +1,10 @@
+## [1.8.4](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.3...v1.8.4) (2025-07-18)
+
+
+### Bug Fixes
+
+* **shega:** collection of fixes ([87e6ee4](https://gitlab.heranitech.com/meklit/shega-jobs/commit/87e6ee4cbd03ecd6abd4da60b093c54dbf14abe5))
+
 ## [1.8.3](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.2...v1.8.3) (2025-07-18)
 
 
