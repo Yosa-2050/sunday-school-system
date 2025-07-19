@@ -1,3 +1,10 @@
+## [1.8.5](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.4...v1.8.5) (2025-07-19)
+
+
+### Bug Fixes
+
+* **shega:** can subit refresh button ([46e2412](https://gitlab.heranitech.com/meklit/shega-jobs/commit/46e241202f1a36ae9e82ec98a85d7e139145a897))
+
 ## [1.8.4](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.3...v1.8.4) (2025-07-18)
 
 
