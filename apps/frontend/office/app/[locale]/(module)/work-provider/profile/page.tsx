@@ -210,15 +210,15 @@ function UserProfile() {
     const submitMutation = useMutation({
         mutationFn: submitOrganizationProfile,
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['organization_id', organizationId],
-            });
             notifications.show({
                 title: 'Success',
                 message: 'Profile Send for Approval',
                 color: 'green',
             });
             closeConfirm();
+            queryClient.invalidateQueries({
+                queryKey: ['organization_id', organizationId],
+            });
         },
         onError: () => {
             notifications.show({
@@ -261,7 +261,7 @@ function UserProfile() {
     }
 
     return (
-        <Box>
+        <Box key={canUpdateProfile + (organizationId?.toString() ?? '')}>
             <AddOrganizationDetail
                 close={close}
                 opened={opened}

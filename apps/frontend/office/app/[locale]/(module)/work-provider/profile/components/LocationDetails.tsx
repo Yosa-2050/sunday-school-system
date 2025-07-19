@@ -93,6 +93,9 @@ export const LocationSection = ({
             queryClient.invalidateQueries({
                 queryKey: ['organization_id', id],
             });
+            queryClient.invalidateQueries({
+                queryKey: ['can_organization_submit'],
+            });
             setIsEditingLocation(false);
         },
     });

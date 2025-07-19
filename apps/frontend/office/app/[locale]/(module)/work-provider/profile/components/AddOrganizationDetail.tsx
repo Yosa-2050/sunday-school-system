@@ -87,6 +87,9 @@ export const AddOrganizationDetail = ({
             queryClient.invalidateQueries({
                 queryKey: ['organization_id', id],
             });
+            queryClient.invalidateQueries({
+                queryKey: ['can_organization_submit'],
+            });
             notifications.show({
                 title: 'Success',
                 message: 'Organization updated successfully',

@@ -79,6 +79,9 @@ export default function ContactSection({
             queryClient.invalidateQueries({
                 queryKey: ['organization_id', organization_id],
             });
+            queryClient.invalidateQueries({
+                queryKey: ['can_organization_submit'],
+            });
             notifications.show({
                 title: 'Saved',
                 message: 'Contact info saved successfully',

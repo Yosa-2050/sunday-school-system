@@ -47,6 +47,9 @@ export const useUploadDocument = (referenceId: string) => {
             queryClient.invalidateQueries({
                 queryKey: ['organizationDocuments', referenceId],
             });
+            queryClient.invalidateQueries({
+                queryKey: ['can_organization_submit'],
+            });
         },
     });
 };
