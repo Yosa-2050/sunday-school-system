@@ -427,7 +427,7 @@ export class MentorshipService {
             isClosed: false,
         });
 
-        query.andWhere('program.deadline < :now', { now: new Date() });
+        query.andWhere('program.deadline > :now', { now: new Date() });
 
         if (filter.title) {
             query.andWhere('LOWER(program.title) LIKE LOWER(:title)', {
