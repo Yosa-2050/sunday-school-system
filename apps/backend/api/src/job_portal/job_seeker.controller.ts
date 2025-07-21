@@ -37,6 +37,8 @@ import {
     UpdateExperienceRequestDto,
 } from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { GetJobApplicationsForApplicantRequestDto } from './dto/request/get-job-applications.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobApplicationRequestDto } from './dto/request/job-application.request.dto';
@@ -139,8 +141,14 @@ export class JobSeekerController {
     }
 
     @Post('jobs/appliedByJobSeeker')
-    appliedJobs(@Request() req) {
-        return this.jobsService.jobsApplied(CurrentUser.getApplicantId(req));
+    appliedJobs(
+        @Request() req,
+        @Body() request: GetJobApplicationsForApplicantRequestDto,
+    ) {
+        return this.jobsService.jobsApplied(
+            CurrentUser.getApplicantId(req),
+            request,
+        );
     }
 
     @Post('educationalHistory')

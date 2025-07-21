@@ -17,7 +17,6 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
-import { instanceToPlain } from 'class-transformer';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -32,6 +31,8 @@ import {
     AddExperienceRequestDto,
     UpdateExperienceRequestDto,
 } from './dto/request/add-experiance.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { GetJobApplicationsForApplicantRequestDto } from './dto/request/get-job-applications.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobApplicationRequestDto } from './dto/request/job-application.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -181,17 +182,32 @@ export class JobsService {
         return this.applicantRepo.save(applicant);
     }
 
-    async jobsApplied(id: string) {
-        const existingApp = await this.jobApplicantRepo.findBy({
-            applicants: { id },
+    async jobsApplied(
+        id: string,
+        request: GetJobApplicationsForApplicantRequestDto,
+    ) {
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const where: any = {};
+
+        if (request.status) {
+            where.status = request.status;
+        }
+        where.applicants = { id };
+
+        const [data, count] = await this.jobApplicantRepo.findAndCount({
+            where,
+            skip: (request.pagination.page - 1) * request.pagination.limit,
+            take: request.pagination.limit,
         });
-        if (!existingApp) {
+        if (!data) {
             throw new BadRequestException('No applied jobs');
         }
-
-        return instanceToPlain(existingApp, {
-            groups: ['internal'], // will include createdAt
-        });
+        return new PaginatedResponseDto<Applications[]>(
+            data,
+            count,
+            request.pagination.page,
+            request.pagination.limit,
+        );
     }
 
     async jobsAppliedByProgramId(id: string) {
