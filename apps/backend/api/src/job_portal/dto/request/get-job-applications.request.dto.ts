@@ -65,3 +65,17 @@ export class GetJobApplicationsRequestDto {
     @Type(() => PaginationDto)
     pagination: PaginationDto;
 }
+
+export class GetJobApplicationsForApplicantRequestDto {
+    @ApiProperty()
+    @OptionalEnum(ApplicationStatus)
+    status: ApplicationStatus;
+
+    @ApiProperty()
+    @IsDefined()
+    @IsNotEmptyObject()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => PaginationDto)
+    pagination: PaginationDto;
+}
