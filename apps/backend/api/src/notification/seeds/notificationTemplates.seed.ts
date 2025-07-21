@@ -9,6 +9,7 @@ import { getOrgActivateEmailTemplate } from './templates/orgActivateEmailTemplat
 import { getOrgDeactivateEmailTemplate } from './templates/orgDeactivateEmailTemplate';
 import { getOrgRegistrationApprovedEmailTemplate } from './templates/orgRegistrationApprovedEmailTemplate';
 import { getOrgRegistrationDeclinedEmailTemplate } from './templates/orgRegistrationDeclinedEmailTemplate';
+import { getOrgReturnForAdjustmentEmailTemplate } from './templates/orgReturnForAdjustmentEmailTemplate';
 import { getSignupEmailTemplate } from './templates/signupEmailTemplate';
 import { getUserActivateEmailTemplate } from './templates/userActivateEmailTemplate';
 import { getUserDeactivateEmailTemplate } from './templates/userDeactivateEmailTemplate';
@@ -98,6 +99,13 @@ export const NotificationTemplatesSeedData = [
         templateName: 'mentorshipPostDeclinedEmailTemplate',
         subject: 'Mentorship Program Posting Declined - {{mentorshipTitle}}',
         content: getCleanedHtmlString(getMentorshipPostDeclinedEmailTemplate()),
+    },
+    {
+        channelType: NotificationChannel.Email,
+        templateName: 'orgReturnForAdjustmentEmailTemplate',
+        subject:
+            'Action Required: Updates Needed for Your Organization Details on Shega Jobs',
+        content: getCleanedHtmlString(getOrgReturnForAdjustmentEmailTemplate()),
     },
 ];
 
