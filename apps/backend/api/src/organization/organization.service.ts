@@ -188,6 +188,17 @@ export class OrganizationService {
                 );
             }
 
+            if (status === ApprovalType.Returned) {
+                emailTemplate = await this.notificationService.getTemplate(
+                    'orgReturnForAdjustmentEmailTemplate',
+                    {
+                        contactPerson: profile.firstName,
+                        reasonForAdjustment: note,
+                    },
+                    {},
+                );
+            }
+
             const user = await this.profileService.findUserByProfileId(
                 profile.id,
             );
