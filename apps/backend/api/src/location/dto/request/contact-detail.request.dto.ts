@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsDefined, ValidateNested } from 'class-validator';
+import { IsArray, IsDefined, IsObject, ValidateNested } from 'class-validator';
 import { LocationModel } from '../model/location.model';
 import {
     EmailAddressDto,
@@ -33,9 +33,9 @@ export class ContactDetailsRequest {
 
 export class LocationListRequest {
     @IsDefined()
-    @IsArray()
+    @IsObject()
     @ApiProperty({ type: [LocationModel] })
     @ValidateNested({})
     @Type(() => LocationModel)
-    location: LocationModel[];
+    location: LocationModel;
 }
