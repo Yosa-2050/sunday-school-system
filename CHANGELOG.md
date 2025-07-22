@@ -1,3 +1,10 @@
+# [1.9.0](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.5...v1.9.0) (2025-07-22)
+
+
+### Features
+
+* **shega:** job seeker my jobs applied, short listed and rejected lists with search and pagination ([57d899d](https://gitlab.heranitech.com/meklit/shega-jobs/commit/57d899dd70a40664f5400e89f2c169bfac032401))
+
 ## [1.8.5](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.8.4...v1.8.5) (2025-07-19)
 
 
