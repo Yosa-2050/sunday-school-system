@@ -200,5 +200,11 @@ export const Menus = (): MenuTree[] => {
             link: '/mentor/notifications',
             role: 'mentor',
         },
+        {
+            label: t('job-explorer-applicants'),
+            icon: <IconFileText stroke={1.4} size={20} />,
+            link: '/mentor/applicants',
+            role: 'mentor',
+        },
     ];
 };

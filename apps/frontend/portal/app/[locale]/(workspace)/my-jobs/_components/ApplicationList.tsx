@@ -1,15 +1,27 @@
+import { EntityPagination } from '@/components/EntityPagination';
 import { useRouter } from '@/i18n/routing';
 import {
     Badge,
     Box,
     Button,
+    Divider,
     Grid,
     Group,
+    LoadingOverlay,
     Paper,
     Stack,
     Text,
+    TextInput,
     Title,
 } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
+import {
+    type Payload,
+    useFetchAppliedJobs,
+    useFetchRejectedJobs,
+    useFetchShotlistedJobs,
+} from 'app/_api/jobs/fetch-applied-jobs';
+import { useState } from 'react';
 
 interface JobApplication {
     id: string;
@@ -42,8 +54,8 @@ function ApplicationsList({
         if (status === 'APPROVED') {
             return 'green';
         }
-        if (status === 'SHORTLISTED') {
-            return 'blue';
+        if (status === 'SHORT_LISTED') {
+            return 'primary';
         }
         return 'red';
     };
@@ -147,3 +159,222 @@ function ApplicationsList({
 }
 
 export { ApplicationsList };
+
+export const AppliedJobs = () => {
+    const [payload, setPayload] = useState<Omit<Payload, 'status'>>({
+        pagination: {
+            status: 'All',
+            search: '',
+            page: 1,
+            limit: 10,
+        },
+    });
+    const [delayedSearch] = useDebouncedValue(payload.pagination.search, 300);
+    const { data: appliedJobs, isFetching } = useFetchAppliedJobs({
+        ...payload,
+        pagination: {
+            ...payload.pagination,
+            search: delayedSearch,
+        },
+    });
+    if (isFetching) {
+        return (
+            <LoadingOverlay
+                visible={true}
+                zIndex={1000}
+                overlayProps={{ radius: 'sm', blur: 2 }}
+            />
+        );
+    }
+    return (
+        <Box>
+            <TextInput
+                placeholder="Search applications..."
+                mb="md"
+                onChange={(e) =>
+                    setPayload((prev) => ({
+                        ...prev,
+                        pagination: {
+                            ...prev.pagination,
+                            search: e.target.value,
+                            page: 1,
+                        },
+                    }))
+                }
+                value={payload.pagination.search}
+                leftSection={<i className="ri-search-line" />}
+                rightSection={
+                    <Button
+                        variant="light"
+                        color="primary"
+                        onClick={() =>
+                            setPayload((prev) => ({
+                                ...prev,
+                                pagination: {
+                                    ...prev.pagination,
+                                    page: 1,
+                                },
+                            }))
+                        }
+                    >
+                        Search
+                    </Button>
+                }
+                radius="md"
+                size="md"
+                className="mb-4"
+                rightSectionWidth={87}
+            />
+            <Divider mb="md" />
+            <ApplicationsList applications={appliedJobs?.data ?? []} />
+            <EntityPagination total={appliedJobs?.total || 0} perPage={10} />
+        </Box>
+    );
+};
+
+export const ShortlistedJobs = () => {
+    const [payload, setPayload] = useState<Omit<Payload, 'status'>>({
+        pagination: {
+            status: 'All',
+            search: '',
+            page: 1,
+            limit: 10,
+        },
+    });
+    const [delayedSearch] = useDebouncedValue(payload.pagination.search, 300);
+    const { data: shortlistedJobs, isFetching } = useFetchShotlistedJobs({
+        ...payload,
+        pagination: {
+            ...payload.pagination,
+            search: delayedSearch,
+        },
+    });
+    if (isFetching) {
+        return (
+            <LoadingOverlay
+                visible={true}
+                zIndex={1000}
+                overlayProps={{ radius: 'sm', blur: 2 }}
+            />
+        );
+    }
+    return (
+        <Box>
+            <TextInput
+                placeholder="Search shortlisted jobs..."
+                mb="md"
+                onChange={(e) =>
+                    setPayload((prev) => ({
+                        ...prev,
+                        pagination: {
+                            ...prev.pagination,
+                            search: e.target.value,
+                            page: 1,
+                        },
+                    }))
+                }
+                value={payload.pagination.search}
+                leftSection={<i className="ri-search-line" />}
+                rightSection={
+                    <Button
+                        variant="light"
+                        color="primary"
+                        onClick={() =>
+                            setPayload((prev) => ({
+                                ...prev,
+                                pagination: {
+                                    ...prev.pagination,
+                                    page: 1,
+                                },
+                            }))
+                        }
+                    >
+                        Search
+                    </Button>
+                }
+                radius="md"
+                size="md"
+                className="mb-4"
+                rightSectionWidth={87}
+            />
+            <Divider mb="md" />
+            <ApplicationsList applications={shortlistedJobs?.data ?? []} />
+            <EntityPagination
+                total={shortlistedJobs?.total || 0}
+                perPage={10}
+            />
+        </Box>
+    );
+};
+
+export const RejectedJobs = () => {
+    const [payload, setPayload] = useState<Omit<Payload, 'status'>>({
+        pagination: {
+            status: 'All',
+            search: '',
+            page: 1,
+            limit: 10,
+        },
+    });
+    const [delayedSearch] = useDebouncedValue(payload.pagination.search, 300);
+    const { data: rejectedJobs, isFetching } = useFetchRejectedJobs({
+        ...payload,
+        pagination: {
+            ...payload.pagination,
+            search: delayedSearch,
+        },
+    });
+    if (isFetching) {
+        return (
+            <LoadingOverlay
+                visible={true}
+                zIndex={1000}
+                overlayProps={{ radius: 'sm', blur: 2 }}
+            />
+        );
+    }
+    return (
+        <Box>
+            <TextInput
+                placeholder="Search rejected jobs..."
+                mb="md"
+                onChange={(e) =>
+                    setPayload((prev) => ({
+                        ...prev,
+                        pagination: {
+                            ...prev.pagination,
+                            search: e.target.value,
+                            page: 1,
+                        },
+                    }))
+                }
+                value={payload.pagination.search}
+                leftSection={<i className="ri-search-line" />}
+                rightSection={
+                    <Button
+                        variant="light"
+                        color="primary"
+                        onClick={() =>
+                            setPayload((prev) => ({
+                                ...prev,
+                                pagination: {
+                                    ...prev.pagination,
+                                    page: 1,
+                                },
+                            }))
+                        }
+                    >
+                        Search
+                    </Button>
+                }
+                radius="md"
+                size="md"
+                className="mb-4"
+                rightSectionWidth={87}
+            />
+            <Divider mb="md" />
+            <ApplicationsList applications={rejectedJobs?.data ?? []} />
+            <EntityPagination total={rejectedJobs?.total || 0} perPage={10} />
+        </Box>
+    );
+};

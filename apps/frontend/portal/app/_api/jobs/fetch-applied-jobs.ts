@@ -1,4 +1,5 @@
 import { fetcher } from '@shega/shared';
+import { useQuery } from '@tanstack/react-query';
 
 interface JobApplication {
     id: string;
@@ -120,17 +121,48 @@ export type Response = {
     totalPages: number;
 };
 
-export const fetchAppliedJobs = async (pagination: {
-    page: number;
-    limit: number;
-}) => {
+export type Payload = {
+    status: string;
+    pagination: {
+        status: 'All';
+        search: string;
+        page: number;
+        limit: number;
+    };
+};
+
+export const fetchAppliedJobs = async (payload: Payload) => {
     const response = await fetcher('/job-seeker/jobs/appliedByJobSeeker', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            pagination,
-        }),
+        body: JSON.stringify(payload),
     });
 
-    return response as JobApplication[];
+    return response as Response;
 };
+
+const useFetchAppliedJobs = (payload: Omit<Payload, 'status'>) => {
+    return useQuery({
+        queryKey: ['applied-jobs', payload],
+        queryFn: () => fetchAppliedJobs({ ...payload, status: 'PENDING' }),
+        staleTime: 1000 * 60 * 5,
+    });
+};
+
+const useFetchShotlistedJobs = (payload: Omit<Payload, 'status'>) => {
+    return useQuery({
+        queryKey: ['shotlisted-jobs', payload],
+        queryFn: () => fetchAppliedJobs({ ...payload, status: 'SHORT_LISTED' }),
+        staleTime: 1000 * 60 * 5,
+    });
+};
+
+const useFetchRejectedJobs = (payload: Omit<Payload, 'status'>) => {
+    return useQuery({
+        queryKey: ['rejected-jobs', payload],
+        queryFn: () => fetchAppliedJobs({ ...payload, status: 'REJECTED' }),
+        staleTime: 1000 * 60 * 5,
+    });
+};
+
+export { useFetchAppliedJobs, useFetchShotlistedJobs, useFetchRejectedJobs };

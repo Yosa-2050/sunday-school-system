@@ -1,5 +1,5 @@
 import { fetcher } from '@shega/shared';
-type MentorshipResponse = {
+export type MentorshipResponse = {
     data: Daum[];
     total: number;
     totalPages: number;
@@ -50,6 +50,7 @@ export const fetchMentorships = async (
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ q: payload }),
         },
     );
 
