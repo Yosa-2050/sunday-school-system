@@ -221,7 +221,7 @@ export class OrganizationController {
     ) {
         return this.organizationService.updateOrganizationLocation(
             CurrentUser.getOrganizationId(req),
-            [dto],
+            dto,
         );
     }
 

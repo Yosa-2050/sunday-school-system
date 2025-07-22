@@ -22,6 +22,9 @@ export class EmployeeOrganization extends BaseModel {
     })
     employee: Employee;
 
+    @Column({ nullable: true })
+    email: string;
+
     @Column({ nullable: false })
     type: EmployeeType;
 

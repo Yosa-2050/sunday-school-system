@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OptionalEnum } from '@shega/Utilities/decorators/optional-uuid.decorator';
+import {
+    OptionalEnum,
+    OptionalUUID,
+} from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 import { EmployeeType } from '@shega/organization/enums/employee-type.enum';
 import { NewProfileDto } from '@shega/users/dto/new-profile.dto';
@@ -76,8 +79,16 @@ export class CreateOrganizationEmployeeWithOrgDto extends CreateOrganizationEmpl
 
 export class CreateOrgEmployeeWithContactDto {
     @ApiProperty()
+    @OptionalUUID()
+    employeeOrgId: string;
+
+    @ApiProperty()
     @IsString()
     phoneNumber: string;
+
+    @ApiProperty()
+    @IsString()
+    email: string;
 
     @ApiProperty()
     @IsString()

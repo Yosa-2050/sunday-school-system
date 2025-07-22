@@ -104,6 +104,19 @@ export class ProfileService {
         });
     }
 
+    updateProfileQDE(
+        id: string,
+        firstName: string,
+        middleName: string,
+        lastName: string,
+        phoneNumber: string,
+    ) {
+        return this.repo.update(
+            { id },
+            { firstName, middleName, lastName, phoneNumber },
+        );
+    }
+
     async createProfilePic(profileId: string, file: Express.Multer.File) {
         const profile = await this.repo.findOneBy({ id: profileId });
         if (profile && file) {
@@ -123,11 +136,14 @@ export class ProfileService {
 
         //FIXME: check this one later
         if (user) {
-            const profile = await this.repo.findOneBy({
-                id: user?.profile?.id,
-            });
-            const tt = { ...profile, user: user };
-            return tt;
+            if (user.profile?.id) {
+                const profile = await this.repo.findOneBy({
+                    id: user?.profile?.id,
+                });
+                const tt = { ...profile, user: user };
+                return tt;
+            }
+            return { user: user };
         }
 
         throw new EntityNotFoundException('User');

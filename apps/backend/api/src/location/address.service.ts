@@ -109,22 +109,26 @@ export class AddressService {
         return UtilityServices.EnsureCreated(reference);
     }
 
-    createLocation(
-        request: LocationModel[],
+    async createLocation(
+        request: LocationModel,
         reference: string,
         referenceType: ReferenceType,
     ) {
-        const locations = request.map((loc) => {
-            const location = this.locationRepo.create();
-            location.locationData = instanceToPlain(loc);
-            location.reference = reference;
-            location.referenceType = referenceType;
-            location.isPreferred = loc.isPreferred;
-            location.addressType = loc.addressType;
-            return location;
-        });
+        const existingLocation = await this.getLocationByReference(
+            reference,
+            referenceType,
+        );
+        if (existingLocation) {
+            this.locationRepo.delete(existingLocation.id);
+        }
+        const location = this.locationRepo.create();
+        location.locationData = instanceToPlain(request);
+        location.reference = reference;
+        location.referenceType = referenceType;
+        location.isPreferred = request.isPreferred;
+        location.addressType = request.addressType;
 
-        return this.locationRepo.save(locations);
+        return this.locationRepo.save(location);
     }
 
     async updateLocation(request: LocationModel, locationId: string) {
@@ -154,11 +158,19 @@ export class AddressService {
         return this.addressRepo.save(address);
     }
 
-    create(
+    async create(
         request: IndividualAddressDto[],
         reference: string,
         referenceType: ReferenceType,
     ) {
+        const existingAddress = await this.getContactByReference(
+            reference,
+            referenceType,
+        );
+        if (existingAddress?.length > 0) {
+            this.addressRepo.delete({ reference, referenceType });
+        }
+
         const address = request.map((add) => {
             const address = this.addressRepo.create(add);
             address.reference = reference;
@@ -189,7 +201,7 @@ export class AddressService {
     }
 
     getLocationByReference(referenceId: string, referenceType: ReferenceType) {
-        return this.locationRepo.findBy({
+        return this.locationRepo.findOneBy({
             reference: referenceId,
             referenceType: referenceType,
             isActive: true,

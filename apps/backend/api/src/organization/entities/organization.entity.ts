@@ -70,7 +70,7 @@ export class Organization extends BaseModel {
     @Column({ nullable: true })
     corporateEmail: string;
 
-    locations: Location[];
+    locations: Location;
     contacts: ContactDetails[];
     notes: Notes[];
 }
