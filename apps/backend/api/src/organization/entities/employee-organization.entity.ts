@@ -23,6 +23,9 @@ export class EmployeeOrganization extends BaseModel {
     employee: Employee;
 
     @Column({ nullable: false })
+    email: string;
+
+    @Column({ nullable: false })
     type: EmployeeType;
 
     @ManyToOne((type) => Branch, { lazy: true, nullable: true })

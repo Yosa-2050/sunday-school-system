@@ -77,6 +77,11 @@ export class OrganizationService {
                 organizationId,
             );
         }
+
+        if (dto.employeeOrgId) {
+            return this.UpdateContactPerson(dto);
+        }
+
         const profile = this.profileService.createProfileQDE(
             dto.firstName,
             dto.middleName,
@@ -88,11 +93,33 @@ export class OrganizationService {
         model.profile = profile;
         const employee = model;
         const empOrg = await this.employeeOrgRepo.create();
+        empOrg.email = dto.email;
         empOrg.employee = employee;
         empOrg.type = dto.position;
         empOrg.organization = organization;
 
         return await this.employeeOrgRepo.save(empOrg);
+    }
+
+    async UpdateContactPerson(dto: CreateOrgEmployeeWithContactDto) {
+        const employeeOrg = await this.employeeOrgRepo.findOneBy({
+            id: dto.employeeOrgId,
+        });
+
+        const profile = employeeOrg.employee.profile;
+
+        const updatedProfile = this.profileService.updateProfileQDE(
+            profile.id,
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            dto.phoneNumber,
+        );
+        const updatedResult = await this.employeeOrgRepo.update(
+            { id: dto.employeeOrgId },
+            { type: dto.position, email: dto.email },
+        );
+        return UtilityServices.EnsureUpdated(updatedResult, dto.employeeOrgId);
     }
     constructor(
         @InjectRepository(Organization)
@@ -241,7 +268,7 @@ export class OrganizationService {
             applyObject.contactPerson = false;
         }
         //location
-        if (org.locations?.length === 0) {
+        if (org.locations) {
             applyObject.canSubmit = false;
             applyObject.location = false;
         }
@@ -692,7 +719,7 @@ export class OrganizationService {
         );
     }
 
-    updateOrganizationLocation(orgId: string, location: LocationModel[]) {
+    updateOrganizationLocation(orgId: string, location: LocationModel) {
         return this.addressService.createLocation(
             location,
             orgId,
