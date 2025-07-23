@@ -32,6 +32,8 @@ import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { Express } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import {
     type EntityParam,
@@ -268,7 +270,7 @@ export class OrganizationService {
             applyObject.contactPerson = false;
         }
         //location
-        if (org.locations) {
+        if (!org.locations) {
             applyObject.canSubmit = false;
             applyObject.location = false;
         }
@@ -725,5 +727,16 @@ export class OrganizationService {
             orgId,
             ReferenceType.Organization,
         );
+    }
+
+    async uploadLogo(profileId: string, file: Express.Multer.File) {
+        const documentId = await this.documentService.create(file, profileId);
+
+        const updated = await this.organizationRepo.update(
+            { id: profileId },
+            { logo: documentId },
+        );
+
+        return UtilityServices.EnsureUpdated(updated, profileId);
     }
 }
