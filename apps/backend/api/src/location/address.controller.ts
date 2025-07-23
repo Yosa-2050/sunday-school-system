@@ -55,6 +55,11 @@ export class AddressController {
         return this.addressService.findLocationById(id);
     }
 
+    @Get('country/:id')
+    getCountry(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.addressService.findCountryById(id);
+    }
+
     @Delete('location/:id')
     removeLocation(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.addressService.removeLocation(id);
