@@ -1,5 +1,6 @@
 'use client';
 
+import { EntityPageLoading } from '@/components/EntityPageLoading';
 import { useOrganizationDetail } from '@/hooks/organization-detail';
 import { useRouter } from '@/i18n/routing';
 import {
@@ -18,7 +19,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { fetcher, logger } from '@shega/shared';
+import { fetcher } from '@shega/shared';
 import {
     IconAlertCircle,
     IconBuilding,
@@ -36,7 +37,8 @@ import {
     IconWorld,
     IconX,
 } from '@tabler/icons-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getAddressById } from 'app/[locale]/_api/organizations/get-addresses';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -151,11 +153,13 @@ interface Organization {
     __has_employee__: boolean;
 }
 
-// Mock DeclineModal component
 const DeclineModal = ({ close }: { close: () => void }) => {
     const router = useRouter();
     const [note, setNote] = useState('');
     const { id } = useParams<{ id: string }>();
+
+    const queryClient = useQueryClient();
+
     const { mutateAsync: decline, isPending } = useMutation({
         mutationFn: async () => {
             const response = await fetcher(`/organization/decline/${id}`, {
@@ -167,6 +171,7 @@ const DeclineModal = ({ close }: { close: () => void }) => {
         },
         onSuccess: () => {
             router.push('/admin/organizations');
+            queryClient.invalidateQueries({ queryKey: ['organization', id] });
             notifications.show({
                 title: 'Success',
                 message: 'Organization has been successfully declined',
@@ -220,28 +225,43 @@ const AdjustmentModal = ({ close }: { close: () => void }) => {
     const [isSubmittingAdjustment, setIsSubmittingAdjustment] = useState(false);
     const { id } = useParams<{ id: string }>();
 
-    const handleAdjustmentSubmit = async () => {
-        if (!adjustmentNote.trim()) {
-            return;
-        }
-
-        setIsSubmittingAdjustment(true);
-        try {
-            await fetcher(`/organization/return/${id}`, {
+    const queryClient = useQueryClient();
+    const { mutateAsync: adjustmentFetcher, isPending } = useMutation({
+        mutationFn: async () => {
+            return await fetcher(`/organization/return/${id}`, {
                 method: 'PATCH',
                 body: JSON.stringify({ note: adjustmentNote }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['organization', id],
+            });
+
             close();
-            setAdjustmentNote('');
-            // Optionally refetch the organization data or show success message
-        } catch (error) {
-            logger.error('Error submitting adjustment:', error);
-        } finally {
-            setIsSubmittingAdjustment(false);
+            notifications.show({
+                title: 'Adjustment Requested',
+                message:
+                    'The organization has been successfully returned for adjustments',
+            });
+        },
+        onError: (error) => {
+            notifications.show({
+                title: 'Error Requesting Adjustments',
+                message: error.message,
+                color: 'red',
+            });
+        },
+    });
+
+    const handleAdjustmentSubmit = async () => {
+        if (!adjustmentNote.trim()) {
+            return;
         }
+        await adjustmentFetcher();
     };
 
     return (
@@ -264,17 +284,13 @@ const AdjustmentModal = ({ close }: { close: () => void }) => {
                 placeholder="Describe the changes or adjustments needed..."
             />
             <Group justify="flex-end" gap="sm">
-                <Button
-                    variant="outline"
-                    onClick={close}
-                    disabled={isSubmittingAdjustment}
-                >
+                <Button variant="outline" onClick={close} disabled={isPending}>
                     Cancel
                 </Button>
                 <Button
                     color="orange"
                     onClick={handleAdjustmentSubmit}
-                    loading={isSubmittingAdjustment}
+                    loading={isPending}
                     disabled={!adjustmentNote.trim()}
                 >
                     Request Adjustments
@@ -284,13 +300,14 @@ const AdjustmentModal = ({ close }: { close: () => void }) => {
     );
 };
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 const OrganizationApproval = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const [adjustmentOpened, { open: openAdjustment, close: closeAdjustment }] =
         useDisclosure(false);
     const { id } = useParams<{ id: string }>();
 
-    const { data: organizationData } = useQuery({
+    const { data: organizationData, isFetching } = useQuery({
         queryKey: ['organization', id],
         queryFn: async () => {
             const response: Organization = await fetcher(
@@ -355,13 +372,30 @@ const OrganizationApproval = () => {
             return acc;
         }, [] as Contact[]) ?? [];
 
-    if (!organizationData) {
-        return <Text>Loading organization details...</Text>;
-    }
+    const countryId = organizationData?.locations?.[0]?.locationData?.country;
+    const regionId = organizationData?.locations?.[0]?.locationData?.region;
+    const cityId = organizationData?.locations?.[0]?.locationData?.city;
 
+    const country = useQuery({
+        queryFn: () => getAddressById(countryId ?? ''),
+        queryKey: ['country', countryId],
+    });
+
+    const state = useQuery({
+        queryFn: () => getAddressById(regionId ?? ''),
+        queryKey: ['state', regionId],
+    });
+
+    const city = useQuery({
+        queryFn: () => getAddressById(cityId ?? ''),
+        queryKey: ['city', cityId],
+    });
+
+    if (isFetching || !organizationData) {
+        return <EntityPageLoading />;
+    }
     return (
         <Stack gap="lg">
-            {/* Admin Alert for Pending Approval */}
             {organizationData.status === 'WAITINGAPPROVAL' && (
                 <Alert
                     icon={<IconAlertCircle size={16} />}
@@ -386,7 +420,6 @@ const OrganizationApproval = () => {
                 </Alert>
             )}
 
-            {/* Main Organization Header */}
             <Paper shadow="sm" p="lg" radius="md" withBorder>
                 <Group justify="space-between" mb="md">
                     <Group>
@@ -685,34 +718,27 @@ const OrganizationApproval = () => {
                                         </Group>
                                         <Stack gap="xs">
                                             <Text size="sm">
-                                                <strong>Country:</strong>{' '}
-                                                {location.locationData.country}
+                                                <strong>Country:</strong>
+                                                {country.data?.name || ''}
                                             </Text>
                                             <Text size="sm">
-                                                <strong>Region:</strong>{' '}
-                                                {location.locationData.region}
+                                                <strong>Region:</strong>
+                                                {state.data?.name || ''}
                                             </Text>
                                             <Text size="sm">
-                                                <strong>City:</strong>{' '}
-                                                {location.locationData.city}
+                                                <strong>City:</strong>
+                                                {city.data?.name || ''}
                                             </Text>
                                             <Text size="sm">
-                                                <strong>Subcity:</strong>{' '}
+                                                <strong>Subcity:</strong>
                                                 {location.locationData
                                                     .subcity ||
                                                     location.locationData
                                                         .subCity}
                                             </Text>
                                             <Text size="sm">
-                                                <strong>Woreda:</strong>{' '}
+                                                <strong>Woreda:</strong>
                                                 {location.locationData.woreda}
-                                            </Text>
-                                            <Text size="sm">
-                                                <strong>House Number:</strong>{' '}
-                                                {
-                                                    location.locationData
-                                                        .houseNumber
-                                                }
                                             </Text>
                                         </Stack>
                                     </Paper>
@@ -817,7 +843,6 @@ const OrganizationApproval = () => {
                 </Grid.Col>
             </Grid>
 
-            {/* Additional Information */}
             <Paper shadow="sm" p="lg" radius="md" withBorder>
                 <Title order={4} mb="md">
                     Additional Information
@@ -883,7 +908,6 @@ const OrganizationApproval = () => {
                 </Paper>
             )}
 
-            {/* Decline Modal */}
             <Modal
                 opened={opened}
                 onClose={close}
@@ -894,7 +918,6 @@ const OrganizationApproval = () => {
                 <DeclineModal close={close} />
             </Modal>
 
-            {/* Adjustment Modal */}
             <Modal
                 opened={adjustmentOpened}
                 onClose={closeAdjustment}

@@ -1,12 +1,12 @@
 import { notifications } from '@mantine/notifications';
-import { QueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     approveOrganization,
     declineOrganization,
 } from 'app/[locale]/_api/organizations/approve-organization';
 
 const useOrganizationDetail = ({ id }: { id: string }) => {
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
     const {
         mutate: approveOrganizationMutation,
         isPending: isApprovingOrganization,
@@ -37,7 +37,6 @@ const useOrganizationDetail = ({ id }: { id: string }) => {
         mutate: declineOrganizationMutation,
         isPending: isDecliningOrganization,
     } = useMutation({
-        // mutationFn: async () => await approveJob(jobId),
         mutationFn: async (note: string) => {
             return await declineOrganization(id, note);
         },

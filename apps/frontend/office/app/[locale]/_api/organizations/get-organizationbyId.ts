@@ -47,9 +47,7 @@ export interface Organization {
         group: string;
         subGroup: string;
     };
-    locations?: Array<{
-        locationData: LocationData;
-    }>;
+    locations?: { locationData: LocationData };
     notes: {
         id: string;
         createdBy: string;

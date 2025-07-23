@@ -19,6 +19,7 @@ import {
     fetchCountries,
     fetchRegionsId,
 } from 'app/[locale]/_api/job-details';
+import { getAddressById } from 'app/[locale]/_api/organizations/get-addresses';
 import { updateLocation } from 'app/[locale]/_api/organizations/updateOrganization';
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
@@ -37,7 +38,9 @@ const locationSchema = z.object({
 export type LocationFormData = z.infer<typeof locationSchema>;
 
 type LocationSectionProps = {
-    defaultLocation?: Partial<LocationFormData>;
+    defaultLocation?: {
+        locationData: LocationFormData;
+    };
     canUpdateProfile: boolean;
 };
 
@@ -49,6 +52,8 @@ export const LocationSection = ({
     const [isEditingLocation, setIsEditingLocation] = useState(false);
     const id = getCookie('organization_id')?.toString();
 
+    const initialValues = defaultLocation?.locationData ?? {};
+
     const {
         control,
         handleSubmit,
@@ -56,7 +61,7 @@ export const LocationSection = ({
         formState: { errors },
     } = useForm<LocationFormData>({
         resolver: zodResolver(locationSchema),
-        defaultValues: defaultLocation ?? {},
+        defaultValues: initialValues,
     });
 
     const selectedCountry = useWatch({ control, name: 'country' });
@@ -66,6 +71,35 @@ export const LocationSection = ({
     const selectedWoreda = useWatch({ control, name: 'woreda' });
     const selectedAddressText = useWatch({ control, name: 'addressText' });
 
+    // Fetch names by ID for display mode
+    const { data: countryName } = useQuery({
+        queryKey: ['country', initialValues.country],
+        queryFn: () =>
+            initialValues.country
+                ? getAddressById(initialValues.country)
+                : Promise.resolve(null),
+        enabled: !!initialValues.country,
+    });
+
+    const { data: stateName } = useQuery({
+        queryKey: ['state', initialValues.region],
+        queryFn: () =>
+            initialValues.region
+                ? getAddressById(initialValues.region)
+                : Promise.resolve(null),
+        enabled: !!initialValues.region,
+    });
+
+    const { data: cityName } = useQuery({
+        queryKey: ['city', initialValues.city],
+        queryFn: () =>
+            initialValues.city
+                ? getAddressById(initialValues.city)
+                : Promise.resolve(null),
+        enabled: !!initialValues.city,
+    });
+
+    // For edit mode selects
     const { data: countries = [] } = useQuery({
         queryKey: ['countries'],
         queryFn: fetchCountries,
@@ -102,17 +136,6 @@ export const LocationSection = ({
 
     const onSubmit = (data: LocationFormData) => mutation.mutate(data);
 
-    const getLabel = (
-        id: string | undefined,
-        list: { id: string; name: string }[],
-    ): string => {
-        if (!id) {
-            return '-';
-        }
-        const match = list.find((item) => item.id === id);
-        return match ? match.name : '-';
-    };
-
     return (
         <Paper p="md" mt="xl">
             <Group justify="space-between" align="center" mb="xs">
@@ -125,7 +148,7 @@ export const LocationSection = ({
                                 <Button
                                     variant="outline"
                                     onClick={() => {
-                                        reset();
+                                        reset(initialValues);
                                         setIsEditingLocation(false);
                                     }}
                                 >
@@ -158,95 +181,96 @@ export const LocationSection = ({
                     {
                         name: 'country',
                         label: 'Country',
-                        value: selectedCountry,
+                        displayValue: countryName?.name,
                         options: countries,
                         isSelect: true,
                     },
                     {
                         name: 'region',
                         label: 'Region',
-                        value: selectedRegion,
+                        displayValue: stateName?.name,
                         options: regions,
                         isSelect: true,
                     },
                     {
                         name: 'city',
                         label: 'City',
-                        value: selectedCity,
+                        displayValue: cityName?.name,
                         options: cities,
                         isSelect: true,
                     },
                     {
                         name: 'subCity',
                         label: 'Sub City',
-                        value: selectedSubCity,
+                        displayValue: selectedSubCity,
                         isSelect: false,
                     },
                     {
                         name: 'woreda',
                         label: 'Woreda',
-                        value: selectedWoreda,
+                        displayValue: selectedWoreda,
                         isSelect: false,
                     },
                     {
                         name: 'addressText',
                         label: 'Address Description',
-                        value: selectedAddressText,
+                        displayValue: selectedAddressText,
                         isSelect: false,
                     },
-                ].map(({ name, label, value, options = [], isSelect }) => (
-                    <Box key={name} w={{ base: '100%', sm: '45%', md: '30%' }}>
-                        <Text size="xs" c="dimmed" mb={4}>
-                            {label}
-                        </Text>
-
-                        {isEditingLocation ? (
-                            <Controller
-                                name={name as keyof LocationFormData}
-                                control={control}
-                                render={({ field }) =>
-                                    isSelect ? (
-                                        <Select
-                                            {...field}
-                                            data={options.map((o) => ({
-                                                value: o.id,
-                                                label: o.name,
-                                            }))}
-                                            placeholder={`Select ${label.toLowerCase()}`}
-                                            onChange={(val) =>
-                                                field.onChange(val)
-                                            }
-                                            value={field.value || null}
-                                            error={
-                                                errors?.[
-                                                    name as keyof LocationFormData
-                                                ]?.message
-                                            }
-                                            clearable
-                                            searchable
-                                        />
-                                    ) : (
-                                        <TextInput
-                                            {...field}
-                                            placeholder={`Enter ${label.toLowerCase()}`}
-                                            error={
-                                                errors?.[
-                                                    name as keyof LocationFormData
-                                                ]?.message
-                                            }
-                                        />
-                                    )
-                                }
-                            />
-                        ) : (
-                            <Text fw={400}>
-                                {isSelect
-                                    ? getLabel(value, options)
-                                    : value || '-'}
+                ].map(
+                    ({ name, label, displayValue, options = [], isSelect }) => (
+                        <Box
+                            key={name}
+                            w={{ base: '100%', sm: '45%', md: '30%' }}
+                        >
+                            <Text size="xs" c="dimmed" mb={4}>
+                                {label}
                             </Text>
-                        )}
-                    </Box>
-                ))}
+
+                            {isEditingLocation ? (
+                                <Controller
+                                    name={name as keyof LocationFormData}
+                                    control={control}
+                                    render={({ field }) =>
+                                        isSelect ? (
+                                            <Select
+                                                {...field}
+                                                data={options.map((o) => ({
+                                                    value: o.id,
+                                                    label: o.name,
+                                                }))}
+                                                placeholder={`Select ${label.toLowerCase()}`}
+                                                onChange={(val) =>
+                                                    field.onChange(val)
+                                                }
+                                                value={field.value || null}
+                                                error={
+                                                    errors?.[
+                                                        name as keyof LocationFormData
+                                                    ]?.message
+                                                }
+                                                clearable
+                                                searchable
+                                            />
+                                        ) : (
+                                            <TextInput
+                                                {...field}
+                                                placeholder={`Enter ${label.toLowerCase()}`}
+                                                error={
+                                                    errors?.[
+                                                        name as keyof LocationFormData
+                                                    ]?.message
+                                                }
+                                            />
+                                        )
+                                    }
+                                />
+                            ) : (
+                                <Text fw={400}>{displayValue || '-'}</Text>
+                            )}
+                        </Box>
+                    ),
+                )}
             </Group>
         </Paper>
     );

@@ -10,6 +10,7 @@ import {
     Paper,
     Select,
     Stack,
+    TagsInput,
     Text,
     TextInput,
     Title,
@@ -263,16 +264,16 @@ export const JobRequirements = ({
                         name="skills"
                         control={control}
                         render={({ field }) => (
-                            <MultiSelect
+                            <TagsInput
                                 label="Skills"
-                                placeholder="Select skills"
+                                placeholder="Select or create skills"
                                 data={skills.map((skill) => ({
                                     value: skill.name,
                                     label: skill.name,
                                 }))}
-                                searchable
-                                value={field.value}
-                                onChange={field.onChange}
+                                //   searchable
+                                clearable
+                                {...field}
                                 error={errors.skills?.message}
                                 required
                             />

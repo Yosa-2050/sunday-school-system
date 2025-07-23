@@ -6,7 +6,7 @@ export const approveOrganization = async (id: string) => {
         headers: { 'Content-Type': 'application/json' },
     });
 
-    return response;
+    return { response };
 };
 export const declineOrganization = async (id: string, note: string) => {
     const response = await fetcher(`/organization/decline/${id}`, {

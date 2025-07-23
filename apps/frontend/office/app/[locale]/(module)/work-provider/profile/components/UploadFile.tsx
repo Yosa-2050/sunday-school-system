@@ -108,6 +108,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
             return;
         }
 
+        setSelectedDocType(docType);
         uploadDocument(
             { file, docType },
             {
@@ -168,7 +169,6 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
 
     const completedDocs = uploadedDocs.length;
     const totalDocs = REQUIRED_DOCUMENTS.length;
-    const progressPercentage = (completedDocs / totalDocs) * 100;
 
     // Extracted button rendering to reduce complexity
     function renderUploadButton({
@@ -321,7 +321,8 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
                     <Group gap="xs">
                         {canUpdateProfile &&
                             renderUploadButton({
-                                isUploading,
+                                isUploading:
+                                    selectedDocType === doc.code && isPending,
                                 isUploaded,
                                 localFile,
                                 handleFileUpload,

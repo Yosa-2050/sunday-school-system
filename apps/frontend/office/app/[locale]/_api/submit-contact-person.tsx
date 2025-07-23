@@ -2,11 +2,13 @@ import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
 import { getCookie } from 'cookies-next';
 
 export const submitContactPerson = async (data: {
+    employeeOrgId?: string;
     phoneNumber: string;
     firstName: string;
     middleName?: string;
     lastName?: string;
     position: string;
+    email?: string;
 }) => {
     const token = getCookie(COOKIE_ACCESS_TOKEN)?.toString();
     if (!token) {

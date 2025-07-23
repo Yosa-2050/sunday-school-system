@@ -1,34 +1,27 @@
-// app/[locale]/_components/ContactFormDrawer.tsx
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Drawer, Group, Select, Stack, TextInput } from '@mantine/core';
-import { IconDeviceFloppy, IconMail, IconPhone } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
+import {
+    IconDeviceFloppy,
+    IconMail,
+    IconPhone,
+    IconX,
+} from '@tabler/icons-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { submitContactPerson } from 'app/[locale]/_api/submit-contact-person';
+import { getCookie } from 'cookies-next';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const contactSchema = z.object({
-    id: z.string().optional(),
+    employeeOrgId: z.string().optional(),
     contactPersonName: z.string().min(1, 'Full name is required'),
     contactPersonRole: z.string().min(1, 'Role is required'),
     contactPersonPhone: z.string().min(1, 'Phone number is required'),
-    contactPersonEmail: z
-        .string()
-        .min(1, 'Email is required')
-        .email('Invalid email')
-        .refine((email) => {
-            const domain = email.split('@')[1];
-            return (
-                domain &&
-                ![
-                    'gmail.com',
-                    'yahoo.com',
-                    'hotmail.com',
-                    'outlook.com',
-                ].includes(domain.toLowerCase())
-            );
-        }, 'Use a corporate email'),
+    email: z.string().min(1, 'Email is required').email('Invalid email'),
 });
 
 export type ContactFormData = z.infer<typeof contactSchema> & { id?: string };
@@ -36,8 +29,6 @@ export type ContactFormData = z.infer<typeof contactSchema> & { id?: string };
 interface ContactFormDrawerProps {
     opened: boolean;
     onClose: () => void;
-    onSubmit: (data: ContactFormData) => Promise<void>;
-    loading: boolean;
     initialType: string | null;
     setInitialType: (value: string | null) => void;
     defaultValues?: Partial<ContactFormData> | null;
@@ -46,12 +37,13 @@ interface ContactFormDrawerProps {
 export function ContactFormDrawer({
     opened,
     onClose,
-    onSubmit,
-    loading,
     initialType,
     setInitialType,
     defaultValues,
 }: Readonly<ContactFormDrawerProps>) {
+    const queryClient = useQueryClient();
+    const organization_id = getCookie('organization_id')?.toString();
+
     const {
         control,
         handleSubmit,
@@ -61,13 +53,66 @@ export function ContactFormDrawer({
     } = useForm<ContactFormData>({
         resolver: zodResolver(contactSchema),
         defaultValues: {
-            id: defaultValues?.id || '',
+            employeeOrgId: defaultValues?.employeeOrgId || '',
             contactPersonName: defaultValues?.contactPersonName || '',
             contactPersonRole: defaultValues?.contactPersonRole || '',
             contactPersonPhone: defaultValues?.contactPersonPhone || '',
-            contactPersonEmail: defaultValues?.contactPersonEmail || '',
+            email: defaultValues?.email || '',
         },
     });
+
+    const { mutateAsync, isPending: loading } = useMutation({
+        mutationFn: async (formData: ContactFormData) => {
+            const [firstNameRaw, middleName = '', lastName = ''] =
+                formData.contactPersonName.trim().split(' ');
+            const firstName = firstNameRaw || '';
+
+            const payload = {
+                phoneNumber: formData.contactPersonPhone,
+                firstName,
+                middleName,
+                lastName,
+                email: formData.email,
+                employeeOrgId:
+                    formData.employeeOrgId ??
+                    defaultValues?.employeeOrgId ??
+                    '',
+                position: formData.contactPersonRole,
+            };
+
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            return (await submitContactPerson({ ...payload })) as any;
+        },
+
+        onSuccess: (res: { reference: string }) => {
+            queryClient.invalidateQueries({
+                queryKey: ['organization_id', organization_id],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['can_organization_submit'],
+            });
+            reset();
+            notifications.show({
+                title: 'Saved',
+                message: 'Contact info saved successfully',
+                color: 'green',
+            });
+            onClose();
+        },
+
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'Something went wrong while saving',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
+        },
+    });
+
+    const onSubmit = async (data: ContactFormData) => {
+        await mutateAsync(data);
+    };
 
     useEffect(() => {
         if (defaultValues) {
@@ -83,10 +128,8 @@ export function ContactFormDrawer({
                 'contactPersonPhone',
                 defaultValues.contactPersonPhone || '',
             );
-            setValue(
-                'contactPersonEmail',
-                defaultValues.contactPersonEmail || '',
-            );
+            setValue('email', defaultValues.email || '');
+            setValue('employeeOrgId', defaultValues.employeeOrgId || '');
         }
     }, [defaultValues, setValue]);
 
@@ -159,7 +202,7 @@ export function ContactFormDrawer({
 
                     <Controller
                         control={control}
-                        name="contactPersonEmail"
+                        name="email"
                         render={({ field }) => (
                             <TextInput
                                 label="Corporate Email"
@@ -167,7 +210,7 @@ export function ContactFormDrawer({
                                 placeholder="email@company.com"
                                 leftSection={<IconMail size={16} />}
                                 {...field}
-                                error={errors.contactPersonEmail?.message}
+                                error={errors.email?.message}
                             />
                         )}
                     />

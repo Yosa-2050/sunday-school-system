@@ -13,6 +13,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { logger } from '@shega/shared';
+import { useAuth } from '@shega/ui';
 import { IconPlus, IconXboxX } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -26,6 +27,7 @@ import * as z from 'zod';
 export function CreateUser() {
     const [opened, { open, close }] = useDisclosure(false);
     const t = useTranslations('crateUsers');
+    const { user } = useAuth();
 
     const userSchema = z.object({
         role: z
@@ -42,7 +44,6 @@ export function CreateUser() {
     });
     const queryClient = useQueryClient();
 
-    // Initialize react-hook-form with validation schema
     const {
         control,
         register,
@@ -52,9 +53,15 @@ export function CreateUser() {
         reset,
     } = useForm<CreateUsers>({
         resolver: zodResolver(userSchema),
+        defaultValues: {
+            role: user?.role === 'administrator' ? 'JOB_SEEKER' : '',
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            email: '',
+        },
     });
 
-    // Create user mutation
     const createUserMutation = useMutation({
         mutationFn: createUsers,
         mutationKey: ['users'],
@@ -65,7 +72,7 @@ export function CreateUser() {
             });
             queryClient.invalidateQueries({ queryKey: ['users'] });
             close();
-            reset(); // Reset form data to default after success
+            reset();
         },
         onError: (error) => {
             logger.log(error);

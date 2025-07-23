@@ -1,14 +1,17 @@
 'use client';
 
 import {
+    ActionIcon,
     Avatar,
     Badge,
     Box,
     Button,
     Divider,
+    FileButton,
     Flex,
     Group,
     Loader,
+    LoadingOverlay,
     Modal,
     Paper,
     Stack,
@@ -22,21 +25,26 @@ import {
     IconAlertCircle,
     IconBuilding,
     IconCalendar,
+    IconCamera,
+    IconCheck,
     IconEdit,
     IconMapPin,
+    IconX,
 } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
 import { canSubmit, fetchCategories } from 'app/[locale]/_api/job-details';
+import { useDownloadProfilePicture } from 'app/[locale]/_api/job-seeker';
 import {
     type Category,
     type Organization,
     getOrganizationById,
 } from 'app/[locale]/_api/organizations/get-organizationbyId';
 import type { UpdateLocationPayload } from 'app/[locale]/_api/organizations/updateOrganization';
+import { useUploadProfilePicture } from 'app/[locale]/_api/profile';
 import { AddOrganizationDetail } from './components/AddOrganizationDetail';
 import ContactSection from './components/ContactInformation';
 import { LocationSection } from './components/LocationDetails';
@@ -71,18 +79,117 @@ function HeaderSection({
     open,
     canUpdateProfile,
 }: { formData: FormDataType; open: () => void; canUpdateProfile: boolean }) {
+    const [isUploading, setIsUploading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const resetRef = useRef<() => void>(null);
+
+    const { mutate: uploadProfilePicture } = useUploadProfilePicture();
+    const { data: profilePicture } = useDownloadProfilePicture('');
+
+    const handleFileSelect = async (file: File | null) => {
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            notifications.show({
+                title: 'Error',
+                message: 'Please upload an image file',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            notifications.show({
+                title: 'Error',
+                message: 'File size should be less than 5MB',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
+            return;
+        }
+
+        setIsUploading(true);
+        try {
+            await uploadProfilePicture(file, {
+                onSuccess: () => {
+                    notifications.show({
+                        title: 'Success',
+                        message: 'Profile picture updated successfully',
+                        color: 'green',
+                        icon: <IconCheck size={16} />,
+                    });
+                },
+                onError: (error) => {
+                    notifications.show({
+                        title: 'Error',
+                        message:
+                            error instanceof Error
+                                ? error.message
+                                : 'Failed to update profile picture',
+                        color: 'red',
+                        icon: <IconX size={16} />,
+                    });
+                },
+            });
+        } finally {
+            setIsUploading(false);
+            resetRef.current?.();
+        }
+    };
+
+    const avatarSrc = profilePicture
+        ? // biome-ignore lint/nursery/noNestedTernary: <explanation>
+          typeof profilePicture === 'string'
+            ? profilePicture
+            : URL.createObjectURL(profilePicture)
+        : undefined;
+
     return (
         <Group justify="space-between" align="flex-start" wrap="nowrap">
             <Group align="flex-start" gap="lg">
-                <Avatar
-                    src={
-                        formData.logoUrl ||
-                        '/placeholder.svg?height=80&width=80'
-                    }
-                    size={80}
-                    radius="md"
-                    alt={`${formData.name} logo`}
-                />
+                <Stack gap="sm" align="center">
+                    <Box style={{ position: 'relative' }}>
+                        <Avatar
+                            src={avatarSrc}
+                            size={140}
+                            radius={140}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => avatarSrc && setIsModalOpen(true)}
+                        />
+                        <FileButton
+                            resetRef={resetRef}
+                            onChange={handleFileSelect}
+                            accept="image/*"
+                        >
+                            {(props) => (
+                                <ActionIcon
+                                    {...props}
+                                    variant="filled"
+                                    color="blue"
+                                    size="lg"
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 10,
+                                        right: 10,
+                                    }}
+                                >
+                                    <IconCamera size={20} />
+                                </ActionIcon>
+                            )}
+                        </FileButton>
+                        {isUploading && (
+                            <LoadingOverlay
+                                visible
+                                zIndex={1000}
+                                overlayProps={{ radius: 'sm', blur: 2 }}
+                                loaderProps={{ color: 'blue' }}
+                            />
+                        )}
+                    </Box>
+                </Stack>
                 <Stack gap="xs" flex={1}>
                     <Title order={2} fw={700}>
                         {formData.name}
@@ -127,6 +234,23 @@ function HeaderSection({
                     Edit Profile
                 </Button>
             )}
+            <Modal
+                opened={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                centered
+                size="lg"
+            >
+                {avatarSrc ? (
+                    // biome-ignore lint/nursery/noImgElement: <explanation>
+                    <img
+                        src={avatarSrc}
+                        alt="Profile Preview"
+                        style={{ width: '100%' }}
+                    />
+                ) : (
+                    <Text>No profile picture available.</Text>
+                )}
+            </Modal>
         </Group>
     );
 }
@@ -277,6 +401,34 @@ function UserProfile() {
                     description: organizationDetail.description ?? '',
                 }}
             />
+            {organization?.status === ApprovalType.WAITINGAPPROVAL && (
+                <Paper
+                    p="sm"
+                    mb="lg"
+                    radius="md"
+                    withBorder
+                    shadow="xs"
+                    style={{
+                        backgroundColor: '#E6FFFA',
+                        borderColor: '#38B2AC',
+                    }}
+                >
+                    <Group>
+                        <ThemeIcon color="teal" variant="light" size="lg">
+                            <IconCheck size={18} />
+                        </ThemeIcon>
+                        <Stack gap={0}>
+                            <Text fw={500} color="teal">
+                                Profile submitted for approval
+                            </Text>
+                            <Text size="sm" c="dimmed">
+                                Your organization profile is currently under
+                                review by the admin team.
+                            </Text>
+                        </Stack>
+                    </Group>
+                </Paper>
+            )}
 
             {organization?.status === 'RETURNED' &&
                 organization?.notes &&
@@ -359,7 +511,7 @@ function UserProfile() {
             <LocationSection
                 defaultLocation={
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    (organization?.locations?.[0]?.locationData as any) ?? {}
+                    organization?.locations
                 }
                 canUpdateProfile={canUpdateProfile}
             />
@@ -373,6 +525,10 @@ function UserProfile() {
 
             {canUpdateProfile && (
                 <>
+                    {canOrganizationSubmit && (
+                        <CompletionStatus status={canOrganizationSubmit} />
+                    )}
+
                     {canOrganizationSubmit?.canSubmit && (
                         <Flex align="center" justify="flex-end" mt="md">
                             <Button onClick={openConfirm}>
@@ -416,3 +572,52 @@ function UserProfile() {
 }
 
 export default UserProfile;
+
+function CompletionStatus({
+    status,
+}: {
+    status: {
+        organizationDetail: boolean;
+        documents: boolean;
+        contactPerson: boolean;
+        location: boolean;
+        canSubmit: boolean;
+    };
+}) {
+    const items = [
+        { key: 'organizationDetail', label: 'Organization Details' },
+        { key: 'contactPerson', label: 'Contact Person' },
+        { key: 'location', label: 'Location Details' },
+        { key: 'documents', label: 'Documents' },
+    ];
+
+    return (
+        <Paper withBorder p="md" radius="md" mt="lg">
+            <Title order={5} mb="sm">
+                Profile Completion Status
+            </Title>
+            <Stack gap="xs">
+                {items.map(({ key, label }) => (
+                    <Group key={key} justify="space-between">
+                        <Text size="sm">{label}</Text>
+                        {status[key as keyof typeof status] ? (
+                            <Badge color="green" variant="light">
+                                Completed
+                            </Badge>
+                        ) : (
+                            <Badge color="red" variant="light">
+                                Missing
+                            </Badge>
+                        )}
+                    </Group>
+                ))}
+            </Stack>
+            {!status.canSubmit && (
+                <Text size="xs" mt="md" c="dimmed">
+                    Complete all required sections before submitting your
+                    profile.
+                </Text>
+            )}
+        </Paper>
+    );
+}

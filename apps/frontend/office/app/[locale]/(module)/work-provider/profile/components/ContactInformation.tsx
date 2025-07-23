@@ -12,14 +12,7 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { IconBuilding, IconEdit, IconX } from '@tabler/icons-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-    submitContactPerson,
-    updateContactPerson,
-} from 'app/[locale]/_api/submit-contact-person';
-import { getCookie } from 'cookies-next';
+import { IconBuilding, IconEdit } from '@tabler/icons-react';
 import { useState } from 'react';
 import { type ContactFormData, ContactFormDrawer } from './ContactFormDrawer';
 
@@ -27,6 +20,7 @@ interface Worker {
     id: string;
     type: string;
     createdBy: string;
+    email: string;
     employee: {
         profile: {
             firstName: string;
@@ -46,76 +40,16 @@ export default function ContactSection({
     workers,
     canUpdateProfile,
 }: Readonly<ContactSectionProps>) {
-    const queryClient = useQueryClient();
-    const organization_id = getCookie('organization_id')?.toString();
     const [opened, setOpened] = useState(false);
     const [selectedType, setSelectedType] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
     const [selectedWorker, setSelectedWorker] =
         useState<ContactFormData | null>(null);
-
-    const mutation = useMutation({
-        mutationFn: async (formData: ContactFormData) => {
-            const [firstNameRaw, middleName = '', lastName = ''] =
-                formData.contactPersonName.trim().split(' ');
-            const firstName = firstNameRaw || '';
-
-            const payload = {
-                phoneNumber: formData.contactPersonPhone,
-                firstName,
-                middleName,
-                lastName,
-                position: formData.contactPersonRole,
-            };
-
-            if (formData.id) {
-                return await updateContactPerson(formData.id, payload);
-            }
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            return (await submitContactPerson(payload)) as any;
-        },
-
-        onSuccess: (res: { reference: string }) => {
-            queryClient.invalidateQueries({
-                queryKey: ['organization_id', organization_id],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['can_organization_submit'],
-            });
-            notifications.show({
-                title: 'Saved',
-                message: 'Contact info saved successfully',
-                color: 'green',
-            });
-            setOpened(false);
-        },
-
-        onError: () => {
-            notifications.show({
-                title: 'Error',
-                message: 'Something went wrong while saving',
-                color: 'red',
-                icon: <IconX size={16} />,
-            });
-        },
-
-        onSettled: () => {
-            setIsLoading(false);
-        },
-    });
-
-    const handleSubmitForm = async (data: ContactFormData) => {
-        setIsLoading(true);
-        await mutation.mutateAsync(data);
-    };
 
     return (
         <>
             <ContactFormDrawer
                 opened={opened}
                 onClose={() => setOpened(false)}
-                onSubmit={handleSubmitForm}
-                loading={isLoading}
                 initialType={selectedType}
                 setInitialType={setSelectedType}
                 defaultValues={selectedWorker}
@@ -164,6 +98,7 @@ export default function ContactSection({
                                     <Table.Th>Position</Table.Th>
                                     <Table.Th>Full Name</Table.Th>
                                     <Table.Th>Phone</Table.Th>
+                                    <Table.Th>Email</Table.Th>
                                     <Table.Th>Created By</Table.Th>
                                     {canUpdateProfile && (
                                         <Table.Th>Actions</Table.Th>
@@ -191,6 +126,9 @@ export default function ContactSection({
                                                 {profile.phoneNumber || '—'}
                                             </Table.Td>
                                             <Table.Td>
+                                                {worker.email || '—'}
+                                            </Table.Td>
+                                            <Table.Td>
                                                 {worker.createdBy}
                                             </Table.Td>
                                             {canUpdateProfile && (
@@ -200,7 +138,10 @@ export default function ContactSection({
                                                         onClick={() => {
                                                             setOpened(true);
                                                             setSelectedWorker({
-                                                                contactPersonEmail:
+                                                                employeeOrgId:
+                                                                    worker.id,
+                                                                email:
+                                                                    worker.email ||
                                                                     '',
                                                                 contactPersonName: `${profile.firstName} ${profile.middleName} ${profile.lastName}`,
                                                                 contactPersonPhone:
