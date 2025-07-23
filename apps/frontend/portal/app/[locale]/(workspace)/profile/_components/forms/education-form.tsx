@@ -50,7 +50,7 @@ interface EducationFormProps {
         id: string;
         school: string;
         level: string;
-        fieldOfStudyId: string;
+        fieldOfStudy: { id: string };
         startDate: string;
         endDate?: string;
         grade?: number;
@@ -67,6 +67,7 @@ export default function EducationForm({
     const [isCurrentlyStudying, setIsCurrentlyStudying] = useState(
         education ? !education.endDate : false,
     );
+
     const { data: fieldsOfStudy, isLoading: isLoadingFields } =
         useFieldsOfStudy();
     const { data: educationLevels, isLoading: isLoadingLevels } =
@@ -82,6 +83,7 @@ export default function EducationForm({
         register,
         handleSubmit,
         control,
+        setValue,
         formState: { errors, isDirty },
         watch,
     } = useForm<FormValues>({
@@ -89,7 +91,7 @@ export default function EducationForm({
         defaultValues: {
             school: education?.school || '',
             level: education?.level || '',
-            fieldOfStudyId: education?.fieldOfStudyId || '',
+            fieldOfStudyId: education?.fieldOfStudy.id || '',
             startDate: education?.startDate
                 ? new Date(education.startDate)
                 : undefined,
@@ -115,7 +117,13 @@ export default function EducationForm({
         try {
             if (education) {
                 updateEducation(
-                    { id: education.id, data: formData },
+                    {
+                        id: education.id,
+                        data: {
+                            ...formData,
+                            fieldOfStudy: { id: formData.fieldOfStudyId },
+                        },
+                    },
                     {
                         onSuccess: () => {
                             notifications.show({
@@ -129,15 +137,17 @@ export default function EducationForm({
                     },
                 );
             } else {
-                if (!formData.endDate) {
-                    throw new Error('End Date is required');
+                if (!(isCurrentlyStudying || formData.endDate)) {
+                    throw new Error(
+                        'End Date is required unless currently studying',
+                    );
                 }
                 createEducation(
                     {
                         ...formData,
-                        endDate: formData.endDate,
-                        grade: formData.grade || 0,
-                        description: formData.description || '',
+                        fieldOfStudy: { id: formData.fieldOfStudyId },
+                        grade: formData.grade as number,
+                        description: formData.description as string,
                     },
                     {
                         onSuccess: () => {
@@ -304,9 +314,13 @@ export default function EducationForm({
                     <Switch
                         label="Currently studying here"
                         checked={isCurrentlyStudying}
-                        onChange={(event) =>
-                            setIsCurrentlyStudying(event.currentTarget.checked)
-                        }
+                        onChange={(event) => {
+                            const checked = event.currentTarget.checked;
+                            setIsCurrentlyStudying(checked);
+                            if (checked) {
+                                setValue('endDate', undefined);
+                            }
+                        }}
                     />
 
                     <Controller
@@ -314,11 +328,10 @@ export default function EducationForm({
                         control={control}
                         render={({ field }) => (
                             <NumberInput
-                                withAsterisk
                                 label="Grade/Score"
                                 placeholder="Enter your grade"
                                 min={0}
-                                max={12}
+                                max={100}
                                 clampBehavior="strict"
                                 {...field}
                                 error={errors.grade?.message}
@@ -367,7 +380,6 @@ export default function EducationForm({
                 </Stack>
             </Box>
 
-            {/* Delete confirmation modal */}
             <Modal
                 opened={deleteConfirmOpen}
                 onClose={() => setDeleteConfirmOpen(false)}

@@ -31,3 +31,14 @@ export const updateNotificationById = async (id: string) => {
 
     return response as { name: string };
 };
+
+export const unread = async (id: string) => {
+    const response = await fetcher(
+        `/notification/markNotificationAsUnRead/${id}`,
+        {
+            method: 'PATCH',
+        },
+    );
+
+    return response as { name: string };
+};

@@ -42,9 +42,9 @@ export type Experience = {
     startDate: string;
     endDate?: string;
     type: string;
-    countryId: string;
-    stateId: string;
-    cityId: string;
+    country: { id: string };
+    state: { id: string };
+    city: { id: string };
     workPlace: string;
     currentlyWorking?: boolean;
     description?: string;

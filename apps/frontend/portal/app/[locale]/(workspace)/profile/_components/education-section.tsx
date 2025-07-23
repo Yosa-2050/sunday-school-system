@@ -59,14 +59,15 @@ export default function EducationSection({
             await deleteExperienceMutation.mutateAsync(id);
             notifications.show({
                 title: 'Success',
-                message: 'Experience deleted successfully',
+                message: 'Educational History deleted successfully',
                 color: 'teal',
                 icon: <IconCheck size={18} />,
             });
         } catch (error) {
             notifications.show({
                 title: 'Error',
-                message: 'Failed to delete experience. Please try again.',
+                message:
+                    'Failed to delete educational history. Please try again.',
                 color: 'red',
                 icon: <IconX size={18} />,
             });
@@ -154,7 +155,7 @@ export default function EducationSection({
                                                         c="dimmed"
                                                     >
                                                         {edu.level} •{' '}
-                                                        {edu.fieldOfStudyId}
+                                                        {edu.fieldOfStudy.id}
                                                     </Text>
                                                 </Stack>
                                                 <Group gap="xs">

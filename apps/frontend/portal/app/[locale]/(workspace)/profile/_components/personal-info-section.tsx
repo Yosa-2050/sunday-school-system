@@ -284,7 +284,7 @@ export default function PersonalInfoSection({
                                                                     ? new Date(
                                                                           field.value,
                                                                       )
-                                                                    : null
+                                                                    : maxDate
                                                             }
                                                             onChange={(value) =>
                                                                 field.onChange(

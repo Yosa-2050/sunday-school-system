@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import { IconX } from '@tabler/icons-react';
 import {
     useAddExperience,
     useDeleteExperience,
@@ -60,12 +60,7 @@ export default function ExperienceSection({
     const handleDeleteExperience = async (id: string) => {
         try {
             await deleteExperienceMutation.mutateAsync(id);
-            notifications.show({
-                title: 'Success',
-                message: 'Education history deleted successfully',
-                color: 'teal',
-                icon: <IconCheck size={18} />,
-            });
+
             if (onUpdate) {
                 onUpdate(experiences.filter((exp) => exp.id !== id));
             }
@@ -81,27 +76,16 @@ export default function ExperienceSection({
         }
     };
 
-    const handleSaveExperience = async (experience: Experience) => {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const handleSaveExperience = async (experience: any) => {
         try {
             if (currentExperience) {
                 await updateExperienceMutation.mutateAsync({
                     id: experience.id,
                     payload: experience,
                 });
-                notifications.show({
-                    title: 'Success',
-                    message: 'Education history updated successfully',
-                    color: 'teal',
-                    icon: <IconCheck size={18} />,
-                });
             } else {
                 await addExperienceMutation.mutateAsync(experience);
-                notifications.show({
-                    title: 'Success',
-                    message: 'Education history added successfully',
-                    color: 'teal',
-                    icon: <IconCheck size={18} />,
-                });
             }
 
             setIsModalOpen(false);

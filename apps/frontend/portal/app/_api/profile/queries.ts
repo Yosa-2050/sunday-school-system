@@ -67,9 +67,9 @@ export type Education = {
     id: string;
     school: string;
     level: string;
-    fieldOfStudyId: string;
+    fieldOfStudy: { id: string };
     startDate: string;
-    endDate: string;
+    endDate?: string;
     grade: number;
     description: string;
 };

@@ -158,7 +158,7 @@ export const FilterSidebar = ({
                         </Box>
                         <Box>
                             <Text size="xs" fw={500} mb="xs">
-                                {t('category')}
+                                Category
                             </Text>
                             <Select
                                 key={`city-${filters.categoryId}`}
@@ -169,7 +169,7 @@ export const FilterSidebar = ({
                                         categoryId: value || '',
                                     })
                                 }
-                                placeholder="Select City"
+                                placeholder="Select category"
                                 data={
                                     categories?.map((city) => ({
                                         value: city.id ?? '',

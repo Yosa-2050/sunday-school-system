@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    ActionIcon,
     Divider,
     Group,
     Loader,
@@ -11,20 +12,30 @@ import {
     Text,
     TextInput,
     Title,
+    Tooltip,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { entityParamSerializer } from '@shega/shared';
-import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
+import {
+    IconCircleCheck,
+    IconCircleOff,
+    IconMail,
+    IconMailOpened,
+    IconSearch,
+    IconX,
+} from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     getNotificationById,
+    unread,
     updateNotificationById,
 } from 'app/_api/notifications';
 import { getCookie } from 'cookies-next';
 import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import { NotificationCard } from './_components/card';
+
 interface MyTokenPayload {
     userId: string;
 }
@@ -76,16 +87,10 @@ export default function AllNotificationsPage() {
         enabled: !!userId,
     });
 
-    const mutation = useMutation({
+    const markAsReadMutation = useMutation({
         mutationFn: (id: string) => updateNotificationById(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
-            notifications.show({
-                title: 'Success',
-                message: 'Notification marked as read',
-                color: 'green',
-                icon: <IconCheck size={16} />,
-            });
         },
         onError: () => {
             notifications.show({
@@ -97,12 +102,46 @@ export default function AllNotificationsPage() {
         },
     });
 
+    const markAsUnreadMutation = useMutation({
+        mutationFn: (id: string) => unread(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'Failed to mark notification as unread',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
+        },
+    });
+
     const total = data?.totalPages ?? 1;
 
     return (
         <Paper p={'md'} className="container mx-auto mt-4">
             <Stack>
-                <Title order={2}>All Notifications</Title>
+                <Group justify="space-between">
+                    <Title order={2}>
+                        <Group gap="sm">
+                            <IconMail size={24} />
+                            All Notifications
+                        </Group>
+                    </Title>
+                    <Group>
+                        {status === 'Read' && (
+                            <Tooltip label="Showing read notifications">
+                                <IconMailOpened size={20} color="gray" />
+                            </Tooltip>
+                        )}
+                        {status === 'Pending' && (
+                            <Tooltip label="Showing unread notifications">
+                                <IconMail size={20} color="blue" />
+                            </Tooltip>
+                        )}
+                    </Group>
+                </Group>
 
                 <Group grow>
                     <TextInput
@@ -120,6 +159,7 @@ export default function AllNotificationsPage() {
                         clearable
                         value={status}
                         onChange={setStatus}
+                        leftSection={<IconMail size={16} />}
                     />
                 </Group>
                 <Divider />
@@ -138,8 +178,43 @@ export default function AllNotificationsPage() {
                                     <NotificationCard
                                         key={notification.id}
                                         notification={notification}
-                                        onToggleRead={() =>
-                                            mutation.mutate(notification.id)
+                                        onToggleRead={() => {
+                                            if (
+                                                notification.status === 'Read'
+                                            ) {
+                                                markAsUnreadMutation.mutate(
+                                                    notification.id,
+                                                );
+                                            } else {
+                                                markAsReadMutation.mutate(
+                                                    notification.id,
+                                                );
+                                            }
+                                        }}
+                                        actionIcon={
+                                            notification.status === 'Read' ? (
+                                                <Tooltip label="Mark as unread">
+                                                    <ActionIcon
+                                                        variant="subtle"
+                                                        color="gray"
+                                                    >
+                                                        <IconCircleOff
+                                                            size={18}
+                                                        />
+                                                    </ActionIcon>
+                                                </Tooltip>
+                                            ) : (
+                                                <Tooltip label="Mark as read">
+                                                    <ActionIcon
+                                                        variant="subtle"
+                                                        color="blue"
+                                                    >
+                                                        <IconCircleCheck
+                                                            size={18}
+                                                        />
+                                                    </ActionIcon>
+                                                </Tooltip>
+                                            )
                                         }
                                     />
                                 ))}
@@ -156,7 +231,10 @@ export default function AllNotificationsPage() {
                     }
                     return (
                         <Paper p="xl" withBorder>
-                            <Text ta="center">No notifications found.</Text>
+                            <Group justify="center">
+                                <IconMailOpened size={24} color="gray" />
+                                <Text ta="center">No notifications found.</Text>
+                            </Group>
                         </Paper>
                     );
                 })()}

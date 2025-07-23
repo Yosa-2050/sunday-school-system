@@ -45,7 +45,7 @@ type FormData = {
     noticePeriod: number;
     relocationOption: string;
     experience: number;
-    salaryExpectation: number;
+    salaryExpectation?: number | null;
 };
 
 // Notice period options in days
@@ -86,7 +86,7 @@ export const JobApplicationPanel = ({
             noticePeriod: job?.applicationData?.noticePeriod || 0,
             relocationOption: job?.applicationData?.relocationOption || 'NO',
             experience: job?.applicationData?.experience || 0,
-            salaryExpectation: job?.applicationData?.salaryExpectation || 0,
+            salaryExpectation: job?.applicationData?.salaryExpectation || null,
         },
         mode: 'onChange',
     });
@@ -96,6 +96,7 @@ export const JobApplicationPanel = ({
             coverLetter: string;
             noticePeriod: number;
             relocationOption: string;
+            salaryExpectation?: number | null;
         }) => {
             if (!job?.programId) {
                 throw new Error('Missing program ID');
@@ -103,20 +104,16 @@ export const JobApplicationPanel = ({
             return applyJobs(job.programId, payload);
         },
         onSuccess: () => {
-            // Update application status and progress
             setApplicationProgress(100);
-            // Show success notification
             notifications.show({
                 title: 'Application Submitted',
                 message: 'Your application has been successfully submitted.',
                 color: 'green',
                 icon: <IconCheck size={16} />,
             });
-            // Redirect to applications page or show success state
             router.push('/jobs');
         },
         onError: (error) => {
-            // Show error notification
             notifications.show({
                 title: 'Application Failed',
                 message:
@@ -134,13 +131,14 @@ export const JobApplicationPanel = ({
         }
 
         if (isFormReadonly) {
-            return; // Prevent submission if readonly
+            return;
         }
 
         const payload = {
             coverLetter: data.coverLetter,
             noticePeriod: data.noticePeriod,
             relocationOption: data.relocationOption,
+            salaryExpectation: data.salaryExpectation || null,
         };
 
         applyMutation.mutate(payload);
@@ -149,12 +147,12 @@ export const JobApplicationPanel = ({
     const handleViewResume = (file: Blob) => {
         const url = URL.createObjectURL(file);
         setCvUrl(url);
-        // Assuming there's an open function for modal/preview
-        // open();
     };
 
-    // Helper function to format salary for display
-    const formatSalary = (value: number) => {
+    const formatSalary = (value?: number | null) => {
+        if (!value) {
+            return 'Not specified';
+        }
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -163,7 +161,6 @@ export const JobApplicationPanel = ({
         }).format(value);
     };
 
-    // Helper function to get notice period label
     const getNoticePeriodLabel = (value: number) => {
         const option = noticePeriodOptions.find(
             (opt) => opt.value === value.toString(),
@@ -171,7 +168,6 @@ export const JobApplicationPanel = ({
         return option?.label || `${value} days`;
     };
 
-    // Helper function to get relocation label
     const getRelocationLabel = (value: string) => {
         switch (value) {
             case 'YES':
@@ -380,19 +376,6 @@ export const JobApplicationPanel = ({
                         <Controller
                             name="salaryExpectation"
                             control={control}
-                            rules={{
-                                required: isFormReadonly
-                                    ? false
-                                    : 'Salary expectation is required',
-                                min: {
-                                    value: 1000,
-                                    message: 'Salary must be at least $1,000',
-                                },
-                                max: {
-                                    value: 1000000,
-                                    message: 'Salary cannot exceed $1,000,000',
-                                },
-                            }}
                             render={({ field }) => (
                                 <>
                                     {isFormReadonly ? (
@@ -404,24 +387,22 @@ export const JobApplicationPanel = ({
                                         />
                                     ) : (
                                         <NumberInput
-                                            label="Salary Expectation"
+                                            label="Salary Expectation (Optional)"
                                             size="xs"
-                                            value={field.value}
+                                            value={field.value || undefined}
                                             onChange={(value) =>
                                                 field.onChange(
-                                                    Number(value) || 0,
+                                                    value
+                                                        ? Number(value)
+                                                        : null,
                                                 )
-                                            }
-                                            error={
-                                                errors.salaryExpectation
-                                                    ?.message
                                             }
                                             min={1000}
                                             max={1000000}
                                             step={1000}
                                             thousandSeparator=","
                                             prefix="$"
-                                            placeholder="Enter expected salary"
+                                            placeholder="Enter expected salary (optional)"
                                         />
                                     )}
                                 </>
@@ -441,6 +422,7 @@ export const JobApplicationPanel = ({
                     </Group>
                 </Stack>
 
+                {/* Rest of the component remains the same */}
                 {/* Documents */}
                 <Stack gap="sm">
                     <Group justify="space-between">
@@ -475,9 +457,6 @@ export const JobApplicationPanel = ({
                                         <IconFileText size={16} color="gray" />
                                         <Stack gap={0}>
                                             <Text size="xs">{file.name}</Text>
-                                            <Text size="xs" c="dimmed">
-                                                {file.size}
-                                            </Text>
                                         </Stack>
                                         {file.type === 'resume' && (
                                             <Badge

@@ -6,6 +6,7 @@ import {
     Button,
     Divider,
     Group,
+    Loader,
     LoadingOverlay,
     Select,
     Stack,
@@ -58,12 +59,13 @@ export default function ExperienceForm({
             startDate: experience?.startDate || new Date().toISOString(),
             endDate: experience?.endDate || '',
             type: experience?.type || 'full-time',
-            countryId: experience?.countryId || '',
-            stateId: experience?.stateId || '',
-            cityId: experience?.cityId || '',
+            countryId: experience?.country?.id || '',
+            stateId: experience?.state?.id || '',
+            cityId: experience?.city?.id || '',
             workPlace: experience?.workPlace || '',
             description: experience?.description || '',
-            currentlyWorking: experience?.currentlyWorking,
+            currentlyWorking:
+                experience?.currentlyWorking ?? !experience?.endDate,
         },
     });
 
@@ -97,25 +99,34 @@ export default function ExperienceForm({
     }, [isCurrentlyWorking, setValue]);
 
     useEffect(() => {
-        if (selectedCountryId !== experience?.countryId) {
+        if (selectedCountryId !== experience?.country?.id) {
             setValue('stateId', '');
             setValue('cityId', '');
         }
-    }, [selectedCountryId, experience?.countryId, setValue]);
+    }, [selectedCountryId, experience?.country?.id, setValue]);
 
     useEffect(() => {
-        if (selectedStateId !== experience?.stateId) {
+        if (selectedStateId !== experience?.state?.id) {
             setValue('cityId', '');
         }
-    }, [selectedStateId, experience?.stateId, setValue]);
+    }, [selectedStateId, experience?.state?.id, setValue]);
 
     const onFormSubmit = (data: ExperienceFormValues) => {
         try {
             const id = experience?.id ?? crypto.randomUUID();
             const experienceData: Experience = {
                 id,
-                ...data,
+                title: data.title,
+                company: data.company,
+                startDate: data.startDate,
+                endDate: data.endDate || undefined,
+                type: data.type,
+                country: { id: data.countryId },
+                state: { id: data.stateId },
+                city: { id: data.cityId },
+                workPlace: data.workPlace,
                 currentlyWorking: data.currentlyWorking,
+                description: data.description,
             };
 
             onSubmit(experienceData);
@@ -127,14 +138,7 @@ export default function ExperienceForm({
     return (
         <form onSubmit={handleSubmit(onFormSubmit)}>
             <LoadingOverlay
-                visible={
-                    isLoading ||
-                    isLoadingCountries ||
-                    isLoadingRegions ||
-                    isLoadingCities ||
-                    isLoadingWorkplaceTypes ||
-                    isLoadingEmploymentTypes
-                }
+                visible={isLoading}
                 zIndex={1000}
                 overlayProps={{ radius: 'sm', blur: 2 }}
             />
@@ -167,7 +171,16 @@ export default function ExperienceForm({
                     render={({ field }) => (
                         <Select
                             label="Employment Type"
-                            placeholder="Select employment type"
+                            placeholder={
+                                isLoadingEmploymentTypes
+                                    ? 'Loading employment types...'
+                                    : 'Select employment type'
+                            }
+                            rightSection={
+                                isLoadingEmploymentTypes ? (
+                                    <Loader size="xs" />
+                                ) : null
+                            }
                             withAsterisk
                             data={employmentTypes.map((type) => ({
                                 value: type.value,
@@ -251,7 +264,16 @@ export default function ExperienceForm({
                         render={({ field }) => (
                             <Select
                                 label="Country"
-                                placeholder="Select country"
+                                placeholder={
+                                    isLoadingCountries
+                                        ? 'Loading countries...'
+                                        : 'Select country'
+                                }
+                                rightSection={
+                                    isLoadingCountries ? (
+                                        <Loader size="xs" />
+                                    ) : null
+                                }
                                 data={countries.map((country) => ({
                                     value: country.id,
                                     label: country.name,
@@ -271,9 +293,14 @@ export default function ExperienceForm({
                             <Select
                                 label="State/Region"
                                 placeholder={
-                                    selectedCountryId
-                                        ? 'Select state/region'
-                                        : 'Select country first'
+                                    isLoadingRegions
+                                        ? 'Loading states/regions...'
+                                        : 'Select state/region'
+                                }
+                                rightSection={
+                                    isLoadingRegions ? (
+                                        <Loader size="xs" />
+                                    ) : null
                                 }
                                 data={regions.map((region) => ({
                                     value: region.id,
@@ -297,9 +324,14 @@ export default function ExperienceForm({
                             <Select
                                 label="City"
                                 placeholder={
-                                    selectedStateId
-                                        ? 'Select city'
-                                        : 'Select state/region first'
+                                    isLoadingCities
+                                        ? 'Loading cities...'
+                                        : 'Select city'
+                                }
+                                rightSection={
+                                    isLoadingCities ? (
+                                        <Loader size="xs" />
+                                    ) : null
                                 }
                                 data={cities.map((city) => ({
                                     value: city.id,
@@ -320,7 +352,16 @@ export default function ExperienceForm({
                         render={({ field }) => (
                             <Select
                                 label="Workplace Type"
-                                placeholder="Select workplace type"
+                                placeholder={
+                                    isLoadingWorkplaceTypes
+                                        ? 'Loading workplace types...'
+                                        : 'Select workplace type'
+                                }
+                                rightSection={
+                                    isLoadingWorkplaceTypes ? (
+                                        <Loader size="xs" />
+                                    ) : null
+                                }
                                 data={workplaceTypes.map((type) => ({
                                     value: type.value,
                                     label: type.key,
