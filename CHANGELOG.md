@@ -1,3 +1,10 @@
+## [1.9.2](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.1...v1.9.2) (2025-07-23)
+
+
+### Bug Fixes
+
+* **shega:** fix portal issues ([c7398a9](https://gitlab.heranitech.com/meklit/shega-jobs/commit/c7398a958dce61784e16302379bcd7728f5994e1))
+
 ## [1.9.1](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.0...v1.9.1) (2025-07-23)
 
 
