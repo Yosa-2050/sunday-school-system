@@ -10,7 +10,11 @@ import {
     Put,
     Request,
     Res,
+    UploadedFile,
+    UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -32,6 +36,8 @@ import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Response } from 'express';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -69,7 +75,6 @@ export class OrganizationController {
             ApprovalType.Waiting_Approval,
         );
     }
-
     @Get('canSubmit')
     canSubmit(@Request() req) {
         return this.organizationService.CheckOrgCanBeSubmitted(
@@ -270,6 +275,27 @@ export class OrganizationController {
         return this.organizationService.addContactPerson(
             CurrentUser.getOrganizationId(req),
             dto,
+        );
+    }
+
+    @Post('upload/logo')
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
+    @UseInterceptors(FileInterceptor('file'))
+    uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
+        return this.organizationService.uploadLogo(
+            CurrentUser.getProfileId(req),
+            file,
         );
     }
 }
