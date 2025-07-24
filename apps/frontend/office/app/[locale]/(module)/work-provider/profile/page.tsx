@@ -509,10 +509,7 @@ function UserProfile() {
             />
 
             <LocationSection
-                defaultLocation={
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    organization?.locations
-                }
+                defaultLocation={organization?.locations}
                 canUpdateProfile={canUpdateProfile}
             />
 
