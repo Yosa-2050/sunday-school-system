@@ -17,7 +17,7 @@ import { IconCheck } from '@tabler/icons-react';
 import { useJobSeekerDetails } from 'app/_api/profile/queries';
 import { useState } from 'react';
 import AboutSection from './_components/about-section';
-import EducationSection from './_components/education-section';
+// import EducationSection from './_components/education-section';
 import ExperienceSection from './_components/experience-section';
 import PersonalInfoSection from './_components/personal-info-section';
 import ProfileHeader from './_components/profile-header';
@@ -155,12 +155,14 @@ export default function ProfilePage() {
                                         }
                                     />
 
+                                    {/* 
+                                    //TODO: Please fix this
                                     <EducationSection
                                         education={
                                             displayData.educationalHistory ??
                                             displayData.__educationalHistory__
                                         }
-                                    />
+                                    /> */}
                                 </Stack>
                                 <Stack maw={'450px'} w={'450px'}>
                                     <SkillsSection
