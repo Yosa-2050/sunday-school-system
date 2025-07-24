@@ -82,7 +82,8 @@ export const updateContactInfo = async (
         },
         emailAddress: {
             type: 'Communication',
-            value: data.contactPersonEmail,
+            //TODO: another fix
+            value: data.email,
             isPreferred: true,
         },
         otherAddress: {
