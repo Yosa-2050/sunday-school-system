@@ -112,14 +112,6 @@ export class JobsService {
 
         const savedJobApplication = this.jobApplicantRepo.save(application);
         if (savedJobApplication) {
-            //send email
-            const dateToday = new Date();
-            const { content, subject } = await this.GetJobTemplate(
-                applicant,
-                program,
-                dateToday,
-            );
-
             const user = await this.profileService.findUserByProfileId(
                 applicant.profile.id,
             );
