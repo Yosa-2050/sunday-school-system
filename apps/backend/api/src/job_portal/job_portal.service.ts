@@ -172,14 +172,14 @@ export class JobPortalService {
 
         const category = await this.GetCategories(dto);
         if (category?.length > 0) {
-            job.program.jobCategory = category;
+            job.program.programCategory = category;
         }
         if (skills?.length > 0) {
-            job.program.jobSkills = skills;
+            job.program.programSkills = skills;
         }
 
         if (descriptions?.length > 0) {
-            job.program.jobDescriptions = descriptions;
+            job.program.programDescriptions = descriptions;
         }
 
         job.postedBy = employeeOrg;
@@ -984,7 +984,7 @@ export class JobPortalService {
             await this.jobDescriptionRepo.save(description);
         }
         const { program, ...jobDetail } = updateJob;
-        program.jobDescriptions = undefined;
+        program.programDescriptions = undefined;
         const updatedProg = await this.programRepo.update(
             job.program.id,
             program,
