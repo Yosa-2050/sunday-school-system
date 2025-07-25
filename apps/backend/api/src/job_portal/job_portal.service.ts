@@ -185,8 +185,6 @@ export class JobPortalService {
         job.postedBy = employeeOrg;
         job.organization = organization;
         job.program.status = ApprovalType.Waiting_Approval;
-        job.salaryTo =
-            job.salaryType === SalaryType.Fixed ? job.salaryFrom : dto.salaryTo;
         const jobCreated = await this.jobRepo.save(job);
         await this.SendNotificationForJobCreatedToAdmin(jobCreated);
         return UtilityServices.EnsureCreated(jobCreated.id);
@@ -1297,11 +1295,8 @@ export class JobPortalService {
             .leftJoinAndSelect('applications.program', 'program')
             .leftJoinAndSelect('applications.applicants', 'applicants')
             .leftJoinAndSelect('applicants.profile', 'profile')
-            .leftJoinAndSelect(
-                'applicants.educationalHistory',
-                'educationalHistory',
-            )
-            .leftJoinAndSelect('applicants.skills', 'skills')
+            .leftJoinAndSelect('applicants.educationalHistory', 'appEduHistory')
+            .leftJoinAndSelect('applicants.skills', 'applicantSkills')
             .skip((request.pagination.page - 1) * request.pagination.limit)
             .take(request.pagination.limit)
             .orderBy('applications.createdAt', 'DESC');
@@ -1337,7 +1332,9 @@ export class JobPortalService {
         }
 
         if (request.experienceFrom || request.experienceTo) {
-            query.andWhere('applicants.experience BETWEEN :from AND :to', {
+            request.experienceFrom = request.experienceFrom ?? 0;
+            request.experienceTo = request.experienceTo ?? 1000;
+            query.andWhere('experience BETWEEN :from AND :to', {
                 from: request.experienceFrom, // 'YYYY-MM-DD'
                 to: request.experienceTo,
             });
@@ -1350,36 +1347,21 @@ export class JobPortalService {
         }
 
         if (request.educationalRequirement) {
-            query.andWhere(
-                `EXISTS (
-                  SELECT 1 FROM educationalHistory edu
-                  WHERE edu.applicantId = applicants.id
-                    AND edu.level = :level
-                )`,
-                { level: request.educationalRequirement },
-            );
+            query.andWhere('appEduHistory.level = :level', {
+                level: request.educationalRequirement,
+            });
         }
 
         if (request.category?.length > 0) {
-            query.andWhere(
-                `EXISTS (
-                SELECT 1 FROM educationalHistory edu
-                WHERE edu.applicantId = applicants.id
-                  AND edu.field_of_study IN (:...categories)
-              )`,
-                { categories: request.category },
-            );
+            query.andWhere('appEduHistory.fieldOfStudy IN (:...categories)', {
+                categories: request.category,
+            });
         }
 
         if (request.skills?.length > 0) {
-            query.andWhere(
-                `EXISTS (
-                SELECT 1 FROM skills skill
-                WHERE skill.applicantId = applicants.id
-                  AND skill.skill IN (:...skills)
-              )`,
-                { skills: request.skills },
-            );
+            query.andWhere('applicantSkills.skill IN (:...skills)', {
+                skills: request.skills,
+            });
         }
 
         if (request.pagination.search) {
