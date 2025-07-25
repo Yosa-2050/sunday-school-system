@@ -559,12 +559,18 @@ export class JobsService {
             canApply = false;
             applyObject.profile = false;
         }
-
-        if (!((await applicant.educationalHistory)?.length > 0)) {
+        const [, historyCount] =
+            await this.educationalHistoryRepo.findAndCountBy({
+                applicant: { id: applicant.id },
+            });
+        if (historyCount === 0) {
             applyObject.education = false;
         }
 
-        if (!((await applicant.experiance)?.length > 0)) {
+        const [, experienceCount] = await this.experienceRepo.findAndCountBy({
+            applicant: { id: applicant.id },
+        });
+        if (experienceCount === 0) {
             applyObject.experiance = false;
         }
 

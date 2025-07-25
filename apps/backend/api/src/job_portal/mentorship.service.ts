@@ -243,14 +243,14 @@ export class MentorshipService {
 
         const category = await this.jobPortalService.GetCategories(dto);
         if (category?.length > 0) {
-            mentorShip.program.programCategory = category;
+            mentorShip.program.jobCategory = category;
         }
         if (skills?.length > 0) {
-            mentorShip.program.programSkills = skills;
+            mentorShip.program.jobSkills = skills;
         }
 
         if (descriptions?.length > 0) {
-            mentorShip.program.programDescriptions = descriptions;
+            mentorShip.program.jobDescriptions = descriptions;
         }
 
         mentorShip.program.status = ApprovalType.Waiting_Approval;
@@ -329,8 +329,8 @@ export class MentorshipService {
     ) {
         const query = this.programRepo
             .createQueryBuilder('program')
-            .leftJoin('program.programCategory', 'programCategory')
-            .leftJoin('programCategory.category', 'category');
+            .leftJoin('program.jobCategory', 'jobCategory')
+            .leftJoin('jobCategory.category', 'category');
 
         query.andWhere('program.status = :status', {
             status: ApprovalType.Approved,
