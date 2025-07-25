@@ -320,97 +320,9 @@ export class MentorshipService {
         userDetails.profileId = profile?.id;
         return userDetails;
     }
-
-    // update(id: string, updateJobPortalDto: UpdateJobPortalDto, arg2: string) {
-    //     throw new Error('Method not implemented.');
-    // }
-    // findOne(id: string) {
-    //     throw new Error('Method not implemented.');
-    // }
-    // getByStatusAndByMentorPaginated(arg0: string, q: string, arg2: boolean) {
-    //     throw new Error('Method not implemented.');
-    // }
-    // getByList(list: string[]): any[] | PromiseLike<any[]> {
-    //     throw new Error('Method not implemented.');
-    // }
     getByStatusPaginated(q: string, arg1?: string, arg2?: boolean) {
         throw new Error('Method not implemented.');
     }
-
-    // async filterMentoprshipPrograms(
-    //     filter: GetJobsRequestDto,
-    //     applicantId: string = null,
-    // ) {
-    //     const query = this.mentorshipRepo.createQueryBuilder('mentorship');
-    //     query.leftJoinAndSelect('mentorship.program', 'program');
-    //     query.leftJoinAndSelect('mentorship.mentor', 'mentor');
-    //     query.andWhere('program.status = :status', {
-    //         status: ApprovalType.Approved,
-    //     });
-    //     query.andWhere('program.isPublished = :isPublished', {
-    //         isPublished: true,
-    //     });
-
-    //     if (filter.title) {
-    //         query.andWhere('LOWER(program.title) LIKE LOWER(:title)', {
-    //             title: `%${filter.title}%`,
-    //         });
-    //     }
-
-    //     if (filter.categoryId) {
-    //         query
-    //             .leftJoin('program.jobCategory', 'category')
-    //             .andWhere('category.id = :categoryId', {
-    //                 categoryId: filter.categoryId,
-    //             });
-    //     }
-
-    //     if (filter.type) {
-    //         query.andWhere('job.type = :employmentType', {
-    //             employmentType: filter.type,
-    //         });
-    //     }
-
-    //     if (filter.experianceLevel) {
-    //         query.andWhere('program.experianceLevel = :experianceLevel', {
-    //             experianceLevel: filter.experianceLevel,
-    //         });
-    //     }
-
-    //     if (filter.countryId) {
-    //         query.andWhere('program.countryId = :countryId', {
-    //             countryId: filter.countryId,
-    //         });
-    //     }
-
-    //     if (filter.cityId) {
-    //         query.andWhere('program.cityId = :cityId', {
-    //             cityId: filter.cityId,
-    //         });
-    //     }
-
-    //     let programsApplied: string[] = null;
-    //     if (applicantId) {
-    //         const applied =
-    //             await this.jobPortalService.programsApplied(applicantId);
-    //         programsApplied = applied.map((x) => x.program?.id);
-    //     }
-    //     //const queryStr = query.getSql();
-    //     const [data, total] = await query
-    //         .skip((filter.pagination.page - 1) * filter.pagination.limit)
-    //         .take(filter.pagination.limit)
-    //         .getManyAndCount();
-    //     const jobsList = data.map(
-    //         (job) => new ProgramsResponseDto(job, programsApplied),
-    //     );
-    //     return new PaginatedResponseDto<ProgramsResponseDto[]>(
-    //         jobsList,
-    //         total,
-    //         filter.pagination.page,
-    //         filter.pagination.limit,
-    //     );
-    // }
-
     async filterPrograms(
         filter: GetJobsRequestDto,
         applicantId: string = null,
