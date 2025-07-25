@@ -67,21 +67,21 @@ export class Programs extends BaseModel {
         (skill) => skill.program,
         { cascade: true, onUpdate: 'CASCADE' },
     )
-    programSkills: ProgramSkills[];
+    jobSkills: ProgramSkills[];
 
     @OneToMany(
         () => ProgramCategory,
         (category) => category.program,
         { cascade: true, onUpdate: 'CASCADE' },
     )
-    programCategory: ProgramCategory[];
+    jobCategory: ProgramCategory[];
 
     @OneToMany(
         () => ProgramDescription,
         (description) => description.program,
         { cascade: true, onUpdate: 'CASCADE' },
     )
-    programDescriptions: ProgramDescription[];
+    jobDescriptions: ProgramDescription[];
 
     @Column({ default: false })
     isPublished: boolean;
