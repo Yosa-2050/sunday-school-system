@@ -102,13 +102,21 @@ export class NotificationService {
                 [], // No joins needed for this query
                 searchableColumns,
             );
+        const [, count] = await this.notificationRepo.findAndCountBy({
+            channel: NotificationChannel.InApp,
+            reference: userId,
+            status: NotificationStatus.Pending,
+        });
 
-        return new PaginatedResponseDto<Notification[]>(
-            inAppNotifications,
-            total,
-            p,
-            pp,
-        );
+        return {
+            ...new PaginatedResponseDto<Notification[]>(
+                inAppNotifications,
+                total,
+                p,
+                pp,
+            ),
+            count,
+        };
     }
 
     async getUserInAppNotifications(userId: string) {
