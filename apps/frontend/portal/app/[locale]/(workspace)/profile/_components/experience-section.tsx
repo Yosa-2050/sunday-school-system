@@ -269,9 +269,12 @@ export default function ExperienceSection({
                                                     experience.startDate,
                                                 )}{' '}
                                                 -{' '}
-                                                {formatDate(
-                                                    experience.endDate || '',
-                                                )}
+                                                {experience.endDate
+                                                    ? formatDate(
+                                                          experience.endDate ||
+                                                              '',
+                                                      )
+                                                    : 'Present'}
                                                 {formatDuration(
                                                     experience.startDate,
                                                     experience.endDate,

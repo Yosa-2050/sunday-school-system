@@ -69,6 +69,20 @@ export type Education = {
     level: string;
     fieldOfStudy: { id: string };
     startDate: string;
+    endDate: string | null;
+    grade: number;
+    description: string;
+};
+
+export type EducationResponse = {
+    id: string;
+    school: string;
+    level: string;
+    fieldOfStudy: {
+        id: string;
+        name: string;
+    };
+    startDate: string;
     endDate?: string;
     grade: number;
     description: string;
@@ -77,8 +91,8 @@ export type Education = {
 // Alias for backward compatibility
 export type EducationalHistory = Education;
 
-export const fetchEducation = async (): Promise<Education[]> => {
-    const response = await fetcher<Education[]>(
+export const fetchEducation = async (): Promise<EducationResponse[]> => {
+    const response = await fetcher<EducationResponse[]>(
         '/job-seeker/educationalHistory',
         {
             method: 'GET',
@@ -590,7 +604,7 @@ export type EnumValue = {
 };
 
 export const fetchEnum = async (type: string): Promise<EnumValue[]> => {
-    const response = await fetcher<EnumValue[]>(`/enum/${type}`, {
+    const response = await fetcher<EnumValue[]>(`/enums/${type}`, {
         method: 'GET',
         headers: { accept: '*/*' },
     });
@@ -605,7 +619,7 @@ export const fetchEnum = async (type: string): Promise<EnumValue[]> => {
 export const useEmploymentTypes = () => {
     return useQuery({
         queryKey: ['employmentTypes'],
-        queryFn: () => fetchEnum('employmentType'),
+        queryFn: () => fetchEnum('EmploymentType'),
         staleTime: 1000 * 60 * 5, // 5 minutes
         refetchOnWindowFocus: false,
     });

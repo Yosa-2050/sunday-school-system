@@ -30,15 +30,23 @@ interface PostedBy {
     employee: Employee;
 }
 
-interface Organization {
+export type Organization = {
     id: string;
+    createdBy: string;
+    createdAt: string;
     isActive: boolean;
     name: string;
-    description: string | null;
-    tinNumber: string | null;
-    displayName: string | null;
+    registrationNumber: string;
+    description: string;
+    displayName: string;
+    type: string;
+    yearFounded: string;
+    companySize: string;
     hasBranches: boolean;
-}
+    status: string;
+    corporateEmail: string;
+    logo: string | null;
+};
 
 interface JobSkill {
     id: string;
@@ -63,6 +71,7 @@ export interface Job {
     isActive: boolean;
     title: string;
     description: string;
+    createdAt: string;
     type: string;
     salaryFrom: number;
     salaryTo: number;

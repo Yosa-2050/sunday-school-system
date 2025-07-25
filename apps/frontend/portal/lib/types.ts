@@ -28,7 +28,7 @@ export type Education = {
     id: string;
     school: string;
     level: string;
-    fieldOfStudyId: string;
+    fieldOfStudy: { id: string; name: string };
     startDate: string;
     endDate: string;
     grade: number;
@@ -42,9 +42,9 @@ export type Experience = {
     startDate: string;
     endDate?: string;
     type: string;
-    country: { id: string };
-    state: { id: string };
-    city: { id: string };
+    countryId: string;
+    stateId: string;
+    cityId: string;
     workPlace: string;
     currentlyWorking?: boolean;
     description?: string;

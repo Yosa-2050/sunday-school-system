@@ -1,7 +1,7 @@
 'use client';
 
-import { Box, Button, Card, Divider, Group, Stack, Text } from '@mantine/core';
-import { IconBriefcase, IconFilter, IconSearch } from '@tabler/icons-react';
+import { Box, Card, Stack, Text } from '@mantine/core';
+import { IconBriefcase, IconSearch } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
 type NoDataProps = {
@@ -52,44 +52,6 @@ const NoData = ({ resetFilters }: NoDataProps) => {
                 <Text size="xl" fw={700} ta="center" c="gray.8">
                     {t('noJobsFound')}
                 </Text>
-
-                <Divider w="100%" />
-
-                <Group gap="md" justify="center">
-                    <Button
-                        variant="filled"
-                        radius="xl"
-                        size="md"
-                        leftSection={<IconFilter size={16} />}
-                        onClick={resetFilters}
-                        style={{
-                            transition: 'transform 0.2s ease',
-                        }}
-                        className="hover:scale-105"
-                    >
-                        {t('resetFilters')}
-                    </Button>
-
-                    <Button
-                        variant="light"
-                        radius="xl"
-                        size="md"
-                        leftSection={<IconSearch size={16} />}
-                        onClick={() => {
-                            const searchInput =
-                                document.querySelector('input[type="text"]');
-                            if (searchInput) {
-                                (searchInput as HTMLElement).focus();
-                            }
-                        }}
-                        style={{
-                            transition: 'transform 0.2s ease',
-                        }}
-                        className="hover:scale-105"
-                    >
-                        {t('searchAgain')}
-                    </Button>
-                </Group>
             </Stack>
 
             <style jsx>{`

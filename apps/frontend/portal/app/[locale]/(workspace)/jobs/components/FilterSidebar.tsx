@@ -18,6 +18,7 @@ import { IconFilter, IconMapPin, IconSearch, IconX } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { type Filter, fetchJobs } from 'app/_api/jobs/fetch-jobs';
 import { fetchCities, fetchCountries } from 'app/_api/location/fetch-countries';
+import { useEmploymentTypes } from 'app/_api/profile/location';
 import { useGetCategories } from 'app/_api/profile/queries';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
@@ -55,6 +56,7 @@ export const FilterSidebar = ({
     handleJobTypeChange,
     handleExperienceLevelChange,
     handleApplyFilters,
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 }: FilterSidebarProps) => {
     const searchParam = useSearchParams();
     const t = useTranslations('jobListing');
@@ -74,6 +76,9 @@ export const FilterSidebar = ({
         queryFn: () => fetchCities(countryCode || ''),
         enabled: !!countryCode,
     });
+
+    const { data: employmentTypes = [], isLoading: isLoadingEmploymentTypes } =
+        useEmploymentTypes();
 
     return (
         <Box className="sticky top-24 border" hidden={isMobile}>
@@ -185,13 +190,13 @@ export const FilterSidebar = ({
 
                         <Box>
                             <Text size="xs" fw={500} mb="xs">
-                                {t('jobType')}
+                                Employment Type
                             </Text>
                             <Stack gap="xs">
-                                {JOB_TYPES.map((type) => (
+                                {employmentTypes?.map((type) => (
                                     <Checkbox
                                         key={type.value}
-                                        label={type.label}
+                                        label={type.key}
                                         checked={filters.type === type.value}
                                         onChange={() =>
                                             handleJobTypeChange(
@@ -240,8 +245,9 @@ export const FilterSidebar = ({
                                 </Text>
                                 <Text size="xs" c="dimmed">
                                     {(filters.salaryFrom ?? 0).toLocaleString()}{' '}
-                                    - {(filters.salaryTo ?? 0).toLocaleString()}{' '}
-                                    ETB
+                                    - {(
+                                        filters.salaryTo ?? 0
+                                    ).toLocaleString()}{' '}
                                 </Text>
                             </Group>
                             <Group grow>
@@ -280,6 +286,13 @@ export const FilterSidebar = ({
                                     radius="md"
                                 />
                             </Group>
+                            {filters.salaryFrom &&
+                            filters.salaryTo &&
+                            filters.salaryFrom > filters.salaryTo ? (
+                                <Text c={'red'} size="xs" mt={'xs'}>
+                                    Min salary cannot be greater than Max salary
+                                </Text>
+                            ) : undefined}
                         </Box>
                     </Stack>
                 </Box>

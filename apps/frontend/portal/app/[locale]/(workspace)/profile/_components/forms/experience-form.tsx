@@ -59,9 +59,9 @@ export default function ExperienceForm({
             startDate: experience?.startDate || new Date().toISOString(),
             endDate: experience?.endDate || '',
             type: experience?.type || 'full-time',
-            countryId: experience?.country?.id || '',
-            stateId: experience?.state?.id || '',
-            cityId: experience?.city?.id || '',
+            countryId: experience?.countryId || '',
+            stateId: experience?.stateId || '',
+            cityId: experience?.cityId || '',
             workPlace: experience?.workPlace || '',
             description: experience?.description || '',
             currentlyWorking:
@@ -99,17 +99,17 @@ export default function ExperienceForm({
     }, [isCurrentlyWorking, setValue]);
 
     useEffect(() => {
-        if (selectedCountryId !== experience?.country?.id) {
+        if (selectedCountryId !== experience?.countryId) {
             setValue('stateId', '');
             setValue('cityId', '');
         }
-    }, [selectedCountryId, experience?.country?.id, setValue]);
+    }, [selectedCountryId, experience?.countryId, setValue]);
 
     useEffect(() => {
-        if (selectedStateId !== experience?.state?.id) {
+        if (selectedStateId !== experience?.stateId) {
             setValue('cityId', '');
         }
-    }, [selectedStateId, experience?.state?.id, setValue]);
+    }, [selectedStateId, experience?.stateId, setValue]);
 
     const onFormSubmit = (data: ExperienceFormValues) => {
         try {
@@ -121,9 +121,9 @@ export default function ExperienceForm({
                 startDate: data.startDate,
                 endDate: data.endDate || undefined,
                 type: data.type,
-                country: { id: data.countryId },
-                state: { id: data.stateId },
-                city: { id: data.cityId },
+                countryId: data.countryId,
+                stateId: data.stateId,
+                cityId: data.cityId,
                 workPlace: data.workPlace,
                 currentlyWorking: data.currentlyWorking,
                 description: data.description,

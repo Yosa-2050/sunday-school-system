@@ -149,18 +149,6 @@ export const JobApplicationPanel = ({
         setCvUrl(url);
     };
 
-    const formatSalary = (value?: number | null) => {
-        if (!value) {
-            return 'Not specified';
-        }
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(value);
-    };
-
     const getNoticePeriodLabel = (value: number) => {
         const option = noticePeriodOptions.find(
             (opt) => opt.value === value.toString(),
@@ -382,7 +370,7 @@ export const JobApplicationPanel = ({
                                         <TextInput
                                             label="Salary Expectation"
                                             size="xs"
-                                            value={formatSalary(field.value)}
+                                            value={field.value ?? 0}
                                             readOnly
                                         />
                                     ) : (
@@ -401,7 +389,6 @@ export const JobApplicationPanel = ({
                                             max={1000000}
                                             step={1000}
                                             thousandSeparator=","
-                                            prefix="$"
                                             placeholder="Enter expected salary (optional)"
                                         />
                                     )}
@@ -409,17 +396,6 @@ export const JobApplicationPanel = ({
                             )}
                         />
                     </SimpleGrid>
-                    <Group justify="space-between">
-                        <Text size="xs" c="dimmed">
-                            Salary range for this position: $120,000 - $150,000
-                        </Text>
-                        {!isFormReadonly && watch('salaryExpectation') && (
-                            <Text size="xs" c="blue">
-                                Your expectation:{' '}
-                                {formatSalary(watch('salaryExpectation'))}
-                            </Text>
-                        )}
-                    </Group>
                 </Stack>
 
                 {/* Rest of the component remains the same */}

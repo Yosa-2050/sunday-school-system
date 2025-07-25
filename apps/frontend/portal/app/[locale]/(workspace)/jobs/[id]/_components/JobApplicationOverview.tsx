@@ -2,10 +2,8 @@ import {
     Avatar,
     Badge,
     Box,
-    Divider,
     Group,
     List,
-    Rating,
     Stack,
     Text,
     Title,
@@ -22,8 +20,11 @@ import {
     IconMapPin,
 } from '@tabler/icons-react';
 import type { Job } from 'app/_api/jobs/fetch-job-id';
-
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import parse from 'html-react-parser';
+
+dayjs.extend(relativeTime);
 
 type ApplicationOverviewProps = {
     job: Job;
@@ -53,27 +54,22 @@ export const ApplicationOverview = ({ job }: ApplicationOverviewProps) => {
                                 {job.organization?.name}
                             </Text>
                         </Group>
-                        <Divider orientation="vertical" />
-                        <Rating value={4.5} fractions={2} readOnly size="xs" />
-                        <Text size="xs" color="dimmed">
-                            4.5 (126 reviews)
-                        </Text>
                     </Group>
                     <Group gap="md" mt={4} wrap="wrap">
                         <Group gap={4}>
                             <IconMapPin size={14} color="gray" />
-                            <Text size="xs" color="dimmed">
-                                {job.workPlace || 'Remote'}
+                            <Text size="xs" c="dimmed">
+                                {job?.workPlace}
                             </Text>
                         </Group>
                         <Group gap={4}>
                             <IconCurrencyDollar size={14} color="gray" />
-                            <Text size="xs" color="dimmed">
+                            <Text size="xs" c="dimmed">
                                 {(() => {
                                     if (job?.salaryFrom && job?.salaryTo) {
                                         return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
                                     }
-                                    if (job?.salaryFrom) {
+                                    if (job?.salaryFrom && !job?.salaryTo) {
                                         return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
                                     }
                                     return 'N/A';
@@ -82,14 +78,14 @@ export const ApplicationOverview = ({ job }: ApplicationOverviewProps) => {
                         </Group>
                         <Group gap={4}>
                             <IconClock size={14} color="gray" />
-                            <Text size="xs" color="dimmed">
+                            <Text size="xs" c="dimmed">
                                 {job.type}
                             </Text>
                         </Group>
                         <Group gap={4}>
                             <IconCalendar size={14} color="gray" />
-                            <Text size="xs" color="dimmed">
-                                Posted 3 days ago
+                            <Text size="xs" c="dimmed">
+                                {dayjs(job.createdAt).fromNow()}
                             </Text>
                         </Group>
                     </Group>

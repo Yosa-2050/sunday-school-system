@@ -16,7 +16,7 @@ import {
 
 export const SimilarJobs = () => {
     return (
-        <Card>
+        <Card hidden={true}>
             <Stack gap="sm">
                 <Title order={4}>Similar Jobs</Title>
                 {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}

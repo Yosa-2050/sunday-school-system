@@ -24,14 +24,17 @@ import {
     IconTrash,
     IconX,
 } from '@tabler/icons-react';
-import { type Education, useDeleteEducation } from 'app/_api/profile/queries';
+import {
+    type EducationResponse,
+    useDeleteEducation,
+} from 'app/_api/profile/queries';
 import { useState } from 'react';
 import EducationForm from './forms/education-form';
 
 export default function EducationSection({
     education,
 }: {
-    education: Education[];
+    education: EducationResponse[];
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -42,7 +45,7 @@ export default function EducationSection({
     // const updateExperienceMutation = useUpdateExperience();
     const deleteExperienceMutation = useDeleteEducation();
     const [currentEducation, setCurrentEducation] =
-        useState<Education | null>();
+        useState<EducationResponse | null>();
 
     const handleAddEducation = () => {
         setSelectedEducation(undefined);
@@ -155,7 +158,7 @@ export default function EducationSection({
                                                         c="dimmed"
                                                     >
                                                         {edu.level} •{' '}
-                                                        {edu.fieldOfStudy.id}
+                                                        {edu.fieldOfStudy.name}
                                                     </Text>
                                                 </Stack>
                                                 <Group gap="xs">
@@ -211,7 +214,7 @@ export default function EducationSection({
                                                         color="teal"
                                                         radius="sm"
                                                     >
-                                                        Grade: {edu.grade}%
+                                                        Grade: {edu.grade}
                                                     </Badge>
                                                 )}
                                             </Group>

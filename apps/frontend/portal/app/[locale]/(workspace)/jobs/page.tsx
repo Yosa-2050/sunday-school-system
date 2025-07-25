@@ -3,7 +3,15 @@
 import { EntityPagination } from '@/components/EntityPagination';
 import { Footer } from '@/components/Footer';
 import { useJobs } from '@/hooks/jobs.hook';
-import { Container, Grid, LoadingOverlay, Stack } from '@mantine/core';
+import {
+    Box,
+    Container,
+    Grid,
+    Loader,
+    LoadingOverlay,
+    Stack,
+    Text,
+} from '@mantine/core';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { PER_PAGE, entityParamSchema } from '@shega/shared';
 import type { Filter } from 'app/_api/jobs/fetch-jobs';
@@ -27,6 +35,7 @@ const initialValues = (title?: string | null): Filter => {
         cityId: '',
         type: '',
         experianceLevel: '',
+        salaryFrom: 0,
     };
 };
 
@@ -155,8 +164,16 @@ export default function JobsPage() {
                                 handleSearch={handleSearch}
                                 handleApplyFilters={handleApplyFilters}
                             />
-
-                            {isEmpty ? (
+                            {isFetching ? (
+                                <Box
+                                    style={{ width: '100%', height: 300 }}
+                                    className="flex flex-col items-center justify-center"
+                                >
+                                    <Loader size={'md'} />
+                                    <Text>Loading jobs...</Text>
+                                </Box>
+                                // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                            ) : isEmpty ? (
                                 <div className="grid grid-cols-2 gap-4">
                                     {data?.data.map((job) => (
                                         <JobCard
@@ -165,16 +182,16 @@ export default function JobsPage() {
                                             refetch={refetch}
                                         />
                                     ))}
+                                    <EntityPagination
+                                        p={filters.pagination.page ?? 1}
+                                        total={data?.total ?? 0}
+                                        perPage={PER_PAGE}
+                                        createPageURL={createPageURL}
+                                    />
                                 </div>
                             ) : (
                                 <NoData resetFilters={resetFilters} />
                             )}
-                            <EntityPagination
-                                p={filters.pagination.page ?? 1}
-                                total={data?.total ?? 0}
-                                perPage={PER_PAGE}
-                                createPageURL={createPageURL}
-                            />
                         </Stack>
                     </Grid.Col>
                 </Grid>

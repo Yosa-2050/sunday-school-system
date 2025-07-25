@@ -81,7 +81,7 @@ export default function AllNotificationsPage() {
                             : []),
                     ],
                     p: page,
-                    pp: 4,
+                    pp: 10,
                 }),
             ),
         enabled: !!userId,

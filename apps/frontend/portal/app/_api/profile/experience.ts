@@ -1,4 +1,5 @@
 import type { Experience } from '@/lib/types';
+import { notifications } from '@mantine/notifications';
 import { fetcher } from '@shega/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -62,6 +63,11 @@ export const useAddExperience = () => {
         mutationFn: addExperience,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
+            notifications.show({
+                title: 'Experience Added',
+                message: 'Experience has been added successfully.',
+                color: 'green',
+            });
         },
     });
 };
@@ -77,6 +83,11 @@ export const useUpdateExperience = () => {
             updateExperience(id, payload),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
+            notifications.show({
+                title: 'Experience Updated',
+                message: 'Experience has been updated successfully.',
+                color: 'blue',
+            });
         },
     });
 };
@@ -88,6 +99,11 @@ export const useDeleteExperience = () => {
         mutationFn: deleteExperience,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobSeekerDetails'] });
+            notifications.show({
+                title: 'Experience Deleted',
+                message: 'Experience has been deleted successfully.',
+                color: 'red',
+            });
         },
     });
 };

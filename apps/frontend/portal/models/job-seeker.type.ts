@@ -1,10 +1,5 @@
-import type {
-    About,
-    Education,
-    Experience,
-    PersonalInfo,
-    Skill,
-} from '../lib/types';
+import type { EducationResponse } from 'app/_api/profile/queries';
+import type { About, Experience, PersonalInfo, Skill } from '../lib/types';
 
 export type JobSeeker = {
     id: string;
@@ -15,8 +10,8 @@ export type JobSeeker = {
     coverLetter: string;
     experiance: Experience[];
     __experiance__: Experience[];
-    educationalHistory: Education[];
-    __educationalHistory__: Education[];
+    educationalHistory: EducationResponse[];
+    __educationalHistory__: EducationResponse[];
     skills: Skill[];
     profile: PersonalInfo;
 };

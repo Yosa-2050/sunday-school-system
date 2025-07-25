@@ -6,7 +6,7 @@ import {
     Button,
     Divider,
     Group,
-    LoadingOverlay,
+    Loader,
     Modal,
     NumberInput,
     Select,
@@ -38,8 +38,12 @@ const schema = z.object({
         required_error: 'Start date is required',
         invalid_type_error: 'Start date is required',
     }),
-    endDate: z.date().optional(),
-    grade: z.number().min(0).max(100).optional(),
+    endDate: z.date().nullish(),
+    grade: z.coerce
+        .number()
+        .min(0.1, { message: 'Grade must be greater than 0' })
+        .max(4, { message: 'Grade must be less than or equal to 4' })
+        .optional(),
     description: z.string().optional(),
 });
 
@@ -103,13 +107,12 @@ export default function EducationForm({
         },
     });
 
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
     const onSubmit = async (values: FormValues) => {
         const formData = {
             ...values,
             startDate: values.startDate.toISOString(),
-            endDate: isCurrentlyStudying
-                ? undefined
-                : values.endDate?.toISOString(),
+            endDate: isCurrentlyStudying ? null : values.endDate?.toISOString(),
             grade: values.grade || undefined,
             description: values.description || undefined,
         };
@@ -122,6 +125,9 @@ export default function EducationForm({
                         data: {
                             ...formData,
                             fieldOfStudy: { id: formData.fieldOfStudyId },
+                            endDate: isCurrentlyStudying
+                                ? null
+                                : formData.endDate,
                         },
                     },
                     {
@@ -148,6 +154,12 @@ export default function EducationForm({
                         fieldOfStudy: { id: formData.fieldOfStudyId },
                         grade: formData.grade as number,
                         description: formData.description as string,
+                        endDate: isCurrentlyStudying
+                            ? null
+                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                              formData.endDate
+                              ? formData.endDate
+                              : null,
                     },
                     {
                         onSuccess: () => {
@@ -213,12 +225,6 @@ export default function EducationForm({
         <>
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
                 <Stack gap="md">
-                    <LoadingOverlay
-                        visible={isLoadingLevels || isLoading}
-                        zIndex={1000}
-                        overlayProps={{ radius: 'sm', blur: 2 }}
-                    />
-
                     <Group gap="sm" align="center">
                         <IconSchool size={20} />
                         <TextInput
@@ -238,11 +244,20 @@ export default function EducationForm({
                             <Select
                                 label="Education Level"
                                 withAsterisk
-                                placeholder="Select education level"
+                                placeholder={
+                                    isLoadingLevels
+                                        ? 'Loading Education levels...'
+                                        : 'Select level'
+                                }
+                                rightSection={
+                                    isLoadingLevels ? (
+                                        <Loader size={'xs'} />
+                                    ) : null
+                                }
                                 data={
                                     educationLevels?.map((level) => ({
-                                        value: level.key,
-                                        label: level.value,
+                                        value: level.value,
+                                        label: level.key,
                                     })) || []
                                 }
                                 searchable
@@ -260,7 +275,14 @@ export default function EducationForm({
                             <Select
                                 label="Field of Study"
                                 withAsterisk
-                                placeholder="Select field of study"
+                                placeholder={
+                                    isLoading
+                                        ? 'Loading fields of study...'
+                                        : 'Select field of study'
+                                }
+                                rightSection={
+                                    isLoading ? <Loader size={'xs'} /> : null
+                                }
                                 data={
                                     fieldsOfStudy?.map((field) => ({
                                         value: field.id,
@@ -317,8 +339,9 @@ export default function EducationForm({
                         onChange={(event) => {
                             const checked = event.currentTarget.checked;
                             setIsCurrentlyStudying(checked);
+                            setValue('endDate', null);
                             if (checked) {
-                                setValue('endDate', undefined);
+                                setValue('endDate', null);
                             }
                         }}
                     />
@@ -333,6 +356,7 @@ export default function EducationForm({
                                 min={0}
                                 max={100}
                                 clampBehavior="strict"
+                                withAsterisk
                                 {...field}
                                 error={errors.grade?.message}
                             />
@@ -369,7 +393,7 @@ export default function EducationForm({
                             <Button
                                 type="submit"
                                 loading={isCreating || isUpdating}
-                                disabled={!isDirty && !!education}
+                                // disabled={!!education}
                             >
                                 {education
                                     ? 'Update Education'

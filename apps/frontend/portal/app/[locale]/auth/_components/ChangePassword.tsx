@@ -195,16 +195,16 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                                 >
                                     Agree to the{' '}
                                     <Text
-                                        className="cursor-pointer"
-                                        c="primary.4"
+                                        className="cursor-pointer !underline"
+                                        fw={500}
                                         onClick={openTerm}
                                     >
                                         {t('terms')}
                                     </Text>
                                     and{' '}
                                     <Text
-                                        className="cursor-pointer"
-                                        c="primary.4"
+                                        className="cursor-pointer !underline"
+                                        fw={500}
                                         onClick={open}
                                     >
                                         {t('privacy')}

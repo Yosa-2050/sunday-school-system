@@ -1,52 +1,34 @@
-import {
-    Avatar,
-    Button,
-    Card,
-    Divider,
-    Group,
-    Rating,
-    Stack,
-    Text,
-    Title,
-} from '@mantine/core';
+import { Avatar, Card, Group, Stack, Text, Title } from '@mantine/core';
+import type { Organization } from 'app/_api/jobs/fetch-job-id';
 
 export const OrganizationDetails = ({
-    organizationName,
-}: { organizationName: string }) => {
+    organization,
+}: { organization?: Organization }) => {
+    if (!organization) {
+        return null;
+    }
+
     return (
-        <Card>
-            <Stack gap="sm">
-                <Title order={4}>Organization Details</Title>
+        <Card withBorder padding="lg">
+            <Stack gap="md">
                 <Group gap="md" wrap="nowrap">
                     <Avatar
+                        size={72}
                         radius="md"
-                        src="/placeholder.svg"
-                        alt="Company Logo"
+                        src={organization.logo || '/placeholder.svg'}
+                        alt={organization.name}
                     />
-                    <Stack gap={0}>
-                        <Title order={4}>{organizationName}</Title>
-                        <Text size="xs" color="dimmed">
-                            Technology · 500-1000 employees · Founded 2010
+                    <Stack gap={2}>
+                        <Title order={4}>{organization.name}</Title>
+                        <Text size="sm" c="dimmed">
+                            {organization.type} · {organization.companySize}
                         </Text>
-                        <Group gap="xs" mt={4}>
-                            <Rating
-                                value={4.5}
-                                fractions={2}
-                                readOnly
-                                size="xs"
-                            />
-                            <Text size="xs" color="dimmed">
-                                4.5 (126 reviews)
-                            </Text>
-                        </Group>
                     </Stack>
                 </Group>
-
-                <Divider my="sm" />
-
-                <Button variant="outline" fullWidth size="xs" hidden>
-                    View company profile
-                </Button>
+                <Text size="xs" c="dimmed">
+                    Founded in {organization.yearFounded} ·{' '}
+                    {organization.corporateEmail}
+                </Text>
             </Stack>
         </Card>
     );

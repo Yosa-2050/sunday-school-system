@@ -90,9 +90,6 @@ export default function JobDetailsPage() {
                                         ) : (
                                             <></>
                                         )}
-                                        <Text size="xs" c="dimmed">
-                                            Last saved 2 hours ago
-                                        </Text>
                                     </Group>
                                 </Stack>
 
@@ -125,7 +122,7 @@ export default function JobDetailsPage() {
                     </Stack>
 
                     <JobDetailSideBar
-                        organizationName={job?.organization?.name ?? ''}
+                        organization={job?.organization}
                         setActiveTab={setActiveTab}
                         job={job}
                     />
