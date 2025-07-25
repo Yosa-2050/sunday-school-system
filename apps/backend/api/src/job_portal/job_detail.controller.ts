@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
 import { CreateUsingNameRequestDto } from './dto/request/create-name.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { JobPortalService } from './job_portal.service';
@@ -76,6 +78,11 @@ export class JobDetailController {
     @Get('categories/:parentId')
     findOne(@Param('parentId', new ParseUUIDPipe()) id: string) {
         return this.jobPortalService.getCategoriesByParentId(id);
+    }
+
+    @Post('categoriesByParent')
+    findMultipleByParent(@Body() request: ListStringRequestModel) {
+        return this.jobPortalService.getListCategoriesByParentIds(request.list);
     }
 
     @Get('categoriesById/:id')

@@ -1381,4 +1381,8 @@ export class JobPortalService {
             request.pagination.limit,
         );
     }
+
+    getListCategoriesByParentIds(list: string[]) {
+        return this.categoryRepo.findBy({ parent: { id: In(list) } });
+    }
 }
