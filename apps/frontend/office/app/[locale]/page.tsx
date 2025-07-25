@@ -1,21 +1,36 @@
 'use client';
 
-import { redirect } from '@/i18n/routing';
 import { useAuth } from '@shega/ui';
 import { useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function HomePage() {
     const { user } = useAuth();
     const locale = useLocale();
+    const router = useRouter();
 
-    if (user) {
-        if (user.role === 'administrator') {
-            redirect({ href: '/admin/dashboard', locale });
+    useEffect(() => {
+        const _user = user?.user;
+
+        if (_user) {
+            // Check roles properly
+            if (
+                _user.roles.some((r) => r.role === 'administrator') ||
+                _user.roles.some((r) => r.role === 'super_admin')
+            ) {
+                router.replace(`/${locale}/admin/dashboard`);
+                return;
+            }
+
+            if (_user.roles.some((r) => r.role === 'work_provider')) {
+                router.replace(`/${locale}/work-provider/jobs`);
+                return;
+            }
+        } else {
+            router.replace(`/${locale}/auth/login`);
         }
-        if (user.role === 'work_provider') {
-            redirect({ href: '/work-provider/jobs', locale });
-        }
-    } else {
-        redirect({ href: '/auth/login', locale });
-    }
+    }, [user, locale, router]);
+
+    return null; // nothing to display while redirecting
 }

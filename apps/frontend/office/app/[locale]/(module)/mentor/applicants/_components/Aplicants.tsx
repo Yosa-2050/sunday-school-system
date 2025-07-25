@@ -112,8 +112,11 @@ export const Applicants = ({
                 setPage={setPage}
             />
             {selectedApplicants.length > 0 && (
-                <Flex justify="flex-end">
-                    <Button onClick={() => setSelectedApplicants([])}>
+                <Flex justify="flex-end" gap={'xs'}>
+                    <Button
+                        onClick={() => setSelectedApplicants([])}
+                        bg={'red.4'}
+                    >
                         Cancel
                     </Button>
                     <Button onClick={handleShortlist}>Shortlist</Button>

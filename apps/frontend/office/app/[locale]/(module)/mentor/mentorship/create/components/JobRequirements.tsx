@@ -65,23 +65,42 @@ export const JobRequirements = ({
     });
 
     const jobDescriptions = watch('jobDescriptions') || [];
-
     const handleAddItems = (type: JobDescriptionType, value: string) => {
         if (!value.trim()) {
             return;
         }
+
         setValue('jobDescriptions', [
             ...jobDescriptions,
             { description: value.trim(), type },
         ]);
+
+        // Clear the correct temporary state automatically
+        if (type === JobDescriptionType.Benefits) {
+            setTempBenefits('');
+        }
+        if (type === JobDescriptionType.Requirements) {
+            setTempRequirements('');
+        }
+        if (type === JobDescriptionType.Responsibility) {
+            setTempResponsibilities('');
+        }
     };
 
     const handleDeleteItem = (type: JobDescriptionType, index: number) => {
+        // Get only items of this type
+        const itemsOfType = jobDescriptions.filter(
+            (item) => item.type === type,
+        );
+        const itemToDelete = itemsOfType[index];
+
+        if (!itemToDelete) {
+            return;
+        }
+
+        // Remove only this specific item
         const newItems = jobDescriptions.filter(
-            (
-                item: { type: JobDescriptionType; description: string },
-                i: number,
-            ) => i !== index,
+            (item, i) => item !== itemToDelete,
         );
         setValue('jobDescriptions', newItems);
     };

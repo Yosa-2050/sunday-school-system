@@ -46,24 +46,29 @@ export const ApplicantsFilters = ({
         queryFn: () => fetchEnum('EducationalRequirementType'),
     });
 
-    const hasActiveFilters = Object.entries(filters).some(([key, value]) => {
-        if (key === 'experience') {
-            return value.min !== '' || value.max !== '';
-        }
-        return Array.isArray(value) ? value.length > 0 : value !== '';
-    });
+    const hasActiveFilters = () =>
+        Object.values(filters).filter((v) =>
+            typeof v === 'object'
+                ? // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                  v && ('min' in v || 'max' in v)
+                    ? v.min !== '' || v.max !== ''
+                    : Array.isArray(v) && v.length > 0
+                : v !== '',
+        ).length;
 
-    const clearFilters = () =>
+    const clearFilters = () => {
         setFilters({
             status: '',
             experience: { min: '', max: '' },
             category: [],
-            gender: '',
+            gender: null,
             ageTo: '',
             ageFrom: '',
             skills: [],
             educationalRequirment: [],
         });
+        refetch();
+    };
 
     return (
         <Paper withBorder radius="md" p="md">
@@ -76,7 +81,7 @@ export const ApplicantsFilters = ({
                     >
                         Filters
                     </Button>
-                    {hasActiveFilters && (
+                    {hasActiveFilters() && (
                         <Badge variant="filled" color="blue">
                             {
                                 Object.values(filters).filter((v) =>
@@ -105,13 +110,12 @@ export const ApplicantsFilters = ({
                                 onChange={(value) =>
                                     setFilters((prev) => ({
                                         ...prev,
-                                        gender: value || '',
+                                        gender: value,
                                     }))
                                 }
                                 data={[
                                     { value: 'MALE', label: 'Male' },
                                     { value: 'FEMALE', label: 'Female' },
-                                    { value: 'OTHER', label: 'Other' },
                                 ]}
                                 clearable
                             />
@@ -129,7 +133,7 @@ export const ApplicantsFilters = ({
                                     }))
                                 }
                                 data={skills.map((c) => ({
-                                    value: c.id,
+                                    value: c.name,
                                     label: c.name,
                                 }))}
                                 clearable
@@ -257,7 +261,7 @@ export const ApplicantsFilters = ({
                         </Grid.Col>
                     </Grid>
 
-                    {hasActiveFilters && (
+                    {hasActiveFilters() ? (
                         <Group>
                             <Button
                                 size="sm"
@@ -276,7 +280,7 @@ export const ApplicantsFilters = ({
                                 Clear Filters
                             </Button>
                         </Group>
-                    )}
+                    ) : null}
                 </Stack>
             )}
         </Paper>

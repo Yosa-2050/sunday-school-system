@@ -5,12 +5,12 @@ import {
     Avatar,
     Badge,
     Box,
+    Button,
     Card,
     Divider,
     Flex,
     Grid,
     Group,
-    Progress,
     Stack,
     Tabs,
     Text,
@@ -18,6 +18,7 @@ import {
     Timeline,
     Title,
 } from '@mantine/core';
+import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
 import {
     IconAward,
     IconBriefcase,
@@ -38,6 +39,7 @@ import {
     useShortLIstMutation,
     useShortRejectedMutation,
 } from 'app/[locale]/_api/job-seeker';
+import { getCookie } from 'cookies-next';
 import { useParams } from 'next/navigation';
 import type React from 'react';
 
@@ -137,6 +139,28 @@ export default function ApplicantProfile() {
     const { data: profilePicture } = useDownloadProfilePicture(
         applicantData?.profile?.profile_picture_id ?? '',
     );
+    const { data, isFetching } = useQuery({
+        queryKey: ['cv', applicantData?.cv],
+        queryFn: async () => {
+            const token = getCookie(COOKIE_ACCESS_TOKEN)?.toString();
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/document/${applicantData?.cv}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        accept: '*/*',
+                    },
+                },
+            );
+            if (!response.ok) {
+                throw new Error('Failed to download document');
+            }
+            return response.blob();
+        },
+        enabled: !!applicantData?.cv,
+    });
+
     const { mutate: shortlistMutation, isPending: isShortlisting } =
         useShortLIstMutation(id);
     const { mutate: rejectMutation, isPending: isRejecting } =
@@ -163,16 +187,6 @@ export default function ApplicantProfile() {
         .join(' ');
 
     const age = calculateAge(applicantData.profile?.birthDate);
-
-    const handleShortlist = () => {
-        shortlistMutation({
-            applicants: [applicantData.id],
-        });
-    };
-
-    const handleReject = () => {
-        rejectMutation();
-    };
 
     return (
         <Box>
@@ -263,31 +277,7 @@ export default function ApplicantProfile() {
                                     Verified Email
                                 </Badge>
                             )}
-                            {applicantData.percentageCompleted !==
-                                undefined && (
-                                <Badge variant="outline">
-                                    {applicantData.percentageCompleted}%
-                                    Complete
-                                </Badge>
-                            )}
                         </Group>
-
-                        {applicantData.percentageCompleted !== undefined && (
-                            <Box>
-                                <Text size="sm" mb="xs">
-                                    Profile Completion
-                                </Text>
-                                <Progress
-                                    value={applicantData.percentageCompleted}
-                                    size="sm"
-                                    color={
-                                        applicantData.percentageCompleted > 80
-                                            ? 'green'
-                                            : 'blue'
-                                    }
-                                />
-                            </Box>
-                        )}
                     </Box>
                 </Flex>
             </Card>
@@ -324,6 +314,12 @@ export default function ApplicantProfile() {
                         leftSection={<IconFileText size="0.8rem" />}
                     >
                         Documents
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                        value="cover-letter"
+                        leftSection={<IconFileText size="0.8rem" />}
+                    >
+                        Cover Letter
                     </Tabs.Tab>
                 </Tabs.List>
 
@@ -684,50 +680,58 @@ export default function ApplicantProfile() {
                 </Tabs.Panel>
 
                 <Tabs.Panel value="documents" pt="md">
-                    <Grid>
-                        <Grid.Col span={{ base: 12, md: 6 }}>
-                            <Card shadow="sm" padding="lg" radius="md" h="100%">
-                                <Group justify="space-between" mb="md">
-                                    <Group gap="xs">
-                                        <IconFileText size="1.2rem" />
-                                        <Title order={4}>Resume/CV</Title>
-                                    </Group>
-                                    {/* <ActionIcon variant="outline">
-                    <IconDownload size="1rem" />
-                  </ActionIcon> */}
-                                </Group>
-                                <Text size="sm" c="dimmed">
-                                    {applicantData.cv
-                                        ? 'CV uploaded'
-                                        : 'No CV uploaded'}
-                                </Text>
-                            </Card>
-                        </Grid.Col>
-
-                        <Grid.Col span={{ base: 12, md: 6 }}>
-                            <Card shadow="sm" padding="lg" radius="md" h="100%">
-                                <Group justify="space-between" mb="md">
-                                    <Group gap="xs">
-                                        <IconFileText size="1.2rem" />
-                                        <Title order={4}>Cover Letter</Title>
-                                    </Group>
-                                    {/* <ActionIcon variant="outline">
-                    <IconDownload size="1rem" />
-                  </ActionIcon> */}
-                                </Group>
-                                <Text size="sm" c="dimmed">
-                                    {applicantData.coverLetter
-                                        ? 'Cover letter available'
-                                        : 'No cover letter'}
-                                </Text>
-                                {applicantData.coverLetter && (
-                                    <Text size="xs" c="dimmed" mt="xs">
-                                        {applicantData.coverLetter}
-                                    </Text>
-                                )}
-                            </Card>
-                        </Grid.Col>
-                    </Grid>
+                    <Card shadow="sm" padding="lg" radius="md" h="100%">
+                        <Group justify="space-between" mb="md">
+                            <Group gap="xs">
+                                <IconFileText size="1.2rem" />
+                                <Title order={4}>Resume/CV</Title>
+                            </Group>
+                        </Group>
+                        <Flex align={'center'}>
+                            <Text size="sm" c="dimmed" mt={2}>
+                                {applicantData.cv
+                                    ? 'CV uploaded'
+                                    : 'No CV uploaded'}
+                            </Text>
+                            <Button
+                                onClick={() => {
+                                    //create object url for the cv from the data
+                                    if (data) {
+                                        const url = URL.createObjectURL(
+                                            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                            data as any,
+                                        );
+                                        window.open(url, '_blank');
+                                    }
+                                }}
+                                variant="transparent"
+                            >
+                                {isFetching
+                                    ? 'Downloading CV...'
+                                    : 'Preview CV'}
+                            </Button>
+                        </Flex>
+                    </Card>
+                </Tabs.Panel>
+                <Tabs.Panel value="cover-letter" pt="md">
+                    <Card shadow="sm" padding="lg" radius="md" h="100%">
+                        <Group justify="space-between" mb="md">
+                            <Group gap="xs">
+                                <IconFileText size="1.2rem" />
+                                <Title order={4}>Cover Letter</Title>
+                            </Group>
+                        </Group>
+                        <Text size="sm" c="dimmed">
+                            {applicantData.coverLetter
+                                ? 'Cover letter available'
+                                : 'No cover letter'}
+                        </Text>
+                        {applicantData.coverLetter && (
+                            <Text size="xs" c="dimmed" mt="xs">
+                                {applicantData.coverLetter}
+                            </Text>
+                        )}
+                    </Card>
                 </Tabs.Panel>
             </Tabs>
         </Box>

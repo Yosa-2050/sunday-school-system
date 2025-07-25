@@ -1,6 +1,4 @@
 import { fetcher } from '@shega/shared';
-import type { DocumentData } from 'app/[locale]/(module)/work-provider/profile/components/UploadFile';
-
 export const getDocumentType = async () => {
     const response = await fetcher(
         '/lookup/DocumentType/OrganizationDocuments',
@@ -13,9 +11,12 @@ export const getDocumentType = async () => {
 };
 
 export const getDocumentById = async (id: string) => {
-    const response = await fetcher(`/document/reference/${id}`, {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const response: any = await fetcher(`/document/reference/${id}`, {
         method: 'GET',
     });
-
-    return response as DocumentData;
+    if (!response.ok) {
+        throw new Error('Failed to fetch document');
+    }
+    return response.blob();
 };

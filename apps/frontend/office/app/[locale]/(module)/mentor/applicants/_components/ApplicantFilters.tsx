@@ -53,7 +53,7 @@ export const ApplicantsFilters = ({
         return Array.isArray(value) ? value.length > 0 : value !== '';
     });
 
-    const clearFilters = () =>
+    const clearFilters = () => {
         setFilters({
             status: '',
             experience: { min: '', max: '' },
@@ -64,6 +64,8 @@ export const ApplicantsFilters = ({
             skills: [],
             educationalRequirment: [],
         });
+        refetch();
+    };
 
     return (
         <Paper withBorder radius="md" p="md">
@@ -111,7 +113,6 @@ export const ApplicantsFilters = ({
                                 data={[
                                     { value: 'MALE', label: 'Male' },
                                     { value: 'FEMALE', label: 'Female' },
-                                    { value: 'OTHER', label: 'Other' },
                                 ]}
                                 clearable
                             />

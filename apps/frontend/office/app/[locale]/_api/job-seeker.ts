@@ -1,6 +1,6 @@
 import { notifications } from '@mantine/notifications';
 import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 
 // Base entity interface
@@ -266,11 +266,18 @@ const shortRejectedLists = async (programId: string) => {
 };
 
 const useShortLIstMutation = (programId: string) => {
+    const queryClient = useQueryClient();
     return useMutation({
         mutationKey: ['shortListedApplicants', programId],
         mutationFn: async ({ applicants }: { applicants: string[] }) =>
             await shortListedApplicants(programId, applicants),
         onSuccess: (data) => {
+            queryClient.invalidateQueries({
+                queryKey: ['applicants', programId, 'PENDING'],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['applicants', programId, 'SHORTLISTED'],
+            });
             notifications.show({
                 title: 'Success',
                 message: 'Applicants shortlisted successfully.',

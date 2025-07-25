@@ -8,7 +8,6 @@ import {
     Button,
     Group,
     Image,
-    Indicator,
     type MantineTheme,
     Popover,
     ScrollArea,
@@ -348,24 +347,15 @@ export default function NotificationPopover() {
             offset={8}
         >
             <Popover.Target>
-                <Indicator
-                    disabled={unreadCount === 0}
-                    label={unreadCount > 99 ? '99+' : unreadCount}
-                    size={20}
-                    color="red"
-                    offset={7}
-                    processing={unreadCount > 0}
+                <ActionIcon
+                    onClick={toggle}
+                    variant={opened ? 'filled' : 'light'}
+                    size="lg"
+                    radius="md"
+                    aria-label="Notifications"
                 >
-                    <ActionIcon
-                        onClick={toggle}
-                        variant={opened ? 'filled' : 'light'}
-                        size="lg"
-                        radius="md"
-                        aria-label="Notifications"
-                    >
-                        <IconBell size={18} />
-                    </ActionIcon>
-                </Indicator>
+                    <IconBell size={18} />
+                </ActionIcon>
             </Popover.Target>
 
             <Popover.Dropdown p={0}>
@@ -380,16 +370,6 @@ export default function NotificationPopover() {
                                 {unreadCount > 0 ? `${unreadCount} unread` : ''}
                             </Text>
                         </Stack>
-
-                        {/* <Group gap="xs">
-                            <ActionIcon
-                                variant="subtle"
-                                color="white"
-                                size="sm"
-                            >
-                                <IconDots size={16} />
-                            </ActionIcon>
-                        </Group> */}
                     </Group>
                 </Box>
 

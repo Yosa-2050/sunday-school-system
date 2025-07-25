@@ -61,18 +61,35 @@ export const JobRequirements = ({
         if (!value.trim()) {
             return;
         }
+
         setValue('jobDescriptions', [
             ...jobDescriptions,
             { description: value.trim(), type },
         ]);
+
+        if (type === JobDescriptionType.Benefits) {
+            setTempBenefits('');
+        }
+        if (type === JobDescriptionType.Requirements) {
+            setTempRequirements('');
+        }
+        if (type === JobDescriptionType.Responsibility) {
+            setTempResponsibilities('');
+        }
     };
 
     const handleDeleteItem = (type: JobDescriptionType, index: number) => {
+        const itemsOfType = jobDescriptions.filter(
+            (item) => item.type === type,
+        );
+        const itemToDelete = itemsOfType[index];
+
+        if (!itemToDelete) {
+            return;
+        }
+
         const newItems = jobDescriptions.filter(
-            (
-                item: { type: JobDescriptionType; description: string },
-                i: number,
-            ) => i !== index,
+            (item, i) => item !== itemToDelete,
         );
         setValue('jobDescriptions', newItems);
     };

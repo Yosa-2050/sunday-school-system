@@ -30,6 +30,11 @@ export type User = {
         email_confirmed: boolean;
         note: string | null;
         profile: Record<string, string>;
-        roles: Record<string, string>;
+        roles: Array<{
+            id: string;
+            isActive: boolean;
+            role: string;
+            isDefault: boolean;
+        }>;
     };
 };

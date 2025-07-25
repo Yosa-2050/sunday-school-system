@@ -10,7 +10,7 @@ export const uploadProfilePicture = async (file: File): Promise<string> => {
     const token = getCookie(COOKIE_ACCESS_TOKEN)?.toString();
 
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/profile/upload/profilePicture`,
+        `${process.env.NEXT_PUBLIC_API_URL}/organization/upload/logo`,
         {
             method: 'POST',
             body: formData,

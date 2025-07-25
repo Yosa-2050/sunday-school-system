@@ -25,7 +25,10 @@ import {
     IconUser,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { getAddressById } from 'app/[locale]/_api/organizations/get-addresses';
+import {
+    getAddressById,
+    getCountryById,
+} from 'app/[locale]/_api/organizations/get-addresses';
 import { getCategoriesById } from 'app/[locale]/_api/organizations/get-categories';
 import parse from 'html-react-parser';
 import { useEffect, useState } from 'react';
@@ -47,7 +50,7 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
     };
 
     const country = useQuery({
-        queryFn: () => getAddressById(formData.countryId),
+        queryFn: () => getCountryById(formData.countryId),
         queryKey: ['country', formData.countryId],
     });
 
@@ -377,9 +380,6 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                 <Title order={2} c="white">
                                     Job Status
                                 </Title>
-                                <Text c="gray.4">
-                                    This job posting is currently active
-                                </Text>
                             </Card.Section>
                             <Card.Section p="xl" bg="gray.0">
                                 <Stack gap="lg">
@@ -390,47 +390,10 @@ export const JobPreview = ({ formData }: JobPreviewProps) => {
                                                 color={theme.colors.gray[6]}
                                             />
                                             <Text size="sm">
-                                                Posted {formatDate(new Date())}
+                                                {formatDate(new Date())}
                                             </Text>
                                         </Group>
-                                        <Badge variant="filled" color="gray">
-                                            {Math.ceil(
-                                                (new Date(
-                                                    formData.deadline,
-                                                ).getTime() -
-                                                    Date.now()) /
-                                                    (1000 * 60 * 60 * 24),
-                                            )}{' '}
-                                            days left
-                                        </Badge>
                                     </Group>
-                                    {/* <div>
-                    <Group justify="space-between" mb="xs">
-                      <Text size="sm" fw={500}>
-                        Time Remaining
-                      </Text>
-                      <Text size="sm" c="gray.6" fw={500}>
-                        {Math.round(
-                          ((new Date(formData.deadline).getTime() -
-                            Date.now()) /
-                            (new Date(formData.deadline).getTime() -
-                              Date.now())) *
-                            100
-                        )}
-                        %
-                      </Text>
-                    </Group>
-                    <Progress
-                      value={Math.round(
-                        ((new Date(formData.deadline).getTime() - Date.now()) /
-                          (new Date(formData.deadline).getTime() -
-                            Date.now())) *
-                          100
-                      )}
-                      size="sm"
-                      mb="xs"
-                    />
-                  </div> */}
                                 </Stack>
                             </Card.Section>
                         </Card>
