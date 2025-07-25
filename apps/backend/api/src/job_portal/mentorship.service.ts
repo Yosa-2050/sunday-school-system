@@ -243,14 +243,14 @@ export class MentorshipService {
 
         const category = await this.jobPortalService.GetCategories(dto);
         if (category?.length > 0) {
-            mentorShip.program.jobCategory = category;
+            mentorShip.program.programCategory = category;
         }
         if (skills?.length > 0) {
-            mentorShip.program.jobSkills = skills;
+            mentorShip.program.programSkills = skills;
         }
 
         if (descriptions?.length > 0) {
-            mentorShip.program.jobDescriptions = descriptions;
+            mentorShip.program.programDescriptions = descriptions;
         }
 
         mentorShip.program.status = ApprovalType.Waiting_Approval;
@@ -415,7 +415,11 @@ export class MentorshipService {
         filter: GetJobsRequestDto,
         applicantId: string = null,
     ) {
-        const query = this.programRepo.createQueryBuilder('program');
+        const query = this.programRepo
+            .createQueryBuilder('program')
+            .leftJoin('program.programCategory', 'programCategory')
+            .leftJoin('programCategory.category', 'category');
+
         query.andWhere('program.status = :status', {
             status: ApprovalType.Approved,
         });
@@ -436,11 +440,9 @@ export class MentorshipService {
         }
 
         if (filter.categoryId) {
-            query
-                .leftJoin('program.jobCategory', 'category')
-                .andWhere('category.id = :categoryId', {
-                    categoryId: filter.categoryId,
-                });
+            query.andWhere('category.id = :categoryId', {
+                categoryId: filter.categoryId,
+            });
         }
 
         if (filter.programType) {
@@ -458,6 +460,12 @@ export class MentorshipService {
         if (filter.countryId) {
             query.andWhere('program.countryId = :countryId', {
                 countryId: filter.countryId,
+            });
+        }
+
+        if (filter.stateId) {
+            query.andWhere('program.stateId = :stateId', {
+                stateId: filter.stateId,
             });
         }
 

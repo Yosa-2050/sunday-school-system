@@ -42,6 +42,10 @@ export class GetJobsRequestDto {
 
     @ApiProperty()
     @OptionalUUID()
+    stateId?: string;
+
+    @ApiProperty()
+    @OptionalUUID()
     cityId?: string;
 
     @ApiProperty()
