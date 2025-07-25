@@ -28,7 +28,7 @@ export class EducationHistory extends BaseModel {
     @Column({ nullable: true })
     endDate: Date;
 
-    @Column({ nullable: true })
+    @Column('decimal', { precision: 10, scale: 2, nullable: true })
     grade: number;
 
     @Column()
