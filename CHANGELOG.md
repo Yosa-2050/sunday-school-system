@@ -1,3 +1,10 @@
+## [1.9.3](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.2...v1.9.3) (2025-07-25)
+
+
+### Bug Fixes
+
+* **shega:** collection of fixes ([bcb8746](https://gitlab.heranitech.com/meklit/shega-jobs/commit/bcb87461b9b444c71bceda603a6a88f7cbfa6f4d))
+
 ## [1.9.2](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.1...v1.9.2) (2025-07-23)
 
 
