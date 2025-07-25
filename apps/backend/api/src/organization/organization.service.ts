@@ -25,6 +25,7 @@ import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detai
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotesService } from '@shega/notification/notes.service';
 import { NotificationService } from '@shega/notification/notification.service';
+import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
@@ -235,6 +236,7 @@ export class OrganizationService {
                 emailTemplate,
                 user,
                 status,
+                note,
                 org.name,
             );
         }
@@ -301,6 +303,7 @@ export class OrganizationService {
         emailTemplate: any,
         user: User,
         status: ApprovalType,
+        reasonForDecline: string,
         orgName = '',
     ) {
         if (emailTemplate) {
@@ -313,34 +316,44 @@ export class OrganizationService {
             });
         }
 
+        let subjectParagraph = null;
+        let contentParagraph = null;
+
         if (status === ApprovalType.Approved) {
+            subjectParagraph = 'Organization Status: Approved!';
+            contentParagraph = `Congratulations! Your organization, ${orgName}, has been approved and is now ready to post jobs on Shega Jobs.`;
+
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: 'Organization Approved',
-                content:
-                    'Your Organization has been approved and is now live on the shega platform.',
+                subject: getInAppHtmlTemplate(subjectParagraph),
+                content: getInAppHtmlTemplate(contentParagraph),
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
             });
         } else if (status === ApprovalType.Declined) {
+            subjectParagraph = 'Organization Status: Declined!';
+            contentParagraph = `Unfortunately, your organization, ${orgName}, could not be approved at this time. The reason for declined is ${reasonForDecline}.`;
+
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: 'Organization Declined',
-                content:
-                    'Your Organization has been declined, please contact administrator.',
+                subject: getInAppHtmlTemplate(subjectParagraph),
+                content: getInAppHtmlTemplate(contentParagraph),
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
             });
         } else if (status === ApprovalType.Returned) {
+            subjectParagraph =
+                'Action Required: Organization Details Need Adjustments';
+            contentParagraph =
+                "Your organization's details require some adjustments before we can approve your profile. Tap to see what needs to be updated and resubmit for review.";
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: 'Request to correct information',
-                content:
-                    'Admin needs a correct information to approve your organization. Therefore, please check your profile section information',
+                subject: getInAppHtmlTemplate(subjectParagraph),
+                content: getInAppHtmlTemplate(contentParagraph),
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
