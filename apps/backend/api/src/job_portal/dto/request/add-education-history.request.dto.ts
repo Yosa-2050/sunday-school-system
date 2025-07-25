@@ -40,6 +40,7 @@ export class AddEducationalHistoryRequestDto {
 
     @ApiProperty()
     @IsString()
+    @IsOptional()
     description: string;
 }
 
