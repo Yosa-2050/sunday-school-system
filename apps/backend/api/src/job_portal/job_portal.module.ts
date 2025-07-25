@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DocumentModule } from '@shega/document/document.module';
 import { AddressModule } from '@shega/location/address.module';
 import { NotificationModule } from '@shega/notification/notification.module';
+import { Organization } from '@shega/organization/entities/organization.entity';
 import { OrganizationModule } from '@shega/organization/organization.module';
 import { UsersModule } from '@shega/users/users.module';
 import { ApplicantSkills } from './entities/applicants-skills.entity';
@@ -53,6 +54,7 @@ import { MentorshipService } from './mentorship.service';
             Mentors,
             Mentorship,
             SavedPrograms,
+            Organization,
         ]),
         OrganizationModule,
         DocumentModule,

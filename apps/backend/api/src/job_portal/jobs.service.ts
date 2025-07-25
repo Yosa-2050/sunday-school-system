@@ -15,6 +15,7 @@ import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -42,6 +43,7 @@ import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
 import { Experiance } from './entities/experience.entity';
 import { Applications } from './entities/job-application.entity';
+import { Jobs } from './entities/jobs.entity';
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
 import { ProgramType } from './enums/program-type.enum';
@@ -69,6 +71,8 @@ export class JobsService {
         @InjectRepository(Programs)
         private programsRepo: Repository<Programs>,
         private addressService: AddressService,
+        @InjectRepository(Jobs)
+        private jobRepo: Repository<Jobs>,
     ) {}
 
     async getApplicantDetail(id: string) {
@@ -111,6 +115,8 @@ export class JobsService {
         application.applicants = applicant;
 
         const savedJobApplication = this.jobApplicantRepo.save(application);
+        let subjectParagraph = null;
+        let contentParagraph = null;
         if (savedJobApplication) {
             const user = await this.profileService.findUserByProfileId(
                 applicant.profile.id,
@@ -119,12 +125,24 @@ export class JobsService {
                 program.programType === ProgramType.Job
                     ? 'Job'
                     : 'Mentorship program';
+
+            subjectParagraph = 'New Applicant for Your Job Post!';
+            contentParagraph = `A new candidate has applied for your ${program.title} position. Review their application and decide your next steps.`;
+
+            const job = await this.jobRepo.findOneBy({
+                program: { id: program.id },
+            });
+
+            const jobPostedUser = await this.profileService.findUserByProfileId(
+                job.postedBy.employee.profile.id,
+            );
+
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: 'Job applied',
-                content: `User ${applicant.profile.firstName} has applied to your ${programType} with title ${program.title}.`,
-                to: user.id,
-                reference: user.id,
+                subject: getInAppHtmlTemplate(subjectParagraph),
+                content: getInAppHtmlTemplate(contentParagraph),
+                to: jobPostedUser.id,
+                reference: jobPostedUser.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
             });

@@ -21,6 +21,8 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 import { NotesService } from '@shega/notification/notes.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
+import { Organization } from '@shega/organization/entities/organization.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -92,6 +94,8 @@ export class JobPortalService {
         private educationHistory: Repository<EducationHistory>,
         @InjectRepository(Mentorship)
         private mentorshipRepo: Repository<Mentorship>,
+        @InjectRepository(Organization)
+        private organizationRepo: Repository<Organization>,
         private readonly queryBuilderService: QueryBuilderService,
         private readonly addressService: AddressService,
         private readonly passwordService: PasswordService,
@@ -197,11 +201,18 @@ export class JobPortalService {
             jobCreated.organization.createdBy,
             LoginBy.EMAIL,
         );
+        let subjectParagraph = null;
+        let contentParagraph = null;
         if (jobCreated.program.isPublished) {
+            const org = await this.organizationRepo.findOneBy({
+                id: jobCreated.program.id,
+            });
+            subjectParagraph = 'New Job Posting Awaiting Your Approval!';
+            contentParagraph = `A new job has been submitted by ${org.name} for ${jobCreated.program.title}. Please review and approve this posting to make it visible to job seekers.`;
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: `Job with title ${jobCreated.program.title} submitted for approval`,
-                content: `Job with title ${jobCreated.program.title} is submitted for approval from Organization ${jobCreated.organization.name}`,
+                subject: getInAppHtmlTemplate(subjectParagraph),
+                content: getInAppHtmlTemplate(contentParagraph),
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
@@ -701,6 +712,8 @@ export class JobPortalService {
             let programType = '';
             let emailTemplate = null;
             let user = null;
+
+            //Get email template and send email
             if (program.programType === ProgramType.Job) {
                 programType = 'Job';
                 const job = await this.jobRepo.findOneBy({
@@ -735,8 +748,6 @@ export class JobPortalService {
                 );
             }
 
-            //Get email template and send email
-
             if (emailTemplate) {
                 this.notificationService.send({
                     channel: NotificationChannel.Email,
@@ -752,6 +763,7 @@ export class JobPortalService {
                 approvalType,
                 programType,
                 program.title,
+                note,
             );
             if (inAppTemplate) {
                 this.notificationService.send({
@@ -840,18 +852,27 @@ export class JobPortalService {
         approvalType: string,
         programType: string,
         programTitle: string,
+        reasonForDecline: string,
     ) {
         let subject = null;
         let content = null;
+        let subjectParagraph = null;
+        let contentParagraph = null;
 
         if (approvalType === ApprovalType.Approved) {
-            subject = `${programType} Posting Approved`;
-            content = `Posted ${programType} with title ${programTitle} has been approved.`;
+            subjectParagraph = `Job Approved:<b>${programTitle}</b> is Now Live!`;
+            contentParagraph = `Congratulations! Your job posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
+
+            subject = getInAppHtmlTemplate(subjectParagraph);
+            content = getInAppHtmlTemplate(contentParagraph);
         }
 
         if (approvalType === ApprovalType.Declined) {
-            subject = `${programType} Posting Declined`;
-            content = `Posted ${programType} with title ${programTitle} has been declined. Please contact the administrator.`;
+            subjectParagraph = `Job Declined: <b>${programTitle}</b> is Declined!`;
+            contentParagraph = `Unfortunately, your job posting for <b>${programTitle}</b> could not be approved. The reason for declined is ${reasonForDecline}.`;
+
+            subject = getInAppHtmlTemplate(subjectParagraph);
+            content = getInAppHtmlTemplate(contentParagraph);
         }
 
         const inApptemplate = {
