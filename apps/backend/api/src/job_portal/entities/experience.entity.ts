@@ -1,7 +1,7 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
 import { Country } from '@shega/location/entities/country.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '../enums/employment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -31,13 +31,25 @@ export class Experiance extends BaseModel {
     @Column({ nullable: true })
     type: EmploymentType;
 
-    @ManyToOne(() => Country, { eager: true, nullable: true })
+    @Column({ nullable: true })
+    countryId: string;
+
+    @ManyToOne(() => Country, { nullable: true })
+    @JoinColumn({ name: 'countryId' })
     country: Country;
 
-    @ManyToOne(() => LocationInfo, { eager: true, nullable: true })
+    @Column({ nullable: true })
+    stateId: string;
+
+    @ManyToOne(() => LocationInfo, { nullable: true })
+    @JoinColumn({ name: 'stateId' })
     state: LocationInfo;
 
-    @ManyToOne(() => LocationInfo, { eager: true, nullable: true })
+    @Column({ nullable: true })
+    cityId: string;
+
+    @ManyToOne(() => LocationInfo, { nullable: true })
+    @JoinColumn({ name: 'cityId' })
     city: LocationInfo;
 
     @Column({ nullable: true })
