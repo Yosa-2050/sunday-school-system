@@ -12,13 +12,14 @@ import {
     Stack,
 } from '@mantine/core';
 import { IconFilter, IconX } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchEnum } from 'app/[locale]/_api/enum';
 import { fetchCategories, fetchSkills } from 'app/[locale]/_api/job-details';
 import { mapEnumToOptions } from '../../jobs/create/components/utils';
 import type { Filters } from './Aplicants';
 
 interface Props {
+    jobId: string;
     filters: Filters;
     setFilters: React.Dispatch<React.SetStateAction<Filters>>;
     showFilters: boolean;
@@ -27,12 +28,14 @@ interface Props {
 }
 
 export const ApplicantsFilters = ({
+    jobId,
     filters,
     setFilters,
     showFilters,
     setShowFilters,
     refetch,
 }: Props) => {
+    const queryClient = useQueryClient();
     const { data: skills = [] } = useQuery({
         queryKey: ['skills'],
         queryFn: fetchSkills,
@@ -56,8 +59,8 @@ export const ApplicantsFilters = ({
                 : v !== '',
         ).length;
 
-    const clearFilters = () => {
-        setFilters({
+    const clearFilters = async () => {
+        await setFilters({
             status: '',
             experience: { min: '', max: '' },
             category: [],

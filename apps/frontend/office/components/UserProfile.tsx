@@ -25,12 +25,12 @@ export default function UserProfile() {
                 <Box
                     variant="subtle"
                     className="flex items-center space-x-2 text-primary cursor-pointer"
-                    visibleFrom="md"
+                    // visibleFrom="md"
                 >
                     <Avatar radius="xl" color="blue" size={'sm'}>
                         {user?.firstName?.[0]} {user?.lastName?.[0]}
                     </Avatar>
-                    <Text size="xs">
+                    <Text size="xs" visibleFrom="md">
                         {user?.firstName} {user?.lastName}
                     </Text>
                 </Box>

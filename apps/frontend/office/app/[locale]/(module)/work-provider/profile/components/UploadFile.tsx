@@ -5,6 +5,7 @@ import {
     Badge,
     Box,
     Button,
+    Card,
     FileInput,
     Group,
     Image,
@@ -16,6 +17,7 @@ import {
     Tooltip,
     rem,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { COOKIE_ACCESS_TOKEN, logger } from '@shega/shared';
 import {
     IconAlertCircle,
@@ -25,11 +27,10 @@ import {
     IconReplace,
     IconUpload,
 } from '@tabler/icons-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getDocumentById } from 'app/[locale]/_api/organizations/getDocumentType';
 import { useUploadDocument } from 'app/[locale]/_api/organizations/upload-document';
 import { getCookie } from 'cookies-next';
-import type React from 'react';
 import { useState } from 'react';
 
 interface UploadFileProps {
@@ -76,7 +77,6 @@ export const downloadDocument = async (id: string): Promise<Blob> => {
 };
 
 const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
-    const queryClient = useQueryClient();
     const [uploadForm, setUploadForm] = useState<{
         [key: string]: File | null;
     }>({});
@@ -85,6 +85,8 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [previewFileName, setPreviewFileName] = useState<string>('');
     const [previewFileType, setPreviewFileType] = useState<string>('');
+
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     const { data } = useQuery<DocumentData[]>({
         queryKey: ['organizationDocuments', orgId],
@@ -96,25 +98,23 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
     });
     const uploadedDocs: DocumentData[] = Array.isArray(data) ? data : [];
 
+    const { mutate: uploadDocument, isPending } = useUploadDocument(orgId);
+
     const handleUploadFormChange = (docType: string, file: File | null) => {
         setUploadForm((prev) => ({ ...prev, [docType]: file }));
     };
-
-    const { mutate: uploadDocument, isPending } = useUploadDocument(orgId);
 
     const handleFileUpload = async (docType: string) => {
         const file = uploadForm[docType] as File | undefined;
         if (!file) {
             return;
         }
-
         setSelectedDocType(docType);
         uploadDocument(
             { file, docType },
             {
-                onSuccess: () => {
-                    setUploadForm((prev) => ({ ...prev, [docType]: null }));
-                },
+                onSuccess: () =>
+                    setUploadForm((prev) => ({ ...prev, [docType]: null })),
             },
         );
     };
@@ -150,12 +150,8 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
         setPreviewFileType('');
     };
 
-    const getUploadedDoc = (docType: string): DocumentData | null => {
-        return (
-            uploadedDocs.find((doc: DocumentData) => doc.docType === docType) ||
-            null
-        );
-    };
+    const getUploadedDoc = (docType: string): DocumentData | null =>
+        uploadedDocs.find((doc) => doc.docType === docType) || null;
 
     const formatFileSize = (bytes: number): string => {
         if (bytes === 0) {
@@ -164,13 +160,9 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
         const k = 1024;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
+        return `${(bytes / k ** i).toFixed(2)} ${sizes[i]}`;
     };
 
-    const completedDocs = uploadedDocs.length;
-    const totalDocs = REQUIRED_DOCUMENTS.length;
-
-    // Extracted button rendering to reduce complexity
     function renderUploadButton({
         isUploading,
         isUploaded,
@@ -184,12 +176,8 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
         handleFileUpload: (docCode: string) => void;
         docCode: string;
     }) {
-        let buttonLabel = 'Upload';
-        if (isUploading) {
-            buttonLabel = '...';
-        } else if (isUploaded) {
-            buttonLabel = 'Replace';
-        }
+        // biome-ignore lint/nursery/noNestedTernary: <explanation>
+        const label = isUploading ? '...' : isUploaded ? 'Replace' : 'Upload';
         return (
             <Button
                 size="xs"
@@ -205,7 +193,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
                 }
                 variant={isUploaded ? 'light' : 'filled'}
             >
-                {buttonLabel}
+                {label}
             </Button>
         );
     }
@@ -218,7 +206,6 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
 
         return (
             <Table.Tr key={doc.code}>
-                {/* Document Name & Status */}
                 <Table.Td>
                     <Group gap="xs">
                         <IconFileText size={16} />
@@ -232,19 +219,9 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
                                 variant="light"
                                 leftSection={
                                     isUploaded ? (
-                                        <IconCheck
-                                            style={{
-                                                width: rem(10),
-                                                height: rem(10),
-                                            }}
-                                        />
+                                        <IconCheck size={10} />
                                     ) : (
-                                        <IconAlertCircle
-                                            style={{
-                                                width: rem(10),
-                                                height: rem(10),
-                                            }}
-                                        />
+                                        <IconAlertCircle size={10} />
                                     )
                                 }
                             >
@@ -253,8 +230,6 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
                         </Box>
                     </Group>
                 </Table.Td>
-
-                {/* Current File */}
                 <Table.Td>
                     {isUploaded ? (
                         <Group gap="xs">
@@ -284,8 +259,6 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
                         </Text>
                     )}
                 </Table.Td>
-
-                {/* File Input */}
                 <Table.Td>
                     <FileInput
                         value={localFile}
@@ -315,14 +288,11 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
                         }
                     />
                 </Table.Td>
-
-                {/* Actions */}
                 <Table.Td>
                     <Group gap="xs">
                         {canUpdateProfile &&
                             renderUploadButton({
-                                isUploading:
-                                    selectedDocType === doc.code && isPending,
+                                isUploading,
                                 isUploaded,
                                 localFile,
                                 handleFileUpload,
@@ -335,22 +305,118 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
     });
 
     return (
-        <Stack gap="md" mt={'md'}>
+        <Stack gap="md" mt="md">
             <Paper withBorder>
-                <Table striped highlightOnHover>
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Th>Document Type</Table.Th>
-                            <Table.Th>Current File</Table.Th>
-                            <Table.Th>Select New File</Table.Th>
-                            <Table.Th>Action</Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>{rows}</Table.Tbody>
-                </Table>
+                {isMobile ? (
+                    <Stack gap="sm" p="sm">
+                        {REQUIRED_DOCUMENTS.map((doc) => {
+                            const uploadedDoc = getUploadedDoc(doc.code);
+                            const localFile = uploadForm[doc.code];
+                            const isUploaded = !!uploadedDoc;
+                            const isUploading =
+                                selectedDocType === doc.code && isPending;
+                            return (
+                                <Card
+                                    key={doc.code}
+                                    withBorder
+                                    shadow="sm"
+                                    radius="md"
+                                    p="md"
+                                >
+                                    <Group justify="space-between">
+                                        <Group gap="xs">
+                                            <IconFileText size={16} />
+                                            <Text fw={500}>{doc.label}</Text>
+                                        </Group>
+                                        <Badge
+                                            size="xs"
+                                            color={
+                                                isUploaded ? 'green' : 'orange'
+                                            }
+                                            variant="light"
+                                        >
+                                            {isUploaded
+                                                ? 'Uploaded'
+                                                : 'Required'}
+                                        </Badge>
+                                    </Group>
+                                    <Box mt="sm">
+                                        {isUploaded ? (
+                                            <Group gap="xs">
+                                                <Text
+                                                    size="xs"
+                                                    truncate
+                                                    maw={150}
+                                                >
+                                                    {uploadedDoc.fileName}
+                                                </Text>
+                                                <ActionIcon
+                                                    size="sm"
+                                                    variant="subtle"
+                                                    onClick={() =>
+                                                        handleFilePreview(
+                                                            uploadedDoc,
+                                                        )
+                                                    }
+                                                >
+                                                    <IconEye size={14} />
+                                                </ActionIcon>
+                                            </Group>
+                                        ) : (
+                                            <Text size="xs" c="dimmed">
+                                                No file uploaded
+                                            </Text>
+                                        )}
+                                    </Box>
+                                    <FileInput
+                                        mt="sm"
+                                        value={localFile}
+                                        onChange={(file) =>
+                                            handleUploadFormChange(
+                                                doc.code,
+                                                file,
+                                            )
+                                        }
+                                        placeholder={
+                                            canUpdateProfile
+                                                ? 'Choose file'
+                                                : 'Not allowed'
+                                        }
+                                        accept="application/pdf,image/*"
+                                        size="xs"
+                                        clearable={canUpdateProfile}
+                                        disabled={!canUpdateProfile}
+                                    />
+                                    {canUpdateProfile && (
+                                        <Box mt="sm">
+                                            {renderUploadButton({
+                                                isUploading,
+                                                isUploaded,
+                                                localFile,
+                                                handleFileUpload,
+                                                docCode: doc.code,
+                                            })}
+                                        </Box>
+                                    )}
+                                </Card>
+                            );
+                        })}
+                    </Stack>
+                ) : (
+                    <Table striped highlightOnHover>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>Document Type</Table.Th>
+                                <Table.Th>Current File</Table.Th>
+                                <Table.Th>Select New File</Table.Th>
+                                <Table.Th>Action</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>{rows}</Table.Tbody>
+                    </Table>
+                )}
             </Paper>
 
-            {/* Preview Modal */}
             <Modal
                 opened={previewModalOpen}
                 onClose={closePreview}
@@ -368,7 +434,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
                 <Box mih={400}>
                     {previewFileType?.startsWith('image/') && previewUrl && (
                         <Image
-                            src={previewUrl || '/placeholder.svg'}
+                            src={previewUrl}
                             alt="Document Preview"
                             radius="md"
                             fit="contain"

@@ -8,6 +8,7 @@ import {
     Button,
     Group,
     Image,
+    Indicator,
     type MantineTheme,
     Popover,
     ScrollArea,
@@ -44,6 +45,7 @@ interface MyTokenPayload {
 
 interface NotificationItem {
     id: string;
+    subject: string;
     content: string;
     createdAt: string;
     status: string;
@@ -174,6 +176,7 @@ export default function NotificationPopover() {
             content: item.content,
             createdAt: item.createdAt,
             status: item.status,
+            subject: item.subject,
         })) || [];
 
     const unreadCount = notifications.filter(
@@ -265,10 +268,9 @@ export default function NotificationPopover() {
                                         c={isRead ? 'dimmed' : 'dark'}
                                         truncate
                                     >
-                                        Notification
+                                        {notification.subject}
                                     </Text>
                                 </Group>
-
                                 <Text
                                     size="sm"
                                     c={isRead ? 'dimmed' : 'dark.4'}
@@ -347,20 +349,28 @@ export default function NotificationPopover() {
             offset={8}
         >
             <Popover.Target>
-                <ActionIcon
-                    onClick={toggle}
-                    variant={opened ? 'filled' : 'light'}
-                    size="lg"
-                    radius="md"
-                    aria-label="Notifications"
+                <Indicator
+                    disabled={unreadCount === 0}
+                    label={unreadCount > 99 ? '99+' : unreadCount}
+                    size={20}
+                    color="red"
+                    offset={7}
                 >
-                    <IconBell size={18} />
-                </ActionIcon>
+                    <ActionIcon
+                        onClick={toggle}
+                        variant={opened ? 'filled' : 'light'}
+                        size="lg"
+                        radius="md"
+                        aria-label="Notifications"
+                    >
+                        <IconBell size={18} />
+                    </ActionIcon>
+                </Indicator>
             </Popover.Target>
 
             <Popover.Dropdown p={0}>
                 {/* Header */}
-                <Box px="md" py="md" bg="dark" c="white">
+                <Box px="md" py="md" bg="primary" c="white">
                     <Group justify="space-between" align="center">
                         <Stack gap={2}>
                             <Text size="lg" fw={600}>

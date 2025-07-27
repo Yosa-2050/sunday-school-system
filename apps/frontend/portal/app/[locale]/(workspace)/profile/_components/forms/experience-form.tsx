@@ -119,7 +119,7 @@ export default function ExperienceForm({
                 title: data.title,
                 company: data.company,
                 startDate: data.startDate,
-                endDate: data.endDate || undefined,
+                endDate: data.endDate || null,
                 type: data.type,
                 countryId: data.countryId,
                 stateId: data.stateId,

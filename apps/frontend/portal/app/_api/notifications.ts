@@ -17,6 +17,7 @@ export const getNotificationById = async (q: string) => {
     return response as {
         data: NotificationResponse[];
         total: number;
+        count: number;
         totalPages: number;
     };
 };

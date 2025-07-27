@@ -114,7 +114,7 @@ export default function EducationForm({
             startDate: values.startDate.toISOString(),
             endDate: isCurrentlyStudying ? null : values.endDate?.toISOString(),
             grade: values.grade || undefined,
-            description: values.description || undefined,
+            description: values.description || '',
         };
 
         try {

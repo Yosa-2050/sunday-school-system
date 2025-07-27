@@ -40,7 +40,7 @@ export type Experience = {
     title: string;
     company: string;
     startDate: string;
-    endDate?: string;
+    endDate?: string | null;
     type: string;
     countryId: string;
     stateId: string;

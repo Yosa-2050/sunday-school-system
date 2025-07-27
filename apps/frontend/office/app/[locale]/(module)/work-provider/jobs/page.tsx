@@ -226,40 +226,82 @@ const JobsList = () => {
                     </Center>
                 ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 isMobile ? (
-                    <Stack>
+                    <Stack gap="md">
                         {jobs.map((job) => (
                             <Card
                                 key={job.id}
-                                shadow="sm"
+                                shadow="md"
                                 p="lg"
-                                radius="md"
+                                radius="lg"
                                 withBorder
+                                style={{
+                                    transition:
+                                        'transform 0.2s ease, box-shadow 0.2s ease',
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform =
+                                        'translateY(-3px)';
+                                    e.currentTarget.style.boxShadow =
+                                        '0 8px 20px rgba(0,0,0,0.08)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform =
+                                        'translateY(0)';
+                                    e.currentTarget.style.boxShadow =
+                                        'var(--mantine-shadow-md)';
+                                }}
                             >
-                                <Text fw={500}>{job.title}</Text>
-                                <Text size="sm" c="dimmed">
-                                    {parse(job.description)}
-                                </Text>
-                                <Text size="sm" c="dimmed">
-                                    {job.type}
-                                </Text>
-                                <Text size="sm">
-                                    Salary: ${job.salaryFrom.toLocaleString()} -
-                                    ${job.salaryTo.toLocaleString()}
-                                </Text>
-                                <Badge
-                                    color={
-                                        job.status === 'APPROVED'
-                                            ? 'green'
-                                            : 'yellow'
-                                    }
-                                >
-                                    {job.status}
-                                </Badge>
-                                <Text size="xs" c="dimmed">
-                                    Posted by:{' '}
-                                    {job.postedBy.employee.profile.firstName}{' '}
-                                    {job.postedBy.employee.profile.lastName}
-                                </Text>
+                                <Stack gap="xs">
+                                    <Text fw={700} size="lg" truncate>
+                                        {job.title}
+                                    </Text>
+
+                                    <Text size="sm" c="dimmed" lineClamp={3}>
+                                        {parse(job.description)}
+                                    </Text>
+
+                                    <Group
+                                        justify="space-between"
+                                        align="center"
+                                    >
+                                        <Badge
+                                            size="sm"
+                                            variant="light"
+                                            color={
+                                                job.status === 'APPROVED'
+                                                    ? 'green'
+                                                    : 'yellow'
+                                            }
+                                        >
+                                            {job.status}
+                                        </Badge>
+                                        <Text size="xs" c="dimmed">
+                                            {job.type}
+                                        </Text>
+                                    </Group>
+
+                                    <Text size="sm" fw={500}>
+                                        Salary: {(() => {
+                                            if (
+                                                job?.salaryFrom &&
+                                                job?.salaryTo
+                                            ) {
+                                                return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                            }
+                                            if (job?.salaryFrom) {
+                                                return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                            }
+                                            return 'N/A';
+                                        })()}
+                                    </Text>
+
+                                    <Text size="xs" c="dimmed">
+                                        Posted:{' '}
+                                        {new Date(
+                                            job.createdDate,
+                                        ).toDateString()}
+                                    </Text>
+                                </Stack>
                             </Card>
                         ))}
                     </Stack>

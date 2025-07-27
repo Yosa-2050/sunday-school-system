@@ -273,7 +273,7 @@ const useShortLIstMutation = (programId: string) => {
             await shortListedApplicants(programId, applicants),
         onSuccess: (data) => {
             queryClient.invalidateQueries({
-                queryKey: ['applicants', programId, 'PENDING'],
+                queryKey: ['applicants'],
             });
             queryClient.invalidateQueries({
                 queryKey: ['applicants', programId, 'SHORTLISTED'],

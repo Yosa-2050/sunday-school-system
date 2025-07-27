@@ -93,6 +93,7 @@ export const Applicants = ({
             )}
 
             <ApplicantsFilters
+                jobId={jobId}
                 filters={filters}
                 setFilters={setFilters}
                 showFilters={showFilters}

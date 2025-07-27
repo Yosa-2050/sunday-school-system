@@ -6,6 +6,7 @@ export interface NotificationResponse {
     content: string;
     createdAt: string;
     deliveryStatus: string;
+    subject: string;
 }
 
 export const getNotificationById = async (q: string) => {

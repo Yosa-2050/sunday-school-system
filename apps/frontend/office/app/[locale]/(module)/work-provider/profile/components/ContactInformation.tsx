@@ -2,17 +2,21 @@
 
 import {
     ActionIcon,
+    Badge,
     Box,
     Button,
+    Card,
     Divider,
     Group,
     Paper,
     ScrollArea,
+    Stack,
     Table,
     Text,
     Title,
 } from '@mantine/core';
-import { IconBuilding, IconEdit } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
+import { IconAt, IconBuilding, IconEdit, IconPhone } from '@tabler/icons-react';
 import { useState } from 'react';
 import { type ContactFormData, ContactFormDrawer } from './ContactFormDrawer';
 
@@ -45,6 +49,20 @@ export default function ContactSection({
     const [selectedWorker, setSelectedWorker] =
         useState<ContactFormData | null>(null);
 
+    const isMobile = useMediaQuery('(max-width: 768px)');
+
+    const openEditDrawer = (worker: Worker) => {
+        const profile = worker.employee.profile;
+        setSelectedWorker({
+            employeeOrgId: worker.id,
+            email: worker.email || '',
+            contactPersonName: `${profile.firstName} ${profile.middleName || ''} ${profile.lastName || ''}`,
+            contactPersonPhone: profile.phoneNumber || '',
+            contactPersonRole: worker.type,
+        });
+        setOpened(true);
+    };
+
     return (
         <>
             <ContactFormDrawer
@@ -57,11 +75,13 @@ export default function ContactSection({
 
             <Paper withBorder={false} p="md" mt="md" shadow="xs">
                 <Box py="md">
-                    <Group justify="space-between" align="center">
+                    <Group justify="space-between" align="center" wrap="wrap">
                         <Group gap="sm">
                             <IconBuilding size={24} stroke={1.5} />
                             <div>
-                                <Title order={3}>Contact Information</Title>
+                                <Title order={isMobile ? 4 : 3}>
+                                    Contact Information
+                                </Title>
                                 <Text size="sm" c="dimmed">
                                     Choose position and update primary contact
                                     info
@@ -73,10 +93,9 @@ export default function ContactSection({
                             <Button
                                 variant="light"
                                 leftSection={<IconEdit size={16} />}
-                                size="sm"
-                                onClick={() => {
-                                    setOpened(true);
-                                }}
+                                size={isMobile ? 'xs' : 'sm'}
+                                mt={isMobile ? 'sm' : 0}
+                                onClick={() => setOpened(true)}
                             >
                                 Add Employee
                             </Button>
@@ -91,80 +110,139 @@ export default function ContactSection({
                         Assigned Employees
                     </Title>
 
-                    <ScrollArea>
-                        <Table striped highlightOnHover withTableBorder>
-                            <Table.Thead>
-                                <Table.Tr>
-                                    <Table.Th>Position</Table.Th>
-                                    <Table.Th>Full Name</Table.Th>
-                                    <Table.Th>Phone</Table.Th>
-                                    <Table.Th>Email</Table.Th>
-                                    <Table.Th>Created By</Table.Th>
-                                    {canUpdateProfile && (
-                                        <Table.Th>Actions</Table.Th>
-                                    )}
-                                </Table.Tr>
-                            </Table.Thead>
-                            <Table.Tbody>
-                                {workers.map((worker) => {
-                                    const profile = worker.employee.profile;
-                                    const fullName = [
-                                        profile.firstName,
-                                        profile.middleName,
-                                        profile.lastName,
-                                    ]
-                                        .filter(Boolean)
-                                        .join(' ');
-                                    return (
-                                        <Table.Tr
-                                            key={worker.id}
-                                            className="group "
-                                        >
-                                            <Table.Td>{worker.type}</Table.Td>
-                                            <Table.Td>{fullName}</Table.Td>
-                                            <Table.Td>
-                                                {profile.phoneNumber || '—'}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                {worker.email || '—'}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                {worker.createdBy}
-                                            </Table.Td>
+                    {isMobile ? (
+                        <Stack>
+                            {workers.map((worker) => {
+                                const profile = worker.employee.profile;
+                                const fullName = [
+                                    profile.firstName,
+                                    profile.middleName,
+                                    profile.lastName,
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ');
+
+                                return (
+                                    <Card
+                                        key={worker.id}
+                                        shadow="sm"
+                                        p="md"
+                                        radius="lg"
+                                        withBorder
+                                        style={{
+                                            background:
+                                                'linear-gradient(135deg, #f9fafb 0%, #f1f5f9 100%)',
+                                        }}
+                                    >
+                                        <Group justify="space-between" mb="xs">
+                                            <Badge
+                                                variant="filled"
+                                                color="blue"
+                                                size="sm"
+                                            >
+                                                {worker.type}
+                                            </Badge>
                                             {canUpdateProfile && (
-                                                <Table.Td>
-                                                    {' '}
-                                                    <ActionIcon
-                                                        onClick={() => {
-                                                            setOpened(true);
-                                                            setSelectedWorker({
-                                                                employeeOrgId:
-                                                                    worker.id,
-                                                                email:
-                                                                    worker.email ||
-                                                                    '',
-                                                                contactPersonName: `${profile.firstName} ${profile.middleName} ${profile.lastName}`,
-                                                                contactPersonPhone:
-                                                                    profile.phoneNumber ||
-                                                                    '',
-                                                                contactPersonRole:
-                                                                    worker.type,
-                                                            });
-                                                        }}
-                                                        size="sm"
-                                                        radius="sm"
-                                                        className=""
-                                                    >
-                                                        <IconEdit size={16} />
-                                                    </ActionIcon>
-                                                </Table.Td>
+                                                <ActionIcon
+                                                    size="md"
+                                                    variant="subtle"
+                                                    onClick={() =>
+                                                        openEditDrawer(worker)
+                                                    }
+                                                >
+                                                    <IconEdit size={18} />
+                                                </ActionIcon>
                                             )}
-                                        </Table.Tr>
-                                    );
-                                })}
-                            </Table.Tbody>
-                        </Table>
-                    </ScrollArea>
+                                        </Group>
+
+                                        <Text fw={600} size="md">
+                                            {fullName}
+                                        </Text>
+
+                                        <Group gap="xs" mt="xs" align="center">
+                                            <IconPhone size={14} />
+                                            <Text size="sm">
+                                                {profile.phoneNumber || '—'}
+                                            </Text>
+                                        </Group>
+
+                                        <Group gap="xs" align="center">
+                                            <IconAt size={14} />
+                                            <Text size="sm">
+                                                {worker.email || '—'}
+                                            </Text>
+                                        </Group>
+
+                                        <Text size="xs" c="dimmed" mt="xs">
+                                            Created by: {worker.createdBy}
+                                        </Text>
+                                    </Card>
+                                );
+                            })}
+                        </Stack>
+                    ) : (
+                        <ScrollArea>
+                            <Table striped highlightOnHover withTableBorder>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th>Position</Table.Th>
+                                        <Table.Th>Full Name</Table.Th>
+                                        <Table.Th>Phone</Table.Th>
+                                        <Table.Th>Email</Table.Th>
+                                        <Table.Th>Created By</Table.Th>
+                                        {canUpdateProfile && (
+                                            <Table.Th>Actions</Table.Th>
+                                        )}
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {workers.map((worker) => {
+                                        const profile = worker.employee.profile;
+                                        const fullName = [
+                                            profile.firstName,
+                                            profile.middleName,
+                                            profile.lastName,
+                                        ]
+                                            .filter(Boolean)
+                                            .join(' ');
+                                        return (
+                                            <Table.Tr key={worker.id}>
+                                                <Table.Td>
+                                                    {worker.type}
+                                                </Table.Td>
+                                                <Table.Td>{fullName}</Table.Td>
+                                                <Table.Td>
+                                                    {profile.phoneNumber || '—'}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    {worker.email || '—'}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    {worker.createdBy}
+                                                </Table.Td>
+                                                {canUpdateProfile && (
+                                                    <Table.Td>
+                                                        <ActionIcon
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                openEditDrawer(
+                                                                    worker,
+                                                                )
+                                                            }
+                                                        >
+                                                            <IconEdit
+                                                                size={16}
+                                                            />
+                                                        </ActionIcon>
+                                                    </Table.Td>
+                                                )}
+                                            </Table.Tr>
+                                        );
+                                    })}
+                                </Table.Tbody>
+                            </Table>
+                        </ScrollArea>
+                    )}
                 </Box>
             </Paper>
         </>

@@ -28,7 +28,6 @@ import {
     IconCalendar,
     IconCheck,
     IconClock,
-    IconGitBranch,
     IconMail,
     IconMapPin,
     IconPhone,
@@ -38,7 +37,10 @@ import {
     IconX,
 } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getAddressById } from 'app/[locale]/_api/organizations/get-addresses';
+import {
+    getAddressById,
+    getCountryById,
+} from 'app/[locale]/_api/organizations/get-addresses';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -147,7 +149,7 @@ interface Organization {
         subGroup: string;
     } | null;
     contacts: Contact[];
-    locations: Location[];
+    locations: Location;
     notes: Note[];
     __employee__: OrganizationEmployee[];
     __has_employee__: boolean;
@@ -372,12 +374,12 @@ const OrganizationApproval = () => {
             return acc;
         }, [] as Contact[]) ?? [];
 
-    const countryId = organizationData?.locations?.[0]?.locationData?.country;
-    const regionId = organizationData?.locations?.[0]?.locationData?.region;
-    const cityId = organizationData?.locations?.[0]?.locationData?.city;
+    const countryId = organizationData?.locations?.locationData?.country;
+    const regionId = organizationData?.locations?.locationData?.region;
+    const cityId = organizationData?.locations?.locationData?.city;
 
     const country = useQuery({
-        queryFn: () => getAddressById(countryId ?? ''),
+        queryFn: () => getCountryById(countryId ?? ''),
         queryKey: ['country', countryId],
     });
 
@@ -495,15 +497,6 @@ const OrganizationApproval = () => {
                             <Text size="sm">
                                 <strong>Submitted:</strong>{' '}
                                 {formatDate(organizationData.createdAt)}
-                            </Text>
-                        </Group>
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 6 }}>
-                        <Group gap="xs">
-                            <IconGitBranch size={16} />
-                            <Text size="sm">
-                                <strong>Has Branches:</strong>{' '}
-                                {organizationData.hasBranches ? 'Yes' : 'No'}
                             </Text>
                         </Group>
                     </Grid.Col>
@@ -685,64 +678,67 @@ const OrganizationApproval = () => {
                         <Title order={4} mb="md">
                             Location Information
                         </Title>
-                        {organizationData.locations.length > 0 ? (
+                        {organizationData?.locations ? (
                             <Stack gap="sm">
-                                {organizationData.locations.map((location) => (
-                                    <Paper
-                                        key={location.id}
-                                        p="sm"
-                                        withBorder
-                                        radius="sm"
-                                    >
-                                        <Group gap="xs" mb="xs">
-                                            <ThemeIcon
-                                                size="sm"
-                                                variant="light"
-                                                radius="xl"
-                                            >
-                                                <IconMapPin size={14} />
-                                            </ThemeIcon>
-                                            <Badge
-                                                color={
-                                                    location.isPreferred
-                                                        ? 'green'
-                                                        : 'gray'
-                                                }
-                                                variant="light"
-                                                size="xs"
-                                            >
-                                                {location.isPreferred
-                                                    ? 'Primary'
-                                                    : 'Secondary'}
-                                            </Badge>
-                                        </Group>
-                                        <Stack gap="xs">
-                                            <Text size="sm">
-                                                <strong>Country:</strong>
-                                                {country.data?.name || ''}
-                                            </Text>
-                                            <Text size="sm">
-                                                <strong>Region:</strong>
-                                                {state.data?.name || ''}
-                                            </Text>
-                                            <Text size="sm">
-                                                <strong>City:</strong>
-                                                {city.data?.name || ''}
-                                            </Text>
-                                            <Text size="sm">
-                                                <strong>Subcity:</strong>
-                                                {location.locationData
-                                                    .subcity ||
-                                                    location.locationData
-                                                        .subCity}
-                                            </Text>
-                                            <Text size="sm">
-                                                <strong>Woreda:</strong>
-                                                {location.locationData.woreda}
-                                            </Text>
-                                        </Stack>
-                                    </Paper>
-                                ))}
+                                <Paper
+                                    key={organizationData?.locations?.id}
+                                    p="sm"
+                                    withBorder
+                                    radius="sm"
+                                >
+                                    <Group gap="xs" mb="xs">
+                                        <ThemeIcon
+                                            size="sm"
+                                            variant="light"
+                                            radius="xl"
+                                        >
+                                            <IconMapPin size={14} />
+                                        </ThemeIcon>
+                                        <Badge
+                                            color={
+                                                organizationData?.locations
+                                                    ?.isPreferred
+                                                    ? 'green'
+                                                    : 'gray'
+                                            }
+                                            variant="light"
+                                            size="xs"
+                                        >
+                                            {organizationData?.locations
+                                                ?.isPreferred
+                                                ? 'Primary'
+                                                : 'Secondary'}
+                                        </Badge>
+                                    </Group>
+                                    <Stack gap="xs">
+                                        <Text size="sm">
+                                            <strong>Country:</strong>
+                                            {country.data?.name || ''}
+                                        </Text>
+                                        <Text size="sm">
+                                            <strong>Region:</strong>
+                                            {state.data?.name || ''}
+                                        </Text>
+                                        <Text size="sm">
+                                            <strong>City:</strong>
+                                            {city.data?.name || ''}
+                                        </Text>
+                                        <Text size="sm">
+                                            <strong>Subcity:</strong>
+                                            {organizationData?.locations
+                                                ?.locationData.subcity ||
+                                                organizationData?.locations
+                                                    ?.locationData.subCity}
+                                        </Text>
+                                        <Text size="sm">
+                                            <strong>Woreda:</strong>
+                                            {
+                                                organizationData?.locations
+                                                    ?.locationData.woreda
+                                            }
+                                        </Text>
+                                    </Stack>
+                                </Paper>
                             </Stack>
                         ) : (
                             <Text size="sm" c="dimmed" ta="center" py="md">
@@ -842,26 +838,6 @@ const OrganizationApproval = () => {
                     </Paper>
                 </Grid.Col>
             </Grid>
-
-            <Paper shadow="sm" p="lg" radius="md" withBorder>
-                <Title order={4} mb="md">
-                    Additional Information
-                </Title>
-                <Grid>
-                    <Grid.Col span={{ base: 12, md: 6 }}>
-                        <Text size="sm">
-                            <strong>Submitted By:</strong>{' '}
-                            {organizationData.createdBy}
-                        </Text>
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 6 }}>
-                        <Text size="sm">
-                            <strong>Submission Date:</strong>{' '}
-                            {formatDate(organizationData.createdAt)}
-                        </Text>
-                    </Grid.Col>
-                </Grid>
-            </Paper>
 
             {organizationData.status === 'WAITINGAPPROVAL' && (
                 <Paper shadow="md" p="lg" radius="md" withBorder>

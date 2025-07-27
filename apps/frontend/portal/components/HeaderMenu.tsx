@@ -12,7 +12,7 @@ import {
     useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { COOKIE_ACCESS_TOKEN } from '@shega/shared';
+import { COOKIE_ACCESS_TOKEN, entityParamSerializer } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import {
     IconBookmark,
@@ -22,6 +22,8 @@ import {
     IconMessage,
     IconUser,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { getNotificationById } from 'app/_api/notifications';
 import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -79,6 +81,17 @@ export function HeaderMenu() {
         return pathname === item.href;
     };
 
+    const { data, isLoading } = useQuery({
+        queryKey: ['notifications'],
+        queryFn: () =>
+            getNotificationById(
+                entityParamSerializer({
+                    p: 1,
+                    pp: 10,
+                }),
+            ),
+    });
+
     const filteredMenuItems = menuItems.filter(
         (item) => !item.requiresAuth || isAuthenticated,
     );
@@ -126,8 +139,7 @@ export function HeaderMenu() {
                     ) : (
                         <Link
                             key={item.label}
-                            // biome-ignore lint/style/noNonNullAssertion: <explanation>
-                            href={item.href!}
+                            href={item.href ?? '#'}
                             className={`px-3 py-2 transition-colors duration-200 ${
                                 isActive(item)
                                     ? 'border-b-2 border-[var(--primary-color-5)] font-medium'
@@ -135,7 +147,17 @@ export function HeaderMenu() {
                             }`}
                         >
                             <Group gap="xs">
-                                {item.icon}
+                                <div className="relative">
+                                    {item.icon}
+                                    {data?.count &&
+                                        item.matchPattern ===
+                                            '/notifications' &&
+                                        data.count > 0 && (
+                                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full px-1 leading-none">
+                                                {data.count}
+                                            </span>
+                                        )}
+                                </div>
                                 <Text size="sm">{item.label}</Text>
                             </Group>
                         </Link>
