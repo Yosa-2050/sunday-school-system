@@ -104,7 +104,7 @@ export default function ExperienceSection({
 
     const formatDuration = (
         startDate: string,
-        endDate?: string,
+        endDate?: string | null,
         currentlyWorking?: boolean,
         // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
     ): string => {
