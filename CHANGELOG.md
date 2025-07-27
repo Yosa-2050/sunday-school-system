@@ -1,3 +1,10 @@
+## [1.9.5](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.4...v1.9.5) (2025-07-27)
+
+
+### Bug Fixes
+
+* **shega:** collection of fixes and add userprofile to mobiles ([2911191](https://gitlab.heranitech.com/meklit/shega-jobs/commit/291119171ea6aa6b0b26e73508fea04a5dcbc584))
+
 ## [1.9.4](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.3...v1.9.4) (2025-07-25)
 
 
