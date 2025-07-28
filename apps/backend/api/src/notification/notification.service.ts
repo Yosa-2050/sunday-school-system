@@ -7,11 +7,12 @@ import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { QueryBuilderService } from 'shared/query-builder.service';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { Notification } from './entities/notification.entity';
 import { NotificationTemplate } from './entities/notificationTemplate.entity';
+import { MarkReadUnread } from './enums/mark-read-unread.enum';
 import { NotificationChannel } from './enums/notification-channel.enum';
 import { NotificationStatus } from './enums/notification-status.enum';
 import {
@@ -145,7 +146,7 @@ export class NotificationService {
 
         let statusToUpdate = null;
 
-        if (action === 'MARK_AS_READ') {
+        if (action === MarkReadUnread.MARK_AS_READ) {
             statusToUpdate = NotificationStatus.Read;
         } else {
             statusToUpdate = NotificationStatus.Pending;
@@ -206,5 +207,44 @@ export class NotificationService {
                 ? valuesToReplace[key]
                 : match;
         });
+    }
+
+    async markMultipleAsReadUnread(
+        referenceId: string,
+        list: string[],
+        status: MarkReadUnread,
+    ) {
+        const updatedNotification = await this.notificationRepo.update(
+            { reference: referenceId, id: In(list) },
+            {
+                status:
+                    status === MarkReadUnread.MARK_AS_READ
+                        ? NotificationStatus.Read
+                        : NotificationStatus.Pending,
+            },
+        );
+
+        const result = UtilityServices.EnsureUpdated(
+            updatedNotification,
+            referenceId,
+        );
+        return result;
+    }
+    async markAllAsReadUnread(referenceId: string, status: MarkReadUnread) {
+        const updatedNotification = await this.notificationRepo.update(
+            { reference: referenceId },
+            {
+                status:
+                    status === MarkReadUnread.MARK_AS_READ
+                        ? NotificationStatus.Read
+                        : NotificationStatus.Pending,
+            },
+        );
+
+        const result = UtilityServices.EnsureUpdated(
+            updatedNotification,
+            referenceId,
+        );
+        return result;
     }
 }

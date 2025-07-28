@@ -9,9 +9,12 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateNotificationDto } from './dto/create-notification.dto';
+import { MarkReadUnread } from './enums/mark-read-unread.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from './notification.service';
 
@@ -45,7 +48,7 @@ export class NotificationController {
     markNotificationAsRead(@Param('notificationId') notificationId: string) {
         return this.notificationService.markNotificationAsReadOrUnRead(
             notificationId,
-            'MARK_AS_READ',
+            MarkReadUnread.MARK_AS_READ,
         );
     }
 
@@ -53,7 +56,31 @@ export class NotificationController {
     markNotificationAsUnRead(@Param('notificationId') notificationId: string) {
         return this.notificationService.markNotificationAsReadOrUnRead(
             notificationId,
-            'MARK_AS_UNREAD',
+            MarkReadUnread.MARK_AS_UNREAD,
+        );
+    }
+
+    @Patch('markAllAsReadUnread/:status')
+    markAllNotificationAsRead(
+        @Request() req,
+        @Param('status') status: MarkReadUnread,
+    ) {
+        return this.notificationService.markAllAsReadUnread(
+            CurrentUser.getUserId(req),
+            status,
+        );
+    }
+
+    @Patch('markMultipleAsReadUnread/:status')
+    markMultipleNotificationAsRead(
+        @Request() req,
+        @Body() list: ListStringRequestModel,
+        @Param('status') status: MarkReadUnread,
+    ) {
+        return this.notificationService.markMultipleAsReadUnread(
+            CurrentUser.getUserId(req),
+            list.list,
+            status,
         );
     }
 }

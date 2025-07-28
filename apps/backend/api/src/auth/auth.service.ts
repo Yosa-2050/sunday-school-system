@@ -11,6 +11,7 @@ import { JobsService } from '@shega/job_portal/jobs.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { MentorshipService } from '@shega/job_portal/mentorship.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -149,6 +150,8 @@ export class AuthService {
                 to: user.email,
                 subject: forgotPwdEmailTemplate.subject,
                 reference: user.id,
+                type: NotificationType.User,
+                metaData: null,
             });
             return {
                 success: 'true',

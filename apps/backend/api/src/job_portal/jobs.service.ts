@@ -13,6 +13,7 @@ import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
@@ -126,7 +127,7 @@ export class JobsService {
                     ? 'Job'
                     : 'Mentorship program';
 
-            subjectParagraph = 'New Applicant for Your Job Post!';
+            subjectParagraph = `New Applicant for Your ${programType} Post!`;
             contentParagraph = `A new candidate has applied for your ${program.title} position. Review their application and decide your next steps.`;
 
             const job = await this.jobRepo.findOneBy({
@@ -137,6 +138,10 @@ export class JobsService {
                 job.postedBy.employee.profile.id,
             );
 
+            const metaData = {
+                applicantId: applicant.id,
+            };
+
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
                 subject: getInAppHtmlTemplate(subjectParagraph),
@@ -145,6 +150,8 @@ export class JobsService {
                 reference: jobPostedUser.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
+                type: NotificationType.Applicant,
+                metaData,
             });
         }
         return UtilityServices.SuccessIdResponse();

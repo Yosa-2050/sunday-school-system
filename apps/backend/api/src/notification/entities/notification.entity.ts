@@ -4,6 +4,8 @@ import { DeliveryStatus } from '../enums/delivery-status.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationChannel } from '../enums/notification-channel.enum';
 import { NotificationStatus } from '../enums/notification-status.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationType } from '../enums/notification-type.enum';
 
 @Entity()
 export class Notification extends BaseModel {
@@ -36,4 +38,10 @@ export class Notification extends BaseModel {
 
     @Column({ nullable: true })
     deliveryResponse: string;
+
+    @Column({ nullable: true })
+    type: NotificationType;
+
+    @Column({ type: 'json', nullable: true })
+    metaData: Record<string, string>;
 }

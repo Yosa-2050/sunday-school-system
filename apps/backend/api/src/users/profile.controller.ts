@@ -21,6 +21,7 @@ import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { PasswordService } from '@shega/Utilities/password.service';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -108,6 +109,8 @@ export class ProfileController {
                 to: dto.email,
                 subject: signupEmailTemplate.subject,
                 reference: user.id,
+                type: NotificationType.User,
+                metaData: null,
             });
             return user;
         }
