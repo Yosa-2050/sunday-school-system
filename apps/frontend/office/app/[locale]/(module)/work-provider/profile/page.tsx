@@ -84,7 +84,9 @@ function HeaderSection({
     const resetRef = useRef<() => void>(null);
 
     const { mutate: uploadProfilePicture } = useUploadProfilePicture();
-    const { data: profilePicture } = useDownloadProfilePicture('');
+    const { data: profilePicture } = useDownloadProfilePicture(
+        formData?.logo ?? '',
+    );
 
     const handleFileSelect = async (file: File | null) => {
         if (!file) {

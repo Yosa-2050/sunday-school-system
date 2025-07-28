@@ -73,8 +73,9 @@ const MentorshipDetails = () => {
             });
             router.push('/admin/programs');
             notifications.show({
-                title: 'Job Approved',
-                message: 'The job has been successfully approved',
+                title: 'Mentorship Program Approved',
+                message:
+                    'The Mentorship program has been successfully approved',
                 color: 'green',
             });
         },

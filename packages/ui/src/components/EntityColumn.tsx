@@ -46,24 +46,29 @@ export function EntityColumn({
 
     return (
         <Flex
-            align={'center'}
-            justify={'space-between'}
+            align="center"
+            justify="space-between"
             className={cn('cursor-pointer', className)}
             onClick={handleSortChange}
         >
-            <Text>{label}</Text>
-            {currentSortDirection &&
-                (currentSortDirection === 'asc' ? (
-                    <IconSortAscending
-                        size={18}
-                        className="text-primary bg-primary-2"
-                    />
-                ) : (
-                    <IconSortDescending
-                        size={18}
-                        className="text-primary bg-primary-2"
-                    />
-                ))}
+            <Text fw="bold" size="sm">
+                {label}
+            </Text>
+            {currentSortDirection === 'asc' ? (
+                <IconSortAscending
+                    size={18}
+                    className="text-primary bg-primary-2"
+                />
+                // biome-ignore lint/nursery/noNestedTernary: <explanation>
+            ) : currentSortDirection === 'desc' ? (
+                <IconSortDescending
+                    size={18}
+                    className="text-primary bg-primary-2"
+                />
+            ) : (
+                // Default icon when no sort is applied
+                <IconSortAscending size={18} className="text-gray-400" />
+            )}
         </Flex>
     );
 }

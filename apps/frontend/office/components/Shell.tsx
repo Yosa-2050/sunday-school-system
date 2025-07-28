@@ -24,27 +24,10 @@ export default function Shell({ children }: Readonly<ShellProps>): ReactNode {
     const pathname = usePathname();
 
     useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth <= 1024) {
-                close();
-                toggleSidebar(false);
-            }
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, [close, toggleSidebar]);
-
-    useEffect(() => {
         if (pathname) {
             close();
-            if (window.innerWidth <= 1024) {
-                toggleSidebar(false);
-            }
         }
-    }, [pathname, close, toggleSidebar]);
+    }, [pathname, close]);
 
     const handleMenuClick = () => {
         if (window.innerWidth <= 1024) {
@@ -62,7 +45,7 @@ export default function Shell({ children }: Readonly<ShellProps>): ReactNode {
                         schema === 'light'
                             ? 'bg-white border-gray-200'
                             : ' border-[var(--mantine-color-dark-4)]',
-                        'flex-col border-r  hidden lg:flex !h-full',
+                        'flex-col border-r hidden lg:flex  !h-full',
                         isSidebarOpen ? 'w-[265px]' : 'w-[60px] hidden',
                     )}
                 >

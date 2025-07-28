@@ -261,24 +261,28 @@ export default function NotificationPopover() {
 
                             <Stack gap="xs" style={{ flex: 1, minWidth: 0 }}>
                                 <Group gap="xs" wrap="nowrap">
-                                    {mapStatusToIcon(notification.status)}
                                     <Text
                                         size="sm"
                                         fw={isRead ? 500 : 600}
                                         c={isRead ? 'dimmed' : 'dark'}
                                         truncate
-                                    >
-                                        {notification.subject}
-                                    </Text>
+                                        mb={-8}
+                                        // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                                        dangerouslySetInnerHTML={{
+                                            __html: notification.subject,
+                                        }}
+                                    />
                                 </Group>
                                 <Text
                                     size="sm"
                                     c={isRead ? 'dimmed' : 'dark.4'}
                                     lineClamp={2}
                                     lh={1.4}
-                                >
-                                    {notification.content}
-                                </Text>
+                                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                                    dangerouslySetInnerHTML={{
+                                        __html: notification.content,
+                                    }}
+                                />
 
                                 <Group justify="space-between" align="center">
                                     <Group gap="xs">

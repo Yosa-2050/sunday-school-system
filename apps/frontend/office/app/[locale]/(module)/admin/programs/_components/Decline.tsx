@@ -44,10 +44,11 @@ function DeclineModal({ close, programId }: DeclineModalProps) {
             },
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['job', jobId] });
-                router.push('admin/programs');
+                router.push('/admin/programs');
                 notifications.show({
-                    title: 'Job Declined',
-                    message: 'The job has been successfully declined',
+                    title: 'Mentorship Program Declined',
+                    message:
+                        'The mentorship program has been successfully declined',
                     color: 'green',
                 });
             },
