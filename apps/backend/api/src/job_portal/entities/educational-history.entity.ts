@@ -31,6 +31,6 @@ export class EducationHistory extends BaseModel {
     @Column('decimal', { precision: 10, scale: 2, nullable: true })
     grade: number;
 
-    @Column()
+    @Column({ nullable: true })
     description: string;
 }

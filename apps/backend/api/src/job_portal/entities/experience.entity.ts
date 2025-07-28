@@ -54,4 +54,7 @@ export class Experiance extends BaseModel {
 
     @Column({ nullable: true })
     workPlace: WorkPlaceType;
+
+    @Column({ nullable: true })
+    description: string;
 }
