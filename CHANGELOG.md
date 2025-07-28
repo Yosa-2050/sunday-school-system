@@ -1,3 +1,10 @@
+## [1.9.7](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.6...v1.9.7) (2025-07-28)
+
+
+### Bug Fixes
+
+* **shega:** fix on the admin page ([60724ea](https://gitlab.heranitech.com/meklit/shega-jobs/commit/60724ea0cde1ead0df8f0478b29d2cb398b18200))
+
 ## [1.9.6](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.5...v1.9.6) (2025-07-27)
 
 
