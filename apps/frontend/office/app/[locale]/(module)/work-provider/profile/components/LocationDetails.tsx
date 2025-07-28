@@ -6,6 +6,7 @@ import {
     Button,
     Card,
     Divider,
+    Flex,
     Group,
     Paper,
     Select,
@@ -14,7 +15,6 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 import { IconEdit } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -57,7 +57,6 @@ export const LocationSection = ({
     const queryClient = useQueryClient();
     const [isEditingLocation, setIsEditingLocation] = useState(false);
     const id = getCookie('organization_id')?.toString();
-    const isMobile = useMediaQuery('(max-width: 768px)');
 
     const initialValues = defaultLocation?.locationData ?? {};
 
@@ -187,15 +186,15 @@ export const LocationSection = ({
     return (
         <Paper p="md" mt="xl">
             <Group justify="space-between" align="center" mb="xs" wrap="wrap">
-                <Title order={isMobile ? 5 : 6}>Location Details</Title>
+                <Title order={4}>Location Details</Title>
 
                 {canUpdateProfile && (
-                    <Group gap="xs" mt={isMobile ? 'sm' : 0}>
+                    <Group gap="xs" mt={{ base: 'sm', sm: 0 }}>
                         {isEditingLocation ? (
                             <>
                                 <Button
                                     variant="outline"
-                                    size={isMobile ? 'xs' : 'sm'}
+                                    size="xs"
                                     onClick={() => {
                                         reset(initialValues);
                                         setIsEditingLocation(false);
@@ -204,7 +203,7 @@ export const LocationSection = ({
                                     Cancel
                                 </Button>
                                 <Button
-                                    size={isMobile ? 'xs' : 'sm'}
+                                    size="xs"
                                     loading={mutation.isPending}
                                     onClick={handleSubmit(onSubmit)}
                                 >
@@ -214,7 +213,7 @@ export const LocationSection = ({
                         ) : (
                             <Button
                                 variant="light"
-                                size={isMobile ? 'xs' : 'sm'}
+                                size="xs"
                                 leftSection={<IconEdit size={16} />}
                                 onClick={() => setIsEditingLocation(true)}
                             >
@@ -228,67 +227,148 @@ export const LocationSection = ({
             <Divider mb="md" />
 
             {isEditingLocation ? (
-                <Stack gap="md">
-                    {fields.map(({ name, label, options = [], isSelect }) => (
-                        <Box key={name} w="100%">
-                            <Text size="xs" c="dimmed" mb={4}>
-                                {label}
-                            </Text>
-                            <Controller
-                                name={name as keyof LocationFormData}
-                                control={control}
-                                render={({ field }) =>
-                                    isSelect ? (
-                                        <Select
-                                            {...field}
-                                            data={options.map((o) => ({
-                                                value: o.id,
-                                                label: o.name,
-                                            }))}
-                                            placeholder={`Select ${label.toLowerCase()}`}
-                                            onChange={(val) =>
-                                                field.onChange(val)
-                                            }
-                                            value={field.value || null}
-                                            error={
-                                                errors?.[
-                                                    name as keyof LocationFormData
-                                                ]?.message
-                                            }
-                                            clearable
-                                            searchable
-                                            size={isMobile ? 'xs' : 'sm'}
-                                        />
-                                    ) : (
-                                        <TextInput
-                                            {...field}
-                                            placeholder={`Enter ${label.toLowerCase()}`}
-                                            error={
-                                                errors?.[
-                                                    name as keyof LocationFormData
-                                                ]?.message
-                                            }
-                                            size={isMobile ? 'xs' : 'sm'}
-                                        />
-                                    )
-                                }
-                            />
-                        </Box>
-                    ))}
-                </Stack>
+                <>
+                    {/* Mobile layout: stacked */}
+                    <Stack gap="md" hiddenFrom="md">
+                        {fields.map(
+                            ({ name, label, options = [], isSelect }) => (
+                                <Box key={name} w="100%">
+                                    <Text size="xs" c="dimmed" mb={4}>
+                                        {label}
+                                    </Text>
+                                    <Controller
+                                        name={name as keyof LocationFormData}
+                                        control={control}
+                                        render={({ field }) =>
+                                            isSelect ? (
+                                                <Select
+                                                    {...field}
+                                                    data={options.map((o) => ({
+                                                        value: o.id,
+                                                        label: o.name,
+                                                    }))}
+                                                    placeholder={`Select ${label.toLowerCase()}`}
+                                                    onChange={(val) =>
+                                                        field.onChange(val)
+                                                    }
+                                                    value={field.value || null}
+                                                    error={
+                                                        errors?.[
+                                                            name as keyof LocationFormData
+                                                        ]?.message
+                                                    }
+                                                    clearable
+                                                    searchable
+                                                    size="sm"
+                                                />
+                                            ) : (
+                                                <TextInput
+                                                    {...field}
+                                                    placeholder={`Enter ${label.toLowerCase()}`}
+                                                    error={
+                                                        errors?.[
+                                                            name as keyof LocationFormData
+                                                        ]?.message
+                                                    }
+                                                    size="sm"
+                                                />
+                                            )
+                                        }
+                                    />
+                                </Box>
+                            ),
+                        )}
+                    </Stack>
+
+                    {/* Desktop layout: horizontal with wrapping */}
+                    <Flex gap="md" wrap="wrap" visibleFrom="md">
+                        {fields.map(
+                            ({ name, label, options = [], isSelect }) => (
+                                <Box key={name} w="30%">
+                                    <Text size="xs" c="dimmed" mb={4}>
+                                        {label}
+                                    </Text>
+                                    <Controller
+                                        name={name as keyof LocationFormData}
+                                        control={control}
+                                        render={({ field }) =>
+                                            isSelect ? (
+                                                <Select
+                                                    {...field}
+                                                    data={options.map((o) => ({
+                                                        value: o.id,
+                                                        label: o.name,
+                                                    }))}
+                                                    placeholder={`Select ${label.toLowerCase()}`}
+                                                    onChange={(val) =>
+                                                        field.onChange(val)
+                                                    }
+                                                    value={field.value || null}
+                                                    error={
+                                                        errors?.[
+                                                            name as keyof LocationFormData
+                                                        ]?.message
+                                                    }
+                                                    clearable
+                                                    searchable
+                                                    size="sm"
+                                                />
+                                            ) : (
+                                                <TextInput
+                                                    {...field}
+                                                    placeholder={`Enter ${label.toLowerCase()}`}
+                                                    error={
+                                                        errors?.[
+                                                            name as keyof LocationFormData
+                                                        ]?.message
+                                                    }
+                                                    size="sm"
+                                                />
+                                            )
+                                        }
+                                    />
+                                </Box>
+                            ),
+                        )}
+                    </Flex>
+                </>
             ) : (
-                <Stack gap="sm">
-                    {fields.map(({ name, label, displayValue }) => (
-                        <Card key={name} withBorder padding="sm" radius="md">
-                            <Text size="xs" c="dimmed">
-                                {label}
-                            </Text>
-                            <Text fw={500} size="sm">
-                                {displayValue || '-'}
-                            </Text>
-                        </Card>
-                    ))}
-                </Stack>
+                <>
+                    {/* Mobile layout: label above card, stacked */}
+                    <Stack gap="sm" hiddenFrom="sm">
+                        {fields.map(({ name, label, displayValue }) => (
+                            <Box key={name}>
+                                <Text size="xs" c="dimmed" mb={4}>
+                                    {label}
+                                </Text>
+                                <Card withBorder padding="sm" radius="md">
+                                    <Text fw={500} size="sm">
+                                        {displayValue || '-'}
+                                    </Text>
+                                </Card>
+                            </Box>
+                        ))}
+                    </Stack>
+
+                    {/* Desktop layout: label above card, in columns */}
+                    <Group gap="md" wrap="wrap" visibleFrom="sm">
+                        {fields.map(({ name, label, displayValue }) => (
+                            <Box
+                                key={name}
+                                style={{ flex: '1 1 30%', minWidth: 200 }}
+                            >
+                                <Text size="xs" c="dimmed" mb={4}>
+                                    {label}
+                                </Text>
+                                <Card withBorder padding="sm" radius="md">
+                                    <Text fw={500} size="sm">
+                                        {displayValue || '-'}
+                                    </Text>
+                                </Card>
+                            </Box>
+                        ))}
+                    </Group>
+                </>
             )}
         </Paper>
     );

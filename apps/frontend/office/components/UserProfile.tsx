@@ -37,12 +37,14 @@ export default function UserProfile() {
             </Menu.Target>
 
             <Menu.Dropdown>
-                <Menu.Item
-                    leftSection={<IconUser size={14} />}
-                    onClick={() => router.push('/work-provider/profile')}
-                >
-                    {t('profile')}
-                </Menu.Item>
+                {user?.role === 'work_provider' && (
+                    <Menu.Item
+                        leftSection={<IconUser size={14} />}
+                        onClick={() => router.push('/work-provider/profile')}
+                    >
+                        {t('profile')}
+                    </Menu.Item>
+                )}
                 <Divider />
 
                 {user && (

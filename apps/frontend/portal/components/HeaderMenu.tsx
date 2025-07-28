@@ -150,13 +150,14 @@ export function HeaderMenu() {
                                 <div className="relative">
                                     {item.icon}
                                     {data?.count &&
-                                        item.matchPattern ===
-                                            '/notifications' &&
-                                        data.count > 0 && (
-                                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full px-1 leading-none">
-                                                {data.count}
-                                            </span>
-                                        )}
+                                    item.matchPattern === '/notifications' &&
+                                    data.count > 0 ? (
+                                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full px-1 leading-none">
+                                            {data.count}
+                                        </span>
+                                    ) : (
+                                        ''
+                                    )}
                                 </div>
                                 <Text size="sm">{item.label}</Text>
                             </Group>

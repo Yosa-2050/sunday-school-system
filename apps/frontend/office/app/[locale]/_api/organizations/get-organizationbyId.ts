@@ -33,7 +33,7 @@ export interface Organization {
     yearFounded: string;
     companySize: string;
     description: string;
-    logoUrl?: string;
+    logo?: string;
     contacts?: Contact[];
     name: string;
     industry?: {

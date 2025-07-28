@@ -62,9 +62,24 @@ export default function NotificationCard({
             <Group align="flex-start">
                 <Avatar>{notification.content.charAt(0)}</Avatar>
                 <Stack gap="xs" style={{ flex: 1 }}>
-                    <Text size="sm" fw={isRead ? 400 : 600}>
-                        {notification.content}
-                    </Text>
+                    <Text
+                        size="md"
+                        fw={700}
+                        // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                        dangerouslySetInnerHTML={{
+                            __html: notification.subject,
+                        }}
+                        mb={-8}
+                    />
+
+                    <Text
+                        size="sm"
+                        fw={isRead ? 400 : 600}
+                        // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                        dangerouslySetInnerHTML={{
+                            __html: notification.content,
+                        }}
+                    />
                     <Group justify="space-between">
                         <Group gap="xs">
                             <Badge

@@ -20,3 +20,12 @@ export const getDocumentById = async (id: string) => {
     }
     return response.blob();
 };
+
+export const getOrganizationDocumentsById = async (orgId: string) => {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const response: any = await fetcher(`/document/reference/${orgId}`, {
+        method: 'GET',
+    });
+
+    return response;
+};

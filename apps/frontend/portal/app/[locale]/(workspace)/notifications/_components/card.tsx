@@ -98,9 +98,11 @@ export function NotificationCard({
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                 }}
-                            >
-                                {notification.subject}
-                            </Text>
+                                // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                                dangerouslySetInnerHTML={{
+                                    __html: notification.subject,
+                                }}
+                            />
 
                             <Group gap="xs" align="center">
                                 <Badge
@@ -133,9 +135,11 @@ export function NotificationCard({
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                             }}
-                        >
-                            {notification.content}
-                        </Text>
+                            // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                            dangerouslySetInnerHTML={{
+                                __html: notification.content,
+                            }}
+                        />
                     </Stack>
                 </Group>
 

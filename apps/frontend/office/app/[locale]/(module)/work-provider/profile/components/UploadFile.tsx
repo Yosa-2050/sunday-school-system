@@ -28,7 +28,7 @@ import {
     IconUpload,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { getDocumentById } from 'app/[locale]/_api/organizations/getDocumentType';
+import { getOrganizationDocumentsById } from 'app/[locale]/_api/organizations/getDocumentType';
 import { useUploadDocument } from 'app/[locale]/_api/organizations/upload-document';
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
@@ -91,11 +91,12 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
     const { data } = useQuery<DocumentData[]>({
         queryKey: ['organizationDocuments', orgId],
         queryFn: async () => {
-            const result = await getDocumentById(orgId);
-            return Array.isArray(result) ? result : [result];
+            const res = await getOrganizationDocumentsById(orgId);
+            return res;
         },
         enabled: !!orgId,
     });
+
     const uploadedDocs: DocumentData[] = Array.isArray(data) ? data : [];
 
     const { mutate: uploadDocument, isPending } = useUploadDocument(orgId);
@@ -150,8 +151,9 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
         setPreviewFileType('');
     };
 
-    const getUploadedDoc = (docType: string): DocumentData | null =>
-        uploadedDocs.find((doc) => doc.docType === docType) || null;
+    const getUploadedDoc = (docType: string): DocumentData | null => {
+        return uploadedDocs.find((doc) => doc.docType === docType) || null;
+    };
 
     const formatFileSize = (bytes: number): string => {
         if (bytes === 0) {

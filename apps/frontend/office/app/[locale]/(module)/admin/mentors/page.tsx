@@ -39,9 +39,7 @@ import { EntityPageLoading } from '@/components/EntityPageLoading';
 import { fetchMentorship } from 'app/[locale]/_api/mentors/fetch-mentorship';
 import {
     useActivateMentors,
-    useApproveMentors,
     useDeactivateMutation,
-    useDeclineMentors,
 } from 'app/[locale]/_api/mentors/udpate-mentorship-status';
 import { CreateMentors } from './_components/create-mentors';
 
@@ -122,13 +120,6 @@ const MentorshipTable = ({ data }: { data: any[] }) => {
     });
     const activateUserMutation = useActivateMentors({
         id: selectedUser?.id || '',
-    });
-    const approvedMentorsMutation = useApproveMentors({
-        id: selectedUser?.id || '',
-    });
-    const declinedMentorsMutation = useDeclineMentors({
-        id: selectedUser?.id || '',
-        note,
     });
 
     return (
