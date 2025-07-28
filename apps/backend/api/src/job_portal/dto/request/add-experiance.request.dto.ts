@@ -57,6 +57,11 @@ export class AddExperienceRequestDto {
     @ApiProperty()
     @IsEnum(WorkPlaceType)
     workPlace: WorkPlaceType;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    description: string;
 }
 
 export class UpdateExperienceRequestDto extends PartialType(

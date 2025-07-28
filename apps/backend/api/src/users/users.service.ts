@@ -10,6 +10,7 @@ import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
@@ -215,6 +216,8 @@ export class UsersService {
             to: user.email,
             subject: emailTemplate.subject,
             reference: user.id,
+            type: NotificationType.User,
+            metaData: null,
         });
 
         return this.userRepo.save(updatedUser);
@@ -272,6 +275,8 @@ export class UsersService {
             to: user.email,
             subject: emailTemplate.subject,
             reference: user.id,
+            type: NotificationType.User,
+            metaData: null,
         });
 
         return this.userRepo.save(updatedUser);

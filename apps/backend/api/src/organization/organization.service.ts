@@ -23,6 +23,7 @@ import { LocationModel } from '@shega/location/dto/model/location.model';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 import { NotesService } from '@shega/notification/notes.service';
 import { NotificationService } from '@shega/notification/notification.service';
 import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
@@ -238,6 +239,7 @@ export class OrganizationService {
                 status,
                 note,
                 org.name,
+                org.id,
             );
         }
         return result;
@@ -304,7 +306,8 @@ export class OrganizationService {
         user: User,
         status: ApprovalType,
         reasonForDecline: string,
-        orgName = '',
+        orgName,
+        orgId,
     ) {
         if (emailTemplate) {
             this.notificationService.send({
@@ -313,11 +316,16 @@ export class OrganizationService {
                 to: user.email,
                 subject: emailTemplate.subject,
                 reference: user.id,
+                type: NotificationType.Organization,
+                metaData: null,
             });
         }
 
         let subjectParagraph = null;
         let contentParagraph = null;
+        const metaData = {
+            organizationId: orgId,
+        };
 
         if (status === ApprovalType.Approved) {
             subjectParagraph = 'Organization Status: Approved!';
@@ -331,6 +339,8 @@ export class OrganizationService {
                 reference: user.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
+                type: NotificationType.Organization,
+                metaData,
             });
         } else if (status === ApprovalType.Declined) {
             subjectParagraph = 'Organization Status: Declined!';
@@ -344,6 +354,8 @@ export class OrganizationService {
                 reference: user.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
+                type: NotificationType.Organization,
+                metaData,
             });
         } else if (status === ApprovalType.Returned) {
             subjectParagraph =
@@ -358,6 +370,8 @@ export class OrganizationService {
                 reference: user.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
+                type: NotificationType.Organization,
+                metaData: null,
             });
         } else if (status === ApprovalType.Waiting_Approval) {
             const superAdmin = await this.usersService.GetSuperAdmin();
@@ -369,6 +383,8 @@ export class OrganizationService {
                 reference: superAdmin.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
+                type: NotificationType.Organization,
+                metaData,
             });
         }
     }
@@ -659,6 +675,8 @@ export class OrganizationService {
             to: dto.email,
             subject: signupEmailTemplate.subject,
             reference: saved.id,
+            type: NotificationType.Organization,
+            metaData: null,
         });
     }
 
@@ -742,14 +760,17 @@ export class OrganizationService {
         );
     }
 
-    async uploadLogo(profileId: string, file: Express.Multer.File) {
-        const documentId = await this.documentService.create(file, profileId);
+    async uploadLogo(organizationId: string, file: Express.Multer.File) {
+        const documentId = await this.documentService.create(
+            file,
+            organizationId,
+        );
 
         const updated = await this.organizationRepo.update(
-            { id: profileId },
+            { id: organizationId },
             { logo: documentId },
         );
 
-        return UtilityServices.EnsureUpdated(updated, profileId);
+        return UtilityServices.EnsureUpdated(updated, organizationId);
     }
 }

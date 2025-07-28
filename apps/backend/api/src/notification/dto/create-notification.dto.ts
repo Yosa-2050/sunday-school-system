@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 import { NotificationChannel } from '../enums/notification-channel.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationType } from '../enums/notification-type.enum';
 
 export class CreateNotificationDto {
     @ApiProperty()
@@ -32,4 +34,8 @@ export class CreateNotificationDto {
     @IsBoolean()
     @IsOptional()
     isNotifyToAllUser?: boolean = false;
+
+    metaData: Record<string, string>;
+
+    type: NotificationType;
 }

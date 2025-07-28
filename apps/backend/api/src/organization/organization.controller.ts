@@ -294,7 +294,7 @@ export class OrganizationController {
     @UseInterceptors(FileInterceptor('file'))
     uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
         return this.organizationService.uploadLogo(
-            CurrentUser.getProfileId(req),
+            CurrentUser.getOrganizationId(req),
             file,
         );
     }

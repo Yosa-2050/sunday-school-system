@@ -17,6 +17,7 @@ import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotesService } from '@shega/notification/notes.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -146,6 +147,8 @@ export class JobPortalService {
                 to: dto.email,
                 subject: signupEmailTemplate.subject,
                 reference: user.id,
+                type: NotificationType.Applicant,
+                metaData: null,
             });
             return user;
         }
@@ -207,6 +210,12 @@ export class JobPortalService {
             });
             subjectParagraph = 'New Job Posting Awaiting Your Approval!';
             contentParagraph = `A new job has been submitted by ${org.name} for ${jobCreated.program.title}. Please review and approve this posting to make it visible to job seekers.`;
+
+            const metaData = {
+                programId: jobCreated.program.id,
+                jobId: jobCreated.id,
+            };
+
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
                 subject: getInAppHtmlTemplate(subjectParagraph),
@@ -215,6 +224,8 @@ export class JobPortalService {
                 reference: user.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
+                type: NotificationType.Job,
+                metaData,
             });
         }
     }
@@ -745,7 +756,9 @@ export class JobPortalService {
                     note,
                 );
             }
-
+            const metaData = {
+                programId: program.id,
+            };
             if (emailTemplate) {
                 this.notificationService.send({
                     channel: NotificationChannel.Email,
@@ -753,6 +766,8 @@ export class JobPortalService {
                     to: user.email,
                     subject: emailTemplate.subject,
                     reference: user.id,
+                    type: NotificationType.Program,
+                    metaData,
                 });
             }
 
@@ -772,6 +787,8 @@ export class JobPortalService {
                     reference: user.id,
                     isRealTimeNotification: false,
                     isNotifyToAllUser: false,
+                    type: NotificationType.Program,
+                    metaData,
                 });
             }
         }
@@ -1233,7 +1250,12 @@ export class JobPortalService {
     private async SentNotificationForShortListing(
         updateResult: { data: string; success: boolean },
         appliedUsers: Applications[],
-        validated: { title: string; name: string; type: ProgramType },
+        validated: {
+            id: string;
+            title: string;
+            name: string;
+            type: ProgramType;
+        },
         status: ApplicationStatus,
     ) {
         if (updateResult.success) {
@@ -1254,6 +1276,10 @@ export class JobPortalService {
                 const user = await this.profileService.findUserByProfileId(
                     applicant.applicants.profile.id,
                 );
+                const metaData = {
+                    programId: validated.id,
+                };
+
                 this.notificationService.send({
                     channel: NotificationChannel.InApp,
                     subject: subject,
@@ -1262,6 +1288,11 @@ export class JobPortalService {
                     reference: user.id,
                     isRealTimeNotification: true,
                     isNotifyToAllUser: false,
+                    type:
+                        validated.type === ProgramType.Job
+                            ? NotificationType.Job
+                            : NotificationType.Mentorship,
+                    metaData,
                 });
             }
         }
@@ -1301,6 +1332,7 @@ export class JobPortalService {
         }
 
         return {
+            id: program.id,
             title: program.title,
             name: name,
             type: program.programType,

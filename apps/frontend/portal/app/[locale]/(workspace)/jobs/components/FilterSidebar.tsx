@@ -56,7 +56,6 @@ export const FilterSidebar = ({
     handleJobTypeChange,
     handleExperienceLevelChange,
     handleApplyFilters,
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 }: FilterSidebarProps) => {
     const searchParam = useSearchParams();
     const t = useTranslations('jobListing');

@@ -20,6 +20,7 @@ import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -90,6 +91,8 @@ export class UsersController {
                 to: user.email,
                 subject: 'Shega jobs',
                 reference: user.id,
+                type: NotificationType.User,
+                metaData: null,
             });
             return user;
         }
