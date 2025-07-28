@@ -8,6 +8,7 @@ import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -214,12 +215,17 @@ export class MentorshipService {
         );
 
         if (mentor?.id) {
+            const metaData = {
+                mentorId: mentor.id,
+            };
             this.notificationService.send({
                 channel: NotificationChannel.Email,
                 content: signupEmailTemplate.content,
                 to: dto.email,
                 subject: signupEmailTemplate.subject,
                 reference: user.id,
+                type: NotificationType.Mentor,
+                metaData,
             });
             return user;
         }
@@ -272,6 +278,11 @@ export class MentorshipService {
             mentorShip.createdBy,
             LoginBy.EMAIL,
         );
+
+        const metaData = {
+            programId: mentorShip.program.id,
+            mentorShipId: mentorShip.id,
+        };
         if (mentorShip.program.isPublished) {
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
@@ -281,6 +292,8 @@ export class MentorshipService {
                 reference: user.id,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
+                type: NotificationType.Mentorship,
+                metaData,
             });
         }
     }

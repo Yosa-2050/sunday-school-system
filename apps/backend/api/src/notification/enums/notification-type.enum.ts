@@ -5,4 +5,5 @@ export enum NotificationType {
     Organization = 'Organization',
     User = 'User',
     Applicant = 'Applicant',
+    Mentor = 'Mentor',
 }
