@@ -45,6 +45,7 @@ import { EducationHistory } from './entities/educational-history.entity';
 import { Experiance } from './entities/experience.entity';
 import { Applications } from './entities/job-application.entity';
 import { Jobs } from './entities/jobs.entity';
+import { Mentorship } from './entities/mentorship.entity';
 import { Programs } from './entities/programs.entity';
 import { SavedPrograms } from './entities/savedPrograms.entity';
 import { ProgramType } from './enums/program-type.enum';
@@ -74,6 +75,8 @@ export class JobsService {
         private addressService: AddressService,
         @InjectRepository(Jobs)
         private jobRepo: Repository<Jobs>,
+        @InjectRepository(Mentorship)
+        private mentorshipRepo: Repository<Mentorship>,
     ) {}
 
     async getApplicantDetail(id: string) {
@@ -130,13 +133,29 @@ export class JobsService {
             subjectParagraph = `New Applicant for Your ${programType} Post!`;
             contentParagraph = `A new candidate has applied for your ${program.title} position. Review their application and decide your next steps.`;
 
-            const job = await this.jobRepo.findOneBy({
-                program: { id: program.id },
-            });
+            let userId = '';
 
-            const jobPostedUser = await this.profileService.findUserByProfileId(
-                job.postedBy.employee.profile.id,
-            );
+            if (program.programType === ProgramType.Job) {
+                const job = await this.jobRepo.findOneBy({
+                    program: { id: program.id },
+                });
+
+                const jobPostedUser =
+                    await this.profileService.findUserByProfileId(
+                        job.postedBy.employee.profile.id,
+                    );
+                userId = jobPostedUser.id;
+            } else if (program.programType === ProgramType.Mentorship) {
+                const mentorship = await this.mentorshipRepo.findOneBy({
+                    program: { id: program.id },
+                });
+
+                const jobPostedUser =
+                    await this.profileService.findUserByProfileId(
+                        mentorship.mentor.profile.id,
+                    );
+                userId = jobPostedUser.id;
+            }
 
             const metaData = {
                 applicantId: applicant.id,
@@ -146,8 +165,8 @@ export class JobsService {
                 channel: NotificationChannel.InApp,
                 subject: getInAppHtmlTemplate(subjectParagraph),
                 content: getInAppHtmlTemplate(contentParagraph),
-                to: jobPostedUser.id,
-                reference: jobPostedUser.id,
+                to: userId,
+                reference: userId,
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
                 type: NotificationType.Applicant,
@@ -435,7 +454,11 @@ export class JobsService {
             throw new EntityNotFoundException(typeof Applicants);
         }
 
-        return applicant;
+        const user = await this.profileService.findUserByProfileId(
+            applicant.profile.id,
+        );
+
+        return { email: user.email, ...applicant };
     }
 
     async uploadCv(applicantId: string, file: Express.Multer.File) {

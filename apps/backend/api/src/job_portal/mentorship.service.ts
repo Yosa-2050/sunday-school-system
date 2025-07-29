@@ -72,11 +72,7 @@ export class MentorshipService {
     ) {
         const deserialized = entityParamDeserializer(paginationDto);
 
-        const searchableColumns = [
-            'program.title',
-            'program.description',
-            'organization.name',
-        ];
+        const searchableColumns = ['program.title', 'program.description'];
 
         const queryString = entityParamSerializer({
             ...deserialized,

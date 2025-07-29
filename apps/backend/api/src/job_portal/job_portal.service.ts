@@ -206,7 +206,7 @@ export class JobPortalService {
         let contentParagraph = null;
         if (jobCreated.program.isPublished) {
             const org = await this.organizationRepo.findOneBy({
-                id: jobCreated.program.id,
+                id: jobCreated.organization.id,
             });
             subjectParagraph = 'New Job Posting Awaiting Your Approval!';
             contentParagraph = `A new job has been submitted by ${org.name} for ${jobCreated.program.title}. Please review and approve this posting to make it visible to job seekers.`;
