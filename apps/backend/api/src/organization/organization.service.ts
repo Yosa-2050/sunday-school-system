@@ -329,7 +329,7 @@ export class OrganizationService {
 
         if (status === ApprovalType.Approved) {
             subjectParagraph = 'Organization Status: Approved!';
-            contentParagraph = `Congratulations! Your organization, ${orgName}, has been approved and is now ready to post jobs on Shega Jobs.`;
+            contentParagraph = `Congratulations! Your organization, <b>${orgName}</b>, has been approved and is now ready to post jobs on Shega Jobs.`;
 
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
@@ -344,7 +344,7 @@ export class OrganizationService {
             });
         } else if (status === ApprovalType.Declined) {
             subjectParagraph = 'Organization Status: Declined!';
-            contentParagraph = `Unfortunately, your organization, ${orgName}, could not be approved at this time. The reason for declined is ${reasonForDecline}.`;
+            contentParagraph = `Unfortunately, your organization, <b>${orgName}</b>, could not be approved at this time. The reason for declined is ${reasonForDecline}.`;
 
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
@@ -375,10 +375,13 @@ export class OrganizationService {
             });
         } else if (status === ApprovalType.Waiting_Approval) {
             const superAdmin = await this.usersService.GetSuperAdmin();
+            subjectParagraph =
+                'Action Required: New Organization Approval Request';
+            contentParagraph = `<b>${user.userName}</b> has requested approval for their organization, <b>${orgName}</b>. Please review and approve or deny this request to grant them full access.`;
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: 'A request for organization approval',
-                content: `An approval request has come for an Organization ${orgName}, please do the need full.`,
+                subject: getInAppHtmlTemplate(subjectParagraph),
+                content: getInAppHtmlTemplate(contentParagraph),
                 to: superAdmin.id,
                 reference: superAdmin.id,
                 isRealTimeNotification: true,
