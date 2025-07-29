@@ -11,6 +11,7 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
+import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
@@ -284,12 +285,15 @@ export class MentorshipService {
             mentorShipId: mentorShip.id,
         };
         if (mentorShip.program.isPublished) {
+            const subjectParagraph =
+                'New Mentorship Program Posting Awaiting Your Approval!';
+            const contentParagraph = `A new Mentorship Program has been submitted by <b>${user.profile.firstName}</b> for <b>${mentorShip.program.title}</b>. Please review and approve this posting to make it visible to Mentees.`;
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: `Mentorship program with title ${mentorShip.program.title} submitted for approval`,
-                content: `Mentorship program with title ${mentorShip.program.title} is submitted for approval from User ${user.profile.firstName}`,
-                to: user.id,
-                reference: user.id,
+                subject: getInAppHtmlTemplate(subjectParagraph),
+                content: getInAppHtmlTemplate(contentParagraph),
+                to: user.id, // TODO : SEND TO ADMIN THAT CREATED THE MENTOR
+                reference: user.id, // TODO : SEND TO ADMIN THAT CREATED THE MENTOR
                 isRealTimeNotification: true,
                 isNotifyToAllUser: false,
                 type: NotificationType.Mentorship,

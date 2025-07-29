@@ -875,16 +875,26 @@ export class JobPortalService {
         let contentParagraph = null;
 
         if (approvalType === ApprovalType.Approved) {
-            subjectParagraph = `Job Approved:<b>${programTitle}</b> is Now Live!`;
-            contentParagraph = `Congratulations! Your job posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
+            if (programType === 'Job') {
+                subjectParagraph = `Job Approved:<b>${programTitle}</b> is Now Live!`;
+                contentParagraph = `Congratulations! Your job posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
+            } else {
+                subjectParagraph = `Mentorship Program Approved:<b>${programTitle}</b> is Now Live!`;
+                contentParagraph = `Congratulations! Your Mentorship Program posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
+            }
 
             subject = getInAppHtmlTemplate(subjectParagraph);
             content = getInAppHtmlTemplate(contentParagraph);
         }
 
         if (approvalType === ApprovalType.Declined) {
-            subjectParagraph = `Job Declined: <b>${programTitle}</b> is Declined!`;
-            contentParagraph = `Unfortunately, your job posting for <b>${programTitle}</b> could not be approved. The reason for declined is ${reasonForDecline}.`;
+            if (programType === 'Job') {
+                subjectParagraph = `Job Declined: <b>${programTitle}</b> is Declined!`;
+                contentParagraph = `Unfortunately, your job posting for <b>${programTitle}</b> could not be approved. The reason for declined is ${reasonForDecline}.`;
+            } else {
+                subjectParagraph = `Mentorship Program Declined: <b>${programTitle}</b> is Declined!`;
+                contentParagraph = `Unfortunately, your Mentorship Program posting for<b>${programTitle}</b> could not be approved. The reason for declined is ${reasonForDecline}.`;
+            }
 
             subject = getInAppHtmlTemplate(subjectParagraph);
             content = getInAppHtmlTemplate(contentParagraph);
@@ -1196,12 +1206,16 @@ export class JobPortalService {
         );
 
         const updateResult = UtilityServices.EnsureUpdated(result, programId);
+        const org = await this.organizationRepo.findOneBy({
+            id: organizationId,
+        });
 
         await this.SentNotificationForShortListing(
             updateResult,
             appliedUsers,
             validated,
             ApplicationStatus.SHORT_LISTED,
+            org.name,
         );
         return updateResult;
     }
@@ -1237,11 +1251,16 @@ export class JobPortalService {
             'No applicants exists to be rejected',
         );
 
+        const org = await this.organizationRepo.findOneBy({
+            id: organizationId,
+        });
+
         await this.SentNotificationForShortListing(
             updateResult,
             appliedUsers,
             validated,
             status,
+            org.name,
         );
 
         return updateResult;
@@ -1257,19 +1276,22 @@ export class JobPortalService {
             type: ProgramType;
         },
         status: ApplicationStatus,
+        orgName: string,
     ) {
         if (updateResult.success) {
             const request = new GetJobApplicationsRequestDto();
             request.status = status;
-            const subject =
-                status === ApplicationStatus.REJECTED
-                    ? `Your update for the role ${validated.title}`
-                    : `Congratulations you are short listed for the role ${validated.title}`;
-
-            const content =
-                status === ApplicationStatus.REJECTED
-                    ? 'Unfortunately, they will not be moving forward with your application'
-                    : `You are short listed for the role ${validated.title} for the ${validated.type} with ${validated.name}`;
+            let subjectParagraph = null;
+            let contentParagraph = null;
+            if (status === ApplicationStatus.REJECTED) {
+                subjectParagraph = `Regarding Your Application for <b>${validated.title}</b>`;
+                contentParagraph = `Thank you for your interest in the <b>${validated.title}</b> position at <b>${orgName}</b>. After careful consideration, we've decided to move forward with other candidates. We appreciate your time and effort.`;
+            } else {
+                subjectParagraph = "Congratulations! You're Shortlisted!";
+                contentParagraph = `We're excited to let you know your application for the <b>${validated.title}</b> position at <b>${orgName}</b> has been shortlisted. We'll be in touch soon with more details!`;
+            }
+            const subject = getInAppHtmlTemplate(subjectParagraph);
+            const content = getInAppHtmlTemplate(contentParagraph);
 
             for (let index = 0; index < appliedUsers.length; index++) {
                 const applicant = appliedUsers[index];
