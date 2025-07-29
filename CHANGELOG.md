@@ -1,3 +1,10 @@
+## [1.9.8](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.7...v1.9.8) (2025-07-29)
+
+
+### Bug Fixes
+
+* **shega:** office homepage showing white page ([4f5cc36](https://gitlab.heranitech.com/meklit/shega-jobs/commit/4f5cc36959833ba3b55b8d3905d383ddb79bd045))
+
 ## [1.9.7](https://gitlab.heranitech.com/meklit/shega-jobs/compare/v1.9.6...v1.9.7) (2025-07-28)
 
 
