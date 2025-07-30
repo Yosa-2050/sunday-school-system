@@ -301,7 +301,6 @@ export const JobRequirements = ({
                                     { value: 'ENTRY', label: 'Entry Level' },
                                     { value: 'MID', label: 'Mid Level' },
                                     { value: 'SENIOR', label: 'Senior Level' },
-                                    { value: 'EXPERT', label: 'Expert Level' },
                                 ]}
                                 value={field.value}
                                 onChange={field.onChange}

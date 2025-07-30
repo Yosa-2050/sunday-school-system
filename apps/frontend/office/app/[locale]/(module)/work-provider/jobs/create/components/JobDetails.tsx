@@ -66,7 +66,16 @@ export const JobDetails = ({
                             <Select
                                 label="Employment Type"
                                 placeholder="Select employment type"
-                                data={mapEnumToOptions(employmentTypes.data)}
+                                //   data={mapEnumToOptions(employmentTypes.data)}
+                                data={[
+                                    { value: 'FULL_TIME', label: 'Full Time' },
+                                    { value: 'PART_TIME', label: 'Part Time' },
+                                    { value: 'Contract', label: 'Contract' },
+                                    {
+                                        value: 'Internship',
+                                        label: 'Internship',
+                                    },
+                                ]}
                                 value={field.value}
                                 onChange={(value) =>
                                     field.onChange(
@@ -208,6 +217,24 @@ export const JobDetails = ({
             <Title order={3}>Salary and Compensation</Title>
 
             <Grid>
+                {/* <Grid.Col span={{ base: 12, sm: 6 }}>
+          <Controller
+            name="salaryType"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Salary Type"
+                placeholder="Select Salary Type"
+                data={mapEnumToOptions(salaryTypes.data)}
+                // data={[value: '', label: '']}
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.currency?.message}
+                required
+              />
+            )}
+          />
+        </Grid.Col> */}
                 <Grid.Col span={{ base: 12, sm: 6 }}>
                     <Controller
                         name="salaryType"
@@ -216,15 +243,27 @@ export const JobDetails = ({
                             <Select
                                 label="Salary Type"
                                 placeholder="Select Salary Type"
-                                data={mapEnumToOptions(salaryTypes.data)}
+                                data={[
+                                    { value: 'FIXED', label: 'Fixed' },
+                                    {
+                                        value: 'NEGOTIABLE',
+                                        label: 'Negotiable',
+                                    },
+                                    { value: 'RANGE', label: 'Range' },
+                                    {
+                                        value: 'NOT_DISCLOSED',
+                                        label: 'Not Disclose',
+                                    },
+                                ]}
                                 value={field.value}
                                 onChange={field.onChange}
-                                error={errors.currency?.message}
+                                error={errors.salaryType?.message}
                                 required
                             />
                         )}
                     />
                 </Grid.Col>
+
                 {(watch('salaryType') === 'FIXED' ||
                     watch('salaryType') === 'RANGE' ||
                     !watch('salaryType')) && (

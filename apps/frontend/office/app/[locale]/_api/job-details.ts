@@ -43,7 +43,7 @@ export const canSubmit = async (): Promise<{
     return response;
 };
 
-export const deleteCategory = async () => {
+export const deleteCategory = async (id: string) => {
     const response = await fetcher('/job-detail/categories', {
         method: 'DELETE',
         headers: { accept: '*/*' },

@@ -490,43 +490,39 @@ const JobsList = () => {
                                                     )}
                                                 </Menu.Dropdown>
                                             </Menu>
-                                            <Modal
-                                                opened={modalOpened}
-                                                onClose={() =>
-                                                    setModalOpened(false)
-                                                }
-                                                title="Confirm Deletion"
-                                                centered
-                                            >
-                                                <Text>
-                                                    Are you sure you want to
-                                                    delete this Job?
-                                                </Text>
-                                                <Group
-                                                    justify="center"
-                                                    style={{ marginTop: 20 }}
-                                                >
-                                                    <Button
-                                                        variant="outline"
-                                                        onClick={() =>
-                                                            setModalOpened(
-                                                                false,
-                                                            )
-                                                        }
-                                                    >
-                                                        No
-                                                    </Button>
-                                                    <Button
-                                                        color="red"
-                                                        onClick={handleDelete}
-                                                    >
-                                                        Yes
-                                                    </Button>
-                                                </Group>
-                                            </Modal>
                                         </Table.Td>
                                     </Table.Tr>
                                 ))}
+                                <Modal
+                                    opened={modalOpened}
+                                    onClose={() => setModalOpened(false)}
+                                    title="Confirm Deletion"
+                                    centered
+                                >
+                                    <Text>
+                                        Are you sure you want to delete this
+                                        Job?
+                                    </Text>
+                                    <Group
+                                        justify="center"
+                                        style={{ marginTop: 20 }}
+                                    >
+                                        <Button
+                                            variant="outline"
+                                            onClick={() =>
+                                                setModalOpened(false)
+                                            }
+                                        >
+                                            No
+                                        </Button>
+                                        <Button
+                                            color="red"
+                                            onClick={handleDelete}
+                                        >
+                                            Yes
+                                        </Button>
+                                    </Group>
+                                </Modal>
                             </Table.Tbody>
                         </Table>
                     </TableScrollContainer>

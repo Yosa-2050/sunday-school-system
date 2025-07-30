@@ -14,13 +14,11 @@ import {
     TextInput,
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { IconEdit, IconTrash } from '@tabler/icons-react'; // Importing icons
+import { notifications } from '@mantine/notifications';
+import { IconCheck, IconEdit, IconTrash, IconX } from '@tabler/icons-react'; // Importing icons
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-    addCategory,
-    deleteCategory,
-    fetchCategories,
-} from 'app/[locale]/_api/job-details';
+import { deleteCatrgoriesData } from 'app/[locale]/_api/admin/delete-skill';
+import { addCategory, fetchCategories } from 'app/[locale]/_api/job-details';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -59,12 +57,25 @@ const CategoriesPage = () => {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id: string) => deleteCategory(),
-        mutationKey: ['deleteCategory'],
+        mutationFn: (id: string) => deleteCatrgoriesData(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['categories'] });
-
-            setCategoryToDelete(null);
+            notifications.show({
+                title: 'Success',
+                message: 'Categories deleted successfully',
+                color: 'green',
+                icon: <IconCheck size={16} />,
+            });
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'Failed to delete categories',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
         },
     });
 
@@ -73,7 +84,6 @@ const CategoriesPage = () => {
     };
 
     const openDeleteModal = (id: string) => {
-        setCategoryToDelete(id);
         modals.openConfirmModal({
             title: 'Please confirm your action',
             centered: true,
@@ -86,11 +96,10 @@ const CategoriesPage = () => {
             labels: { confirm: 'Confirm', cancel: 'Cancel' },
             onCancel: () => setCategoryToDelete(null),
             onConfirm: () => {
-                if (categoryToDelete) {
-                    deleteMutation.mutate(categoryToDelete);
-                }
+                deleteMutation.mutate(id);
             },
         });
+        setCategoryToDelete(id);
     };
 
     if (loadingCategories) {

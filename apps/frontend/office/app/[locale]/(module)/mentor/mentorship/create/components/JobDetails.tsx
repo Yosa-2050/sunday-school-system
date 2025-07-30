@@ -92,9 +92,15 @@ export const JobDetails = ({
                             <Select
                                 label="Mentorship Type"
                                 placeholder="Select mentorship type"
-                                data={mapEnumToOptions(
-                                    mentorshipType.data?.data ?? {},
-                                )}
+                                // data={mapEnumToOptions(mentorshipType.data?.data ?? {})}
+                                data={[
+                                    {
+                                        value: 'One-On-One',
+                                        label: 'One On One',
+                                    },
+                                    { value: 'Group', label: 'Group' },
+                                    { value: 'Online', label: 'Online' },
+                                ]}
                                 value={field.value}
                                 onChange={(value) => field.onChange(value)}
                                 error={errors.mentorshipType?.message}
@@ -233,9 +239,21 @@ export const JobDetails = ({
                             <Select
                                 label="Commitment Type"
                                 placeholder="Enter commitment type"
-                                data={mapEnumToOptions(
-                                    commitment.data?.data ?? {},
-                                )}
+                                // data={mapEnumToOptions(commitment.data?.data ?? {})}
+                                data={[
+                                    {
+                                        value: 'HoursPerDay',
+                                        label: 'Hours Per Day',
+                                    },
+                                    {
+                                        value: 'HoursPerWeek',
+                                        label: 'Hours Per Week',
+                                    },
+                                    {
+                                        value: 'HoursPerMonth',
+                                        label: 'Hours Per Month',
+                                    },
+                                ]}
                                 value={field.value}
                                 onChange={field.onChange}
                                 error={errors.commitment?.message}

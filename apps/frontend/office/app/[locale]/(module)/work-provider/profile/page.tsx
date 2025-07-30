@@ -59,6 +59,7 @@ const DefaultProps = {
     companySize: '',
     description: '',
     logoUrl: '',
+
     sector: undefined,
     locations: [],
     contacts: [],
@@ -78,7 +79,11 @@ function HeaderSection({
     formData,
     open,
     canUpdateProfile,
-}: { formData: FormDataType; open: () => void; canUpdateProfile: boolean }) {
+}: {
+    formData: FormDataType;
+    open: () => void;
+    canUpdateProfile: boolean;
+}) {
     const [isUploading, setIsUploading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const resetRef = useRef<() => void>(null);
@@ -123,6 +128,9 @@ function HeaderSection({
                         color: 'green',
                         icon: <IconCheck size={16} />,
                     });
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
                 },
                 onError: (error) => {
                     notifications.show({
@@ -192,6 +200,7 @@ function HeaderSection({
                         )}
                     </Box>
                 </Stack>
+
                 <Stack gap="xs" flex={1}>
                     <Title order={2} fw={700}>
                         {formData.name}
@@ -224,6 +233,20 @@ function HeaderSection({
                             </Text>
                         </Group>
                     </Stack>
+                    <Group>
+                        <Badge
+                            variant="light"
+                            leftSection={<IconCheck size={12} />}
+                        >
+                            {formData.status}
+                        </Badge>
+                        <Badge
+                            color={formData.isActive ? 'green' : 'red'}
+                            variant="outline"
+                        >
+                            {formData.isActive ? 'Active' : 'Inactive'}
+                        </Badge>
+                    </Group>
                 </Stack>
             </Group>
             {canUpdateProfile && (

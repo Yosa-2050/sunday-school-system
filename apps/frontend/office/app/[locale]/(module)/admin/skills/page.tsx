@@ -14,13 +14,11 @@ import {
     TextInput,
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { IconEdit, IconTrash } from '@tabler/icons-react'; // Importing icons
+import { notifications } from '@mantine/notifications';
+import { IconCheck, IconEdit, IconTrash, IconX } from '@tabler/icons-react'; // Importing icons
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-    addSkills,
-    deleteCategory,
-    fetchSkills,
-} from 'app/[locale]/_api/job-details';
+import { deleteSkill } from 'app/[locale]/_api/admin/delete-skill';
+import { addSkills, fetchSkills } from 'app/[locale]/_api/job-details';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -53,11 +51,25 @@ const SkillsPage = () => {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id: string) => deleteCategory(),
-        mutationKey: ['deleteSkill'],
+        mutationFn: deleteSkill,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['categories'] });
-            setSkillToDelete(null);
+            notifications.show({
+                title: 'Success',
+                message: 'Skill deleted successfully',
+                color: 'green',
+                icon: <IconCheck size={16} />,
+            });
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'Failed to delete skill',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
         },
     });
 
@@ -66,7 +78,6 @@ const SkillsPage = () => {
     };
 
     const openDeleteModal = (id: string) => {
-        setSkillToDelete(id);
         modals.openConfirmModal({
             title: 'Please confirm your action',
             centered: true,
@@ -79,11 +90,11 @@ const SkillsPage = () => {
             labels: { confirm: 'Confirm', cancel: 'Cancel' },
             onCancel: () => setSkillToDelete(null),
             onConfirm: () => {
-                if (skillToDelete) {
-                    deleteMutation.mutate(skillToDelete);
-                }
+                deleteMutation.mutate(id);
             },
         });
+
+        setSkillToDelete(id);
     };
 
     if (loadingSkills) {
