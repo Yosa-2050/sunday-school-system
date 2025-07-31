@@ -14,13 +14,12 @@ import {
     TextInput,
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { IconEdit, IconTrash } from '@tabler/icons-react'; // Importing icons
+import { notifications } from '@mantine/notifications';
+import { IconCheck, IconEdit, IconTrash, IconX } from '@tabler/icons-react'; // Importing icons
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-    addCategory,
-    deleteCategory,
-    fetchCategories,
-} from 'app/[locale]/_api/job-details';
+import { deleteCatrgoriesData } from 'app/[locale]/_api/admin/delete-skill';
+import { editCategories } from 'app/[locale]/_api/admin/edit-categories';
+import { addCategory, fetchCategories } from 'app/[locale]/_api/job-details';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -58,13 +57,54 @@ const CategoriesPage = () => {
         },
     });
 
-    const deleteMutation = useMutation({
-        mutationFn: (id: string) => deleteCategory(),
-        mutationKey: ['deleteCategory'],
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['categories'] });
+    const editMutation = useMutation({
+        mutationFn: ({ id, name }: { id: string; name: string }) =>
+            editCategories(id, name),
 
+        onSuccess: () => {
+            notifications.show({
+                title: 'Success',
+                message: 'Category updated successfully',
+                color: 'green',
+                icon: <IconCheck size={16} />,
+            });
+
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+            setEditModalOpened(false);
+            setCategoryToEdit(null);
+            setEditedCategoryName('');
+        },
+
+        onError: (error: Error) => {
+            notifications.show({
+                title: 'Error',
+                message: error.message || 'Failed to update category',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
+        },
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => deleteCatrgoriesData(id),
+        onSuccess: () => {
+            notifications.show({
+                title: 'Success',
+                message: 'Categories deleted successfully',
+                color: 'green',
+                icon: <IconCheck size={16} />,
+            });
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
             setCategoryToDelete(null);
+        },
+
+        onError: (error: Error) => {
+            notifications.show({
+                title: 'Error',
+                message: error.message || 'Failed to delete category',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
         },
     });
 
@@ -72,8 +112,17 @@ const CategoriesPage = () => {
         addMutation.mutate();
     };
 
+    const [editModalOpened, setEditModalOpened] = useState(false);
+    const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
+    const [editedCategoryName, setEditedCategoryName] = useState('');
+
+    const handleEditClick = (category: Category) => {
+        setCategoryToEdit(category);
+        setEditedCategoryName(category.name);
+        setEditModalOpened(true);
+    };
+
     const openDeleteModal = (id: string) => {
-        setCategoryToDelete(id);
         modals.openConfirmModal({
             title: 'Please confirm your action',
             centered: true,
@@ -86,11 +135,10 @@ const CategoriesPage = () => {
             labels: { confirm: 'Confirm', cancel: 'Cancel' },
             onCancel: () => setCategoryToDelete(null),
             onConfirm: () => {
-                if (categoryToDelete) {
-                    deleteMutation.mutate(categoryToDelete);
-                }
+                deleteMutation.mutate(id);
             },
         });
+        setCategoryToDelete(id);
     };
 
     if (loadingCategories) {
@@ -158,10 +206,9 @@ const CategoriesPage = () => {
                                     <Table.Td style={{ textAlign: 'center' }}>
                                         <Button
                                             variant="light"
+                                            //   onClick={() => console.log(`Edit ${category.id}`)}
                                             onClick={() =>
-                                                console.log(
-                                                    `Edit ${category.id}`,
-                                                )
+                                                handleEditClick(category)
                                             }
                                         >
                                             <IconEdit size={16} />
@@ -182,6 +229,57 @@ const CategoriesPage = () => {
                     </Table>
                 </ScrollArea>
             )}
+            <Modal
+                opened={editModalOpened}
+                onClose={() => setEditModalOpened(false)}
+                title="Edit Category"
+                centered
+            >
+                <TextInput
+                    label="Name"
+                    value={editedCategoryName}
+                    onChange={(e) =>
+                        setEditedCategoryName(e.currentTarget.value)
+                    }
+                />
+
+                <Flex justify="end" mt="md" gap="sm">
+                    <Button
+                        variant="default"
+                        onClick={() => {
+                            setEditModalOpened(false);
+                            setCategoryToEdit(null);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            if (categoryToEdit) {
+                                const trimmedName = editedCategoryName.trim();
+
+                                if (!trimmedName) {
+                                    notifications.show({
+                                        title: 'Validation Error',
+                                        message:
+                                            'Category name cannot be empty.',
+                                        color: 'red',
+                                        icon: <IconX size={16} />,
+                                    });
+                                    return;
+                                }
+
+                                editMutation.mutate({
+                                    id: categoryToEdit.id,
+                                    name: trimmedName,
+                                });
+                            }
+                        }}
+                    >
+                        Save
+                    </Button>
+                </Flex>
+            </Modal>
         </Paper>
     );
 };

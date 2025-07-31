@@ -30,6 +30,7 @@ export interface Organization {
     industryId: string;
     status: string;
     sector?: Category;
+    isActive: string;
     yearFounded: string;
     companySize: string;
     description: string;

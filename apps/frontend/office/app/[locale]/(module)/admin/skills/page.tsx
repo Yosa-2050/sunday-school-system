@@ -14,13 +14,12 @@ import {
     TextInput,
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { IconEdit, IconTrash } from '@tabler/icons-react'; // Importing icons
+import { notifications } from '@mantine/notifications';
+import { IconCheck, IconEdit, IconTrash, IconX } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-    addSkills,
-    deleteCategory,
-    fetchSkills,
-} from 'app/[locale]/_api/job-details';
+import { deleteSkill } from 'app/[locale]/_api/admin/delete-skill';
+import { editSkills } from 'app/[locale]/_api/admin/edit-skills';
+import { addSkills, fetchSkills } from 'app/[locale]/_api/job-details';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -33,9 +32,13 @@ interface Skill {
 const SkillsPage = () => {
     const t = useTranslations('skillsPage');
     const queryClient = useQueryClient();
+
     const [newSkillName, setNewSkillName] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
+    const [editModalOpened, setEditModalOpened] = useState(false);
     const [skillToDelete, setSkillToDelete] = useState<string | null>(null);
+    const [skillToEdit, setSkillToEdit] = useState<Skill | null>(null);
+    const [editedSkillName, setEditedSkillName] = useState('');
 
     const { data: skills = [], isLoading: loadingSkills } = useQuery<Skill[]>({
         queryKey: ['skills'],
@@ -44,7 +47,6 @@ const SkillsPage = () => {
 
     const addMutation = useMutation({
         mutationFn: () => addSkills({ name: newSkillName, isActive: true }),
-        mutationKey: ['skills'],
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['skills'] });
             setModalOpened(false);
@@ -52,12 +54,51 @@ const SkillsPage = () => {
         },
     });
 
-    const deleteMutation = useMutation({
-        mutationFn: (id: string) => deleteCategory(),
-        mutationKey: ['deleteSkill'],
+    const editMutation = useMutation({
+        mutationFn: ({ id, name }: { id: string; name: string }) =>
+            editSkills(id, name),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['categories'] });
+            notifications.show({
+                title: 'Success',
+                message: 'Skill updated successfully',
+                color: 'green',
+                icon: <IconCheck size={16} />,
+            });
+
+            queryClient.invalidateQueries({ queryKey: ['skills'] });
+            setEditModalOpened(false);
+            setSkillToEdit(null);
+            setEditedSkillName('');
+        },
+        onError: (error: Error) => {
+            notifications.show({
+                title: 'Error',
+                message: error.message || 'Failed to update skill',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
+        },
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: deleteSkill,
+        onSuccess: () => {
+            notifications.show({
+                title: 'Success',
+                message: 'Skill deleted successfully',
+                color: 'green',
+                icon: <IconCheck size={16} />,
+            });
+            queryClient.invalidateQueries({ queryKey: ['skills'] });
             setSkillToDelete(null);
+        },
+        onError: () => {
+            notifications.show({
+                title: 'Error',
+                message: 'Failed to delete skill',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
         },
     });
 
@@ -65,8 +106,13 @@ const SkillsPage = () => {
         addMutation.mutate();
     };
 
+    const handleEditClick = (skill: Skill) => {
+        setSkillToEdit(skill);
+        setEditedSkillName(skill.name);
+        setEditModalOpened(true);
+    };
+
     const openDeleteModal = (id: string) => {
-        setSkillToDelete(id);
         modals.openConfirmModal({
             title: 'Please confirm your action',
             centered: true,
@@ -79,11 +125,11 @@ const SkillsPage = () => {
             labels: { confirm: 'Confirm', cancel: 'Cancel' },
             onCancel: () => setSkillToDelete(null),
             onConfirm: () => {
-                if (skillToDelete) {
-                    deleteMutation.mutate(skillToDelete);
-                }
+                deleteMutation.mutate(id);
             },
         });
+
+        setSkillToDelete(id);
     };
 
     if (loadingSkills) {
@@ -100,6 +146,7 @@ const SkillsPage = () => {
             </Flex>
             <Divider my="md" />
 
+            {/* Add Skill Modal */}
             <Modal
                 opened={modalOpened}
                 onClose={() => setModalOpened(false)}
@@ -109,15 +156,61 @@ const SkillsPage = () => {
                 <TextInput
                     label={t('skillName')}
                     value={newSkillName}
-                    onChange={(event) =>
-                        setNewSkillName(event.currentTarget.value)
-                    }
+                    onChange={(e) => setNewSkillName(e.currentTarget.value)}
                 />
                 <Button onClick={handleAddSkill} mt="md">
                     {t('submit')}
                 </Button>
             </Modal>
 
+            {/* Edit Skill Modal */}
+            <Modal
+                opened={editModalOpened}
+                onClose={() => setEditModalOpened(false)}
+                title="Edit Skill"
+                centered
+            >
+                <TextInput
+                    label="Name"
+                    value={editedSkillName}
+                    onChange={(e) => setEditedSkillName(e.currentTarget.value)}
+                />
+                <Flex justify="end" mt="md" gap="sm">
+                    <Button
+                        variant="default"
+                        onClick={() => {
+                            setEditModalOpened(false);
+                            setSkillToEdit(null);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            if (skillToEdit) {
+                                const trimmed = editedSkillName.trim();
+                                if (!trimmed) {
+                                    notifications.show({
+                                        title: 'Validation Error',
+                                        message: 'Skill name cannot be empty.',
+                                        color: 'red',
+                                        icon: <IconX size={16} />,
+                                    });
+                                    return;
+                                }
+                                editMutation.mutate({
+                                    id: skillToEdit.id,
+                                    name: trimmed,
+                                });
+                            }
+                        }}
+                    >
+                        Save
+                    </Button>
+                </Flex>
+            </Modal>
+
+            {/* Skills Table */}
             {skills.length === 0 ? (
                 <NoData />
             ) : (
@@ -130,9 +223,7 @@ const SkillsPage = () => {
                     >
                         <Table.Thead>
                             <Table.Tr>
-                                <Table.Th style={{ textAlign: 'left' }}>
-                                    {t('skillName')}
-                                </Table.Th>
+                                <Table.Th>{t('skillName')}</Table.Th>
                                 <Table.Th style={{ textAlign: 'center' }}>
                                     {t('isActive')}
                                 </Table.Th>
@@ -152,7 +243,7 @@ const SkillsPage = () => {
                                         <Button
                                             variant="light"
                                             onClick={() =>
-                                                console.log(`Edit ${skill.id}`)
+                                                handleEditClick(skill)
                                             }
                                         >
                                             <IconEdit size={16} />

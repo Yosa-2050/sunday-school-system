@@ -50,7 +50,7 @@ const OrganizationsPage = () => {
             pp: PER_PAGE,
             o: [
                 { f: 'status', d: 'desc' },
-                { f: 'createdAt', d: 'desc' },
+                { f: 'createdAt', d: 'asc' },
             ],
         }),
     );
@@ -261,8 +261,8 @@ const OrganizationsPage = () => {
             <Paper p="lg" style={{ borderRadius: '10px' }}>
                 {organizations.length === 0 && !isLoading ? (
                     <NoData />
-                    // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                ) : isMobile ? (
+                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                isMobile ? (
                     <OrganizationsMobile
                         organizations={organizations}
                         isLoading={isLoading}

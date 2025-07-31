@@ -15,11 +15,11 @@ import { useDisclosure } from '@mantine/hooks';
 import { COOKIE_ACCESS_TOKEN, entityParamSerializer } from '@shega/shared';
 import { useAuth } from '@shega/ui';
 import {
+    IconBell,
     IconBookmark,
     IconBriefcase,
     IconListCheck,
     IconLogout2,
-    IconMessage,
     IconUser,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
@@ -70,7 +70,7 @@ export function HeaderMenu() {
             href: '/notifications',
             matchPattern: '/notifications',
             requiresAuth: true,
-            icon: <IconMessage size={16} className="text-primary" />,
+            icon: <IconBell size={16} className="text-primary" />,
         },
     ];
 
