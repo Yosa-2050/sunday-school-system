@@ -240,23 +240,6 @@ export default function ApplicantProfile() {
                                     </Text>
                                 )}
                             </Box>
-                            {/* {  <Flex gap="md">
-                <Button loading={isShortlisting} onClick={handleShortlist} leftSection={<IconCheck size="1rem" />}>
-                  Shortlist
-                </Button>
-                <Button
-                  variant="outline"
-                  color="red"
-                  onClick={handleReject}
-                  loading={isRejecting}
-                  leftSection={<IconX size="1rem" />}
-                >
-                  Reject
-                </Button>
-                <ActionIcon variant="outline" size="lg">
-                  <IconDownload size="1.2rem" />
-                </ActionIcon>
-              </Flex>} */}
                         </Flex>
 
                         <Group gap="xs" mb="md">
@@ -434,8 +417,8 @@ export default function ApplicantProfile() {
                                         <Flex align="center" gap="xs" mb="xs">
                                             <IconMail size="1rem" />
                                             <Text size="sm">
-                                                {applicantData.__user__
-                                                    ?.email || 'Not provided'}
+                                                {applicantData?.email ||
+                                                    'Not provided'}
                                             </Text>
                                         </Flex>
                                         {applicantData.__user__ && (
