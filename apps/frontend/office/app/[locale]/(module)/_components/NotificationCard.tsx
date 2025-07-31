@@ -64,7 +64,6 @@ export default function NotificationCard({
                 <Stack gap="xs" style={{ flex: 1 }}>
                     <Text
                         size="md"
-                        fw={700}
                         // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                         dangerouslySetInnerHTML={{
                             __html: notification.subject,
@@ -74,7 +73,6 @@ export default function NotificationCard({
 
                     <Text
                         size="sm"
-                        fw={isRead ? 400 : 600}
                         // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                         dangerouslySetInnerHTML={{
                             __html: notification.content,

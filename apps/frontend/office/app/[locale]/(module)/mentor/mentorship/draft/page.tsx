@@ -30,33 +30,6 @@ import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
 
-interface Organization {
-    id: string;
-    name: string;
-    isActive: boolean;
-}
-
-interface Job {
-    id: string;
-    title: string;
-    description: string;
-    type: string;
-    salaryFrom: number;
-    salaryTo: number;
-    status: string;
-    organization: Organization;
-    createdDate: string;
-    currency: string;
-    postedBy: {
-        employee: {
-            profile: {
-                firstName: string;
-                lastName: string;
-            };
-        };
-    };
-}
-
 const JobsList = () => {
     const router = useRouter();
     const t = useTranslations('mentorsPage');
@@ -84,7 +57,7 @@ const JobsList = () => {
     };
 
     const { data, isLoading, error } = useQuery({
-        queryKey: ['mentorships', entityParamSerializer(entityParams)],
+        queryKey: ['mentorships', 'draft', entityParamSerializer(entityParams)],
         queryFn: () =>
             fetchMentorshipsDraft(entityParamSerializer(entityParams)),
     });

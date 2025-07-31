@@ -50,22 +50,6 @@ const NavigationLink = ({
     </Link>
 );
 
-function haveSameParentAtLevel(
-    path1: string,
-    path2: string,
-    pathMatch: number,
-): boolean {
-    const getParentAtLevel = (
-        path: string,
-        level: number,
-    ): string | undefined => path.split('/').filter(Boolean)[level - 1];
-
-    const parent1 = getParentAtLevel(path1, pathMatch);
-    const parent2 = getParentAtLevel(path2, pathMatch);
-
-    return parent1 !== undefined && parent1 === parent2;
-}
-
 const findActiveSubMenu = (data: MenuTree[], pathname: string): string[] => {
     let activeMenus: string[] = [];
 
@@ -88,7 +72,25 @@ const findActiveSubMenu = (data: MenuTree[], pathname: string): string[] => {
     return activeMenus;
 };
 
-const MenuLabel = ({
+function haveSameParentAtLevel(path1: string, path2: string, level: number) {
+    const seg1 = path1.split('/').filter(Boolean);
+    const seg2 = path2.split('/').filter(Boolean);
+    return seg1.slice(0, level).join('/') === seg2.slice(0, level).join('/');
+}
+
+function isActivePath(pathname: string, link: string) {
+    const pathSegments = pathname.split('/').filter(Boolean);
+    const linkSegments = link.split('/').filter(Boolean);
+
+    // Match exactly the same segments
+    if (pathSegments.length === linkSegments.length) {
+        return pathSegments.join('/') === linkSegments.join('/');
+    }
+
+    return false;
+}
+
+export const MenuLabel = ({
     icon,
     link,
     label,
@@ -101,7 +103,7 @@ const MenuLabel = ({
 
     const active =
         link &&
-        (startsWith(pathname, link) ||
+        (isActivePath(pathname, link) ||
             haveSameParentAtLevel(pathname, link, pathMatch));
 
     const paddingLeft = 20 * level;
@@ -110,7 +112,13 @@ const MenuLabel = ({
         <div
             className={cn(
                 classes.menuItem,
-                `flex cursor-pointer items-center rounded-md ${isSidebarOpen && 'px-2'} py-1 transition duration-300 ease-in-out  ${theme.colorScheme === 'dark' ? 'text-gray-50' : 'text-gray-700'}`,
+                `flex cursor-pointer items-center rounded-md ${
+                    isSidebarOpen && 'px-2'
+                } py-1 transition duration-300 ease-in-out ${
+                    theme.colorScheme === 'dark'
+                        ? 'text-gray-50'
+                        : 'text-gray-700'
+                }`,
                 active ? classes.active : '',
             )}
             style={{ paddingLeft: paddingLeft <= 0 ? 20 : paddingLeft }}
