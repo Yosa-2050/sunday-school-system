@@ -34,6 +34,7 @@ export class ProgramsResponseDto {
         this.programType = program.programType;
         this.isClosed = program.isClosed;
         this.isExpired = program.isExpired;
+        this.deadline = program.deadline;
     }
     id: string;
     title: string;
@@ -59,4 +60,5 @@ export class ProgramsResponseDto {
     programType: ProgramType;
     isClosed: boolean;
     isExpired: boolean;
+    deadline: Date;
 }
