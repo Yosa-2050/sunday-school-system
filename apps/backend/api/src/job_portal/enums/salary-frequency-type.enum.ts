@@ -1,5 +1,5 @@
 export enum SalaryFrequencyType {
     Hourly = 'HOURLY',
-    Weekly = 'Weekly',
+    Weekly = 'WEEKLY',
     Monthly = 'MONTHLY',
 }
