@@ -48,10 +48,7 @@ const OrganizationsPage = () => {
         parseAsJson(entityParamSchema.parse).withDefault({
             p: 1,
             pp: PER_PAGE,
-            o: [
-                { f: 'status', d: 'desc' },
-                { f: 'createdAt', d: 'asc' },
-            ],
+            o: [{ f: 'createdAt', d: 'desc' }],
         }),
     );
 

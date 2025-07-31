@@ -76,6 +76,7 @@ interface Profile extends BaseEntity {
 
 // Main applicant interface
 export interface ApplicantDetails extends BaseEntity {
+    email: string;
     headline: string;
     bio: string;
     cv: string;
