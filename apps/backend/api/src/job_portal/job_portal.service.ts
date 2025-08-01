@@ -22,7 +22,6 @@ import { NotificationType } from '@shega/notification/enums/notification-type.en
 import { NotesService } from '@shega/notification/notes.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
-import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
 import { Organization } from '@shega/organization/entities/organization.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
@@ -202,14 +201,10 @@ export class JobPortalService {
             jobCreated.organization.createdBy,
             LoginBy.EMAIL,
         );
-        let subjectParagraph = null;
-        let contentParagraph = null;
         if (jobCreated.program.isPublished) {
             const org = await this.organizationRepo.findOneBy({
                 id: jobCreated.organization.id,
             });
-            subjectParagraph = 'New Job Posting Awaiting Your Approval!';
-            contentParagraph = `A new job has been submitted by ${org.name} for ${jobCreated.program.title}. Please review and approve this posting to make it visible to job seekers.`;
 
             const metaData = {
                 programId: jobCreated.program.id,
@@ -218,8 +213,8 @@ export class JobPortalService {
 
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: getInAppHtmlTemplate(subjectParagraph),
-                content: getInAppHtmlTemplate(contentParagraph),
+                subject: 'New Job Posting Awaiting Your Approval!',
+                content: `A new job has been submitted by ${org.name} for ${jobCreated.program.title}. Please review and approve this posting to make it visible to job seekers.`,
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
@@ -871,33 +866,25 @@ export class JobPortalService {
     ) {
         let subject = null;
         let content = null;
-        let subjectParagraph = null;
-        let contentParagraph = null;
 
         if (approvalType === ApprovalType.Approved) {
             if (programType === 'Job') {
-                subjectParagraph = `Job Approved:<b>${programTitle}</b> is Now Live!`;
-                contentParagraph = `Congratulations! Your job posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
+                subject = `Job Approved:<b>${programTitle}</b> is Now Live!`;
+                content = `Congratulations! Your job posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
             } else {
-                subjectParagraph = `Mentorship Program Approved:<b>${programTitle}</b> is Now Live!`;
-                contentParagraph = `Congratulations! Your Mentorship Program posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
+                subject = `Mentorship Program Approved:<b>${programTitle}</b> is Now Live!`;
+                content = `Congratulations! Your Mentorship Program posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
             }
-
-            subject = getInAppHtmlTemplate(subjectParagraph);
-            content = getInAppHtmlTemplate(contentParagraph);
         }
 
         if (approvalType === ApprovalType.Declined) {
             if (programType === 'Job') {
-                subjectParagraph = `Job Declined: <b>${programTitle}</b> is Declined!`;
-                contentParagraph = `Unfortunately, your job posting for <b>${programTitle}</b> could not be approved. The reason for declined is ${reasonForDecline}.`;
+                subject = `Job Declined: <b>${programTitle}</b> is Declined!`;
+                content = `Unfortunately, your job posting for <b>${programTitle}</b> could not be approved. The reason for declined is ${reasonForDecline}.`;
             } else {
-                subjectParagraph = `Mentorship Program Declined: <b>${programTitle}</b> is Declined!`;
-                contentParagraph = `Unfortunately, your Mentorship Program posting for<b>${programTitle}</b> could not be approved. The reason for declined is ${reasonForDecline}.`;
+                subject = `Mentorship Program Declined: <b>${programTitle}</b> is Declined!`;
+                content = `Unfortunately, your Mentorship Program posting for<b>${programTitle}</b> could not be approved. The reason for declined is ${reasonForDecline}.`;
             }
-
-            subject = getInAppHtmlTemplate(subjectParagraph);
-            content = getInAppHtmlTemplate(contentParagraph);
         }
 
         const inApptemplate = {
@@ -1281,17 +1268,15 @@ export class JobPortalService {
         if (updateResult.success) {
             const request = new GetJobApplicationsRequestDto();
             request.status = status;
-            let subjectParagraph = null;
-            let contentParagraph = null;
+            let subject = null;
+            let content = null;
             if (status === ApplicationStatus.REJECTED) {
-                subjectParagraph = `Regarding Your Application for <b>${validated.title}</b>`;
-                contentParagraph = `Thank you for your interest in the <b>${validated.title}</b> position at <b>${orgName}</b>. After careful consideration, we've decided to move forward with other candidates. We appreciate your time and effort.`;
+                subject = `Regarding Your Application for <b>${validated.title}</b>`;
+                content = `Thank you for your interest in the <b>${validated.title}</b> position at <b>${orgName}</b>. After careful consideration, we've decided to move forward with other candidates. We appreciate your time and effort.`;
             } else {
-                subjectParagraph = "Congratulations! You're Shortlisted!";
-                contentParagraph = `We're excited to let you know your application for the <b>${validated.title}</b> position at <b>${orgName}</b> has been shortlisted. We'll be in touch soon with more details!`;
+                subject = "Congratulations! You're Shortlisted!";
+                content = `We're excited to let you know your application for the <b>${validated.title}</b> position at <b>${orgName}</b> has been shortlisted. We'll be in touch soon with more details!`;
             }
-            const subject = getInAppHtmlTemplate(subjectParagraph);
-            const content = getInAppHtmlTemplate(contentParagraph);
 
             for (let index = 0; index < appliedUsers.length; index++) {
                 const applicant = appliedUsers[index];

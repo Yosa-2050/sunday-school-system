@@ -16,7 +16,6 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
-import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -119,8 +118,6 @@ export class JobsService {
         application.applicants = applicant;
 
         const savedJobApplication = this.jobApplicantRepo.save(application);
-        let subjectParagraph = null;
-        let contentParagraph = null;
         if (savedJobApplication) {
             const user = await this.profileService.findUserByProfileId(
                 applicant.profile.id,
@@ -129,9 +126,6 @@ export class JobsService {
                 program.programType === ProgramType.Job
                     ? 'Job'
                     : 'Mentorship program';
-
-            subjectParagraph = `New Applicant for Your ${programType} Post!`;
-            contentParagraph = `A new candidate has applied for your ${program.title} position. Review their application and decide your next steps.`;
 
             let userId = '';
 
@@ -163,8 +157,8 @@ export class JobsService {
 
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: getInAppHtmlTemplate(subjectParagraph),
-                content: getInAppHtmlTemplate(contentParagraph),
+                subject: `New Applicant for Your ${programType} Post!`,
+                content: `A new candidate has applied for your ${program.title} position. Review their application and decide your next steps.`,
                 to: userId,
                 reference: userId,
                 isRealTimeNotification: true,

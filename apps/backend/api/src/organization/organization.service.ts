@@ -26,7 +26,6 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 import { NotesService } from '@shega/notification/notes.service';
 import { NotificationService } from '@shega/notification/notification.service';
-import { getInAppHtmlTemplate } from '@shega/notification/seeds/templates/inAppHtmlTemplate';
 // biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
@@ -230,16 +229,17 @@ export class OrganizationService {
                 );
             }
 
-            const user = await this.profileService.findUserByProfileId(
-                profile.id,
-            );
+            const userProfile = await this.profileService.findById(profile.id);
+            const userName = `${userProfile.firstName} ${userProfile.middleName} ${userProfile.lastName}`;
+
             this.SendNotificationForApprovals(
                 emailTemplate,
-                user,
+                userProfile.user,
                 status,
                 note,
                 org.name,
                 org.id,
+                userName,
             );
         }
         return result;
@@ -306,8 +306,9 @@ export class OrganizationService {
         user: User,
         status: ApprovalType,
         reasonForDecline: string,
-        orgName,
-        orgId,
+        orgName: string,
+        orgId: string,
+        userName: string,
     ) {
         if (emailTemplate) {
             this.notificationService.send({
@@ -321,20 +322,15 @@ export class OrganizationService {
             });
         }
 
-        let subjectParagraph = null;
-        let contentParagraph = null;
         const metaData = {
             organizationId: orgId,
         };
 
         if (status === ApprovalType.Approved) {
-            subjectParagraph = 'Organization Status: Approved!';
-            contentParagraph = `Congratulations! Your organization, <b>${orgName}</b>, has been approved and is now ready to post jobs on Shega Jobs.`;
-
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: getInAppHtmlTemplate(subjectParagraph),
-                content: getInAppHtmlTemplate(contentParagraph),
+                subject: 'Organization Status: Approved!',
+                content: `Congratulations! Your organization, <b>${orgName}</b>, has been approved and is now ready to post jobs on Shega Jobs.`,
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
@@ -343,13 +339,10 @@ export class OrganizationService {
                 metaData,
             });
         } else if (status === ApprovalType.Declined) {
-            subjectParagraph = 'Organization Status: Declined!';
-            contentParagraph = `Unfortunately, your organization, <b>${orgName}</b>, could not be approved at this time. The reason for declined is ${reasonForDecline}.`;
-
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: getInAppHtmlTemplate(subjectParagraph),
-                content: getInAppHtmlTemplate(contentParagraph),
+                subject: 'Organization Status: Declined!',
+                content: `Unfortunately, your organization, <b>${orgName}</b>, could not be approved at this time. The reason for declined is ${reasonForDecline}.`,
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
@@ -358,14 +351,12 @@ export class OrganizationService {
                 metaData,
             });
         } else if (status === ApprovalType.Returned) {
-            subjectParagraph =
-                'Action Required: Organization Details Need Adjustments';
-            contentParagraph =
-                "Your organization's details require some adjustments before we can approve your profile. Tap to see what needs to be updated and resubmit for review.";
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: getInAppHtmlTemplate(subjectParagraph),
-                content: getInAppHtmlTemplate(contentParagraph),
+                subject:
+                    'Action Required: Organization Details Need Adjustments',
+                content:
+                    "Your organization's details require some adjustments before we can approve your profile. Tap to see what needs to be updated and resubmit for review.",
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
@@ -375,13 +366,10 @@ export class OrganizationService {
             });
         } else if (status === ApprovalType.Waiting_Approval) {
             const superAdmin = await this.usersService.GetSuperAdmin();
-            subjectParagraph =
-                'Action Required: New Organization Approval Request';
-            contentParagraph = `<b>${user.userName}</b> has requested approval for their organization, <b>${orgName}</b>. Please review and approve or deny this request to grant them full access.`;
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
-                subject: getInAppHtmlTemplate(subjectParagraph),
-                content: getInAppHtmlTemplate(contentParagraph),
+                subject: 'Action Required: New Organization Approval Request',
+                content: `<b>${userName}</b> has requested approval for their organization, <b>${orgName}</b>. Please review and approve or deny this request to grant them full access.`,
                 to: superAdmin.id,
                 reference: superAdmin.id,
                 isRealTimeNotification: true,
