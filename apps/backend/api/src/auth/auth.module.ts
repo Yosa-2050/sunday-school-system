@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { PasswordService } from '@shega/Utilities/password.service';
@@ -9,7 +10,6 @@ import { UsersModule } from '@shega/users/users.module';
 import { ClsModule } from 'nestjs-cls';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 
@@ -21,9 +21,13 @@ import { LocalStrategy } from './local.strategy';
         NotificationModule,
         OrganizationModule,
         JobPortalModule,
-        JwtModule.register({
-            secret: jwtConstants.secret,
-            signOptions: { expiresIn: '1d' },
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                secret: configService.get<string>('JWT_SECRET'),
+                signOptions: { expiresIn: '30m' },
+            }),
         }),
     ],
     providers: [AuthService, LocalStrategy, JwtStrategy, PasswordService],

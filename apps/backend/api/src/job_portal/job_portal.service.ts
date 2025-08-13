@@ -1016,6 +1016,10 @@ export class JobPortalService {
             });
             await this.jobDescriptionRepo.save(description);
         }
+        updateJob.salaryTo =
+            updateJob.salaryType === SalaryType.Fixed
+                ? updateJob.salaryFrom
+                : updateJob.salaryTo;
         const { program, ...jobDetail } = updateJob;
         program.jobDescriptions = undefined;
         const updatedProg = await this.programRepo.update(
@@ -1023,10 +1027,6 @@ export class JobPortalService {
             program,
         );
         const updated = await this.jobRepo.update(id, jobDetail);
-        updateJob.salaryTo =
-            updateJob.salaryType === SalaryType.Fixed
-                ? updateJob.salaryFrom
-                : updateJob.salaryTo;
 
         const confirmUpdated = UtilityServices.EnsureMultipleUpdated(
             updated,
@@ -1042,8 +1042,11 @@ export class JobPortalService {
         }
     }
 
-    async remove(id: string) {
-        const job = await this.jobRepo.findOneBy({ id });
+    async remove(id: string, organizationId: string) {
+        const job = await this.jobRepo.findOneBy({
+            id,
+            organization: { id: organizationId },
+        });
 
         if (!job) {
             throw new EntityNotFoundException('Job not found');

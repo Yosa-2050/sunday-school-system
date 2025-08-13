@@ -13,7 +13,11 @@ async function bootstrap() {
             whitelist: true,
         }),
     );
-    app.enableCors();
+    app.enableCors({
+        origin: [process.env.OFFICE_URL,process.env.PORTAL_URL],
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+      });
     const config = new DocumentBuilder()
         .setTitle('Meklit job portal')
         .setDescription('Meklit job portal')

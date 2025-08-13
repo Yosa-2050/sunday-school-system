@@ -223,7 +223,10 @@ export class JobPortalController {
 
     @Roles(UserRoleType.WorkProvider)
     @Delete(':id')
-    deletePostedJob(@Param('id') id: string) {
-        return this.jobPortalService.remove(id);
+    deletePostedJob(@Param('id') id: string, @Request() req) {
+        return this.jobPortalService.remove(
+            id,
+            CurrentUser.getOrganizationId(req),
+        );
     }
 }

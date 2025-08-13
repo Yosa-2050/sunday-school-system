@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     ParseUUIDPipe,
@@ -22,6 +23,8 @@ import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateMentorShipProgramRequestDto } from './dto/request/create-mentorship.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateMentorShipProgramDto } from './dto/request/update-mentorship-program.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { MentorshipService } from './mentorship.service';
 
@@ -101,51 +104,23 @@ export class MentorshipController {
         return this.mentorshipService.findOneByProgramId(id);
     }
 
-    // @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
-    // @Post('byStatus/export')
-    // async exportByStatus(@Res() res: Response, @Body() dto: { q: string }) {
-    //     const data = await this.mentorshipService.getByStatusPaginated(
-    //         dto.q,
-    //         null,
-    //         true,
-    //     );
-    //     this.documentService.generateCsv(data.data, res, 'jobList');
-    // }
+    @Roles(UserRoleType.Mentor)
+    @Patch(':id')
+    update(
+        @Param('id') id: string,
+        @Body() dto: UpdateMentorShipProgramDto,
+        @Request() req,
+    ) {
+        return this.mentorshipService.update(
+            id,
+            dto,
+            CurrentUser.getMentorId(req),
+        );
+    }
 
-    // @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
-    // @Post('byStatus/exportSelected')
-    // async exportSelected(
-    //     @Res() res: Response,
-    //     @Body() dto: ExportWithQuesryRequestModel,
-    // ) {
-    //     let data = [];
-
-    //     if (dto.list?.length > 0) {
-    //         data = await this.mentorshipService.getByList(dto.list);
-    //     } else {
-    //         data = (
-    //             await this.mentorshipService.getByStatusPaginated(
-    //                 dto.q,
-    //                 null,
-    //                 true,
-    //             )
-    //         ).data;
-    //     }
-
-    //     this.documentService.generateCsv(data, res, 'jobList');
-    // }
-
-    // @Roles(UserRoleType.WorkProvider)
-    // @Patch(':id')
-    // update(
-    //     @Param('id') id: string,
-    //     @Body() updateJobPortalDto: UpdateJobPortalDto,
-    //     @Request() req,
-    // ) {
-    //     return this.mentorshipService.update(
-    //         id,
-    //         updateJobPortalDto,
-    //         CurrentUser.getOrganizationId(req),
-    //     );
-    // }
+    @Roles(UserRoleType.Mentor)
+    @Delete(':id')
+    deletePostedJob(@Param('id') id: string, @Request() req) {
+        return this.mentorshipService.remove(id, CurrentUser.getMentorId(req));
+    }
 }

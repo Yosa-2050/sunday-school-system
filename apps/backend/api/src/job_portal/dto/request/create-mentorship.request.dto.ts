@@ -12,24 +12,24 @@ export class CreateMentorShipProgramRequestDto extends ProgramRequestDto {
         description: 'Group mentorship',
     })
     @OptionalEnum(MentorshipType)
-    mentorshipType: MentorshipType;
+    mentorshipType?: MentorshipType;
 
     @ApiProperty({
         example: CommitmentType.HoursPerDay,
         description: 'Hours per day',
     })
     @OptionalEnum(CommitmentType)
-    commitment: CommitmentType;
+    commitment?: CommitmentType;
 
     @ApiProperty()
     @IsNumber()
     @IsOptional()
-    duration: number;
+    duration?: number;
 
     @ApiProperty({
         example: ExperienceLevelType.Entry,
-        description: 'Enty level',
+        description: 'Entry level',
     })
     @OptionalEnum(ExperienceLevelType)
-    audience: ExperienceLevelType;
+    audience?: ExperienceLevelType;
 }

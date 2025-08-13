@@ -21,6 +21,9 @@ import { OrganizationModule } from './organization/organization.module';
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
         ClsModule.forRoot({
             middleware: {
                 // automatically mount the
