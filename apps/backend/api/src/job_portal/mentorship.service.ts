@@ -307,9 +307,11 @@ export class MentorshipService {
         userDetails.profileId = profile?.id;
         return userDetails;
     }
+
     getByStatusPaginated(q: string, arg1?: string, arg2?: boolean) {
         throw new Error('Method not implemented.');
     }
+
     async filterPrograms(
         filter: GetJobsRequestDto,
         applicantId: string = null,
@@ -344,12 +346,6 @@ export class MentorshipService {
             });
         }
 
-        if (filter.programType) {
-            query.andWhere('program.programType = :programType', {
-                programType: filter.programType,
-            });
-        }
-
         if (filter.experianceLevel) {
             query.andWhere('program.experianceLevel = :experianceLevel', {
                 experianceLevel: filter.experianceLevel,
@@ -373,6 +369,14 @@ export class MentorshipService {
                 cityId: filter.cityId,
             });
         }
+        if (filter.programType) {
+            query.andWhere('program.programType = :programType', {
+                programType: filter.programType,
+            });
+
+            this.FilterUsingMentorOrJob(filter, query);
+        }
+
         query.orderBy('program.postedDate', 'DESC');
 
         let programsApplied: string[] = null;
@@ -408,6 +412,100 @@ export class MentorshipService {
             filter.pagination.page,
             filter.pagination.limit,
         );
+    }
+
+    private FilterUsingMentorOrJob(filter: GetJobsRequestDto, query) {
+        if (filter.programType === ProgramType.Job) {
+            query.leftJoin('job', 'job', 'job.programId = program.id');
+
+            this.FilterForJobType(filter, query);
+        }
+
+        if (filter.programType === ProgramType.Mentorship) {
+            query.leftJoin(
+                'mentorship',
+                'mentorship',
+                'mentorship.programId = program.id',
+            );
+
+            this.FilterForMentorType(filter, query);
+        }
+    }
+
+    private FilterForMentorType(filter: GetJobsRequestDto, query) {
+        if (filter.mentorshipType) {
+            query.andWhere('mentorship.mentorshipType = :mentorshipType', {
+                mentorshipType: filter.mentorshipType,
+            });
+        }
+
+        if (filter.commitment) {
+            query.andWhere('mentorship.commitment = :commitment', {
+                commitment: filter.commitment,
+            });
+        }
+
+        if (filter.duration) {
+            query.andWhere('mentorship.duration = :duration', {
+                duration: filter.duration,
+            });
+        }
+
+        if (filter.audience) {
+            query.andWhere('mentorship.mentorshipType = :mentorshipType', {
+                audience: filter.audience,
+            });
+        }
+
+        if (filter.mentorId) {
+            query.andWhere('mentorship.mentorId = :mentorId', {
+                mentorId: filter.mentorId,
+            });
+        }
+    }
+
+    private FilterForJobType(filter: GetJobsRequestDto, query) {
+        if (filter.type) {
+            query.andWhere('job.type = :employmentType', {
+                employmentType: filter.type,
+            });
+        }
+
+        if (filter.salaryType) {
+            query.andWhere('job.salaryType = :salaryType', {
+                salaryType: filter.salaryType,
+            });
+        }
+
+        if (filter.salaryFrequency) {
+            query.andWhere('job.salaryFrequency = :salaryFrequency', {
+                salaryFrequency: filter.salaryFrequency,
+            });
+        }
+
+        if (filter.currency) {
+            query.andWhere('job.currency = :currency', {
+                currency: filter.currency,
+            });
+        }
+
+        if (filter.salaryFrom) {
+            query.andWhere('job.salaryFrom >= :salaryFrom', {
+                salaryFrom: filter.salaryFrom,
+            });
+        }
+
+        if (filter.salaryTo) {
+            query.andWhere('job.salaryTo <= :salaryTo', {
+                salaryTo: filter.salaryTo,
+            });
+        }
+
+        if (filter.organizationId) {
+            query.andWhere('job.organizationId = :organizationId', {
+                organizationId: filter.organizationId,
+            });
+        }
     }
 
     async remove(id: string, mentorId: string) {
