@@ -33,7 +33,12 @@ import { Repository } from 'typeorm';
 import { CreateMentorShipProgramRequestDto } from './dto/request/create-mentorship.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetJobsRequestDto } from './dto/request/get-jobs.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UpdateMentorShipProgramDto } from './dto/request/update-mentorship-program.request.dto';
 import { ProgramsResponseDto } from './dto/response/mentorships.response.dto';
+import { ProgramCategory } from './entities/job-category.entity';
+import { ProgramDescription } from './entities/job-description.entity';
+import { ProgramSkills } from './entities/job-skills.entity';
 import { Mentors } from './entities/mentor.entity';
 import { Mentorship } from './entities/mentorship.entity';
 import { Programs } from './entities/programs.entity';
@@ -43,124 +48,6 @@ import { JobPortalService } from './job_portal.service';
 
 @Injectable()
 export class MentorshipService {
-    async findOneByProgramId(id: string) {
-        const program = await this.mentorshipRepo
-            .createQueryBuilder('mentorship')
-            .leftJoinAndSelect('mentorship.program', 'program')
-            .leftJoinAndSelect('program.jobCategory', 'jobCategory')
-            .leftJoinAndSelect('program.jobSkills', 'jobSkills')
-            .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
-            .leftJoinAndSelect('program.city', 'city')
-            .leftJoinAndSelect('program.country', 'country')
-            .leftJoinAndSelect('program.state', 'state')
-            .leftJoinAndSelect('mentorship.mentor', 'mentor')
-            .leftJoinAndSelect('mentor.profile', 'profile')
-            .where('program.id = :id', { id })
-            .getOne();
-        if (!program) {
-            throw new EntityNotFoundException('Mentorship');
-        }
-
-        return program;
-    }
-
-    async getAllByMentorPaginated(
-        paginationDto: string,
-        mentorId: string,
-        isOnlyDraft?: boolean,
-        isOnlyPublished?: boolean,
-    ) {
-        const deserialized = entityParamDeserializer(paginationDto);
-
-        const searchableColumns = ['program.title', 'program.description'];
-
-        const queryString = entityParamSerializer({
-            ...deserialized,
-            f: [
-                mentorId
-                    ? { f: 'mentor.id', v: mentorId, o: 'eq' } // Uncommented filter
-                    : {},
-                isOnlyDraft
-                    ? { f: 'program.isPublished', v: 'false', o: 'eq' }
-                    : {},
-                isOnlyPublished
-                    ? {
-                          f: 'program.isPublished',
-                          v: isOnlyPublished.toString(),
-                          o: 'eq',
-                      }
-                    : {},
-                ...(deserialized.f ?? []),
-            ],
-        });
-
-        const joinOptions = [
-            {
-                relation: 'entity.mentor',
-                alias: 'mentor',
-            },
-            {
-                relation: 'entity.program',
-                alias: 'program',
-            },
-        ];
-
-        const { data: mentors, total } =
-            await this.queryBuilderService.buildQuery(
-                this.mentorshipRepo,
-                queryString,
-                joinOptions,
-                searchableColumns,
-            );
-
-        //const jobsList = jobs.map((org) => new JobResponseDto(org));
-
-        return new PaginatedResponseDto<Mentorship[]>(
-            mentors,
-            total,
-            deserialized.p,
-            deserialized.pp,
-        );
-    }
-
-    async findAllPaginated(dto: string, exportList = false) {
-        // Convert PaginationDto to the format expected by QueryBuilderService
-        const { p, pp, s, f, o } = entityParamDeserializer(dto);
-
-        const queryParams: EntityParam = {
-            p,
-            pp,
-            s,
-            f,
-            o: o || [{ f: 'createdAt', d: 'desc' }],
-        };
-        // Define searchable columns (if applicable)
-        const searchableColumns = ['name']; // Add other searchable columns if needed
-        if (exportList) {
-            queryParams.p = 0;
-            queryParams.pp = 0;
-        }
-        const queryString = entityParamSerializer(queryParams);
-
-        // Use the QueryBuilderService to build and execute the query
-        const { data: mentors, total } =
-            await this.queryBuilderService.buildQuery(
-                this.mentorsRepo,
-                queryString,
-                [
-                    {
-                        relation: 'entity.profile',
-                        alias: 'profile',
-                    },
-                ], // No joins needed for this query
-                searchableColumns,
-            );
-
-        // Map the results to the response DTO
-        //return mentors;
-        return new PaginatedResponseDto<Mentors[]>(mentors, total, p, pp);
-    }
-
     constructor(
         @InjectRepository(Mentors)
         private mentorsRepo: Repository<Mentors>,
@@ -174,6 +61,12 @@ export class MentorshipService {
         private notificationService: NotificationService,
         private queryBuilderService: QueryBuilderService,
         private userService: UsersService,
+        @InjectRepository(ProgramSkills)
+        private programSkillsRepo: Repository<ProgramSkills>,
+        @InjectRepository(ProgramCategory)
+        private programCategoryRepo: Repository<ProgramCategory>,
+        @InjectRepository(ProgramDescription)
+        private programDescriptionRepo: Repository<ProgramDescription>,
     ) {}
 
     async createMentor(dto: CreateBasicUserDto) {
@@ -267,6 +160,90 @@ export class MentorshipService {
         }
 
         return created;
+    }
+
+    async update(
+        mentorShipId: string,
+        dto: UpdateMentorShipProgramDto,
+        mentorId: string,
+    ) {
+        const mentorShip = await this.mentorshipRepo.findOneBy({
+            id: mentorShipId,
+            mentor: { id: mentorId },
+        });
+
+        if (!mentorShip) {
+            throw new EntityNotFoundException('Mentorship not found');
+        }
+
+        const createDto: CreateMentorShipProgramRequestDto = {
+            ...dto,
+            title: dto.title ?? mentorShip.program.title,
+            isPublished: dto.isPublished ?? mentorShip.program.isPublished,
+        };
+
+        const updatedMentorShip = await this.GetMentorship(createDto);
+        const skills = this.jobPortalService.GetSkills(
+            createDto,
+            mentorShip.program,
+        );
+        const description = this.jobPortalService.GetDescriptions(
+            createDto,
+            mentorShip.program,
+        );
+
+        const categories = await this.jobPortalService.GetCategories(
+            createDto,
+            mentorShip.program,
+        );
+        if (skills && skills.length > 0) {
+            await this.programSkillsRepo.delete({
+                program: { id: mentorShip.program.id },
+            });
+            await this.programSkillsRepo.save(skills);
+        }
+
+        if (categories && categories.length > 0) {
+            await this.programCategoryRepo.delete({
+                program: { id: mentorShip.program.id },
+            });
+            await this.programCategoryRepo.save(categories);
+        }
+
+        if (description && description.length > 0) {
+            await this.programDescriptionRepo.delete({
+                program: { id: mentorShip.program.id },
+            });
+            await this.programDescriptionRepo.save(description);
+        }
+
+        const { program, ...mentorshipDetail } = updatedMentorShip;
+        program.jobDescriptions = undefined;
+        const updatedProg = await this.programRepo.update(
+            mentorShip.program.id,
+            program,
+        );
+        const updated = await this.mentorsRepo.update(
+            mentorShipId,
+            mentorshipDetail,
+        );
+
+        const confirmUpdated = UtilityServices.EnsureMultipleUpdated(
+            updated,
+            updatedProg,
+            mentorShipId,
+        );
+        if (confirmUpdated.success) {
+            const mentorshipRepoUpdated = await this.mentorshipRepo.findOneBy({
+                id: mentorShipId,
+                mentor: { id: mentorId },
+            });
+            await this.SendNotificationForJobCreatedToAdmin(
+                mentorshipRepoUpdated,
+            );
+        }
+
+        return confirmUpdated;
     }
 
     private async SendNotificationForJobCreatedToAdmin(mentorShip: Mentorship) {
@@ -431,5 +408,135 @@ export class MentorshipService {
             filter.pagination.page,
             filter.pagination.limit,
         );
+    }
+
+    async remove(id: string, mentorId: string) {
+        const job = await this.mentorshipRepo.findOneBy({
+            id,
+            mentor: { id: mentorId },
+        });
+
+        if (!job) {
+            throw new EntityNotFoundException('Mentorship program not found');
+        }
+
+        return this.mentorshipRepo.softDelete(id);
+    }
+    async findOneByProgramId(id: string) {
+        const program = await this.mentorshipRepo
+            .createQueryBuilder('mentorship')
+            .leftJoinAndSelect('mentorship.program', 'program')
+            .leftJoinAndSelect('program.jobCategory', 'jobCategory')
+            .leftJoinAndSelect('program.jobSkills', 'jobSkills')
+            .leftJoinAndSelect('program.jobDescriptions', 'jobDescriptions')
+            .leftJoinAndSelect('program.city', 'city')
+            .leftJoinAndSelect('program.country', 'country')
+            .leftJoinAndSelect('program.state', 'state')
+            .leftJoinAndSelect('mentorship.mentor', 'mentor')
+            .leftJoinAndSelect('mentor.profile', 'profile')
+            .where('program.id = :id', { id })
+            .getOne();
+        if (!program) {
+            throw new EntityNotFoundException('Mentorship');
+        }
+
+        return program;
+    }
+
+    async getAllByMentorPaginated(
+        paginationDto: string,
+        mentorId: string,
+        isOnlyDraft?: boolean,
+        isOnlyPublished?: boolean,
+    ) {
+        const deserialized = entityParamDeserializer(paginationDto);
+
+        const searchableColumns = ['program.title', 'program.description'];
+
+        const queryString = entityParamSerializer({
+            ...deserialized,
+            f: [
+                mentorId
+                    ? { f: 'mentor.id', v: mentorId, o: 'eq' } // Uncommented filter
+                    : {},
+                isOnlyDraft
+                    ? { f: 'program.isPublished', v: 'false', o: 'eq' }
+                    : {},
+                isOnlyPublished
+                    ? {
+                          f: 'program.isPublished',
+                          v: isOnlyPublished.toString(),
+                          o: 'eq',
+                      }
+                    : {},
+                ...(deserialized.f ?? []),
+            ],
+        });
+
+        const joinOptions = [
+            {
+                relation: 'entity.mentor',
+                alias: 'mentor',
+            },
+            {
+                relation: 'entity.program',
+                alias: 'program',
+            },
+        ];
+
+        const { data: mentors, total } =
+            await this.queryBuilderService.buildQuery(
+                this.mentorshipRepo,
+                queryString,
+                joinOptions,
+                searchableColumns,
+            );
+
+        //const jobsList = jobs.map((org) => new JobResponseDto(org));
+
+        return new PaginatedResponseDto<Mentorship[]>(
+            mentors,
+            total,
+            deserialized.p,
+            deserialized.pp,
+        );
+    }
+
+    async findAllPaginated(dto: string, exportList = false) {
+        // Convert PaginationDto to the format expected by QueryBuilderService
+        const { p, pp, s, f, o } = entityParamDeserializer(dto);
+
+        const queryParams: EntityParam = {
+            p,
+            pp,
+            s,
+            f,
+            o: o || [{ f: 'createdAt', d: 'desc' }],
+        };
+        // Define searchable columns (if applicable)
+        const searchableColumns = ['name']; // Add other searchable columns if needed
+        if (exportList) {
+            queryParams.p = 0;
+            queryParams.pp = 0;
+        }
+        const queryString = entityParamSerializer(queryParams);
+
+        // Use the QueryBuilderService to build and execute the query
+        const { data: mentors, total } =
+            await this.queryBuilderService.buildQuery(
+                this.mentorsRepo,
+                queryString,
+                [
+                    {
+                        relation: 'entity.profile',
+                        alias: 'profile',
+                    },
+                ], // No joins needed for this query
+                searchableColumns,
+            );
+
+        // Map the results to the response DTO
+        //return mentors;
+        return new PaginatedResponseDto<Mentors[]>(mentors, total, p, pp);
     }
 }
