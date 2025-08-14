@@ -14,7 +14,7 @@ async function bootstrap() {
         }),
     );
     app.enableCors({
-        origin: [process.env.OFFICE_URL,process.env.PORTAL_URL],
+        origin: [process.env.OFFICE_URL,process.env.PORTAL_URL, process.env.Local],
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,
       });
