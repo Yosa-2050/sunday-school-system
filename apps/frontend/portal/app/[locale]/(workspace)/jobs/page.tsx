@@ -43,7 +43,7 @@ export default function JobsPage() {
     const searchParam = useSearchParams();
 
     const [filters, setFilters] = useState<Filter>(
-        initialValues(searchParam.get('title')) || initialValues(''),
+        initialValues(searchParam.get('search')) || initialValues(''),
     );
     const updateFilters = ({
         key,
@@ -174,7 +174,7 @@ export default function JobsPage() {
                                 </Box>
                                 // biome-ignore lint/nursery/noNestedTernary: <explanation>
                             ) : isEmpty ? (
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {data?.data.map((job) => (
                                         <JobCard
                                             key={job.id}

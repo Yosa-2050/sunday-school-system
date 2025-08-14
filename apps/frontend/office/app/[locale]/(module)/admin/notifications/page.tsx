@@ -135,7 +135,7 @@ export default function AllNotificationsPage() {
                     }
                     if (data?.data?.length) {
                         return (
-                            <Stack>
+                            <Stack p={{ base: 'xs', md: 'md' }}>
                                 {data.data.map((notification) => (
                                     <NotificationCard
                                         key={notification.id}
@@ -150,6 +150,7 @@ export default function AllNotificationsPage() {
                                         value={page}
                                         onChange={setPage}
                                         total={total}
+                                        size={'xs'}
                                     />
                                 </Group>
                             </Stack>

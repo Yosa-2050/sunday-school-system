@@ -53,8 +53,8 @@
             "proceedBtn": "Proceed",
             "rightsReserved": "© All rights reserved by Shega Jobs",
             "agreeToTermsAndPrivacyConditions": "I agree to the {terms} and {privacy}.",
-            "terms": "Terms of Service",
-            "privacy": "Privacy Policy"
+            "terms": "Terms & Conditions",
+            "privacy": "Privacy Policy."
         }
     },
     "jobListing": {

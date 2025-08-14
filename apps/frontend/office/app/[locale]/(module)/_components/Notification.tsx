@@ -6,16 +6,18 @@ import {
     Badge,
     Box,
     Button,
+    Drawer,
     Group,
     Image,
     Indicator,
     type MantineTheme,
     Popover,
+    PopoverDropdown,
     ScrollArea,
     Stack,
     Text,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { notifications as noti } from '@mantine/notifications';
 import { entityParamSerializer } from '@shega/shared';
 import {
@@ -57,10 +59,10 @@ export default function NotificationPopover() {
     const [activeNotificationId, setActiveNotificationId] = useState<
         string | null
     >(null);
+    const [opened, { toggle, open, close }] = useDisclosure(false);
+    const isMobile = useMediaQuery('(max-width: 640px)');
+    const queryClient = useQueryClient();
 
-    const [opened, { toggle }] = useDisclosure(false);
-
-    // Get user ID from JWT token
     const token = getCookie('job_access_token');
     let userId: string | undefined;
 
@@ -82,11 +84,58 @@ export default function NotificationPopover() {
         enabled: !!userId,
     });
 
-    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: (notification: NotificationItem) => {
+            if (notification.status.toLowerCase() === 'read') {
+                return unreadNotificationById(notification.id);
+            }
+            return updateNotificationById(notification.id);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['notifications', userId],
+            });
+        },
+        onError: () => {
+            noti.show({
+                title: 'Error',
+                message: 'Failed to update notification',
+                color: 'red',
+                icon: <IconX size="1.1rem" />,
+            });
+        },
+    });
+
+    const toggleRead = (notification: NotificationItem) => {
+        setActiveNotificationId(notification.id);
+        mutation.mutate(notification, {
+            onSettled: () => {
+                setActiveNotificationId(null);
+            },
+        });
+    };
+
+    const formatTime = (dateString: string) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInMinutes = Math.floor(
+            (now.getTime() - date.getTime()) / (1000 * 60),
+        );
+
+        if (diffInMinutes < 1) {
+            return 'Just now';
+        }
+        if (diffInMinutes < 60) {
+            return `${diffInMinutes}m ago`;
+        }
+        if (diffInMinutes < 1440) {
+            return `${Math.floor(diffInMinutes / 60)}h ago`;
+        }
+        return `${Math.floor(diffInMinutes / 1440)}d ago`;
+    };
 
     const mapStatusToIcon = (status: string) => {
         const iconSize = 16;
-
         switch (status.toUpperCase()) {
             case 'APPROVED':
                 return <IconCheck size={iconSize} />;
@@ -120,56 +169,6 @@ export default function NotificationPopover() {
         }
     };
 
-    const toggleRead = (notification: NotificationItem) => {
-        setActiveNotificationId(notification.id);
-        mutation.mutate(notification, {
-            onSettled: () => {
-                setActiveNotificationId(null);
-            },
-        });
-    };
-
-    const mutation = useMutation({
-        mutationFn: (notification: NotificationItem) => {
-            if (notification.status.toLowerCase() === 'read') {
-                return unreadNotificationById(notification.id);
-            }
-            return updateNotificationById(notification.id);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['notifications', userId],
-            });
-        },
-        onError: () => {
-            noti.show({
-                title: 'Error',
-                message: 'Failed to update notification',
-                color: 'red',
-                icon: <IconX size="1.1rem" />,
-            });
-        },
-    });
-
-    const formatTime = (dateString: string) => {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffInMinutes = Math.floor(
-            (now.getTime() - date.getTime()) / (1000 * 60),
-        );
-
-        if (diffInMinutes < 1) {
-            return 'Just now';
-        }
-        if (diffInMinutes < 60) {
-            return `${diffInMinutes}m ago`;
-        }
-        if (diffInMinutes < 1440) {
-            return `${Math.floor(diffInMinutes / 60)}h ago`;
-        }
-        return `${Math.floor(diffInMinutes / 1440)}d ago`;
-    };
-
     const notifications: NotificationItem[] =
         data?.data?.map((item) => ({
             id: item.id,
@@ -183,59 +182,30 @@ export default function NotificationPopover() {
         (n) => n.status.toLowerCase() !== 'read',
     ).length;
 
-    const renderNotificationGroup = (
-        notifications: NotificationItem[],
-        title?: string,
-    ) => (
+    const renderNotificationGroup = (notifications: NotificationItem[]) => (
         <Stack gap={0}>
-            {title && (
-                <Box px="md" py="xs" bg="gray.0">
-                    <Group gap="xs">
-                        <Box
-                            w={8}
-                            h={8}
-                            bg="blue.5"
-                            style={{ borderRadius: '50%' }}
-                        />
-                        <Text size="sm" fw={600} c="dimmed">
-                            {title}
-                        </Text>
-                    </Group>
-                </Box>
-            )}
-
             {notifications.map((notification) => {
                 const isRead = notification.status.toLowerCase() === 'read';
                 const isPending =
                     notification.status.toUpperCase() === 'PENDING';
 
-                // Extract border color logic to avoid nested ternary and handle undefined
-                const getBorderColor = (theme: MantineTheme) => {
-                    if (isRead) {
-                        return 'transparent';
-                    }
-                    if (isPending) {
-                        return (
-                            theme.colors[theme.primaryColor]?.[3] ??
-                            theme.colors.blue[5]
-                        );
-                    }
-                    return theme.colors.blue[5];
-                };
+                const getBorderColor = (theme: MantineTheme) =>
+                    isRead
+                        ? 'transparent'
+                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                          isPending
+                          ? (theme.colors[theme.primaryColor]?.[3] ??
+                            theme.colors.blue[5])
+                          : theme.colors.blue[5];
 
-                // Extract background color logic to avoid nested ternary and handle undefined
-                const getBackgroundColor = (theme: MantineTheme) => {
-                    if (isRead) {
-                        return theme.colors.white;
-                    }
-                    if (isPending) {
-                        return (
-                            theme.colors[theme.primaryColor]?.[0] ??
-                            theme.colors.blue[0]
-                        );
-                    }
-                    return theme.colors.blue[0];
-                };
+                const getBackgroundColor = (theme: MantineTheme) =>
+                    isRead
+                        ? theme.colors.white
+                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                          isPending
+                          ? (theme.colors[theme.primaryColor]?.[0] ??
+                            theme.colors.blue[0])
+                          : theme.colors.blue[0];
 
                 return (
                     <Box
@@ -260,21 +230,18 @@ export default function NotificationPopover() {
                             </Avatar>
 
                             <Stack gap="xs" style={{ flex: 1, minWidth: 0 }}>
-                                <Group gap="xs" wrap="nowrap">
-                                    <Text
-                                        size="sm"
-                                        fw={isRead ? 500 : 600}
-                                        c={isRead ? 'dimmed' : 'dark'}
-                                        truncate
-                                        mb={-8}
-                                        // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                                        dangerouslySetInnerHTML={{
-                                            __html: notification.subject,
-                                        }}
-                                    />
-                                </Group>
                                 <Text
-                                    size="sm"
+                                    size={'xs'}
+                                    fw={isRead ? 500 : 600}
+                                    c={isRead ? 'dimmed' : 'dark'}
+                                    truncate
+                                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                                    dangerouslySetInnerHTML={{
+                                        __html: notification.subject,
+                                    }}
+                                />
+                                <Text
+                                    size="xs"
                                     c={isRead ? 'dimmed' : 'dark.4'}
                                     lineClamp={2}
                                     lh={1.4}
@@ -283,7 +250,6 @@ export default function NotificationPopover() {
                                         __html: notification.content,
                                     }}
                                 />
-
                                 <Group justify="space-between" align="center">
                                     <Group gap="xs">
                                         <Badge
@@ -300,7 +266,6 @@ export default function NotificationPopover() {
                                             {formatTime(notification.createdAt)}
                                         </Text>
                                     </Group>
-
                                     <ActionIcon
                                         variant="subtle"
                                         size="sm"
@@ -323,10 +288,7 @@ export default function NotificationPopover() {
 
                             {notification.thumbnail && (
                                 <Image
-                                    src={
-                                        notification.thumbnail ||
-                                        '/placeholder.svg'
-                                    }
+                                    src={notification.thumbnail}
                                     w={60}
                                     h={40}
                                     radius="sm"
@@ -340,108 +302,114 @@ export default function NotificationPopover() {
         </Stack>
     );
 
-    return (
-        <Popover
-            opened={opened}
-            onChange={toggle}
-            width={420}
-            position="bottom-end"
-            shadow="xl"
-            radius="lg"
-            withArrow
-            arrowSize={12}
-            offset={8}
-        >
-            <Popover.Target>
-                <Indicator
-                    disabled={unreadCount === 0}
-                    label={unreadCount > 99 ? '99+' : unreadCount}
-                    size={20}
-                    color="red"
-                    offset={7}
-                >
-                    <ActionIcon
-                        onClick={toggle}
-                        variant={opened ? 'filled' : 'light'}
-                        size="lg"
-                        radius="md"
-                        aria-label="Notifications"
+    const notificationContent = (
+        <>
+            {notifications.length === 0 ? (
+                <Stack align="center" justify="center" py="xl" px="md">
+                    <Box
+                        w={64}
+                        h={64}
+                        bg="gray.1"
+                        display="flex"
+                        style={{
+                            borderRadius: '50%',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
                     >
-                        <IconBell size={18} />
-                    </ActionIcon>
-                </Indicator>
-            </Popover.Target>
+                        <IconBell size={24} />
+                    </Box>
+                    <Stack gap="xs" align="center">
+                        <Text size="lg" fw={600}>
+                            No notifications yet
+                        </Text>
+                        <Text size="sm" c="dimmed" ta="center" maw={280}>
+                            When you get notifications, they'll show up here.
+                            Check back later!
+                        </Text>
+                    </Stack>
+                </Stack>
+            ) : (
+                <ScrollArea h={isMobile ? '100%' : 400} type="hover">
+                    {renderNotificationGroup(notifications)}
+                </ScrollArea>
+            )}
 
-            <Popover.Dropdown p={0}>
-                {/* Header */}
-                <Box px="md" py="md" bg="primary" c="white">
-                    <Group justify="space-between" align="center">
-                        <Stack gap={2}>
-                            <Text size="lg" fw={600}>
-                                Notifications
-                            </Text>
-                            <Text size="sm" opacity={0.8}>
-                                {unreadCount > 0 ? `${unreadCount} unread` : ''}
-                            </Text>
-                        </Stack>
-                    </Group>
-                </Box>
+            <Box px="xs" py="xs" bg="gray.0">
+                <Button
+                    variant="subtle"
+                    fullWidth
+                    component="a"
+                    href="/work-provider/notifications"
+                    rightSection={<IconChevronRight size={16} />}
+                >
+                    View all notifications
+                </Button>
+            </Box>
+        </>
+    );
 
-                {/* Content */}
-                <ScrollArea h={400} type="hover">
-                    {notifications.length === 0 ? (
-                        <Stack align="center" justify="center" py="xl" px="md">
-                            <Box
-                                w={64}
-                                h={64}
-                                bg="gray.1"
-                                display="flex"
-                                style={{
-                                    borderRadius: '50%',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <IconBell size={24} />
-                            </Box>
-                            <Stack gap="xs" align="center">
+    return (
+        <>
+            <Indicator
+                disabled={unreadCount === 0}
+                label={unreadCount > 99 ? '99+' : unreadCount}
+                size={20}
+                color="red"
+                offset={7}
+            >
+                <ActionIcon
+                    onClick={open}
+                    variant={opened ? 'filled' : 'light'}
+                    size="lg"
+                    radius="md"
+                    aria-label="Notifications"
+                >
+                    <IconBell size={18} />
+                </ActionIcon>
+            </Indicator>
+
+            {isMobile ? (
+                <Drawer
+                    opened={opened}
+                    onClose={close}
+                    position="bottom"
+                    size="90%"
+                    radius="lg"
+                    title="Notifications"
+                    padding="md"
+                >
+                    {notificationContent}
+                </Drawer>
+            ) : (
+                <Popover
+                    opened={opened}
+                    onChange={toggle}
+                    width={420}
+                    position="bottom-end"
+                    shadow="xl"
+                    radius="lg"
+                    withArrow
+                    arrowSize={12}
+                    offset={8}
+                >
+                    <PopoverDropdown p={0}>
+                        <Box px="md" py="md" bg="primary" c="white">
+                            <Stack gap={2}>
                                 <Text size="lg" fw={600}>
-                                    No notifications yet
+                                    Notifications
                                 </Text>
-                                <Text
-                                    size="sm"
-                                    c="dimmed"
-                                    ta="center"
-                                    maw={280}
-                                >
-                                    When you get notifications, they&apos;ll
-                                    show up here. Check back later!
+                                <Text size="sm" opacity={0.8}>
+                                    {unreadCount > 0
+                                        ? `${unreadCount} unread`
+                                        : ''}
                                 </Text>
                             </Stack>
-                        </Stack>
-                    ) : (
-                        <Stack gap={0}>
-                            {notifications.length > 0 &&
-                                renderNotificationGroup(notifications)}
-                        </Stack>
-                    )}
-                </ScrollArea>
-
-                {/* Footer */}
-                <Box px="xs" py="xs" bg="gray.0">
-                    <Button
-                        variant="subtle"
-                        fullWidth
-                        justify="center"
-                        fw={500}
-                        component="a"
-                        href="/work-provider/notifications"
-                        rightSection={<IconChevronRight size={16} />}
-                    >
-                        View all notifications
-                    </Button>
-                </Box>
-            </Popover.Dropdown>
-        </Popover>
+                        </Box>
+                        {notificationContent}
+                    </PopoverDropdown>
+                </Popover>
+            )}
+        </>
     );
 }

@@ -102,16 +102,19 @@ export default function AllNotificationsPage() {
     const total = data?.totalPages ?? 1;
 
     return (
-        <Paper p={'md'}>
+        <Paper p={{ base: 'sm', sm: 'md', md: 'lg' }}>
             <Stack>
-                <Title order={2}>All Notifications</Title>
+                <Title order={2} fz={{ base: 'xl', sm: 'h2' }}>
+                    All Notifications
+                </Title>
 
-                <Group grow>
+                <Stack gap="sm">
                     <TextInput
                         placeholder="Search notifications"
                         leftSection={<IconSearch size={16} />}
                         value={search}
                         onChange={(e) => setSearch(e.currentTarget.value)}
+                        w={{ base: '100%', sm: 'auto' }}
                     />
                     <Select
                         placeholder="Filter by status"
@@ -122,13 +125,17 @@ export default function AllNotificationsPage() {
                         clearable
                         value={status}
                         onChange={setStatus}
+                        w={{ base: '100%', sm: 'auto' }}
                     />
-                </Group>
+                </Stack>
 
                 {(() => {
                     if (isLoading) {
                         return (
-                            <Group justify="center" py="xl">
+                            <Group
+                                justify="center"
+                                py={{ base: 'lg', sm: 'xl' }}
+                            >
                                 <Loader />
                             </Group>
                         );
@@ -145,19 +152,29 @@ export default function AllNotificationsPage() {
                                         }
                                     />
                                 ))}
-                                <Group justify="center" mt="md">
+                                <Group
+                                    justify="center"
+                                    mt={{ base: 'md', sm: 'lg' }}
+                                >
                                     <Pagination
                                         value={page}
                                         onChange={setPage}
                                         total={total}
+                                        size={'xs'}
                                     />
                                 </Group>
                             </Stack>
                         );
                     }
                     return (
-                        <Paper p="xl" withBorder>
-                            <Text ta="center">No notifications found.</Text>
+                        <Paper
+                            p={{ base: 'md', sm: 'lg', md: 'xl' }}
+                            withBorder
+                            ta="center"
+                        >
+                            <Text fz={{ base: 'sm', sm: 'md' }}>
+                                No notifications found.
+                            </Text>
                         </Paper>
                     );
                 })()}

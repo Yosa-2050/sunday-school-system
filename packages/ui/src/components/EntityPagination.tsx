@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Pagination } from '@mantine/core';
+import { Box, Pagination, Text } from '@mantine/core';
 import { PER_PAGE, entityParamSchema } from '@shega/shared';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { cn } from '../utilities/cn';
@@ -52,11 +52,13 @@ export function EntityPagination({
             )}
         >
             <Box className="px-2">
-                {from} to {to} of {total} results
+                <Text fz="xs">
+                    {from} to {to} of {total} results
+                </Text>
             </Box>
             {total >= perPage ? (
                 <Pagination
-                    size="sm"
+                    size={'xs'}
                     total={totalPages}
                     value={currentPage}
                     onChange={createPageURL}

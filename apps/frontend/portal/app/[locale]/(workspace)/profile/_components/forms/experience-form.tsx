@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Button,
     Divider,
-    Group,
+    Flex,
     Loader,
     LoadingOverlay,
     Select,
@@ -16,6 +16,7 @@ import {
     Textarea,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
+import { useMediaQuery } from '@mantine/hooks';
 import { logger } from '@shega/shared';
 import {
     useCities,
@@ -38,12 +39,15 @@ interface ExperienceFormProps {
     isLoading?: boolean;
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function ExperienceForm({
     experience,
     onSubmit,
     onCancel,
     isLoading = false,
 }: ExperienceFormProps) {
+    const isMobile = useMediaQuery('(max-width: 768px)');
+
     const {
         register,
         handleSubmit,
@@ -69,17 +73,13 @@ export default function ExperienceForm({
         },
     });
 
-    // Watch form fields
     const isCurrentlyWorking = watch('currentlyWorking');
     const selectedCountryId = watch('countryId');
     const selectedStateId = watch('stateId');
 
-    // Fetch data using hooks
     const { data: countries = [], isLoading: isLoadingCountries } =
         useCountries();
-    const selectedCountry = countries.find(
-        (country) => country.id === selectedCountryId,
-    );
+    const selectedCountry = countries.find((c) => c.id === selectedCountryId);
     const { data: regions = [], isLoading: isLoadingRegions } = useRegions(
         selectedCountry?.code || '',
     );
@@ -91,7 +91,6 @@ export default function ExperienceForm({
     const { data: employmentTypes = [], isLoading: isLoadingEmploymentTypes } =
         useEmploymentTypes();
 
-    // Reset dependent fields when parent field changes
     useEffect(() => {
         if (isCurrentlyWorking) {
             setValue('endDate', '');
@@ -116,19 +115,9 @@ export default function ExperienceForm({
             const id = experience?.id ?? crypto.randomUUID();
             const experienceData: Experience = {
                 id,
-                title: data.title,
-                company: data.company,
-                startDate: data.startDate,
+                ...data,
                 endDate: data.endDate || null,
-                type: data.type,
-                countryId: data.countryId,
-                stateId: data.stateId,
-                cityId: data.cityId,
-                workPlace: data.workPlace,
-                currentlyWorking: data.currentlyWorking,
-                description: data.description,
             };
-
             onSubmit(experienceData);
         } catch (error) {
             logger.error(error);
@@ -147,23 +136,29 @@ export default function ExperienceForm({
                 <Text fw={500} size="sm">
                     Basic Information
                 </Text>
-                <Group grow>
+
+                <Flex
+                    direction={isMobile ? 'column' : 'row'}
+                    gap="md"
+                    wrap="wrap"
+                >
                     <TextInput
                         label="Job Title"
                         placeholder="e.g. Senior Software Engineer"
                         required
                         error={errors.title?.message}
                         {...register('title')}
+                        style={{ flex: 1 }}
                     />
-
                     <TextInput
                         label="Company"
                         placeholder="e.g. Tech Corp Inc."
                         required
                         error={errors.company?.message}
                         {...register('company')}
+                        style={{ flex: 1 }}
                     />
-                </Group>
+                </Flex>
 
                 <Controller
                     name="type"
@@ -173,7 +168,7 @@ export default function ExperienceForm({
                             label="Employment Type"
                             placeholder={
                                 isLoadingEmploymentTypes
-                                    ? 'Loading employment types...'
+                                    ? 'Loading...'
                                     : 'Select employment type'
                             }
                             rightSection={
@@ -193,7 +188,12 @@ export default function ExperienceForm({
                 />
 
                 <Divider my="xs" />
-                <Group grow>
+
+                <Flex
+                    direction={isMobile ? 'column' : 'row'}
+                    gap="md"
+                    wrap="wrap"
+                >
                     <Controller
                         name="startDate"
                         control={control}
@@ -207,14 +207,14 @@ export default function ExperienceForm({
                                 value={
                                     field.value ? new Date(field.value) : null
                                 }
-                                onChange={(date: Date | null) =>
+                                onChange={(date) =>
                                     field.onChange(date?.toISOString() || '')
                                 }
                                 maxDate={new Date()}
+                                style={{ flex: 1 }}
                             />
                         )}
                     />
-
                     <Controller
                         name="endDate"
                         control={control}
@@ -228,7 +228,7 @@ export default function ExperienceForm({
                                 value={
                                     field.value ? new Date(field.value) : null
                                 }
-                                onChange={(date: Date | null) =>
+                                onChange={(date) =>
                                     field.onChange(date?.toISOString() || '')
                                 }
                                 minDate={
@@ -237,10 +237,11 @@ export default function ExperienceForm({
                                         : undefined
                                 }
                                 maxDate={new Date()}
+                                style={{ flex: 1 }}
                             />
                         )}
                     />
-                </Group>
+                </Flex>
 
                 <Controller
                     name="currentlyWorking"
@@ -249,15 +250,20 @@ export default function ExperienceForm({
                         <Switch
                             label="I currently work here"
                             checked={field.value}
-                            onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>,
-                            ) => field.onChange(event.currentTarget.checked)}
+                            onChange={(e) =>
+                                field.onChange(e.currentTarget.checked)
+                            }
                         />
                     )}
                 />
 
                 <Divider my="xs" />
-                <Group grow>
+
+                <Flex
+                    direction={isMobile ? 'column' : 'row'}
+                    gap="md"
+                    wrap="wrap"
+                >
                     <Controller
                         name="countryId"
                         control={control}
@@ -266,7 +272,7 @@ export default function ExperienceForm({
                                 label="Country"
                                 placeholder={
                                     isLoadingCountries
-                                        ? 'Loading countries...'
+                                        ? 'Loading...'
                                         : 'Select country'
                                 }
                                 rightSection={
@@ -274,18 +280,18 @@ export default function ExperienceForm({
                                         <Loader size="xs" />
                                     ) : null
                                 }
-                                data={countries.map((country) => ({
-                                    value: country.id,
-                                    label: country.name,
+                                data={countries.map((c) => ({
+                                    value: c.id,
+                                    label: c.name,
                                 }))}
                                 error={errors.countryId?.message}
                                 required
                                 searchable
                                 {...field}
+                                style={{ flex: 1 }}
                             />
                         )}
                     />
-
                     <Controller
                         name="stateId"
                         control={control}
@@ -294,7 +300,7 @@ export default function ExperienceForm({
                                 label="State/Region"
                                 placeholder={
                                     isLoadingRegions
-                                        ? 'Loading states/regions...'
+                                        ? 'Loading...'
                                         : 'Select state/region'
                                 }
                                 rightSection={
@@ -302,21 +308,26 @@ export default function ExperienceForm({
                                         <Loader size="xs" />
                                     ) : null
                                 }
-                                data={regions.map((region) => ({
-                                    value: region.id,
-                                    label: region.name,
+                                data={regions.map((r) => ({
+                                    value: r.id,
+                                    label: r.name,
                                 }))}
                                 error={errors.stateId?.message}
                                 required
                                 disabled={!selectedCountryId}
                                 searchable
                                 {...field}
+                                style={{ flex: 1 }}
                             />
                         )}
                     />
-                </Group>
+                </Flex>
 
-                <Group grow>
+                <Flex
+                    direction={isMobile ? 'column' : 'row'}
+                    gap="md"
+                    wrap="wrap"
+                >
                     <Controller
                         name="cityId"
                         control={control}
@@ -325,7 +336,7 @@ export default function ExperienceForm({
                                 label="City"
                                 placeholder={
                                     isLoadingCities
-                                        ? 'Loading cities...'
+                                        ? 'Loading...'
                                         : 'Select city'
                                 }
                                 rightSection={
@@ -333,19 +344,19 @@ export default function ExperienceForm({
                                         <Loader size="xs" />
                                     ) : null
                                 }
-                                data={cities.map((city) => ({
-                                    value: city.id,
-                                    label: city.name,
+                                data={cities.map((c) => ({
+                                    value: c.id,
+                                    label: c.name,
                                 }))}
                                 error={errors.cityId?.message}
                                 required
                                 disabled={!selectedStateId}
                                 searchable
                                 {...field}
+                                style={{ flex: 1 }}
                             />
                         )}
                     />
-
                     <Controller
                         name="workPlace"
                         control={control}
@@ -354,7 +365,7 @@ export default function ExperienceForm({
                                 label="Workplace Type"
                                 placeholder={
                                     isLoadingWorkplaceTypes
-                                        ? 'Loading workplace types...'
+                                        ? 'Loading...'
                                         : 'Select workplace type'
                                 }
                                 rightSection={
@@ -362,17 +373,18 @@ export default function ExperienceForm({
                                         <Loader size="xs" />
                                     ) : null
                                 }
-                                data={workplaceTypes.map((type) => ({
-                                    value: type.value,
-                                    label: type.key,
+                                data={workplaceTypes.map((t) => ({
+                                    value: t.value,
+                                    label: t.key,
                                 }))}
                                 error={errors.workPlace?.message}
                                 required
                                 {...field}
+                                style={{ flex: 1 }}
                             />
                         )}
                     />
-                </Group>
+                </Flex>
 
                 <Divider my="xs" />
 
@@ -386,7 +398,7 @@ export default function ExperienceForm({
                     {...register('description')}
                 />
 
-                <Group justify="flex-end" mt="xl">
+                <Flex justify="flex-end" gap="sm">
                     <Button variant="light" color="gray" onClick={onCancel}>
                         Cancel
                     </Button>
@@ -397,7 +409,7 @@ export default function ExperienceForm({
                     >
                         {experience ? 'Update Experience' : 'Add Experience'}
                     </Button>
-                </Group>
+                </Flex>
             </Stack>
         </form>
     );

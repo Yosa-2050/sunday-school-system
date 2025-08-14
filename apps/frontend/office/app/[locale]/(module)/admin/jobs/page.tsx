@@ -3,14 +3,12 @@
 import { PageContainer } from '@/components/PageContainer';
 import { useRouter } from '@/i18n/routing';
 import {
-    Badge,
     Button,
     Card,
     Center,
     Checkbox,
     Divider,
     Flex,
-    Group,
     LoadingOverlay,
     Paper,
     Stack,
@@ -35,12 +33,6 @@ import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useCallback, useState } from 'react';
-
-interface Organization {
-    id: string;
-    name: string;
-    isActive: boolean;
-}
 
 interface Job {
     id: string;
@@ -149,10 +141,6 @@ const JobsList = () => {
         return <LoadingOverlay visible={true} h="100vh" />;
     }
 
-    if (error) {
-        return <Text color="red">Error loading jobs</Text>;
-    }
-
     const toggleRow = (id: string) =>
         setSelection((current) =>
             current.includes(id)
@@ -169,19 +157,27 @@ const JobsList = () => {
 
     return (
         <PageContainer className="flex flex-col gap-2.5">
-            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-                <Flex align="center" justify="space-between" className="p-4">
-                    <Text className="font-bold text-xl">{t('title')}</Text>
+            <Paper shadow="xs" p="md" style={{ borderRadius: '10px' }}>
+                <Flex
+                    align="center"
+                    justify="space-between"
+                    className="p-2 md:p-4 flex-col md:flex-row gap-2 md:gap-0"
+                >
+                    <Text className="font-bold text-xl text-center md:text-left w-full md:w-auto">
+                        {t('title')}
+                    </Text>
                 </Flex>
+
                 <Divider my="md" />
 
-                <Group justify="space-between" className="mb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <EntitySearch
                         entity="jobs"
                         placeholder={t('searchPlaceholder')}
-                        className="!w-[300px]"
+                        className="w-full md:!w-[300px]"
                     />
-                    <Group>
+
+                    <div className="flex flex-col sm:flex-row gap-2 md:gap-4 w-full md:w-auto">
                         <EntityFilter
                             entity="jobs"
                             filterOptions={[
@@ -230,13 +226,17 @@ const JobsList = () => {
                                 exportMutation.mutate({ payload, type });
                             }}
                             loading={exportMutation.isPending}
+                            className="w-full sm:w-auto"
                         >
                             {t('exportCSV')}
                         </Button>
-                    </Group>
-                </Group>
+                    </div>
+                </div>
             </Paper>
-            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+            <Paper
+                style={{ borderRadius: '10px' }}
+                className="border-none md:border shadow-none md:shadow-xs p-1 md:p-4"
+            >
                 {jobs.length === 0 ? (
                     <Center h={200}>
                         <Text c="dimmed" ta="center">
@@ -250,37 +250,75 @@ const JobsList = () => {
                             <Card
                                 key={job.id}
                                 shadow="sm"
-                                p="lg"
+                                p="md"
                                 radius="md"
                                 withBorder
                             >
-                                <Text fw={500}>{job.title}</Text>
-                                <Stack>
-                                    <div className="job-description">
-                                        {parse(job.description)}
+                                <Flex
+                                    align={'center'}
+                                    justify={'space-between'}
+                                    className="pb-2 border-b-1"
+                                >
+                                    <Text fw={500}>{job?.title}</Text>
+                                    <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs  ${
+                                            statusStyles[
+                                                job.status as keyof typeof statusStyles
+                                            ] || 'bg-yellow-300'
+                                        } text-white`}
+                                        autoCapitalize="none"
+                                    >
+                                        {statusText[
+                                            job.status as keyof typeof statusText
+                                        ] || job.status}
+                                    </span>
+                                </Flex>
+                                <Stack className="pt-2">
+                                    <div className="job-description text-xs">
+                                        {parse(job?.description)}
                                     </div>
                                 </Stack>
+
                                 <Text size="sm" c="dimmed">
                                     {job.type}
                                 </Text>
-                                <Text size="sm">
-                                    Salary: ${job.salaryFrom.toLocaleString()} -
-                                    ${job.salaryTo.toLocaleString()}
-                                </Text>
-                                <Badge
-                                    color={
-                                        job.status === 'APPROVED'
-                                            ? 'green'
-                                            : 'yellow'
-                                    }
+
+                                <Flex gap={'xs'} align={'center'}>
+                                    <Text fw={'bold'}>Salary:</Text>
+                                    <Text size="sm" fz={'xs'}>
+                                        {(() => {
+                                            if (
+                                                job?.salaryFrom &&
+                                                job?.salaryTo
+                                            ) {
+                                                return `${job.salaryFrom.toLocaleString()} - ${job.salaryTo.toLocaleString()} ${job.currency}`;
+                                            }
+                                            if (job?.salaryFrom) {
+                                                return `${job.salaryFrom.toLocaleString()} ${job.currency}`;
+                                            }
+                                            return 'N/A';
+                                        })()}
+                                    </Text>
+                                </Flex>
+                                <Flex align={'center'} gap={'sm'} mb={'sm'}>
+                                    <Text fw={'bold'}>Salary Type: </Text>
+                                    <Text size="xs" fz={'xs'}>
+                                        {job.salaryType}
+                                    </Text>
+                                </Flex>
+                                <Flex
+                                    className="pt-1 border-t-1"
+                                    align={'center'}
+                                    justify={'space-between'}
                                 >
-                                    {job.status}
-                                </Badge>
-                                <Text size="xs" c="dimmed">
-                                    Posted by:{' '}
-                                    {job.postedBy.employee.profile.firstName}{' '}
-                                    {job.postedBy.employee.profile.lastName}
-                                </Text>
+                                    <Text fw={500}>{job?.orgName}</Text>
+                                    <Text>
+                                        {' '}
+                                        {new Date(
+                                            job.createdDate,
+                                        ).toDateString()}
+                                    </Text>
+                                </Flex>
                             </Card>
                         ))}
                     </Stack>

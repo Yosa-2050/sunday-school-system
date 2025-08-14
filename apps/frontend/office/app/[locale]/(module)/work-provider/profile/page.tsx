@@ -354,7 +354,8 @@ function UserProfile() {
 
     const canUpdateProfile =
         organization?.status === ApprovalType.New ||
-        organization?.status === ApprovalType.RETURNED;
+        organization?.status === ApprovalType.RETURNED ||
+        organization?.status === ApprovalType.APPROVED;
 
     const submitMutation = useMutation({
         mutationFn: submitOrganizationProfile,

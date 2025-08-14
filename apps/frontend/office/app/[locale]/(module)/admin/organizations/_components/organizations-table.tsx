@@ -103,7 +103,7 @@ export const OrganizationsTable = ({
                             </Table.Th>
                             <Table.Th>{t('table.status')}</Table.Th>
                             <Table.Th>{t('table.approvalStatus')}</Table.Th>
-                            <Can roles={['super_admin', 'administrator']}>
+                            <Can roles={['super_admin']}>
                                 <Table.Th>{t('table.actions')}</Table.Th>
                             </Can>
                         </Table.Tr>
