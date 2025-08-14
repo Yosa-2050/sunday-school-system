@@ -1,5 +1,3 @@
-import { useNetwork } from '@mantine/hooks';
-
 import { Box, useComputedColorScheme } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import Link from 'next/link';
@@ -15,7 +13,6 @@ function getContrastColor(bgColor: string): string {
     return luminance > 128 ? '#000000' : '#FFFFFF';
 }
 export const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
-    const networkStatus = useNetwork();
     const schema = useComputedColorScheme();
     const { user } = useAuth();
 
@@ -64,24 +61,10 @@ export const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
                 <Box
                     className={`${schema === 'light' ? 'border-gray-200 bg-white' : 'border-[var(--mantine-color-dark-4)]'} flex h-14 items-stretch border-t px-4 py-2 justify-between text-xs`}
                 >
-                    <Box className="flex flex-col gap-1 justify-between">
-                        <span
-                            className={
-                                networkStatus.online
-                                    ? 'text-green-500'
-                                    : 'text-red-500'
-                            }
-                        >
-                            {networkStatus.online ? 'Online' : 'Offline'}
-                        </span>
-                        <Box className="text-center">
-                            {process.env.NEXT_PUBLIC_APP_VERSION ?? 'V 0.0.1'}
-                        </Box>
-                    </Box>
-                    <Box className="flex flex-col gap-1 justify-between">
+                    <Box className="flex gap-1 justify-between w-full items-center">
                         <Box className="text-right"> &copy; {year}</Box>
                         <Box className="flex gap-2 justify-between items-center">
-                            <span className="text-xs">Powered by</span>
+                            <span className="text-xs">Powered by: </span>
                         </Box>
                     </Box>
                 </Box>

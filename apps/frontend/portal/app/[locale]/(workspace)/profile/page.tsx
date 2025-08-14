@@ -107,13 +107,18 @@ export default function ProfilePage() {
                         timingFunction="ease"
                     >
                         {(styles) => (
-                            <Flex gap={'md'} align={'flex-start'}>
+                            <Flex
+                                gap={'md'}
+                                align={'flex-start'}
+                                className="flex-col md:flex-row"
+                            >
                                 <Stack
                                     gap="xs"
                                     style={{
                                         ...styles,
                                     }}
                                     className="flex-1"
+                                    px={{ base: 'sm', md: 0 }}
                                 >
                                     <PersonalInfoSection
                                         data={displayData.profile}
@@ -154,7 +159,11 @@ export default function ProfilePage() {
                                         }
                                     />
                                 </Stack>
-                                <Stack maw={'450px'} w={'450px'}>
+                                <Stack
+                                    className=""
+                                    gap="xs"
+                                    px={{ base: 'sm', md: 0 }}
+                                >
                                     <SkillsSection
                                         skills={displayData.skills}
                                     />

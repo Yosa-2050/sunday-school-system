@@ -55,7 +55,7 @@ export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
                 onSuccess: () => {
                     notifications.show({
                         title: 'Success',
-                        message: 'Cover letter updated successfully',
+                        message: 'Bio detail updated successfully',
                         color: 'green',
                         icon: <IconCheck size={16} />,
                     });
@@ -66,7 +66,7 @@ export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
                         message:
                             error instanceof Error
                                 ? error.message
-                                : 'Failed to update cover letter',
+                                : 'Failed to update bio detail',
                         color: 'red',
                         icon: <IconX size={16} />,
                     });

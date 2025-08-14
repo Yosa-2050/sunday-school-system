@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Box,
     Button,
+    Flex,
     Group,
     Modal,
     PasswordInput,
@@ -12,7 +13,7 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { PrivacyPolicy } from 'app/[locale]/(module)/_components/PrivacyPolicy';
@@ -125,7 +126,7 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                 close={closeTerm}
                 updateTerms={updateTerms}
             />
-            <Box className="flex w-1/2 items-center justify-center bg-white">
+            <Box className="flex w-full md:w-1/2 items-center justify-center bg-white">
                 <div className="relative w-full p-8">
                     <Stack>
                         <Title order={2} ta="center" mb={'lg'}>
@@ -177,11 +178,16 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                                         },
                                     }}
                                 />
-                                <Text
-                                    className="flex items-center gap-1.5"
+                                <Flex
+                                    align={'center'}
+                                    wrap={'wrap'}
                                     mt={'lg'}
+                                    gap={1}
                                 >
-                                    Agree to the{' '}
+                                    <Text>
+                                        Before you can log in, you need to click
+                                        the link to agree to our{' '}
+                                    </Text>
                                     <Text
                                         className="cursor-pointer !underline"
                                         fw={500}
@@ -189,7 +195,7 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                                     >
                                         {t('terms')}
                                     </Text>
-                                    and{' '}
+                                    <Text px={4}> and </Text>
                                     <Text
                                         className="cursor-pointer !underline"
                                         fw={500}
@@ -197,7 +203,7 @@ const ChangePassword = ({ userId }: { userId: string }) => {
                                     >
                                         {t('privacy')}
                                     </Text>
-                                </Text>
+                                </Flex>
                                 <Group w={'100%'} justify="center" mt={'lg'}>
                                     <Button
                                         type="submit"
@@ -224,12 +230,23 @@ type PrivacyModalProps = {
     opened: boolean;
 };
 const PrivacyModal = ({ close, opened }: PrivacyModalProps) => {
+    const isMobile = useMediaQuery('(max-width: 768px)');
+
     return (
         <Modal
             opened={opened}
             onClose={close}
             title="Privacy Policy"
-            size="50%"
+            fullScreen={isMobile}
+            size={isMobile ? '100%' : '50%'}
+            padding={isMobile ? 'sm' : 'md'}
+            radius={isMobile ? 0 : 'md'}
+            styles={{
+                content: {
+                    width: '100%',
+                    maxWidth: isMobile ? '100%' : '800px',
+                },
+            }}
         >
             <PrivacyPolicy />
         </Modal>
@@ -241,12 +258,23 @@ const TermsModal = ({
     opened,
     updateTerms,
 }: PrivacyModalProps & { updateTerms: (value: boolean) => void }) => {
+    const isMobile = useMediaQuery('(max-width: 768px)');
+
     return (
         <Modal
             opened={opened}
             onClose={close}
-            title="Terms of Service"
-            size="50%"
+            title="Terms & Conditions"
+            fullScreen={isMobile} // Take full screen on mobile
+            size={isMobile ? '100%' : '50%'} // Smaller on desktop
+            padding={isMobile ? 'sm' : 'md'}
+            radius={isMobile ? 0 : 'md'} // No rounded corners in full screen
+            styles={{
+                content: {
+                    width: '100%',
+                    maxWidth: isMobile ? '100%' : '800px',
+                },
+            }}
         >
             <TermsAndConditions updateTerms={updateTerms} close={close} />
         </Modal>

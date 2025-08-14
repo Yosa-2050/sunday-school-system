@@ -210,9 +210,18 @@ const OrganizationsPage = () => {
     return (
         <PageContainer className="flex flex-col gap-2.5">
             {/* Header */}
-            <Paper p="lg" style={{ borderRadius: '10px' }}>
-                <Flex align="center" justify="space-between" className="p-4">
-                    <Text className="font-bold text-xl">{t('title')}</Text>
+            <Paper
+                p={{ base: 'sm', md: 'md' }}
+                style={{ borderRadius: '10px' }}
+            >
+                <Flex
+                    align="center"
+                    justify="space-between"
+                    className="p-1 md:p-4"
+                >
+                    <Text className="font-bold text-md md:text-xl">
+                        {t('title')}
+                    </Text>
                     <CreateOrganization />
                 </Flex>
                 <Divider my="md" />
@@ -224,7 +233,11 @@ const OrganizationsPage = () => {
                         placeholder={t('searchPlaceholder')}
                         className="!w-[300px]"
                     />
-                    <Flex gap={'xs'} align={'center'}>
+                    <Flex
+                        gap={'xs'}
+                        align={'center'}
+                        className="flex-col md:flex-row"
+                    >
                         <EntityFilter
                             entity="organizations"
                             className="!w-[300px]"

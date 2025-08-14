@@ -1,6 +1,12 @@
 'use client';
-import { ActionIcon, Box, Drawer, useComputedColorScheme } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import {
+    ActionIcon,
+    Box,
+    Drawer,
+    Text,
+    useComputedColorScheme,
+} from '@mantine/core';
+import { useDisclosure, useNetwork } from '@mantine/hooks';
 import { IconMenu2 } from '@tabler/icons-react';
 import NotificationPopover from 'app/[locale]/(module)/_components/Notification';
 import { usePathname } from 'next/navigation';
@@ -19,6 +25,7 @@ type ShellProps = {
 
 export default function Shell({ children }: Readonly<ShellProps>): ReactNode {
     const schema = useComputedColorScheme();
+    const networkStatus = useNetwork();
     const [opened, { open, close }] = useDisclosure(false);
     const [isSidebarOpen, toggleSidebar] = useToggle(true);
     const pathname = usePathname();
@@ -74,6 +81,16 @@ export default function Shell({ children }: Readonly<ShellProps>): ReactNode {
                             </ActionIcon>
                         </Box>
                         <Box className="flex gap-2 items-center">
+                            <Text
+                                className={
+                                    networkStatus.online
+                                        ? 'text-green-500'
+                                        : 'text-red-500'
+                                }
+                                fz={12}
+                            >
+                                {networkStatus.online ? 'Online' : 'Offline'}
+                            </Text>
                             <ColorSchemeControl />
                             <NotificationPopover />
                             <UserProfile />

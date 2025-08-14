@@ -58,28 +58,65 @@ export default function NotificationCard({
     };
 
     return (
-        <Card p="md" withBorder radius="md">
-            <Group align="flex-start">
-                <Avatar>{notification.content.charAt(0)}</Avatar>
-                <Stack gap="xs" style={{ flex: 1 }}>
+        <Card
+            //  Using responsive padding with Mantine's style props
+            p={{ base: 'sm', sm: 'md' }}
+            withBorder
+            radius="md"
+        >
+            <Group
+                align="flex-start"
+                //  Using responsive gap
+                gap={'xs'}
+            >
+                <Avatar
+                    size="sm"
+                    //  Using responsive width/height style props
+                    w={{ base: 32, sm: 38 }}
+                    h={{ base: 32, sm: 38 }}
+                >
+                    {notification.content.charAt(0)}
+                </Avatar>
+
+                <Stack gap="xs" style={{ flex: 1, minWidth: 0 }}>
                     <Text
-                        size="md"
+                        size="sm"
+                        fw={500}
                         // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                         dangerouslySetInnerHTML={{
                             __html: notification.subject,
                         }}
-                        mb={-8}
+                        //  Using responsive font size
+                        fz={{ base: 'sm', sm: 'md' }}
+                        style={{
+                            wordBreak: 'break-word',
+                            lineHeight: 1.4,
+                        }}
                     />
 
                     <Text
-                        size="sm"
+                        size="xs"
+                        c="dimmed"
                         // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                         dangerouslySetInnerHTML={{
                             __html: notification.content,
                         }}
+                        //  Using responsive font size
+                        fz={{ base: 'xs', sm: 'sm' }}
+                        style={{
+                            wordBreak: 'break-word',
+                            lineHeight: 1.4,
+                        }}
                     />
-                    <Group justify="space-between">
-                        <Group gap="xs">
+
+                    <Group
+                        justify="space-between"
+                        align="center"
+                        //  Using responsive gap
+                        gap={'xs'}
+                        wrap="wrap"
+                    >
+                        <Group gap="xs" style={{ minWidth: 0 }}>
                             <Badge
                                 color={getStatusColor(notification.status)}
                                 size="xs"
@@ -87,30 +124,41 @@ export default function NotificationCard({
                             >
                                 {notification.status?.toLowerCase()}
                             </Badge>
-                            <Text size="xs" c="dimmed">
+                            <Text
+                                size="xs"
+                                c="dimmed"
+                                style={{ whiteSpace: 'nowrap' }}
+                            >
                                 {formatTime(notification.createdAt)}
                             </Text>
                         </Group>
+
                         <ActionIcon
                             variant="subtle"
                             size="sm"
                             onClick={onToggleRead}
+                            //  Using responsive width/height
+                            w={{ base: 28, sm: 32 }}
+                            h={{ base: 28, sm: 32 }}
                         >
                             {isRead ? (
-                                <IconEyeOff size={14} />
-                            ) : (
                                 <IconEye size={14} />
+                            ) : (
+                                <IconEyeOff size={14} />
                             )}
                         </ActionIcon>
                     </Group>
                 </Stack>
+
                 {notification.thumbnail && (
                     <Image
-                        src={notification.thumbnail}
-                        w={60}
-                        h={40}
+                        src={notification.thumbnail || '/placeholder.svg'}
+                        //  Using responsive width/height
+                        w={{ base: 50, sm: 60 }}
+                        h={{ base: 35, sm: 40 }}
                         radius="sm"
                         fit="cover"
+                        style={{ flexShrink: 0 }}
                     />
                 )}
             </Group>

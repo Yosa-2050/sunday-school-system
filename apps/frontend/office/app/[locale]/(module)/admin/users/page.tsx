@@ -344,7 +344,11 @@ const UsersPage = () => {
                 </Group>
             </Paper>
 
-            <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+            <Paper
+                shadow="xs"
+                p={{ base: 'sm', md: 'md' }}
+                style={{ borderRadius: '10px' }}
+            >
                 {/* Active Filters and Sort */}
                 <Group gap="sm" className="mb-4">
                     {activeFilters.map((group) => (
@@ -423,9 +427,7 @@ const UsersPage = () => {
                             >
                                 <Flex justify="space-between" align="center">
                                     <Text fw={500}>{user.fullName}</Text>
-                                    <Badge
-                                        color={user.isActive ? 'green' : 'red'}
-                                    >
+                                    <Badge color={user.isActive ? '' : 'red'}>
                                         {user.isActive
                                             ? t('status.active')
                                             : t('status.inactive')}

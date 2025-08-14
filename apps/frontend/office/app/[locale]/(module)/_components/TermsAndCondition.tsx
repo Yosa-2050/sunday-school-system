@@ -22,7 +22,7 @@ export function TermsAndConditions({
 }: { updateTerms?: (value: boolean) => void; close?: () => void }) {
     return (
         <Box className="container mx-auto mt-8">
-            <Paper shadow="sm" p="xl" radius="md">
+            <Paper shadow="sm" p={{ base: 'sm', md: 'md' }} radius="md">
                 <Stack gap="xl">
                     {/* Header */}
                     <Box>

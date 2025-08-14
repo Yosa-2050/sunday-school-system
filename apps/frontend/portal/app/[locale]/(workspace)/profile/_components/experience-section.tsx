@@ -17,6 +17,7 @@ import {
     Title,
     rem,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { IconX } from '@tabler/icons-react';
@@ -37,6 +38,7 @@ export default function ExperienceSection({
     experiences = [], // Using sample data as default
     onUpdate,
 }: ExperienceSectionProps) {
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentExperience, setCurrentExperience] =
         useState<Experience | null>(null);
@@ -343,7 +345,7 @@ export default function ExperienceSection({
                         )}
                     </Group>
                 }
-                size="xl"
+                size={isMobile ? '100%' : 'xl'}
                 radius="md"
                 h={'100%'}
                 centered
