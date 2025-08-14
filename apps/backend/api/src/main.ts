@@ -13,11 +13,16 @@ async function bootstrap() {
             whitelist: true,
         }),
     );
-    app.enableCors({
-        origin: [process.env.OFFICE_URL,process.env.PORTAL_URL, process.env.Local],
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        credentials: true,
-      });
+    if(process.env.DEVELOPMENT){
+        app.enableCors();
+    }
+    else{
+        app.enableCors({
+            origin: [process.env.OFFICE_URL,process.env.PORTAL_URL, process.env.Local],
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            credentials: true,
+          });
+    }
     const config = new DocumentBuilder()
         .setTitle('Meklit job portal')
         .setDescription('Meklit job portal')
