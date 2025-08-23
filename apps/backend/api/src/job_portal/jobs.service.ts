@@ -41,7 +41,7 @@ import { UpdateApplicantRequestDto } from './dto/request/update-applicant.reques
 import { ApplicantSkills } from './entities/applicants-skills.entity';
 import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
-import { Experiance } from './entities/experience.entity';
+import { Experience } from './entities/experience.entity';
 import { Applications } from './entities/job-application.entity';
 import { Jobs } from './entities/jobs.entity';
 import { Mentorship } from './entities/mentorship.entity';
@@ -62,8 +62,8 @@ export class JobsService {
         private jobApplicantRepo: Repository<Applications>,
         @InjectRepository(ApplicantSkills)
         private readonly applicantSkillRepo: Repository<ApplicantSkills>,
-        @InjectRepository(Experiance)
-        private readonly experienceRepo: Repository<Experiance>,
+        @InjectRepository(Experience)
+        private readonly experienceRepo: Repository<Experience>,
         @InjectRepository(EducationHistory)
         private readonly educationalHistoryRepo: Repository<EducationHistory>,
         private readonly notificationService: NotificationService,

@@ -4,7 +4,7 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { Profile } from '@shega/users/entities/profile.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { EducationHistory } from './educational-history.entity';
-import { Experiance } from './experience.entity';
+import { Experience } from './experience.entity';
 
 @Entity()
 export class Mentors extends BaseModel {
@@ -25,9 +25,9 @@ export class Mentors extends BaseModel {
     educationalHistory: EducationHistory[];
 
     @OneToMany(
-        () => Experiance,
+        () => Experience,
         (experiance) => experiance.applicant,
         { cascade: true, lazy: true },
     )
-    experiance: Experiance[];
+    experiance: Experience[];
 }

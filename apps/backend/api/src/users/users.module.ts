@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GroupController } from '@shega/Utilities/controllers/group.controller';
 import { DateService } from '@shega/Utilities/date.service';
+import { Group } from '@shega/Utilities/entities/group.entity';
 import { LookUps } from '@shega/Utilities/entities/lookups.entity';
 import { PasswordService } from '@shega/Utilities/password.service';
+import { GroupService } from '@shega/Utilities/service/group.service';
 import { LookupService } from '@shega/Utilities/service/lookup-seeder.service';
 import { DocumentModule } from '@shega/document/document.module';
 import { NotificationModule } from '@shega/notification/notification.module';
@@ -20,7 +23,14 @@ import { UsersService } from './users.service';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Profile, Otp, UserRoles, LookUps]),
+        TypeOrmModule.forFeature([
+            User,
+            Profile,
+            Otp,
+            UserRoles,
+            LookUps,
+            Group,
+        ]),
         DocumentModule,
         NotificationModule,
     ],
@@ -29,6 +39,7 @@ import { UsersService } from './users.service';
         ProfileController,
         EnumsController,
         LookupController,
+        GroupController,
     ],
     providers: [
         UsersService,
@@ -37,6 +48,7 @@ import { UsersService } from './users.service';
         OtpService,
         DateService,
         LookupService,
+        GroupService,
     ],
     exports: [
         UsersService,
