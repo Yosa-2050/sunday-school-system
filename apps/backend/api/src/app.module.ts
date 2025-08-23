@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { AppEntities } from './entities';
 import { JobPortalModule } from './job_portal/job_portal.module';
+import { LmsModule } from './lms/lms.module';
 import { AppModules } from './modules';
 import { OrganizationModule } from './organization/organization.module';
 
@@ -59,6 +60,7 @@ import { OrganizationModule } from './organization/organization.module';
         JobPortalModule,
         SharedModule,
         AdminReportModule,
+        LmsModule,
     ],
     controllers: [AppController],
     providers: [
