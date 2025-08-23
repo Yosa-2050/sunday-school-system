@@ -9,7 +9,7 @@ import { WorkPlaceType } from '../enums/work-place-type.enum';
 import { Applicants } from './applicants.entity';
 
 @Entity()
-export class Experiance extends BaseModel {
+export class Experience extends BaseModel {
     @ManyToOne(() => Applicants, {
         lazy: true,
         nullable: false,

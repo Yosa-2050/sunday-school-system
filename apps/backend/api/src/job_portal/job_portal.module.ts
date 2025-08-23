@@ -10,7 +10,7 @@ import { ApplicantSkills } from './entities/applicants-skills.entity';
 import { Applicants } from './entities/applicants.entity';
 import { Category } from './entities/category.entity';
 import { EducationHistory } from './entities/educational-history.entity';
-import { Experiance } from './entities/experience.entity';
+import { Experience } from './entities/experience.entity';
 import { Applications } from './entities/job-application.entity';
 import { ProgramCategory } from './entities/job-category.entity';
 import { ProgramDescription } from './entities/job-description.entity';
@@ -48,7 +48,7 @@ import { MentorshipService } from './mentorship.service';
             Applications,
             ApplicantSkills,
             EducationHistory,
-            Experiance,
+            Experience,
             ProgramDescription,
             Programs,
             Mentors,
