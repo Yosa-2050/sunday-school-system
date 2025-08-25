@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
+import { CreateUsingNameRequestDto } from '@shega/job_portal/dto/request/create-name.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ClassRequestDto } from '../dto/request/create-class.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from '../services/class.service';
@@ -17,6 +19,21 @@ import { ClassService } from '../services/class.service';
 @Controller('class')
 export class ClassController {
     constructor(private readonly classService: ClassService) {}
+
+    @Post('program')
+    createProgram(@Body() dto: CreateUsingNameRequestDto) {
+        return this.classService.createProgram(dto.name);
+    }
+
+    @Get('program')
+    getPrograms() {
+        return this.classService.getProgram();
+    }
+
+    @Get('program/:id')
+    findProgramById(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.classService.findOneProgram(id);
+    }
 
     @Post('root')
     create(@Body() dto: ClassRequestDto) {

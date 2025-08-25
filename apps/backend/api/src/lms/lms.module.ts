@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from '@shega/users/users.module';
 import { ClassController } from './controllers/classes.controller';
 import { LmsController } from './controllers/lms.controller';
+import { StudentController } from './controllers/student.controller';
 import { Classes } from './entities/classes.entity';
+import { Program } from './entities/program.entity';
 import { Students } from './entities/students.entity';
 import { ClassService } from './services/class.service';
 import { LmsService } from './services/lms.service';
+import { StudentService } from './services/student.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Classes, Students])],
-    controllers: [LmsController, ClassController],
-    providers: [LmsService, ClassService],
+    imports: [
+        TypeOrmModule.forFeature([Classes, Students, Program]),
+        UsersModule,
+    ],
+    controllers: [LmsController, ClassController, StudentController],
+    providers: [LmsService, ClassService, StudentService],
 })
 export class LmsModule {}

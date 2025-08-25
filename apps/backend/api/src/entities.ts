@@ -1,21 +1,8 @@
+import { Group } from './Utilities/entities/group.entity';
 import { LookUps } from './Utilities/entities/lookups.entity';
 import { Document } from './document/entities/document.entity';
-import { ApplicantSkills } from './job_portal/entities/applicants-skills.entity';
-import { Applicants } from './job_portal/entities/applicants.entity';
-import { Category } from './job_portal/entities/category.entity';
-import { EducationHistory } from './job_portal/entities/educational-history.entity';
-import { Experiance } from './job_portal/entities/experience.entity';
-import { Applications } from './job_portal/entities/job-application.entity';
-import { ProgramCategory } from './job_portal/entities/job-category.entity';
-import { ProgramDescription } from './job_portal/entities/job-description.entity';
-import { ProgramSkills } from './job_portal/entities/job-skills.entity';
-import { Jobs } from './job_portal/entities/jobs.entity';
-import { Mentors } from './job_portal/entities/mentor.entity';
-import { Mentorship } from './job_portal/entities/mentorship.entity';
-import { Programs } from './job_portal/entities/programs.entity';
-import { SavedPrograms } from './job_portal/entities/savedPrograms.entity';
-import { Skills } from './job_portal/entities/skills.entity';
 import { Classes } from './lms/entities/classes.entity';
+import { Program } from './lms/entities/program.entity';
 import { Students } from './lms/entities/students.entity';
 import { LocationInfo } from './location/entities/LocationInfo.entity';
 import { ContactDetails } from './location/entities/contact-details.entity';
@@ -62,6 +49,8 @@ export const AppEntities = [
     //SavedPrograms,
     LookUps,
     Notes,
+    Program,
     Classes,
     Students,
+    Group,
 ];

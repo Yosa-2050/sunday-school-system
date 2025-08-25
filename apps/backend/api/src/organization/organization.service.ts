@@ -28,6 +28,7 @@ import { NotesService } from '@shega/notification/notes.service';
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
+import { LoginBy } from '@shega/users/enums/login-by.enum';
 import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -610,10 +611,12 @@ export class OrganizationService {
         const pwdGenerated = this.passwordService.generatePassword();
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
+            LoginBy.EMAIL,
             UserRoleType.WorkProvider,
             dto.firstName,
             dto.middleName,
             dto.lastName,
+            '',
             false,
             pwdGenerated,
             true,

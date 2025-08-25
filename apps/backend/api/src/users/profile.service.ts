@@ -57,21 +57,23 @@ export class ProfileService {
     }
 
     async createNewUserProfileQDE(
-        email: string,
+        userName: string,
+        logInType: LoginBy,
         role: UserRoleType,
         firstName: string,
         middleName: string,
         lastName: string,
+        phoneNumber: string,
         saveProfile = true,
         password = '',
         pwdChangeRequired = false,
     ) {
         const user = await this.userService.createFromProfile(
-            email,
+            userName,
             role,
             password,
             false,
-            LoginBy.EMAIL,
+            logInType,
             pwdChangeRequired,
         );
         if (user) {
@@ -79,6 +81,7 @@ export class ProfileService {
                 firstName,
                 middleName,
                 lastName,
+                phoneNumber,
             });
             profile.user = user;
             if (saveProfile) {

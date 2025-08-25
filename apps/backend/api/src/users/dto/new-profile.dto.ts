@@ -1,11 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    IsDefined,
-    IsEnum,
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-} from 'class-validator';
+import { OptionalEnum } from '@shega/Utilities/decorators/optional-uuid.decorator';
+import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Gender } from '../enums/profile-gender.enum';
 import { MarriageStatus } from '../enums/profile-marriage-status.enum';
 import { Title } from '../enums/profile-title.enum';
@@ -36,18 +31,15 @@ export class NewProfileDto {
     birthDate?: string;
 
     @ApiProperty()
-    @IsOptional()
-    @IsEnum(Gender)
+    @OptionalEnum(Gender)
     gender?: Gender;
 
     @ApiProperty()
-    @IsOptional()
-    @IsEnum(MarriageStatus)
+    @OptionalEnum(MarriageStatus)
     marriageStatus?: MarriageStatus;
 
     @ApiProperty()
-    @IsOptional()
-    @IsEnum(Title)
+    @OptionalEnum(Title)
     title?: Title;
 
     @ApiProperty()

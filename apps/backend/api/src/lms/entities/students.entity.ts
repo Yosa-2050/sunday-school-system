@@ -6,7 +6,7 @@ import { Classes } from './classes.entity';
 @Entity()
 export class Students extends BaseModel {
     @Column({ nullable: true })
-    id_number: string;
+    idNumber: string;
 
     @ManyToOne((type) => Profile, { eager: true, cascade: true })
     profile: Profile;

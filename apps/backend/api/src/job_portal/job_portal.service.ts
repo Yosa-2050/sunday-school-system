@@ -113,10 +113,12 @@ export class JobPortalService {
 
         const user = await this.profileService.createNewUserProfileQDE(
             dto.email,
+            LoginBy.EMAIL,
             role,
             dto.firstName,
             dto.middleName,
             dto.lastName,
+            '',
             false,
             pwdGenerated,
             true,
