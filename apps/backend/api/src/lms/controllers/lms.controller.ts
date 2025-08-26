@@ -4,42 +4,67 @@ import {
     Delete,
     Get,
     Param,
+    ParseUUIDPipe,
     Patch,
     Post,
 } from '@nestjs/common';
+import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateLmDto } from '../dto/request/create-lm.dto';
+import { CreateUsingNameRequestDto } from '@shega/job_portal/dto/request/create-name.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateCalendarYearRequestDto } from '../dto/request/create-calendar-year.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateLmDto } from '../dto/request/update-lm.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ClassService } from '../services/class.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { LmsService } from '../services/lms.service';
 
+@Public()
 @Controller('lms')
 export class LmsController {
-    constructor(private readonly lmsService: LmsService) {}
+    constructor(
+        private readonly lmsService: LmsService,
+        private readonly classService: ClassService,
+    ) {}
 
-    @Post()
-    create(@Body() createLmDto: CreateLmDto) {
-        return this.lmsService.create(createLmDto);
+    @Post('calendarYear')
+    create(@Body() dto: CreateCalendarYearRequestDto) {
+        return this.lmsService.createCalendarYear(dto);
     }
 
-    @Get()
-    findAll() {
-        return this.lmsService.findAll();
+    @Get('calendarYear/:programId')
+    findAllCalendarId(@Param('programId', new ParseUUIDPipe()) id: string) {
+        return this.lmsService.findAllYear(id);
     }
 
-    @Get(':id')
+    @Get('calendarYearById/:id')
     findOne(@Param('id') id: string) {
         return this.lmsService.findOne(+id);
     }
 
-    @Patch(':id')
+    @Patch('calendarYear/:id')
     update(@Param('id') id: string, @Body() updateLmDto: UpdateLmDto) {
         return this.lmsService.update(+id, updateLmDto);
     }
 
-    @Delete(':id')
+    @Delete('calendarYear/:id')
     remove(@Param('id') id: string) {
         return this.lmsService.remove(+id);
+    }
+
+    @Post('program')
+    createProgram(@Body() dto: CreateUsingNameRequestDto) {
+        return this.lmsService.createProgram(dto.name);
+    }
+
+    @Get('program')
+    getPrograms() {
+        return this.lmsService.getProgram();
+    }
+
+    @Get('program/:id')
+    findProgramById(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.lmsService.findOneProgram(id);
     }
 }

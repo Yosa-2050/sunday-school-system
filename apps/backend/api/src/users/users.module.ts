@@ -11,6 +11,7 @@ import { DocumentModule } from '@shega/document/document.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { Otp } from './entities/otp.entity';
 import { Profile } from './entities/profile.entity';
+import { RelationShips } from './entities/relationships.entity';
 import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { EnumsController } from './enums.controller';
@@ -30,6 +31,7 @@ import { UsersService } from './users.service';
             UserRoles,
             LookUps,
             Group,
+            RelationShips,
         ]),
         DocumentModule,
         NotificationModule,

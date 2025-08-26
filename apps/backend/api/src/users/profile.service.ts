@@ -17,12 +17,17 @@ import { ILike, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NewProfileDto } from './dto/new-profile.dto';
 import { Profile } from './entities/profile.entity';
+import { RelationShips } from './entities/relationships.entity';
 import { LoginBy } from './enums/login-by.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { RelationShipsType } from './enums/relationship-type.enum';
 
 @Injectable()
 export class ProfileService {
     constructor(
         @InjectRepository(Profile) private repo: Repository<Profile>,
+        @InjectRepository(RelationShips)
+        private relationShipsRepo: Repository<RelationShips>,
         private userService: UsersService,
         private documentService: DocumentService,
         private passwordService: PasswordService,
@@ -105,6 +110,22 @@ export class ProfileService {
             lastName,
             phoneNumber,
         });
+    }
+
+    createRelationShips(
+        profile1: Profile,
+        profile2: Profile,
+        relationShipType: RelationShipsType,
+        isEmergency: boolean,
+        isParent: boolean,
+    ) {
+        const entity = this.relationShipsRepo.create();
+        entity.profile1 = profile1;
+        entity.profile2 = profile2;
+        entity.isEmergency = isEmergency;
+        entity.isParent = isParent;
+        entity.type = relationShipType;
+        return entity;
     }
 
     updateProfileQDE(

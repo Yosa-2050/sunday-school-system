@@ -107,14 +107,6 @@ export class ClassService {
         return _class;
     }
 
-    async findOneProgram(id: string) {
-        const program = await this.programRepo.findOneBy({ id });
-        if (!program) {
-            throw new EntityNotFoundException(typeof Program);
-        }
-        return program;
-    }
-
     async findSections(id: string) {
         const _class = await this.classRepo.findOneBy({ id });
         if (!_class) {
@@ -129,17 +121,5 @@ export class ClassService {
 
     remove(id: number) {
         return `This action removes a #${id} lm`;
-    }
-
-    getProgram() {
-        return this.programRepo.find();
-    }
-    async createProgram(name: string) {
-        const existingProgram = await this.programRepo.findOneBy({ name });
-        if (existingProgram) {
-            throw new EntityAlreadyExistsException(typeof Program);
-        }
-        const program = this.programRepo.create({ name });
-        return this.programRepo.save(program);
     }
 }

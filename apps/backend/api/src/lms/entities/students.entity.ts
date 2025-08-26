@@ -14,6 +14,12 @@ export class Students extends BaseModel {
     @ManyToOne((type) => Classes, { eager: true })
     class: Classes;
 
+    @Column({ nullable: true })
+    schoolName: string;
+
+    @Column({ nullable: true })
+    schoolGrade: string;
+
     // @OneToMany((type) => Attendance, (attendance) => attendance.student, {
     // lazy: true,
     // })

@@ -15,6 +15,7 @@ import { Notification } from './notification/entities/notification.entity';
 import { NotificationTemplate } from './notification/entities/notificationTemplate.entity';
 import { Otp } from './users/entities/otp.entity';
 import { Profile } from './users/entities/profile.entity';
+import { RelationShips } from './users/entities/relationships.entity';
 import { UserRoles } from './users/entities/role.entity';
 import { User } from './users/entities/user.entity';
 
@@ -57,4 +58,5 @@ export const AppEntities = [
     Group,
     CalendarYear,
     RootClass,
+    RelationShips,
 ];

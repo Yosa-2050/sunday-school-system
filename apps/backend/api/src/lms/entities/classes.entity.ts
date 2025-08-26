@@ -22,7 +22,7 @@ export class Classes extends BaseModel {
     @ManyToOne(() => Classes, { lazy: true })
     parent: Classes;
 
-    @ManyToOne(() => RootClass, { lazy: true })
+    @ManyToOne(() => RootClass, { eager: true })
     root: RootClass;
 
     @ManyToOne(() => CalendarYear, { lazy: true })
@@ -38,5 +38,10 @@ export class Classes extends BaseModel {
     )
     sections: Classes[];
 
+    @OneToMany(
+        () => Students,
+        (stu) => stu.class,
+        { lazy: true },
+    )
     students: Students[];
 }

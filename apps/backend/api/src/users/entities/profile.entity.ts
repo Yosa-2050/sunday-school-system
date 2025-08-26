@@ -1,12 +1,13 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { User } from '@shega/users/entities/user.entity';
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Gender } from '../enums/profile-gender.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { MarriageStatus } from '../enums/profile-marriage-status.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Title } from '../enums/profile-title.enum';
+import { RelationShips } from './relationships.entity';
 
 @Entity()
 export class Profile extends BaseModel {
@@ -49,4 +50,18 @@ export class Profile extends BaseModel {
 
     @Column({ nullable: true })
     profile_picture_id: string;
+
+    @Column({ nullable: true })
+    baptistName: string;
+
+    @OneToMany(
+        () => RelationShips,
+        (rel) => rel.profile1,
+        {
+            eager: true,
+            cascade: true,
+            onUpdate: 'NO ACTION',
+        },
+    )
+    relation: RelationShips[];
 }
