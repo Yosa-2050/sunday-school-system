@@ -2,7 +2,6 @@ import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CalendarYear } from './calendar-year.entity';
 import { RootClass } from './root-class.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Students } from './students.entity';
 
 @Entity()
