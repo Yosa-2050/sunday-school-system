@@ -133,7 +133,7 @@ export class UsersController {
         return this.usersService.setUserActivationStatus(
             userId,
             false,
-            dto.note,
+            dto.text,
         );
     }
 }

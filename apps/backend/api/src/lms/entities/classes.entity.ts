@@ -1,19 +1,17 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { Program } from './program.entity';
+import { CalendarYear } from './calendar-year.entity';
+import { RootClass } from './root-class.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Students } from './students.entity';
 
 @Entity()
 export class Classes extends BaseModel {
-    @Column()
+    @Column({ nullable: true })
     name: string;
 
     @Column({ nullable: true })
     description: string;
-
-    @Column()
-    isRoot: boolean;
 
     @Column()
     hasSection: boolean;
@@ -24,6 +22,12 @@ export class Classes extends BaseModel {
     @ManyToOne(() => Classes, { lazy: true })
     parent: Classes;
 
+    @ManyToOne(() => RootClass, { lazy: true })
+    root: RootClass;
+
+    @ManyToOne(() => CalendarYear, { lazy: true })
+    calendarYear: CalendarYear;
+
     @OneToMany(
         () => Classes,
         (child) => child.parent,
@@ -33,9 +37,6 @@ export class Classes extends BaseModel {
         },
     )
     sections: Classes[];
-
-    @ManyToOne(() => Program, { lazy: true })
-    program: Program;
 
     students: Students[];
 }

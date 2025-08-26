@@ -17,5 +17,5 @@ export class ExportWithQueryRequestModel extends ListStringRequestModel {
 export class StringRequestModel {
     @ApiProperty()
     @IsString()
-    note: string;
+    text: string;
 }

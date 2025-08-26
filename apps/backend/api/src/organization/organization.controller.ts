@@ -100,7 +100,7 @@ export class OrganizationController {
         return this.organizationService.organizationApproval(
             id,
             ApprovalType.Declined,
-            dto?.note,
+            dto?.text,
         );
     }
 
@@ -113,7 +113,7 @@ export class OrganizationController {
         return this.organizationService.organizationApproval(
             id,
             ApprovalType.Returned,
-            dto?.note,
+            dto?.text,
         );
     }
 
@@ -262,7 +262,7 @@ export class OrganizationController {
             false,
             false,
             isIncludeEmployees,
-            dto.note,
+            dto.text,
         );
     }
 

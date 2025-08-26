@@ -7,6 +7,8 @@ import {
     ParseUUIDPipe,
     Post,
 } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
+import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUsingNameRequestDto } from '@shega/job_portal/dto/request/create-name.request.dto';
@@ -35,27 +37,30 @@ export class ClassController {
         return this.classService.findOneProgram(id);
     }
 
-    @Post('root')
-    create(@Body() dto: ClassRequestDto) {
-        return this.classService.create(dto, true);
+    @Post('root/:programId')
+    create(
+        @Body() dto: StringRequestModel,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.classService.createRoot(dto.text, programId);
     }
 
-    @Get('root')
-    findAllRoot() {
-        return this.classService.findAll(true);
+    @Get('root/:programId')
+    findAllRoot(@Param('programId', new ParseUUIDPipe()) programId: string) {
+        return this.classService.findAllRootClass(programId);
     }
 
-    @Post('new/:id')
+    @Post('main/:yearId')
     addNew(
         @Body() dto: ClassRequestDto,
-        @Param('id', new ParseUUIDPipe()) id: string,
+        @Param('yearId', new ParseUUIDPipe()) yearId: string,
     ) {
-        return this.classService.create(dto, false, id);
+        return this.classService.create(dto, yearId);
     }
 
-    @Get('main')
-    findAll() {
-        return this.classService.findAll(false);
+    @Get('main/:yearId')
+    findAll(@Param('yearId', new ParseUUIDPipe()) yearId: string) {
+        return this.classService.findAll(yearId);
     }
 
     @Get(':id')

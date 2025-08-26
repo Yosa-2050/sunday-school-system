@@ -132,7 +132,7 @@ export class JobPortalController {
         return this.jobPortalService.programApproval(
             id,
             ApprovalType.Declined,
-            dto?.note,
+            dto?.text,
         );
     }
 

@@ -1,8 +1,10 @@
 import { Group } from './Utilities/entities/group.entity';
 import { LookUps } from './Utilities/entities/lookups.entity';
 import { Document } from './document/entities/document.entity';
+import { CalendarYear } from './lms/entities/calendar-year.entity';
 import { Classes } from './lms/entities/classes.entity';
 import { Program } from './lms/entities/program.entity';
+import { RootClass } from './lms/entities/root-class.entity';
 import { Students } from './lms/entities/students.entity';
 import { LocationInfo } from './location/entities/LocationInfo.entity';
 import { ContactDetails } from './location/entities/contact-details.entity';
@@ -53,4 +55,6 @@ export const AppEntities = [
     Classes,
     Students,
     Group,
+    CalendarYear,
+    RootClass,
 ];
