@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -72,6 +72,7 @@ export class StudentService {
             throw new EntityNotFoundException(typeof Classes);
         }
         const excel = parseExcel(file.buffer, ImportStudentsRequest);
+        const models = [];
         for (let index = 0; index < excel.length; index++) {
             const dto = excel[index];
             const pwdGenerated = this.passwordService.generatePassword();
@@ -81,34 +82,39 @@ export class StudentService {
                 UserRoleType.Student,
                 dto.FirstName,
                 dto.MiddleName,
-                dto.lastName,
-                dto.phoneNumber,
+                dto.LastName,
+                dto.PhoneNumber,
                 false,
                 pwdGenerated,
                 true,
             );
 
             const relative = await this.profileService.createProfileQDE(
-                dto.emergencyContact,
+                dto.EmergencyContact,
                 '',
                 '',
-                dto.emergencyContactPhone,
+                dto.EmergencyContactPhone,
             );
             const relationship = await this.profileService.createRelationShips(
                 profile,
                 relative,
-                dto.relationShipType,
+                dto.RelationshipType,
                 true,
                 false,
             );
+            profile.relation = [];
             profile.relation.push(relationship);
 
             const model = this.studentRepo.create();
             model.profile = profile;
             model.idNumber = dto.IdNumber;
             model.class = valid;
-            const saved = await this.studentRepo.save(model);
+            models.push(model);
         }
-        return UtilityServices.SuccessDataResponse();
+        if (models.length > 0) {
+            const saved = await this.studentRepo.save(models);
+            return UtilityServices.SuccessDataResponse();
+        }
+        throw new BadRequestException('Nothing to upload');
     }
 }

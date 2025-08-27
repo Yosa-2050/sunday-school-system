@@ -60,7 +60,6 @@ export class Profile extends BaseModel {
         {
             eager: true,
             cascade: true,
-            onUpdate: 'NO ACTION',
         },
     )
     relation: RelationShips[];

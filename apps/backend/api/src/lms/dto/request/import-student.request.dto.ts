@@ -2,32 +2,48 @@
 import { Gender } from '@shega/users/enums/profile-gender.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { RelationShipsType } from '@shega/users/enums/relationship-type.enum';
-import { IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
 
 export class ImportStudentsRequest {
     @IsString()
     IdNumber: string;
+
     @IsString()
     FirstName: string;
+
     @IsString()
     MiddleName: string;
+
     @IsString()
-    lastName: string;
-    gender: Gender;
-    birthYear: number;
+    LastName: string;
+
+    @IsEnum(Gender)
+    Gender: Gender;
+
     @IsString()
-    baptistName: string;
+    BirthYear: string;
+
     @IsString()
-    phoneNumber: string;
+    ChristianName: string;
+
     @IsString()
-    schoolName: string;
+    PhoneNumber: string;
+
     @IsString()
-    schoolGrade: number;
+    SchoolName: string;
+
     @IsString()
-    address: string;
+    SchoolGrade: number;
+
     @IsString()
-    emergencyContact: string;
+    Address: string;
+
     @IsString()
-    emergencyContactPhone: string;
-    relationShipType: RelationShipsType;
+    EmergencyContact: string;
+
+    @IsString()
+    EmergencyContactPhone: string;
+
+    @IsEnum(RelationShipsType)
+    RelationshipType: RelationShipsType;
 }

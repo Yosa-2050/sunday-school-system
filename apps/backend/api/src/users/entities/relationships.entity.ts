@@ -9,7 +9,7 @@ export class RelationShips extends BaseModel {
     @ManyToOne(() => Profile)
     profile1: Profile;
 
-    @ManyToOne(() => Profile)
+    @ManyToOne(() => Profile, { cascade: true })
     profile2: Profile;
 
     @Column()
