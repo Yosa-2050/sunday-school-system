@@ -12,6 +12,8 @@ import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUsingNameRequestDto } from '@shega/job_portal/dto/request/create-name.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { CreateCalendarYearRequestDto } from '../dto/request/create-calendar-year.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateLmDto } from '../dto/request/update-lm.dto';
@@ -69,5 +71,26 @@ export class LmsController {
     @Get('program/:id')
     findProgramById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.lmsService.findOneProgram(id);
+    }
+
+    @Post('user/:programId')
+    createUser(
+        @Body() dto: CreateOrganizationUserDto,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.lmsService.CreateUserQDE(programId, dto);
+    }
+
+    @Patch('assignUser/:programId/:userId')
+    assignUser(
+        @Param('userId', new ParseUUIDPipe()) userId: string,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.lmsService.AssignUser(programId, userId);
+    }
+
+    @Get('users/:programId')
+    getUser(@Param('programId', new ParseUUIDPipe()) programId: string) {
+        return this.lmsService.GetUsers(programId);
     }
 }

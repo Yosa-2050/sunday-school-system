@@ -36,6 +36,18 @@ export const fetchCRootClasses = async (
     return response;
 };
 
+export const fetchUsers = async (
+    id: string,
+): Promise<ProgramUserResponse[]> => {
+    const response: ProgramUserResponse[] = await fetcher(`/lms/users/${id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        //body: JSON.stringify({ q: payload }),
+    });
+
+    return response;
+};
+
 export const fetchProgramsById = async (
     mentorshipId: string,
 ): Promise<ProgramResponse> => {
@@ -68,6 +80,18 @@ export const createCalendarYear = async (
     return res;
 };
 
+export const createUser = async (programId: string, data: CreateUserType) => {
+    const res: IdSuccessResponse = await fetcher(`/lms/user/${programId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res) {
+        throw new Error('Failed to create calendar year');
+    }
+    return res;
+};
+
 export const createRootClass = async (programId: string, text: string) => {
     const res: IdSuccessResponse = await fetcher(`/class/root/${programId}`, {
         method: 'POST',
@@ -88,6 +112,17 @@ export type ProgramResponse = {
     name: string;
 };
 
+export type ProgramUserResponse = {
+    id: string;
+    createdAt: string;
+    createdBy: string;
+    isActive: boolean;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    email: string;
+};
+
 export type IdSuccessResponse = {
     id: string;
 };
@@ -96,4 +131,11 @@ export type CreateProgram = {
     name: string;
     startDate: Date;
     endDate: Date;
+};
+
+export type CreateUserType = {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    email: string;
 };

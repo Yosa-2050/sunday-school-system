@@ -3,6 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
+import { PasswordService } from '@shega/Utilities/password.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
+import { LoginBy } from '@shega/users/enums/login-by.enum';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ProfileService } from '@shega/users/profile.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateCalendarYearRequestDto } from '../dto/request/create-calendar-year.request.dto';
@@ -11,6 +19,7 @@ import { CreateLmDto } from '../dto/request/create-lm.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateLmDto } from '../dto/request/update-lm.dto';
 import { CalendarYear } from '../entities/calendar-year.entity';
+import { ProgramUser } from '../entities/program-users.entity';
 import { Program } from '../entities/program.entity';
 
 @Injectable()
@@ -19,6 +28,10 @@ export class LmsService {
         @InjectRepository(CalendarYear)
         private calendarYearRepo: Repository<CalendarYear>,
         @InjectRepository(Program) private programRepo: Repository<Program>,
+        @InjectRepository(ProgramUser)
+        private programUserRepo: Repository<ProgramUser>,
+        private passwordService: PasswordService,
+        private profileService: ProfileService,
     ) {}
 
     async createCalendarYear(
@@ -75,5 +88,65 @@ export class LmsService {
             throw new EntityNotFoundException(typeof Program);
         }
         return program;
+    }
+
+    async CreateUserQDE(programId: string, dto: CreateOrganizationUserDto) {
+        const program = await this.programRepo.findOneBy({
+            id: programId,
+        });
+        if (!program) {
+            throw new EntityNotFoundException('Program');
+        }
+        const pwdGenerated = this.passwordService.generatePassword();
+        const profile = await this.profileService.createNewUserProfileQDE(
+            dto.email,
+            LoginBy.EMAIL,
+            UserRoleType.WorkProvider,
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            '',
+            null,
+            '',
+            '',
+            false,
+            pwdGenerated,
+            true,
+        );
+
+        const model = this.programUserRepo.create();
+        model.profile = profile;
+        model.program = program;
+
+        return await this.programUserRepo.save(model);
+    }
+
+    async AssignUser(programId: string, userId: string) {
+        const program = await this.programRepo.findOneBy({
+            name: programId,
+        });
+        if (program) {
+            throw new EntityNotFoundException('Program');
+        }
+
+        const profile = await this.profileService.finProfileByUserId(userId);
+
+        const model = this.programUserRepo.create();
+        model.profile = profile;
+        model.program = program;
+
+        return await this.programUserRepo.save(model);
+    }
+
+    async GetUsers(programId: string) {
+        const programUsers = await this.programUserRepo.findBy({
+            program: { id: programId },
+        });
+        if (programUsers && programUsers.length > 0) {
+            return programUsers.map((x) => {
+                return x.profile;
+            });
+        }
+        return null;
     }
 }

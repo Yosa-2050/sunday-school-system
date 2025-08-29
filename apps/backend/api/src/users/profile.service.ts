@@ -181,6 +181,16 @@ export class ProfileService {
         throw new EntityNotFoundException('User');
     }
 
+    async finProfileByUserId(userId: string) {
+        const profile = await this.repo.findOneBy({ user: { id: userId } });
+
+        if (profile) {
+            return profile;
+        }
+
+        throw new EntityNotFoundException('Profile');
+    }
+
     async findOne(id: string) {
         const profile = await this.repo.findOneBy({ id });
         if (profile.profile_picture_id) {

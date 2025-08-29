@@ -5,8 +5,6 @@ import {
     Badge,
     Card,
     Center,
-    Divider,
-    Flex,
     Group,
     LoadingOverlay,
     Paper,
@@ -15,37 +13,17 @@ import {
     Tabs,
     Text,
 } from '@mantine/core';
-import { EntitySearch } from '@shega/ui';
 import { useQuery } from '@tanstack/react-query';
 import {
     fetchCalendarYears,
     fetchProgramsById,
     fetchCRootClasses as fetchRootClasses,
+    fetchUsers,
 } from 'app/[locale]/_api/admin/fetch-programs';
-import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { CreateCalendarYear } from '../_components/CreateCalendarYear';
 import { CreateRootClass } from '../_components/CreateRootClass';
-
-const HeaderSection = () => {
-    const t = useTranslations('programsPage');
-    return (
-        <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
-            <Flex align="center" justify="space-between" className="p-4">
-                <Text className="font-bold text-xl">{t('title')}</Text>
-                <CreateCalendarYear programId={'12312'} />
-            </Flex>
-            <Divider my="md" />
-            <Group justify="space-between" className="mb-4">
-                <EntitySearch
-                    entity="mentorship"
-                    placeholder={t('searchPlaceholder')}
-                    className="!w-[300px]"
-                />
-            </Group>
-        </Paper>
-    );
-};
+import { CreateUser } from '../_components/CreateUser';
 
 export default function ProgramDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -79,7 +57,17 @@ export default function ProgramDetailPage() {
         queryFn: () => fetchRootClasses(id),
     });
 
-    if (yearsLoading || classesLoading) {
+    // users
+    const {
+        data: users,
+        isLoading: usersLoading,
+        refetch: refetchUsers,
+    } = useQuery({
+        queryKey: ['users', id],
+        queryFn: () => fetchUsers(id),
+    });
+
+    if (yearsLoading || classesLoading || usersLoading) {
         return <LoadingOverlay visible h="100vh" />;
     }
 
@@ -122,6 +110,7 @@ export default function ProgramDetailPage() {
                             Calendar Years
                         </Tabs.Tab>
                         <Tabs.Tab value="rootClasses">Root Classes</Tabs.Tab>
+                        <Tabs.Tab value="users">Users</Tabs.Tab>
                     </Tabs.List>
 
                     {/* Calendar Years */}
@@ -206,7 +195,7 @@ export default function ProgramDetailPage() {
                             }}
                             mb="md"
                         >
-                            <Text fw={500}>Calendar Years</Text>
+                            <Text fw={500}>Root classes</Text>
                             <CreateRootClass programId={program.id} />
                         </Group>
                         {rootClasses && rootClasses.length > 0 ? (
@@ -250,6 +239,68 @@ export default function ProgramDetailPage() {
                         ) : (
                             <Center h={150}>
                                 <Text c="dimmed">No root classes found.</Text>
+                            </Center>
+                        )}
+                    </Tabs.Panel>
+
+                    {/* Users */}
+                    <Tabs.Panel value="users" pt="sm">
+                        <Group
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                            }}
+                            mb="md"
+                        >
+                            <Text fw={500}>Users</Text>
+                            <CreateUser programId={program.id} />
+                        </Group>
+                        {users && users.length > 0 ? (
+                            <Table striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th>Full Name</Table.Th>
+                                        <Table.Th>Email</Table.Th>
+                                        <Table.Th>Created By</Table.Th>
+                                        <Table.Th>Created At</Table.Th>
+                                        <Table.Th>Status</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                                    {users.map((user: any) => (
+                                        <Table.Tr key={user.id}>
+                                            <Table.Td>{`${user.firstName} ${user.middleName}`}</Table.Td>
+                                            <Table.Td>{user.email}</Table.Td>
+                                            <Table.Td>
+                                                {user.createdBy}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                {new Date(
+                                                    user.createdAt,
+                                                ).toLocaleDateString()}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Badge
+                                                    color={
+                                                        user.isActive
+                                                            ? 'green'
+                                                            : 'red'
+                                                    }
+                                                >
+                                                    {user.isActive
+                                                        ? 'Active'
+                                                        : 'Inactive'}
+                                                </Badge>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        ) : (
+                            <Center h={150}>
+                                <Text c="dimmed">No users found.</Text>
                             </Center>
                         )}
                     </Tabs.Panel>

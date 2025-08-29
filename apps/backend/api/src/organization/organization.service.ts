@@ -51,8 +51,8 @@ import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.r
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
-    CreateOrganizationEmployeeDto,
     CreateOrganizationEmployeeWithOrgDto,
+    CreateOrganizationUserDto,
 } from './dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
@@ -650,7 +650,7 @@ export class OrganizationService {
     }
 
     private async SendOrganizationCreatedNotification(
-        dto: CreateOrganizationEmployeeDto,
+        dto: CreateOrganizationUserDto,
         pwdGenerated: string,
         saved: EmployeeOrganization,
     ) {

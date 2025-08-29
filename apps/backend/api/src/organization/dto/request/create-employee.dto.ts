@@ -51,7 +51,7 @@ export class CreateEmployeeDto {
     contactDetails: ContactDetailsRequest;
 }
 
-export class CreateOrganizationEmployeeDto {
+export class CreateOrganizationUserDto {
     @ApiProperty()
     @IsString()
     firstName: string;
@@ -71,7 +71,7 @@ export class CreateOrganizationEmployeeDto {
     email: string;
 }
 
-export class CreateOrganizationEmployeeWithOrgDto extends CreateOrganizationEmployeeDto {
+export class CreateOrganizationEmployeeWithOrgDto extends CreateOrganizationUserDto {
     @ApiProperty()
     @IsString()
     organizationName: string;
