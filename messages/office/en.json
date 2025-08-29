@@ -44,6 +44,7 @@
         "categories": "Categories",
         "mentors": "Mentors",
         "mentorManagement": "Mentor Management",
+        "programManagement": "Programs Management",
         "mentorship": "Mentorship Programs",
         "draft-mentorship": "Draft Mentorship",
         "job-explorer-applicants": "Applicants"
@@ -346,7 +347,7 @@
         "isActive": "Is Active",
         "actions": "Actions"
     },
-    "mentorsPage": {
+    "programsPage": {
         "title": "Mentors List",
         "create-mentorship": "Create Mentorship Program",
         "addMentor": "Add Mentor",
@@ -354,7 +355,7 @@
         "submit": "Submit",
         "isActive": "Is Active",
         "actions": "Actions",
-        "searchPlaceholder": "Search by Program title or Mentor name",
+        "searchPlaceholder": "Search by Program name",
         "exportCSV": "Export to CSV",
         "status": {
             "active": "Active",

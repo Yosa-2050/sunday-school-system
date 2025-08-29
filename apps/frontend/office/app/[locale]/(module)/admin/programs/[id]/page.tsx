@@ -1,511 +1,273 @@
 'use client';
 
-import { useRouter } from '@/i18n/routing';
+import { PageContainer, PageTitle } from '@/components/PageContainer';
 import {
-    ActionIcon,
-    Avatar,
     Badge,
-    Box,
     Button,
     Card,
-    Container,
+    Center,
     Divider,
     Flex,
-    Grid,
     Group,
-    List,
     LoadingOverlay,
-    Modal,
     Paper,
     Stack,
+    Table,
+    Tabs,
     Text,
-    Title,
-    useMantineTheme,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
+import { EntitySearch } from '@shega/ui';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-    IconArrowLeft,
-    IconCalendar,
-    IconCheck,
-    IconClock,
-    IconMapPin,
-    IconPhone,
-    IconSchool,
-    IconUser,
-    IconUsers,
-    IconX,
-} from '@tabler/icons-react';
-import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
-import { approveJob } from 'app/[locale]/_api/admin/approve-job';
-import {
-    type MentorshipProgram,
-    fetchMentorshipProgramsById,
-} from 'app/[locale]/_api/admin/fetch-mentorship';
-import parse from 'html-react-parser';
+    createCalendarYear,
+    createRootClass,
+    fetchCalendarYears,
+    fetchProgramsById,
+    fetchCRootClasses as fetchRootClasses,
+} from 'app/[locale]/_api/admin/fetch-programs';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
-import DeclineModal from '../_components/Decline';
+import { CreateCalendarYear } from '../_components/CreateCalendarYear';
 
-const MentorshipDetails = () => {
-    const params = useParams();
-    const router = useRouter();
-    const queryClient = new QueryClient();
-    const programId = params.id as string;
-    const [opened, { open, close }] = useDisclosure(false);
-    const theme = useMantineTheme();
-
-    const { data: program, isLoading } = useQuery<MentorshipProgram>({
-        queryKey: ['mentorship', programId],
-        queryFn: async () => await fetchMentorshipProgramsById(programId),
-    });
-
-    const approveProgramMutate = useMutation({
-        // mutationFn: async () => await approveJob(jobId),
-        mutationFn: async () => {
-            if (!program?.program.id) {
-                throw new Error('Program ID is not available.');
-            }
-            return await approveJob(program?.program.id);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['job', program?.program.id],
-            });
-            router.push('/admin/programs');
-            notifications.show({
-                title: 'Mentorship Program Approved',
-                message:
-                    'The Mentorship program has been successfully approved',
-                color: 'green',
-            });
-        },
-        onError: (error) => {
-            notifications.show({
-                title: 'Error Approving Job',
-                message: error.message,
-                color: 'red',
-            });
-        },
-    });
-
-    if (isLoading) {
-        return <LoadingOverlay visible={true} h="100vh" />;
-    }
-
-    if (!program) {
-        return <Text>Mentorship program not found</Text>;
-    }
-
+const HeaderSection = (id: string) => {
+    const t = useTranslations('programsPage');
     return (
-        <Container fluid size="xl" className="py-4">
-            {/* Header Section */}
-            <div className="mb-4">
-                <div className="bg-white p-6 rounded-lg shadow-sm">
-                    <Flex>
-                        <ActionIcon
-                            variant="subtle"
-                            color="gray"
-                            size="lg"
-                            onClick={() => router.back()}
-                            aria-label="Back to previous page"
-                            className="mr-2"
-                        >
-                            <IconArrowLeft size={24} />
-                        </ActionIcon>
-                        <Text className="text-2xl font-semibold mb-2">
-                            {program.program.title}
-                        </Text>
-                    </Flex>
-                    <div className="flex items-center space-x-4 text-gray-600">
-                        <div className="flex items-center">
-                            <IconUsers size={18} className="mr-2" />
-                            <Text>{program.mentorshipType}</Text>
-                        </div>
-                        <div className="flex items-center">
-                            <IconMapPin size={18} className="mr-2" />
-                            <Text>{program.program.country?.name}</Text>
-                        </div>
-                        <Badge variant="light">{program.audience}</Badge>
-                    </div>
-                </div>
-            </div>
-
-            <Grid gutter="md">
-                {/* Mentor Information */}
-                <Grid.Col span={{ base: 12, md: 3 }}>
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Stack align="center" gap="sm">
-                            <Avatar
-                                size={100}
-                                radius="50%"
-                                src="/avatar.png"
-                                alt="Mentor"
-                                className="border-2 border-white shadow-md"
-                            />
-                            <Text className="text-xl font-semibold text-center">
-                                {program.mentor?.profile?.firstName}{' '}
-                                {program.mentor?.profile?.lastName}
-                            </Text>
-                            <Badge variant="light" color="teal">
-                                Mentor
-                            </Badge>
-
-                            <Divider my="sm" w="100%" />
-
-                            <Stack gap="xs" w="100%">
-                                <Group gap="sm">
-                                    <IconUser
-                                        size={18}
-                                        className="text-gray-500"
-                                    />
-                                    <Text size="sm">
-                                        Status: {program?.mentor?.status}
-                                    </Text>
-                                </Group>
-                                {program?.mentor?.profile?.phoneNumber && (
-                                    <Group gap="sm">
-                                        <IconPhone
-                                            size={18}
-                                            className="text-gray-500"
-                                        />
-                                        <Text size="sm">
-                                            {program.mentor.profile.phoneNumber}
-                                        </Text>
-                                    </Group>
-                                )}
-                            </Stack>
-                        </Stack>
-                    </Card>
-                </Grid.Col>
-
-                {/* Program Details */}
-                <Grid.Col span={{ base: 12, md: 9 }}>
-                    <Paper shadow="sm" p="xl" radius="md" withBorder>
-                        <Stack>
-                            <Title order={2} className="mb-6">
-                                Mentorship Program Details
-                            </Title>
-
-                            <Grid gutter="xl">
-                                <Grid.Col span={{ base: 12, md: 6 }}>
-                                    <Stack gap="sm">
-                                        <Group gap="sm">
-                                            <IconUser
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                            <Text className="font-medium">
-                                                Program Title:
-                                            </Text>
-                                            <Text>{program.program.title}</Text>
-                                        </Group>
-                                        <Group gap="sm">
-                                            <IconUsers
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                            <Text className="font-medium">
-                                                Mentorship Type:
-                                            </Text>
-                                            <Badge color="blue" variant="light">
-                                                {program.mentorshipType}
-                                            </Badge>
-                                        </Group>
-                                        <Group gap="sm">
-                                            <IconClock
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                            <Text className="font-medium">
-                                                Commitment:
-                                            </Text>
-                                            <Badge
-                                                color="violet"
-                                                variant="light"
-                                            >
-                                                {program.commitment}
-                                            </Badge>
-                                        </Group>
-                                        <Group gap="sm">
-                                            <IconCalendar
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                            <Text className="font-medium">
-                                                Duration:
-                                            </Text>
-                                            <Text>
-                                                {program.duration} weeks
-                                            </Text>
-                                        </Group>
-                                    </Stack>
-                                </Grid.Col>
-                                <Grid.Col span={{ base: 12, md: 6 }}>
-                                    <Stack gap="sm">
-                                        <Group gap="sm">
-                                            <IconSchool
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                            <Text className="font-medium">
-                                                Audience:
-                                            </Text>
-                                            <Badge
-                                                color="orange"
-                                                variant="light"
-                                            >
-                                                {program.audience}
-                                            </Badge>
-                                        </Group>
-                                        <Group gap="sm">
-                                            <IconMapPin
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                            <Text className="font-medium">
-                                                Location:
-                                            </Text>
-                                            <Text>
-                                                {program.program.city?.name &&
-                                                    `${program.program.city.name}, `}
-                                                {program.program.state?.name &&
-                                                    `${program.program.state.name}, `}
-                                                {program.program?.country?.name}
-                                            </Text>
-                                        </Group>
-                                        <Group gap="sm">
-                                            <IconUser
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                            <Text className="font-medium">
-                                                Experience Level:
-                                            </Text>
-                                            <Text>
-                                                {
-                                                    program.program
-                                                        .experianceLevel
-                                                }
-                                            </Text>
-                                        </Group>
-                                        <Group gap="sm">
-                                            <IconCalendar
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                            <Text className="font-medium">
-                                                Deadline:
-                                            </Text>
-                                            <Text>
-                                                {new Date(
-                                                    program.program.deadline,
-                                                ).toLocaleDateString()}
-                                            </Text>
-                                        </Group>
-                                    </Stack>
-                                </Grid.Col>
-                            </Grid>
-
-                            <Divider my="lg" />
-
-                            <Stack>
-                                <Title order={3} className="mb-4">
-                                    Program Description
-                                </Title>
-                                <Paper p="md" withBorder>
-                                    {program.program.description ? (
-                                        <Box className="prose prose-stone max-w-none px-2.5">
-                                            {parse(program.program.description)}
-                                        </Box>
-                                    ) : (
-                                        <Text className="text-gray-500">
-                                            No description provided
-                                        </Text>
-                                    )}
-                                </Paper>
-                            </Stack>
-
-                            <Stack>
-                                <Title order={3} className="mb-4">
-                                    Requirements
-                                </Title>
-                                <Paper p="md" withBorder>
-                                    {program.program.jobDescriptions?.filter(
-                                        (desc) =>
-                                            desc.type === 'REQUIREMENTS' &&
-                                            desc.isActive,
-                                    ).length > 0 ? (
-                                        <List>
-                                            {program.program.jobDescriptions
-                                                .filter(
-                                                    (desc) =>
-                                                        desc.type ===
-                                                            'REQUIREMENTS' &&
-                                                        desc.isActive,
-                                                )
-                                                .map((req) => (
-                                                    <List.Item
-                                                        key={req.id}
-                                                        icon={
-                                                            <IconCheck
-                                                                size={18}
-                                                                color={
-                                                                    theme.colors
-                                                                        .teal[5]
-                                                                }
-                                                            />
-                                                        }
-                                                    >
-                                                        <Text>
-                                                            {req.description}
-                                                        </Text>
-                                                    </List.Item>
-                                                ))}
-                                        </List>
-                                    ) : (
-                                        <Text className="text-gray-500">
-                                            No requirements provided
-                                        </Text>
-                                    )}
-                                </Paper>
-                            </Stack>
-
-                            <Stack>
-                                <Title order={3} className="mb-4">
-                                    Responsibilities
-                                </Title>
-                                <Paper p="md" withBorder>
-                                    {program.program.jobDescriptions?.filter(
-                                        (desc) =>
-                                            desc.type === 'RESPONSIBILITY' &&
-                                            desc.isActive,
-                                    ).length > 0 ? (
-                                        <List>
-                                            {program.program.jobDescriptions
-                                                .filter(
-                                                    (desc) =>
-                                                        desc.type ===
-                                                            'RESPONSIBILITY' &&
-                                                        desc.isActive,
-                                                )
-                                                .map((resp) => (
-                                                    <List.Item
-                                                        key={resp.id}
-                                                        icon={
-                                                            <IconCheck
-                                                                size={18}
-                                                                color={
-                                                                    theme.colors
-                                                                        .teal[5]
-                                                                }
-                                                            />
-                                                        }
-                                                    >
-                                                        <Text>
-                                                            {resp.description}
-                                                        </Text>
-                                                    </List.Item>
-                                                ))}
-                                        </List>
-                                    ) : (
-                                        <Text className="text-gray-500">
-                                            No responsibilities provided
-                                        </Text>
-                                    )}
-                                </Paper>
-                            </Stack>
-
-                            <Stack>
-                                <Title order={3} className="mb-4">
-                                    Benefits
-                                </Title>
-                                <Paper p="md" withBorder>
-                                    {program.program.jobDescriptions?.filter(
-                                        (desc) =>
-                                            desc.type === 'BENEFITS' &&
-                                            desc.isActive,
-                                    ).length > 0 ? (
-                                        <List>
-                                            {program.program.jobDescriptions
-                                                .filter(
-                                                    (desc) =>
-                                                        desc.type ===
-                                                            'BENEFITS' &&
-                                                        desc.isActive,
-                                                )
-                                                .map((benefit) => (
-                                                    <List.Item
-                                                        key={benefit.id}
-                                                        icon={
-                                                            <IconCheck
-                                                                size={18}
-                                                                color={
-                                                                    theme.colors
-                                                                        .teal[5]
-                                                                }
-                                                            />
-                                                        }
-                                                    >
-                                                        <Text>
-                                                            {
-                                                                benefit.description
-                                                            }
-                                                        </Text>
-                                                    </List.Item>
-                                                ))}
-                                        </List>
-                                    ) : (
-                                        <Text className="text-gray-500">
-                                            No benefits provided
-                                        </Text>
-                                    )}
-                                </Paper>
-                            </Stack>
-
-                            {program.program.status === 'WAITINGAPPROVAL' && (
-                                <Flex justify="flex-end" gap="md" mt="xl">
-                                    <Button
-                                        color="red"
-                                        size="md"
-                                        onClick={open}
-                                        leftSection={<IconX size={18} />}
-                                        className="hover:bg-red-600"
-                                        disabled={
-                                            approveProgramMutate.isPending
-                                        }
-                                    >
-                                        Decline
-                                    </Button>
-                                    <Button
-                                        color="green"
-                                        size="md"
-                                        onClick={() =>
-                                            approveProgramMutate.mutate()
-                                        }
-                                        loading={approveProgramMutate.isPending}
-                                        leftSection={<IconCheck size={18} />}
-                                        className="hover:bg-green-600"
-                                    >
-                                        Approve
-                                    </Button>
-                                </Flex>
-                            )}
-                        </Stack>
-                    </Paper>
-                </Grid.Col>
-            </Grid>
-
-            <Modal
-                opened={opened}
-                onClose={close}
-                title="Decline Reason"
-                centered
-                size="md"
-            >
-                <DeclineModal close={close} programId={program?.program.id} />
-            </Modal>
-        </Container>
+        <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
+            <Flex align="center" justify="space-between" className="p-4">
+                <Text className="font-bold text-xl">{t('title')}</Text>
+                <CreateCalendarYear programId={id} />
+            </Flex>
+            <Divider my="md" />
+            <Group justify="space-between" className="mb-4">
+                <EntitySearch
+                    entity="mentorship"
+                    placeholder={t('searchPlaceholder')}
+                    className="!w-[300px]"
+                />
+            </Group>
+        </Paper>
     );
 };
 
-export default MentorshipDetails;
+export default function ProgramDetailPage() {
+    const { id } = useParams<{ id: string }>();
+
+    const {
+        data: program,
+        isLoading: programLoading,
+        error: programError,
+    } = useQuery({
+        queryKey: ['program', id],
+        queryFn: () => fetchProgramsById(id),
+    });
+
+    // Calendar Years
+    const {
+        data: years,
+        isLoading: yearsLoading,
+        refetch: refetchYears,
+    } = useQuery({
+        queryKey: ['calendarYears', id],
+        queryFn: () => fetchCalendarYears(id),
+    });
+
+    const addYear = useMutation({
+        mutationFn: () => createCalendarYear(id),
+        onSuccess: () => refetchYears(),
+    });
+
+    // Root Classes
+    const {
+        data: rootClasses,
+        isLoading: classesLoading,
+        refetch: refetchClasses,
+    } = useQuery({
+        queryKey: ['rootClasses', id],
+        queryFn: () => fetchRootClasses(id),
+    });
+
+    const addRootClass = useMutation({
+        mutationFn: () => createRootClass(id),
+        onSuccess: () => refetchClasses(),
+    });
+
+    // Mutations
+    const addCalendar = useMutation({
+        mutationFn: () => createCalendarYear(id),
+    });
+
+    const addRoot = useMutation({
+        mutationFn: () => createRootClass(id),
+    });
+
+    if (yearsLoading || classesLoading) {
+        return <LoadingOverlay visible h="100vh" />;
+    }
+
+    return (
+        <PageContainer>
+            <PageTitle>Program Detail</PageTitle>
+            {/* 🔹 Program Info Section */}
+            <Card shadow="sm" withBorder p="lg" radius="md" mt="md">
+                <Stack gap="xs">
+                    <Group justify="space-between">
+                        <Text fw={600}>Program Name:</Text>
+                        <Text>{program?.name}</Text>
+                    </Group>
+                    <Group justify="space-between">
+                        <Text fw={600}>Status:</Text>
+                        <Text c={program?.isActive ? 'green' : 'red'}>
+                            {program?.isActive ? 'Active' : 'Inactive'}
+                        </Text>
+                    </Group>
+                    <Group justify="space-between">
+                        <Text fw={600}>Created By:</Text>
+                        <Text>{program?.createdBy}</Text>
+                    </Group>
+                    <Group justify="space-between">
+                        <Text fw={600}>Created At:</Text>
+                        <Text>{program?.createdAt}</Text>
+                    </Group>
+                </Stack>
+            </Card>
+
+            {/* 🔹 Tabs for Calendar Year + Root Classes */}
+            <Paper shadow="xs" p="md" mt="lg" radius="md">
+                <Tabs defaultValue="calendarYears">
+                    <Tabs.List>
+                        <Tabs.Tab value="calendarYears">
+                            Calendar Years
+                        </Tabs.Tab>
+                        <Tabs.Tab value="rootClasses">Root Classes</Tabs.Tab>
+                    </Tabs.List>
+
+                    {/* Calendar Years */}
+                    <Tabs.Panel value="calendarYears" pt="sm">
+                        <Group justify="space-between" mb="sm">
+                            <Text fw={500}>Calendar Years</Text>
+                            <Button
+                                onClick={() => addCalendar.mutate()}
+                                loading={addCalendar.isPending}
+                            >
+                                + Add Calendar Year
+                            </Button>
+                        </Group>
+                        {years && years.length > 0 ? (
+                            <Table striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th>Name</Table.Th>
+                                        <Table.Th>Start Date</Table.Th>
+                                        <Table.Th>End Date</Table.Th>
+                                        <Table.Th>Status</Table.Th>
+                                        <Table.Th>Created By</Table.Th>
+                                        <Table.Th>Created At</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                                    {years.map((year: any) => (
+                                        <Table.Tr key={year.id}>
+                                            <Table.Td>{year.name}</Table.Td>
+                                            <Table.Td>
+                                                {new Date(
+                                                    year.startDate,
+                                                ).toLocaleDateString()}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                {new Date(
+                                                    year.endDate,
+                                                ).toLocaleDateString()}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Badge
+                                                    color={
+                                                        year.isActive
+                                                            ? 'green'
+                                                            : 'red'
+                                                    }
+                                                >
+                                                    {year.isActive
+                                                        ? 'Active'
+                                                        : 'Inactive'}
+                                                </Badge>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                {year.createdBy}
+                                            </Table.Td>
+                                            <Table.Td>
+                                                {new Date(
+                                                    year.createdAt,
+                                                ).toLocaleDateString()}
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        ) : (
+                            <Center h={150}>
+                                <Text c="dimmed">No calendar years found.</Text>
+                            </Center>
+                        )}
+                    </Tabs.Panel>
+
+                    {/* Root Classes */}
+                    <Tabs.Panel value="rootClasses" pt="sm">
+                        <Group justify="space-between" mb="sm">
+                            <Text fw={500}>Root Classes</Text>
+                            <Button
+                                onClick={() => addRoot.mutate()}
+                                loading={addRoot.isPending}
+                            >
+                                + Add Root Class
+                            </Button>
+                        </Group>
+                        {rootClasses && rootClasses.length > 0 ? (
+                            <Table striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th>Name</Table.Th>
+                                        <Table.Th>Status</Table.Th>
+                                        <Table.Th>Created By</Table.Th>
+                                        <Table.Th>Created At</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                                    {rootClasses.map((cls: any) => (
+                                        <Table.Tr key={cls.id}>
+                                            <Table.Td>{cls.name}</Table.Td>
+                                            <Table.Td>
+                                                <Badge
+                                                    color={
+                                                        cls.isActive
+                                                            ? 'green'
+                                                            : 'red'
+                                                    }
+                                                >
+                                                    {cls.isActive
+                                                        ? 'Active'
+                                                        : 'Inactive'}
+                                                </Badge>
+                                            </Table.Td>
+                                            <Table.Td>{cls.createdBy}</Table.Td>
+                                            <Table.Td>
+                                                {new Date(
+                                                    cls.createdAt,
+                                                ).toLocaleDateString()}
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        ) : (
+                            <Center h={150}>
+                                <Text c="dimmed">No root classes found.</Text>
+                            </Center>
+                        )}
+                    </Tabs.Panel>
+                </Tabs>
+            </Paper>
+        </PageContainer>
+    );
+}
