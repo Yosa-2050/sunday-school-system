@@ -28,9 +28,12 @@ export class LmsController {
         private readonly classService: ClassService,
     ) {}
 
-    @Post('calendarYear')
-    create(@Body() dto: CreateCalendarYearRequestDto) {
-        return this.lmsService.createCalendarYear(dto);
+    @Post('calendarYear/:programId')
+    create(
+        @Body() dto: CreateCalendarYearRequestDto,
+        @Param('programId', new ParseUUIDPipe()) id: string,
+    ) {
+        return this.lmsService.createCalendarYear(id, dto);
     }
 
     @Get('calendarYear/:programId')

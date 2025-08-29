@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OptionalUUID } from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { IsDateString, IsString } from 'class-validator';
 
 export class CreateCalendarYearRequestDto {
@@ -14,8 +13,4 @@ export class CreateCalendarYearRequestDto {
     @ApiProperty()
     @IsDateString()
     endDate: Date;
-
-    @ApiProperty()
-    @OptionalUUID()
-    programId: string;
 }

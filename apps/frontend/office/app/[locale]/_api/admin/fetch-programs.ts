@@ -1,12 +1,9 @@
 import { fetcher } from '@shega/shared';
 
-export const fetchPrograms = async (
-    //payload: string,
-): Promise<ProgramResponse[]> => {
+export const fetchPrograms = async (): Promise<ProgramResponse[]> => {
     const response: ProgramResponse[] = await fetcher('/lms/program', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        //body: JSON.stringify({ q: payload }),
     });
 
     return response;
@@ -53,27 +50,34 @@ export const fetchProgramsById = async (
     return response;
 };
 
-export const createCalendarYear = async (programId: string) => {
-    const res = await fetch(`/api/programs/${programId}/calendar-year`, {
-        method: 'POST',
-    });
-    if (!res.ok) {
-        throw new Error('Failed to create calendar year');
-    }
-    return res.json();
-};
-
-export const createRootClass = async (programId: string) => {
-    const res = await fetch(
-        `/api/programs/${programId}/calendar-year/root-classes`,
+export const createCalendarYear = async (
+    programId: string,
+    data: CreateProgram,
+) => {
+    const res: IdSuccessResponse = await fetcher(
+        `/lms/calendarYear/${programId}`,
         {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
         },
     );
-    if (!res.ok) {
-        throw new Error('Failed to create root class');
+    if (!res) {
+        throw new Error('Failed to create calendar year');
     }
-    return res.json();
+    return res;
+};
+
+export const createRootClass = async (programId: string, text: string) => {
+    const res: IdSuccessResponse = await fetcher(`/class/root/${programId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+    });
+    if (!res) {
+        throw new Error('Failed to create calendar year');
+    }
+    return res;
 };
 
 export type ProgramResponse = {
@@ -82,4 +86,14 @@ export type ProgramResponse = {
     createdBy: string;
     isActive: boolean;
     name: string;
+};
+
+export type IdSuccessResponse = {
+    id: string;
+};
+
+export type CreateProgram = {
+    name: string;
+    startDate: Date;
+    endDate: Date;
 };

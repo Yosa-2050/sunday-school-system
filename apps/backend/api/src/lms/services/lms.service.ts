@@ -21,11 +21,14 @@ export class LmsService {
         @InjectRepository(Program) private programRepo: Repository<Program>,
     ) {}
 
-    async createCalendarYear(dto: CreateCalendarYearRequestDto) {
-        const program = await this.findOneProgram(dto.programId);
+    async createCalendarYear(
+        programId: string,
+        dto: CreateCalendarYearRequestDto,
+    ) {
+        const program = await this.findOneProgram(programId);
         const existingProgram = await this.calendarYearRepo.findOneBy({
             name: dto.name,
-            program: { id: dto.programId },
+            program: { id: programId },
         });
         if (existingProgram) {
             throw new EntityAlreadyExistsException(typeof Program);

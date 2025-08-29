@@ -3,7 +3,6 @@
 import { PageContainer, PageTitle } from '@/components/PageContainer';
 import {
     Badge,
-    Button,
     Card,
     Center,
     Divider,
@@ -17,10 +16,8 @@ import {
     Text,
 } from '@mantine/core';
 import { EntitySearch } from '@shega/ui';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
-    createCalendarYear,
-    createRootClass,
     fetchCalendarYears,
     fetchProgramsById,
     fetchCRootClasses as fetchRootClasses,
@@ -28,14 +25,15 @@ import {
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { CreateCalendarYear } from '../_components/CreateCalendarYear';
+import { CreateRootClass } from '../_components/CreateRootClass';
 
-const HeaderSection = (id: string) => {
+const HeaderSection = () => {
     const t = useTranslations('programsPage');
     return (
         <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
             <Flex align="center" justify="space-between" className="p-4">
                 <Text className="font-bold text-xl">{t('title')}</Text>
-                <CreateCalendarYear programId={id} />
+                <CreateCalendarYear programId={'12312'} />
             </Flex>
             <Divider my="md" />
             <Group justify="space-between" className="mb-4">
@@ -71,11 +69,6 @@ export default function ProgramDetailPage() {
         queryFn: () => fetchCalendarYears(id),
     });
 
-    const addYear = useMutation({
-        mutationFn: () => createCalendarYear(id),
-        onSuccess: () => refetchYears(),
-    });
-
     // Root Classes
     const {
         data: rootClasses,
@@ -86,22 +79,12 @@ export default function ProgramDetailPage() {
         queryFn: () => fetchRootClasses(id),
     });
 
-    const addRootClass = useMutation({
-        mutationFn: () => createRootClass(id),
-        onSuccess: () => refetchClasses(),
-    });
-
-    // Mutations
-    const addCalendar = useMutation({
-        mutationFn: () => createCalendarYear(id),
-    });
-
-    const addRoot = useMutation({
-        mutationFn: () => createRootClass(id),
-    });
-
     if (yearsLoading || classesLoading) {
         return <LoadingOverlay visible h="100vh" />;
+    }
+
+    if (programLoading || !program) {
+        return <LoadingOverlay />;
     }
 
     return (
@@ -143,14 +126,16 @@ export default function ProgramDetailPage() {
 
                     {/* Calendar Years */}
                     <Tabs.Panel value="calendarYears" pt="sm">
-                        <Group justify="space-between" mb="sm">
+                        <Group
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                            }}
+                            mb="md"
+                        >
                             <Text fw={500}>Calendar Years</Text>
-                            <Button
-                                onClick={() => addCalendar.mutate()}
-                                loading={addCalendar.isPending}
-                            >
-                                + Add Calendar Year
-                            </Button>
+                            <CreateCalendarYear programId={program.id} />
                         </Group>
                         {years && years.length > 0 ? (
                             <Table striped>
@@ -213,14 +198,16 @@ export default function ProgramDetailPage() {
 
                     {/* Root Classes */}
                     <Tabs.Panel value="rootClasses" pt="sm">
-                        <Group justify="space-between" mb="sm">
-                            <Text fw={500}>Root Classes</Text>
-                            <Button
-                                onClick={() => addRoot.mutate()}
-                                loading={addRoot.isPending}
-                            >
-                                + Add Root Class
-                            </Button>
+                        <Group
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                            }}
+                            mb="md"
+                        >
+                            <Text fw={500}>Calendar Years</Text>
+                            <CreateRootClass programId={program.id} />
                         </Group>
                         {rootClasses && rootClasses.length > 0 ? (
                             <Table striped>

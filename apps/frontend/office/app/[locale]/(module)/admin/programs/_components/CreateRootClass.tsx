@@ -5,72 +5,71 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-    type CreateProgram,
-    createCalendarYear,
-} from 'app/[locale]/_api/admin/fetch-programs';
+import { createRootClass } from 'app/[locale]/_api/admin/fetch-programs';
 import { useForm } from 'react-hook-form';
 
-export function CreateCalendarYear({ programId }: { programId: string }) {
+export function CreateRootClass({ programId }: { programId: string }) {
     const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
 
-    const { register, handleSubmit, reset } = useForm<CreateProgram>();
+    const { register, handleSubmit, reset } = useForm();
 
-    const addCalendar = useMutation({
-        mutationFn: async (data: CreateProgram) =>
-            createCalendarYear(programId, data),
+    const addRootClass = useMutation({
+        mutationFn: async (data: string) => createRootClass(programId, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['program', programId, 'calendars'],
-            });
+            // Invalidate queries so the UI reloads
             queryClient.invalidateQueries({
                 queryKey: ['program', programId, 'rootClasses'],
             });
+            queryClient.invalidateQueries({
+                queryKey: ['program', programId, 'calendars'],
+            });
+
+            // Show success notification
             notifications.show({
                 title: 'Success',
-                message: 'Mentorship program published successfully',
+                message: 'Root class created successfully!',
                 color: 'green',
                 icon: <IconCheck size="1.1rem" />,
             });
+
+            // Close drawer and reset form
             close();
             reset();
+        },
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        onError: (error: any) => {
+            notifications.show({
+                title: 'Error',
+                message: error?.message || 'Failed to create root class',
+                color: 'red',
+            });
         },
     });
 
     return (
         <>
-            <Button onClick={open}>+ Add Calendar Year</Button>
+            <Button onClick={open}>+ Add Root Class</Button>
             <Drawer
                 opened={opened}
                 onClose={close}
-                title="Create Calendar Year"
+                title="Create Root Class"
                 position="right"
                 size="md"
             >
                 <form
-                    onSubmit={handleSubmit((data) => addCalendar.mutate(data))}
+                    onSubmit={handleSubmit((data) =>
+                        addRootClass.mutate(data.text),
+                    )}
                 >
                     <Stack>
                         <TextInput
                             label="Name"
                             placeholder="Name"
-                            {...register('name')}
+                            {...register('text')}
                             required
                         />
-                        <TextInput
-                            type="date"
-                            label="Start Date"
-                            {...register('startDate')}
-                            required
-                        />
-                        <TextInput
-                            type="date"
-                            label="End Date"
-                            {...register('endDate')}
-                            required
-                        />
-                        <Button type="submit" loading={addCalendar.isPending}>
+                        <Button type="submit" loading={addRootClass.isPending}>
                             Create
                         </Button>
                     </Stack>
