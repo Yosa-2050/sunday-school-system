@@ -31,6 +31,10 @@ export class NewProfileDto {
     birthDate?: string;
 
     @ApiProperty()
+    @IsOptional()
+    baptistName?: string;
+
+    @ApiProperty()
     @OptionalEnum(Gender)
     gender?: Gender;
 

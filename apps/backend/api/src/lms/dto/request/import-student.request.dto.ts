@@ -21,7 +21,7 @@ export class ImportStudentsRequest {
     Gender: Gender;
 
     @IsString()
-    BirthYear: string;
+    BirthDate: string;
 
     @IsString()
     ChristianName: string;

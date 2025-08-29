@@ -20,6 +20,8 @@ import { Profile } from './entities/profile.entity';
 import { RelationShips } from './entities/relationships.entity';
 import { LoginBy } from './enums/login-by.enum';
 // biome-ignore lint/style/useImportType: <explanation>
+import { Gender } from './enums/profile-gender.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { RelationShipsType } from './enums/relationship-type.enum';
 
 @Injectable()
@@ -69,6 +71,9 @@ export class ProfileService {
         middleName: string,
         lastName: string,
         phoneNumber: string,
+        gender: Gender,
+        birthDate: string,
+        baptistName: string,
         saveProfile = true,
         password = '',
         pwdChangeRequired = false,
@@ -87,6 +92,9 @@ export class ProfileService {
                 middleName,
                 lastName,
                 phoneNumber,
+                gender,
+                birthDate,
+                baptistName,
             });
             profile.user = user;
             if (saveProfile) {
