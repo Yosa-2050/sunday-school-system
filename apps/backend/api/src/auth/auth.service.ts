@@ -82,11 +82,13 @@ export class AuthService {
                 break;
             case UserRoleType.SuperAdmin:
                 break;
-            case UserRoleType.WorkProvider:
-                details = await this.organizationService.getOrganizationDetail(
-                    user.profile.id,
-                );
+            case UserRoleType.SchoolAdmin:
                 break;
+            // case  :
+            //     details = await this.organizationService.getOrganizationDetail(
+            //         user.profile.id,
+            //     );
+            //     break;
             case UserRoleType.JobSeeker:
                 details = await this.jobService.getApplicantDetail(
                     user.profile.id,

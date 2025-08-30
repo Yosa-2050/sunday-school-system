@@ -224,7 +224,7 @@ const JobsList = () => {
                         <MenuItem
                           leftSection={<IconEye size={14} />}
                           onClick={() =>
-                            router.push(`/work-provider/jobs/${job.id}`)
+                            router.push(`/ school_adminjobs/${job.id}`)
                           }
                         >
                           View

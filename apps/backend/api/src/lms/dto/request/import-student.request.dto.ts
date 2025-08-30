@@ -1,6 +1,4 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { Gender } from '@shega/users/enums/profile-gender.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { RelationShipsType } from '@shega/users/enums/relationship-type.enum';
 import { IsEnum, IsString } from 'class-validator';
 

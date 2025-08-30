@@ -24,8 +24,8 @@ export default function HomePage() {
                 return;
             }
 
-            if (roles.includes('work_provider')) {
-                router.replace(`/${locale}/work-provider/jobs`);
+            if (roles.includes('school_admin')) {
+                router.replace(`/${locale} /school_admin/dashboard`);
                 return;
             }
         } else if (!_user) {

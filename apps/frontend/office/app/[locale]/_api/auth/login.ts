@@ -7,7 +7,7 @@ type LoginRequest = {
 };
 
 export type Data = {
-    role: 'administrator' | 'work_provider' | 'super_admin' | 'mentor';
+    role: 'administrator' | 'school_admin' | 'super_admin' | 'mentor';
     email: string;
     access_token: string;
     pwdChangeRequired: boolean;

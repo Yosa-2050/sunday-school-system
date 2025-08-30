@@ -42,7 +42,7 @@ export default async function RootLayout({
 
     const role = cookieValues.get('role')?.value as
         | 'administrator'
-        | 'work_provider';
+        | 'school_admin';
 
     const colorArray = generateColors(defaultTheme);
     const styles: Record<string, string> = {

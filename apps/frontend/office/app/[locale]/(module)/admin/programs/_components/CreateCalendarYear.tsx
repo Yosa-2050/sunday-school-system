@@ -22,10 +22,13 @@ export function CreateCalendarYear({ programId }: { programId: string }) {
             createCalendarYear(programId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ['program', programId, 'calendars'],
+                queryKey: ['program', programId, 'calendarYears'],
             });
             queryClient.invalidateQueries({
-                queryKey: ['program', programId, 'rootClasses'],
+                queryKey: ['rootClasses', programId],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['program', programId, 'users'],
             });
             notifications.show({
                 title: 'Success',

@@ -29,7 +29,7 @@ import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
-import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
@@ -612,7 +612,7 @@ export class OrganizationService {
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
             LoginBy.EMAIL,
-            UserRoleType.WorkProvider,
+            UserRoleType.Administrator,
             dto.firstName,
             dto.middleName,
             dto.lastName,
@@ -649,32 +649,12 @@ export class OrganizationService {
         return saved;
     }
 
-    private async SendOrganizationCreatedNotification(
+    private SendOrganizationCreatedNotification(
         dto: CreateOrganizationUserDto,
         pwdGenerated: string,
         saved: EmployeeOrganization,
     ) {
-        const signupEmailTemplate = await this.notificationService.getTemplate(
-            'signupEmailTemplate',
-            {
-                userName: dto.firstName,
-                role: UserRoleValue(UserRoleType.WorkProvider).value,
-                email: dto.email,
-                tempPassword: pwdGenerated,
-                loginUrl: UserRoleValue(UserRoleType.WorkProvider).url,
-            },
-            null,
-        );
-
-        this.notificationService.send({
-            channel: NotificationChannel.Email,
-            content: signupEmailTemplate.content,
-            to: dto.email,
-            subject: signupEmailTemplate.subject,
-            reference: saved.id,
-            type: NotificationType.Organization,
-            metaData: null,
-        });
+        return null;
     }
 
     async setOrgActivationStatus(

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { NotificationModule } from '@shega/notification/notification.module';
 import { UsersModule } from '@shega/users/users.module';
 import { ClassController } from './controllers/classes.controller';
 import { LmsController } from './controllers/lms.controller';
@@ -25,6 +26,7 @@ import { StudentService } from './services/student.service';
             ProgramUser,
         ]),
         UsersModule,
+        NotificationModule,
     ],
     controllers: [LmsController, ClassController, StudentController],
     providers: [LmsService, ClassService, StudentService],

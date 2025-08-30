@@ -15,7 +15,7 @@ import { IconFilter, IconX } from '@tabler/icons-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchEnum } from 'app/[locale]/_api/enum';
 import { fetchCategories, fetchSkills } from 'app/[locale]/_api/job-details';
-import { mapEnumToOptions } from '../../jobs/create/components/utils';
+import { mapEnumToOptions } from '../../classes/create/components/utils';
 import type { Filters } from './Aplicants';
 
 interface Props {

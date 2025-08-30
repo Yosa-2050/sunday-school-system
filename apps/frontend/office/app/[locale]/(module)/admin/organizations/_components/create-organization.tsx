@@ -71,7 +71,7 @@ export function CreateOrganization() {
     });
 
     const onSubmit = (data: Omit<CreateOrganizations, 'role'>) => {
-        createUserMutation.mutate({ ...data, role: 'WORK_PROVIDER' });
+        createUserMutation.mutate({ ...data, role: 'school_admin' });
     };
 
     return (

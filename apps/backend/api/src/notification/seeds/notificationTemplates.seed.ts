@@ -18,7 +18,7 @@ export const NotificationTemplatesSeedData = [
     {
         channelType: NotificationChannel.Email,
         templateName: 'signupEmailTemplate',
-        subject: 'Welcome to Shega Jobs! Your Account is Created',
+        subject: 'Welcome to Finote Tiguhan! Your Account is Created',
         content: getCleanedHtmlString(getSignupEmailTemplate()),
     },
     {

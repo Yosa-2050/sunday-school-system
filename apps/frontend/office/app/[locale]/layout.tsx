@@ -36,7 +36,7 @@ export default async function RootLayout({
 
     const role = cookieValues.get('role')?.value as
         | 'administrator'
-        | 'work_provider';
+        | 'school_admin';
 
     logger.log({ user, role });
 

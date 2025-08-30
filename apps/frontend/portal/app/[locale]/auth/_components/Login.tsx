@@ -86,9 +86,7 @@ const Login = () => {
                     if (user) {
                         setUser({
                             ...user,
-                            role: data.role as
-                                | 'administrator'
-                                | 'work_provider',
+                            role: data.role as 'administrator' | 'school_admin',
                         } as User);
                     }
 

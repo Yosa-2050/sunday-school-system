@@ -149,7 +149,7 @@ export const ApplicantsTable = ({
                                     variant="transparent"
                                     onClick={() =>
                                         router.push(
-                                            `/work-provider/applicants/${applicant.applicantId}`,
+                                            `/school_admin/applicants/${applicant.applicantId}`,
                                         )
                                     }
                                 >

@@ -153,11 +153,11 @@ const JobsList = () => {
     }
 
     const handleEditJob = (jobId: string) => {
-        router.push(`/work-provider/draft-jobs/${jobId}`);
+        router.push(`/school_admin/draft-jobs/${jobId}`);
     };
 
     const handleViewApplications = (jobId: string) => {
-        router.push(`/work-provider/jobs/${jobId}/applications`);
+        router.push(`/school_admin/jobs/${jobId}/applications`);
     };
 
     return (
@@ -171,7 +171,7 @@ const JobsList = () => {
                             variant="filled"
                             color="primary"
                             onClick={() =>
-                                router.push('/work-provider/jobs/create')
+                                router.push('/school_admin/jobs/create')
                             }
                         >
                             {t('postJob')}
@@ -184,7 +184,7 @@ const JobsList = () => {
                             Welcome! To ensure a quality experience for all, you
                             won't be able to post jobs until your account is
                             approved. To initiate this, please{' '}
-                            <Anchor href="/work-provider/profile" color="blue">
+                            <Anchor href="/school_admin/profile" color="blue">
                                 edit your employer profile
                             </Anchor>{' '}
                             and submit it for admin review. We'll notify you
@@ -384,7 +384,7 @@ const JobsList = () => {
                                             leftSection={<IconEye size={14} />}
                                             onClick={() =>
                                                 router.push(
-                                                    `/work-provider/jobs/${job.id}`,
+                                                    `/school_admin/jobs/${job.id}`,
                                                 )
                                             }
                                         >
@@ -408,7 +408,7 @@ const JobsList = () => {
                                                         }
                                                         onClick={() =>
                                                             router.push(
-                                                                `/work-provider/jobs/${job.id}`,
+                                                                `/school_admin/jobs/${job.id}`,
                                                             )
                                                         }
                                                     >

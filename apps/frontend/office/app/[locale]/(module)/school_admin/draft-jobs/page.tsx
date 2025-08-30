@@ -215,7 +215,7 @@ const JobsList = () => {
                                             }
                                             onClick={() =>
                                                 router.push(
-                                                    `/work-provider/draft-jobs/${job.id}`,
+                                                    `/school_admin/draft-jobs/${job.id}`,
                                                 )
                                             }
                                         >

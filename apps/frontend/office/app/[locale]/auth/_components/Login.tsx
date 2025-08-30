@@ -63,7 +63,7 @@ const Login = () => {
             ...user,
             role: data.role as
                 | 'administrator'
-                | 'work_provider'
+                | 'school_admin'
                 | 'super_admin'
                 | 'mentor',
             id: user.id ?? '',
@@ -72,12 +72,12 @@ const Login = () => {
     };
 
     const handleRole = (
-        role: 'administrator' | 'work_provider' | 'super_admin' | 'mentor',
+        role: 'administrator' | 'school_admin' | 'super_admin' | 'mentor',
     ) => {
         if (role === 'administrator') {
             router.push('/admin/dashboard');
-        } else if (role === 'work_provider') {
-            router.push('/work-provider/jobs');
+        } else if (role === 'school_admin') {
+            router.push(' /school_admin//jobs');
         } else if (role === 'super_admin') {
             router.push('/admin/dashboard');
         } else if (role === 'mentor') {

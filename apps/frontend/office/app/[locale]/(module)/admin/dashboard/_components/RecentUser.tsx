@@ -67,7 +67,7 @@ const RecentUsers = () => {
 
     const roles = [
         { value: 'ADMINISTRATOR', label: t('roles.administrator') },
-        { value: 'WORK_PROVIDER', label: t('roles.workProvider') },
+        { value: 'school_admin', label: t('roles.workProvider') },
         { value: 'JOB_SEEKER', label: t('roles.jobSeeker') },
         { value: 'MENTOR', label: t('roles.mentor') },
     ];
@@ -230,7 +230,7 @@ const RecentUsers = () => {
                                     {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                                     {users.map((user: Daum) => {
                                         let roleLabel = 'Job Seeker';
-                                        if (user.role === 'WORK_PROVIDER') {
+                                        if (user.role === 'school_admin') {
                                             roleLabel = 'Employer';
                                         } else if (
                                             user.role === 'ADMINISTRATOR'

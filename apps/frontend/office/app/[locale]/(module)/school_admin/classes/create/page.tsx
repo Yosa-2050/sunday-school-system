@@ -1,8 +1,8 @@
 'use client';
 
+import useIsAuthorized from '@/hooks/useIsAuthorized';
 import { Link, useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Container } from '@mantine/core';
 import { Button, Group, Paper, Stepper, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
@@ -11,170 +11,48 @@ import {
     IconCheck,
     IconCircleX,
 } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchJobsAdminById } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
-import type { JobDetailsViewProps } from 'app/[locale]/_api/admin/fetch-jobs-by-id';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchEnum } from 'app/[locale]/_api/enum';
 import {
     fetchCategories,
     fetchCities,
     fetchCountries,
-    fetchRegionsByCountryId,
+    fetchRegionsId,
     fetchSkills,
 } from 'app/[locale]/_api/job-details';
 import {
-    type CreateJob,
-    updateJob,
+    createJob,
+    saveJobDraft,
 } from 'app/[locale]/_api/organizations/create-jobs';
 import { getCookie } from 'cookies-next';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { ApplicationDetails } from '../../jobs/create/components/ApplicationDetails';
-import { JobDetails } from '../../jobs/create/components/JobDetails';
-import { JobPreview } from '../../jobs/create/components/JobPreview';
-import { JobRequirements } from '../../jobs/create/components/JobRequirements';
-import {
-    type JobDescriptionType,
-    jobSchema,
-} from '../../jobs/create/components/shcema/job-schema';
-import type { JobFormData } from '../../jobs/create/components/types';
+import { ApplicationDetails } from './components/ApplicationDetails';
+import { JobDetails } from './components/JobDetails';
+import { JobPreview } from './components/JobPreview';
+import { JobRequirements } from './components/JobRequirements';
+import { jobSchema } from './components/shcema/job-schema';
+import type { JobFormData } from './components/types';
 
-const getDefaultValues = (job: JobDetailsViewProps | undefined) => {
-    if (!job) {
-        return { isPublished: false };
-    }
-
-    return {
-        title: job.title,
-        description: job.description,
-        type: job.type as 'FULL_TIME' | 'PART_TIME' | 'Contract' | 'Internship',
-        workPlace: job.workPlace || '',
-        salaryType: job.salaryType || '',
-        currency: job.currency,
-        salaryFrom: job.salaryFrom,
-        salaryTo: job.salaryTo,
-        salaryFrequency: job.salaryFrequency,
-        countryId: job.country?.id || '',
-        stateId: job.state?.id || '',
-        cityId: job.city?.id || '',
-        experianceLevel: job.experianceLevel as 'ENTRY' | 'MID' | 'SENIOR',
-        experiance: job.experiance,
-        deadline: job.deadline
-            ? new Date(job.deadline)
-            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        educationalRequirment: job.educationalRequirment,
-        skills: [],
-        catagories: [],
-        isPublished: false,
-        contactEmail: '',
-        applicationUrl: '',
-        additionalInfo: job.notes || '',
-        requirements:
-            job.jobDescriptions
-                ?.filter((d) => d.type === 'REQUIREMENTS')
-                .map((d) => d.description) || [],
-        responsibilities:
-            job.jobDescriptions
-                ?.filter((d) => d.type === 'RESPONSIBILITY')
-                .map((d) => d.description) || [],
-        benefits:
-            job.jobDescriptions
-                ?.filter((d) => d.type === 'BENEFITS')
-                .map((d) => d.description) || [],
-        jobDescriptions: job.jobDescriptions || [],
-    };
-};
-
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
-const DraftJobEdit = () => {
-    const params = useParams();
-    const jobId = params.id as string;
-    const queryClient = useQueryClient();
-    const [active, setActive] = useState(0);
+export default function PostJobPage() {
     const router = useRouter();
-    const [formSubmitted, setFormSubmitted] = useState(false);
-
-    const { data: job, isLoading } = useQuery({
-        queryKey: ['job', jobId],
-        queryFn: () => fetchJobsAdminById(jobId),
+    const queryClient = useQueryClient();
+    const { user } = useIsAuthorized({
+        resourceRole: 'school_admin',
+        userRole: 'school_admin',
     });
+
+    const [active, setActive] = useState(0);
+    const [formSubmitted, setFormSubmitted] = useState(false);
 
     const methods = useForm<JobFormData>({
         resolver: zodResolver(jobSchema),
-        values: job
-            ? {
-                  title: job.title,
-                  description: job.description,
-                  type: job.type as
-                      | 'FULL_TIME'
-                      | 'PART_TIME'
-                      | 'Contract'
-                      | 'Internship',
-                  workPlace: job.workPlace || '',
-                  salaryType: job.salaryType || '',
-                  currency: job.currency,
-                  salaryFrom: job.salaryFrom,
-                  salaryTo: job.salaryTo,
-                  salaryFrequency: job.salaryFrequency,
-                  countryId: job.country?.id || '',
-                  stateId: job.state?.id || '',
-                  cityId: job.city?.id || '',
-                  experianceLevel: job.experianceLevel as
-                      | 'ENTRY'
-                      | 'MID'
-                      | 'SENIOR',
-                  experiance: job.experiance,
-                  deadline: job.deadline
-                      ? new Date(job.deadline)
-                      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-                  educationalRequirment: job.educationalRequirment,
-                  // skills: job.jobSkills.map((skill) => skill.skill),
-                  skills: job.jobSkills?.map((skill) => skill.skill) ?? [],
-
-                  // catagories: job.jobCategory.map((cat) => cat.category.id),
-                  catagories:
-                      job.jobCategory?.map((cat) => cat.category?.id) ?? [],
-
-                  isPublished: false,
-                  contactEmail: '',
-                  applicationUrl: '',
-                  additionalInfo: job.notes || '',
-                  // jobDescriptions:
-                  //   job.jobDescriptions?.map((desc) => ({
-                  //     description: desc.description,
-                  //     type: desc.type as JobDescriptionType,
-                  //   })) || [],
-                  jobDescriptions:
-                      job.jobDescriptions?.map((desc) => ({
-                          description: desc.description,
-                          type: desc.type as JobDescriptionType,
-                      })) ?? [],
-              }
-            : undefined,
+        defaultValues: {
+            isPublished: false,
+        },
         mode: 'onChange',
-        reValidateMode: 'onChange',
+        reValidateMode: 'onChange', // Revalidate on every change
     });
-
-    useEffect(() => {
-        if (job) {
-            const defaultValues = {
-                ...getDefaultValues(job),
-                jobDescriptions:
-                    job.jobDescriptions?.map((desc) => ({
-                        description: desc.description,
-                        type: desc.type as JobDescriptionType,
-                    })) || [],
-                skills: job.jobSkills?.map((skill) => skill.skill) ?? [],
-
-                // catagories: job.jobCategory.map((cat) => cat.category.id),
-                catagories:
-                    job.jobCategory?.map((cat) => cat.category?.id) ?? [],
-            };
-            methods.reset(defaultValues);
-        }
-    }, [job, methods]);
 
     const { watch, trigger, control, formState } = methods;
     const { errors } = formState;
@@ -259,7 +137,7 @@ const DraftJobEdit = () => {
             if (!selectedCountry) {
                 return Promise.resolve([]);
             }
-            return fetchRegionsByCountryId(selectedCountry);
+            return fetchRegionsId(selectedCountry);
         },
         enabled: !!selectedCountry,
     });
@@ -276,17 +154,18 @@ const DraftJobEdit = () => {
         },
         enabled: !!selectedState,
     });
+
     const jobMutation = useMutation({
-        mutationFn: (data: CreateJob) => updateJob(data, jobId),
+        mutationFn: createJob,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobs'] });
+            router.push('/school_admin/jobs');
             notifications.show({
                 title: 'Success',
                 message: 'Job posted successfully',
                 color: 'green',
                 icon: <IconCheck size="1.1rem" />,
             });
-            router.push('/work-provider/jobs');
         },
         onError: (error) => {
             notifications.show({
@@ -298,7 +177,7 @@ const DraftJobEdit = () => {
     });
 
     const draftMutation = useMutation({
-        mutationFn: (data: CreateJob) => updateJob(data, jobId),
+        mutationFn: saveJobDraft,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobDrafts'] });
             notifications.show({
@@ -332,7 +211,6 @@ const DraftJobEdit = () => {
             ...data,
             organizationId: organizationId ?? '',
             isPublished: true,
-            id: jobId,
         });
     };
 
@@ -348,9 +226,18 @@ const DraftJobEdit = () => {
             return;
         }
 
+        if (watch('title') === '') {
+            notifications.show({
+                title: 'Error',
+                message: 'Job title is required',
+                color: 'red',
+            });
+            return;
+        }
         draftMutation.mutate({
             ...watch(),
             organizationId: organizationId ?? '',
+            isPublished: false,
         });
     };
 
@@ -390,40 +277,32 @@ const DraftJobEdit = () => {
 
     if (formSubmitted) {
         return (
-            <Container size="xl">
-                <Paper shadow="sm" p="xl" radius="md">
-                    <div className="text-center">
-                        <IconCheck
-                            size={48}
-                            className="text-green-500 mx-auto mb-4"
-                        />
-                        <Title order={2} mb="md">
-                            Job Posted Successfully!
-                        </Title>
-                        <Button
-                            component={Link}
-                            href="/work-provider/jobs"
-                            leftSection={<IconArrowLeft size="1.1rem" />}
-                        >
-                            Back to Jobs
-                        </Button>
-                    </div>
-                </Paper>
-            </Container>
+            <Paper shadow="sm" p="xl" radius="md">
+                <div className="text-center">
+                    <IconCheck
+                        size={48}
+                        className="text-green-500 mx-auto mb-4"
+                    />
+                    <Title order={2} mb="md">
+                        Job Posted Successfully!
+                    </Title>
+                    <Button
+                        onClick={() => router.push('/school_admin/jobs')}
+                        leftSection={<IconArrowLeft size="1.1rem" />}
+                    >
+                        Back to Jobs
+                    </Button>
+                </div>
+            </Paper>
         );
     }
 
     return (
         <FormProvider {...methods}>
-            <Container
-                size={'xl'}
-                bg={'white'}
-                p={'md'}
-                className="shadow rounded"
-            >
+            <Paper p={'md'} className="shadow rounded-sm">
                 <Group justify="space-between" align="center" py={'lg'}>
                     <Group>
-                        <Link href="/work-provider/draft-jobs" passHref>
+                        <Link href="/school_admin/jobs" passHref>
                             <Button
                                 variant="subtle"
                                 leftSection={<IconArrowLeft size={16} />}
@@ -431,7 +310,7 @@ const DraftJobEdit = () => {
                                 color="gray"
                             />
                         </Link>
-                        <Title order={2}>Edit Draft Job</Title>
+                        <Title order={2}>Post a New Job</Title>
                     </Group>
                 </Group>
 
@@ -510,6 +389,7 @@ const DraftJobEdit = () => {
                         color={hasStepErrors(0) ? 'red' : ''}
                         data-error={hasStepErrors(2)}
                         allowStepSelect={true}
+                        onClick={nextStep}
                     >
                         <ApplicationDetails
                             control={control}
@@ -561,9 +441,7 @@ const DraftJobEdit = () => {
                         )}
                     </Group>
                 </Group>
-            </Container>
+            </Paper>
         </FormProvider>
     );
-};
-
-export default DraftJobEdit;
+}

@@ -5,6 +5,12 @@ import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exce
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { NotificationDetailsDto } from '@shega/notification/dto/notification-details.dto';
+import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationService } from '@shega/notification/notification.service';
+import { NotificationTemplates } from '@shega/notification/seeds/notification-templates.const';
+// biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
@@ -32,6 +38,7 @@ export class LmsService {
         private programUserRepo: Repository<ProgramUser>,
         private passwordService: PasswordService,
         private profileService: ProfileService,
+        private notificationService: NotificationService,
     ) {}
 
     async createCalendarYear(
@@ -101,7 +108,7 @@ export class LmsService {
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
             LoginBy.EMAIL,
-            UserRoleType.WorkProvider,
+            UserRoleType.SchoolAdmin,
             dto.firstName,
             dto.middleName,
             dto.lastName,
@@ -118,7 +125,23 @@ export class LmsService {
         model.profile = profile;
         model.program = program;
 
-        return await this.programUserRepo.save(model);
+        const programUser = await this.programUserRepo.save(model);
+        const notificationDetail: NotificationDetailsDto = {
+            toEmailAddress: [dto.email],
+            referenceId: programUser.profile.id,
+            templateName: NotificationTemplates.SignUp,
+            metaData: {
+                userName: dto.email,
+                role: UserRoleType.SchoolAdmin,
+                tempPassword: pwdGenerated,
+            },
+        };
+        this.notificationService.sendUsingTemplate(
+            notificationDetail,
+            false,
+            NotificationChannel.Email,
+        );
+        return programUser;
     }
 
     async AssignUser(programId: string, userId: string) {

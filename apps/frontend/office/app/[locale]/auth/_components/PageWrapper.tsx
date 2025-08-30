@@ -28,8 +28,8 @@ export default function PageWrapper({
         if (role === 'administrator') {
             window.location.href = '/admin/dashboard';
         }
-        if (role === 'work_provider') {
-            window.location.href = '/work-provider/jobs';
+        if (role === 'school_admin') {
+            window.location.href = '/school_admin/dashboard';
         }
     }
     return (

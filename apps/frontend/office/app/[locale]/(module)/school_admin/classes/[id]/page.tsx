@@ -126,7 +126,7 @@ export default function JobDetailsPage() {
     return (
         <Container size="xl" py="xl" px="md">
             <Group mb="xl">
-                <Link href="/work-provider/jobs" passHref>
+                <Link href="/school_admin/jobs" passHref>
                     <Button
                         variant="subtle"
                         leftSection={<IconChevronLeft size={16} />}
@@ -1145,7 +1145,7 @@ const Applicants = ({ jobId }: { jobId: string }) => {
                                                 variant="transparent"
                                                 onClick={() =>
                                                     router.push(
-                                                        `/work-provider/applicants/${jobId}?jobId=${applicant?.id}`,
+                                                        `/school_admin/applicants/${jobId}?jobId=${applicant?.id}`,
                                                     )
                                                 }
                                             >
@@ -1167,7 +1167,7 @@ const Applicants = ({ jobId }: { jobId: string }) => {
                         variant="transparent"
                         onClick={() =>
                             router.push(
-                                `/work-provider/applicants?jobId=${jobId}`,
+                                `/school_admin/applicants?jobId=${jobId}`,
                             )
                         }
                     >

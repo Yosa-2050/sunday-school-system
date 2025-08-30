@@ -20,12 +20,12 @@ const useIsAuthorized = ({ resourceRole, userRole }: UseIsAuthorizedProps) => {
     if (!user) {
         return redirect({ href: '/login', locale });
     }
-    // if(!user?.organizationId && userRole === 'work_provider') { return redirect({ href: '/auth/login', locale }); }
+    // if(!user?.organizationId && userRole === 'school_admin') { return redirect({ href: '/auth/login', locale }); }
 
     if (!isAuthorized) {
         const dashboardPaths: Record<string, string> = {
             administrator: '/admin/dashboard',
-            work_provider: '/work-provider/jobs',
+            school_admin: '/school_admin/dashboard',
         };
 
         return redirect({ href: dashboardPaths[userRole] || '/login', locale });

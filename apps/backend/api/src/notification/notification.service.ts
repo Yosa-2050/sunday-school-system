@@ -10,6 +10,8 @@ import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
 import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateNotificationDto } from './dto/create-notification.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { NotificationDetailsDto } from './dto/notification-details.dto';
 import { Notification } from './entities/notification.entity';
 import { NotificationTemplate } from './entities/notificationTemplate.entity';
 import { MarkReadUnread } from './enums/mark-read-unread.enum';
@@ -35,6 +37,58 @@ export class NotificationService {
         private readonly notificationGateway: NotificationGateway,
         private readonly queryBuilderService: QueryBuilderService,
     ) {}
+
+    async sendUsingTemplate(
+        detail: NotificationDetailsDto,
+        isRealTime?: boolean,
+        channel?: NotificationChannel,
+    ) {
+        const template = await this.notificationTemplateRepo.findBy({
+            templateName: detail.templateName,
+        });
+        const notifications = [];
+        if (channel === NotificationChannel.Email) {
+            this.SaveAndSendEmail(template, detail, channel, notifications);
+        }
+    }
+
+    private SaveAndSendEmail(
+        template: NotificationTemplate[],
+        detail: NotificationDetailsDto,
+        channel: NotificationChannel,
+        notifications: Notification[],
+    ) {
+        const emailTemplate = template.find(
+            (x) => x.channelType === NotificationChannel.Email,
+        );
+        if (emailTemplate) {
+            for (let index = 0; index < detail.toEmailAddress.length; index++) {
+                const email = detail.toEmailAddress[index];
+
+                const notification = this.notificationRepo.create({
+                    channel: channel,
+                    numberOfAttempts: 1,
+                    reference: detail.referenceId,
+                    to: email,
+                    content: this.renderTemplate(
+                        emailTemplate.content,
+                        detail.metaData,
+                    ),
+                    subject: emailTemplate.subject,
+                    status: NotificationStatus.Pending,
+                });
+
+                this.emailService.sendEmail(
+                    this.fromEmail,
+                    email,
+                    emailTemplate.subject,
+                    this.renderTemplate(emailTemplate.content, detail.metaData),
+                );
+
+                notifications.push(notification);
+            }
+        }
+    }
 
     send(req: CreateNotificationDto) {
         const notification = this.notificationRepo.create({
@@ -246,5 +300,11 @@ export class NotificationService {
             referenceId,
         );
         return result;
+    }
+
+    renderTemplate(template: string, metadata: Record<string, string>): string {
+        return template.replace(/{{\s*(\w+)\s*}}/g, (_, key) => {
+            return metadata[key] ?? `{{${key}}}`; // if not found, keep placeholder
+        });
     }
 }

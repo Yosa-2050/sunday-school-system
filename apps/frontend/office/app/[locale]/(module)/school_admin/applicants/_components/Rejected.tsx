@@ -7,7 +7,7 @@ import { fetchApplicants } from 'app/[locale]/_api/organizations/fetch-jobs';
 import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
 
-export const ShortListed = ({
+export const RejectedList = ({
     jobId,
     search,
 }: { jobId: string; search: string }) => {
@@ -18,12 +18,12 @@ export const ShortListed = ({
         isLoading,
         isFetching,
     } = useQuery({
-        queryKey: ['applicants', 'SHORT_LISTED', jobId, search],
+        queryKey: ['applicants', 'REJECTED', jobId, search],
         queryFn: () =>
             fetchApplicants(
                 { status: '', pagination: { page: page, limit: 10, search } },
                 jobId,
-                'SHORT_LISTED',
+                'REJECTED',
             ),
     });
 
@@ -40,7 +40,7 @@ export const ShortListed = ({
                     <Table.Tr>
                         <Table.Th>Avatar</Table.Th>
                         <Table.Th>Candidate</Table.Th>
-                        <Table.Th>Shortlisted Date</Table.Th>
+                        <Table.Th>Rejected Date</Table.Th>
                         <Table.Th>Status</Table.Th>
                         <Table.Th>Actions</Table.Th>
                     </Table.Tr>
@@ -82,7 +82,7 @@ export const ShortListed = ({
                                         variant="transparent"
                                         onClick={() =>
                                             router.push(
-                                                `/work-provider/applicants/${applicant?.applicantId}`,
+                                                `/ school_adminapplicants/${applicant?.applicantId}`,
                                             )
                                         }
                                     >
