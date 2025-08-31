@@ -30,5 +30,6 @@ import { StudentService } from './services/student.service';
     ],
     controllers: [LmsController, ClassController, StudentController],
     providers: [LmsService, ClassService, StudentService],
+    exports: [LmsService],
 })
 export class LmsModule {}

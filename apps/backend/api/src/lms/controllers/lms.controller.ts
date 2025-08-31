@@ -7,12 +7,15 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Request,
 } from '@nestjs/common';
-import { Public } from '@shega/auth/jwt-public';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
+import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUsingNameRequestDto } from '@shega/job_portal/dto/request/create-name.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateCalendarYearRequestDto } from '../dto/request/create-calendar-year.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -22,7 +25,6 @@ import { ClassService } from '../services/class.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LmsService } from '../services/lms.service';
 
-@Public()
 @Controller('lms')
 export class LmsController {
     constructor(
@@ -48,6 +50,12 @@ export class LmsController {
         return this.lmsService.findOne(+id);
     }
 
+    @Roles(UserRoleType.SchoolAdmin)
+    @Get('calendarYear')
+    getDefaultCalendarYear(@Request() req) {
+        return this.lmsService.findAllYear(CurrentUser.getProgramId(req));
+    }
+    //TODO: Implement inactive calendar year
     @Patch('calendarYear/:id')
     update(@Param('id') id: string, @Body() updateLmDto: UpdateLmDto) {
         return this.lmsService.update(+id, updateLmDto);

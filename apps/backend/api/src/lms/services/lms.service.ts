@@ -4,6 +4,7 @@ import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
+import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationDetailsDto } from '@shega/notification/dto/notification-details.dto';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -46,12 +47,21 @@ export class LmsService {
         dto: CreateCalendarYearRequestDto,
     ) {
         const program = await this.findOneProgram(programId);
-        const existingProgram = await this.calendarYearRepo.findOneBy({
+        const existing = await this.calendarYearRepo.findOneBy({
             name: dto.name,
             program: { id: programId },
         });
-        if (existingProgram) {
-            throw new EntityAlreadyExistsException(typeof Program);
+
+        if (existing) {
+            throw new EntityAlreadyExistsException('Program');
+        }
+        const active = await this.calendarYearRepo.findOneBy({
+            isActive: true,
+            program: { id: programId },
+        });
+
+        if (active) {
+            throw new EntityAlreadyExistsException('Active Program');
         }
         const year = this.calendarYearRepo.create(dto);
         year.program = program;
@@ -171,5 +181,32 @@ export class LmsService {
             });
         }
         return null;
+    }
+
+    async activeCalendarYearByProgramId(programId: string) {
+        const activeYear = await this.calendarYearRepo.findOneBy({
+            program: { id: programId },
+            isActive: true,
+        });
+
+        if (!activeYear) {
+            return null;
+        }
+        return activeYear;
+    }
+
+    async getSchoolAdminDetail(id: string) {
+        const programUser = await this.programUserRepo.findOneBy({
+            profile: { id },
+        });
+
+        const profile = await this.profileService.findById(id);
+        const userDetails = new UserDetails();
+        userDetails.programId = programUser?.program?.id;
+        userDetails.profileId = profile?.id;
+        userDetails.calendarYear = (
+            await this.activeCalendarYearByProgramId(programUser?.program?.id)
+        )?.id;
+        return userDetails;
     }
 }

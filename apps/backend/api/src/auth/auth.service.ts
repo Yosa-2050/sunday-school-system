@@ -10,6 +10,8 @@ import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exce
 import { JobsService } from '@shega/job_portal/jobs.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { MentorshipService } from '@shega/job_portal/mentorship.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { LmsService } from '@shega/lms/services/lms.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -49,6 +51,7 @@ export class AuthService {
         private classService: ClsService,
         private jobService: JobsService,
         private mentorService: MentorshipService,
+        private lmsService: LmsService,
     ) {}
 
     async validateUser(
@@ -83,12 +86,10 @@ export class AuthService {
             case UserRoleType.SuperAdmin:
                 break;
             case UserRoleType.SchoolAdmin:
+                details = await this.lmsService.getSchoolAdminDetail(
+                    user.profile.id,
+                );
                 break;
-            // case  :
-            //     details = await this.organizationService.getOrganizationDetail(
-            //         user.profile.id,
-            //     );
-            //     break;
             case UserRoleType.JobSeeker:
                 details = await this.jobService.getApplicantDetail(
                     user.profile.id,

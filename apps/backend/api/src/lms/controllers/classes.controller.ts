@@ -6,16 +6,18 @@ import {
     Param,
     ParseUUIDPipe,
     Post,
+    Request,
 } from '@nestjs/common';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
-import { Public } from '@shega/auth/jwt-public';
+import { Roles } from '@shega/auth/decorators/roles.decorator';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ClassRequestDto } from '../dto/request/create-class.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from '../services/class.service';
 
-@Public()
 @Controller('class')
 export class ClassController {
     constructor(private readonly classService: ClassService) {}
@@ -28,22 +30,30 @@ export class ClassController {
         return this.classService.createRoot(dto.text, programId);
     }
 
+    @Roles(UserRoleType.SuperAdmin, UserRoleType.Administrator)
     @Get('root/:programId')
     findAllRoot(@Param('programId', new ParseUUIDPipe()) programId: string) {
         return this.classService.findAllRootClass(programId);
     }
 
-    @Post('main/:yearId')
-    addNew(
-        @Body() dto: ClassRequestDto,
-        @Param('yearId', new ParseUUIDPipe()) yearId: string,
-    ) {
-        return this.classService.create(dto, yearId);
+    @Roles(UserRoleType.SchoolAdmin)
+    @Get('root')
+    findAProgramRoot(@Request() req) {
+        return this.classService.findAllRootClass(
+            CurrentUser.getProgramId(req),
+        );
     }
 
-    @Get('main/:yearId')
-    findAll(@Param('yearId', new ParseUUIDPipe()) yearId: string) {
-        return this.classService.findAll(yearId);
+    @Roles(UserRoleType.SchoolAdmin)
+    @Post('main')
+    addNew(@Body() dto: ClassRequestDto, @Request() req) {
+        return this.classService.create(dto, CurrentUser.getActiveYear(req));
+    }
+
+    @Roles(UserRoleType.SchoolAdmin)
+    @Get('main')
+    findAll(@Request() req) {
+        return this.classService.findAll(CurrentUser.getActiveYear(req));
     }
 
     @Get(':id')

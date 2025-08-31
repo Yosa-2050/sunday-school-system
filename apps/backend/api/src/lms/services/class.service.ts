@@ -84,7 +84,10 @@ export class ClassService {
     }
 
     findAll(yearId: string) {
-        return this.classRepo.findBy({ calendarYear: { id: yearId } });
+        return this.classRepo.find({
+            where: { calendarYear: { id: yearId }, isSection: false },
+            relations: ['sections'],
+        });
     }
 
     findAllRootClass(programId: string) {

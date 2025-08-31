@@ -8,6 +8,8 @@ export class UserDetails {
     employeeId?: string;
     employeeOrgId?: string;
     applicantId?: string;
+    programId?: string;
+    calendarYear?: string;
     mentorId?: string;
     profileId: string;
     userId: string;

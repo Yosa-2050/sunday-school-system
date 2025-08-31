@@ -3,6 +3,30 @@ import { BadRequestException } from '@nestjs/common';
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CurrentUser {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static getActiveYear(req: any, validate = true): string {
+        const calendarYear = req?.user?.details?.calendarYear;
+        if (!calendarYear) {
+            if (validate) {
+                throw new BadRequestException(
+                    'Unable to find active calendar year id',
+                );
+            }
+            return null;
+        }
+        return calendarYear;
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static getProgramId(req: any, validate = true): string {
+        const programId = req?.user?.details?.programId;
+        if (!programId) {
+            if (validate) {
+                throw new BadRequestException('Unable to find program id');
+            }
+            return null;
+        }
+        return programId;
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     static getMentorId(req: any, validate = true): string {
         const mentorId = req?.user?.details?.mentorId;
         if (!mentorId) {

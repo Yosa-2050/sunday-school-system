@@ -31,7 +31,6 @@ export class Classes extends BaseModel {
         () => Classes,
         (child) => child.parent,
         {
-            lazy: true,
             cascade: true,
         },
     )
