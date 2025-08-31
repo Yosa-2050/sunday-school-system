@@ -258,7 +258,7 @@ export default function PostJobPage() {
             >
                 <Group justify="space-between" align="center" py={'lg'}>
                     <Group>
-                        <Link href="/school_admin/jobs" passHref>
+                        <Link href="/school_admin/classes" passHref>
                             <Button
                                 variant="subtle"
                                 leftSection={<IconArrowLeft size={16} />}

@@ -286,7 +286,7 @@ const DraftJobEdit = () => {
                 color: 'green',
                 icon: <IconCheck size="1.1rem" />,
             });
-            router.push('/school_admin/jobs');
+            router.push('/school_admin/classes');
         },
         onError: (error) => {
             notifications.show({
@@ -402,7 +402,7 @@ const DraftJobEdit = () => {
                         </Title>
                         <Button
                             component={Link}
-                            href="/school_admin/jobs"
+                            href="/school_admin/classes"
                             leftSection={<IconArrowLeft size="1.1rem" />}
                         >
                             Back to Jobs

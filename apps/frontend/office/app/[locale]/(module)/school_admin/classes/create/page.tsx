@@ -159,7 +159,7 @@ export default function PostJobPage() {
         mutationFn: createJob,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['jobs'] });
-            router.push('/school_admin/jobs');
+            router.push('/school_admin/classes');
             notifications.show({
                 title: 'Success',
                 message: 'Job posted successfully',
@@ -287,7 +287,7 @@ export default function PostJobPage() {
                         Job Posted Successfully!
                     </Title>
                     <Button
-                        onClick={() => router.push('/school_admin/jobs')}
+                        onClick={() => router.push('/school_admin/classes')}
                         leftSection={<IconArrowLeft size="1.1rem" />}
                     >
                         Back to Jobs
@@ -302,7 +302,7 @@ export default function PostJobPage() {
             <Paper p={'md'} className="shadow rounded-sm">
                 <Group justify="space-between" align="center" py={'lg'}>
                     <Group>
-                        <Link href="/school_admin/jobs" passHref>
+                        <Link href="/school_admin/classes" passHref>
                             <Button
                                 variant="subtle"
                                 leftSection={<IconArrowLeft size={16} />}

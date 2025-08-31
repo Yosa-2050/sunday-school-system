@@ -17,7 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
     fetchCalendarYears,
     fetchProgramsById,
-    fetchCRootClasses as fetchRootClasses,
+    fetchRootClasses,
     fetchUsers,
 } from 'app/[locale]/_api/admin/fetch-programs';
 import { useParams } from 'next/navigation';

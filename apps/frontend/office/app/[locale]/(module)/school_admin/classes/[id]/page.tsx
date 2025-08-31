@@ -126,7 +126,7 @@ export default function JobDetailsPage() {
     return (
         <Container size="xl" py="xl" px="md">
             <Group mb="xl">
-                <Link href="/school_admin/jobs" passHref>
+                <Link href="/school_admin/classes" passHref>
                     <Button
                         variant="subtle"
                         leftSection={<IconChevronLeft size={16} />}

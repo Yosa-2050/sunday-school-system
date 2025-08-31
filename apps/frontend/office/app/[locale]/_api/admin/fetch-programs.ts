@@ -11,8 +11,8 @@ export const fetchPrograms = async (): Promise<ProgramResponse[]> => {
 
 export const fetchCalendarYears = async (
     id: string,
-): Promise<ProgramResponse[]> => {
-    const response: ProgramResponse[] = await fetcher(
+): Promise<CalendarYearResponse[]> => {
+    const response: CalendarYearResponse[] = await fetcher(
         `/lms/calendarYear/${id}`,
         {
             method: 'GET',
@@ -24,10 +24,25 @@ export const fetchCalendarYears = async (
     return response;
 };
 
-export const fetchCRootClasses = async (
-    id: string,
+export const fetchCalendarYearsSchoolAdmin = async (): Promise<
+    CalendarYearResponse[]
+> => {
+    const response: CalendarYearResponse[] = await fetcher(
+        '/lms/calendarYear',
+        {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        },
+    );
+
+    return response;
+};
+
+export const fetchRootClasses = async (
+    id?: string,
 ): Promise<ProgramResponse[]> => {
-    const response: ProgramResponse[] = await fetcher(`/class/root/${id}`, {
+    const url = id ? `/class/root/${id}` : '/class/root';
+    const response: ProgramResponse[] = await fetcher(url, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         //body: JSON.stringify({ q: payload }),
@@ -110,6 +125,16 @@ export type ProgramResponse = {
     createdBy: string;
     isActive: boolean;
     name: string;
+};
+
+export type CalendarYearResponse = {
+    id: string;
+    createdAt: string;
+    createdBy: string;
+    isActive: boolean;
+    name: string;
+    startDate: string;
+    endDate: string;
 };
 
 export type ProgramUserResponse = {
