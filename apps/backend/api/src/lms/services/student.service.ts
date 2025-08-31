@@ -16,6 +16,7 @@ import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateStudentRequestDto } from '../dto/request/create-student.request.dto';
 import { ImportStudentsRequest } from '../dto/request/import-student.request.dto';
+import { StudentResponseDto } from '../dto/response/student.response.dto';
 import { Classes } from '../entities/classes.entity';
 import { Students } from '../entities/students.entity';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -31,8 +32,8 @@ export class StudentService {
         private profileService: ProfileService,
     ) {}
 
-    async CreateStudentDetailed(dto: CreateStudentRequestDto) {
-        const valid = await this.classService.isClassValid(dto.classId);
+    async CreateStudentDetailed(dto: CreateStudentRequestDto, yearId: string) {
+        const valid = await this.classService.isClassValid(dto.classId, yearId);
         if (!valid) {
             throw new EntityNotFoundException(typeof Classes);
         }
@@ -61,16 +62,23 @@ export class StudentService {
         return saved;
     }
 
-    async findStudents(classId: string) {
-        const valid = await this.classService.isClassValid(classId);
+    async findStudents(classId: string, yearId: string) {
+        const valid = await this.classService.isClassValid(classId, yearId);
         if (!valid) {
             throw new EntityNotFoundException(typeof Classes);
         }
-        return await valid.students;
+        const students = await valid.students;
+        return students.map((x) => {
+            return new StudentResponseDto(x);
+        });
     }
 
-    async importStudents(file: Express.Multer.File, classId: string) {
-        const valid = await this.classService.isClassValid(classId);
+    async importStudents(
+        file: Express.Multer.File,
+        classId: string,
+        yearId: string,
+    ) {
+        const valid = await this.classService.isClassValid(classId, yearId);
         if (!valid) {
             throw new EntityNotFoundException(typeof Classes);
         }

@@ -56,9 +56,10 @@ export class ClassController {
         return this.classService.findAll(CurrentUser.getActiveYear(req));
     }
 
+    @Roles(UserRoleType.SchoolAdmin)
     @Get(':id')
-    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.classService.findOne(id);
+    findOne(@Param('id', new ParseUUIDPipe()) id: string, @Request() req) {
+        return this.classService.findOne(id, CurrentUser.getActiveYear(req));
     }
 
     @Get('sections/:id')

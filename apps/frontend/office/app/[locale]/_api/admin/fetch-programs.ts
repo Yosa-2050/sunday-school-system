@@ -152,6 +152,10 @@ export type IdSuccessResponse = {
     id: string;
 };
 
+export type SuccessResponse = {
+    status: boolean;
+};
+
 export type CreateProgram = {
     name: string;
     startDate: Date;

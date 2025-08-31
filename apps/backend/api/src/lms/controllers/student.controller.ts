@@ -5,12 +5,15 @@ import {
     Param,
     ParseUUIDPipe,
     Post,
+    Request,
     UploadedFile,
     UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { Public } from '@shega/auth/jwt-public';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
+import { Roles } from '@shega/auth/decorators/roles.decorator';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -18,14 +21,17 @@ import { CreateStudentRequestDto } from '../dto/request/create-student.request.d
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentService } from '../services/student.service';
 
-@Public()
 @Controller('student')
 export class StudentController {
     constructor(private readonly studentService: StudentService) {}
 
+    @Roles(UserRoleType.SchoolAdmin)
     @Post('create')
-    createEmployee(@Body() dto: CreateStudentRequestDto) {
-        return this.studentService.CreateStudentDetailed(dto);
+    createEmployee(@Body() dto: CreateStudentRequestDto, @Request() req) {
+        return this.studentService.CreateStudentDetailed(
+            dto,
+            CurrentUser.getActiveYear(req),
+        );
     }
 
     @Post('import/:classId')
@@ -45,12 +51,23 @@ export class StudentController {
     async importUsers(
         @UploadedFile() file: Express.Multer.File,
         @Param('classId', new ParseUUIDPipe()) id: string,
+        @Request() req,
     ) {
-        return await this.studentService.importStudents(file, id);
+        return await this.studentService.importStudents(
+            file,
+            id,
+            CurrentUser.getActiveYear(req),
+        );
     }
 
     @Get(':classId')
-    findStudents(@Param('classId', new ParseUUIDPipe()) id: string) {
-        return this.studentService.findStudents(id);
+    findStudents(
+        @Param('classId', new ParseUUIDPipe()) id: string,
+        @Request() req,
+    ) {
+        return this.studentService.findStudents(
+            id,
+            CurrentUser.getActiveYear(req),
+        );
     }
 }

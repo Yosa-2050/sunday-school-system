@@ -94,16 +94,22 @@ export class ClassService {
         return this.rootClassRepo.findBy({ program: { id: programId } });
     }
 
-    async isClassValid(id: string) {
-        const validClass = await this.findOne(id);
+    async isClassValid(id: string, yearId: string) {
+        const validClass = await this.findOne(id, yearId);
         if (validClass.isActive && !validClass.hasSection) {
             return validClass;
         }
         return null;
     }
 
-    async findOne(id: string) {
-        const _class = await this.classRepo.findOneBy({ id });
+    async findOne(id: string, yearId: string) {
+        const _class = await this.classRepo.findOne({
+            where: [
+                { id, calendarYear: { id: yearId } },
+                { id, parent: { calendarYear: { id: yearId } } },
+            ],
+        });
+
         if (!_class) {
             throw new EntityNotFoundException(typeof Classes);
         }
