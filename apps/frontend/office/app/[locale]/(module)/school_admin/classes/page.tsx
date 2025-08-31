@@ -174,7 +174,7 @@ export default function ClassPage() {
                                                                     size={16}
                                                                 />
                                                             }
-                                                        ></Button>
+                                                        />
                                                     </Menu.Target>
                                                     <Menu.Dropdown>
                                                         <Menu.Item
