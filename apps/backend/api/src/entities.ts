@@ -1,5 +1,8 @@
 import { Group } from './Utilities/entities/group.entity';
 import { LookUps } from './Utilities/entities/lookups.entity';
+import { AttendanceInformation } from './attendance/entities/attendance-data.entity';
+import { Attendance } from './attendance/entities/attendance.entity';
+import { Permission } from './attendance/entities/permission.entity';
 import { Document } from './document/entities/document.entity';
 import { CalendarYear } from './lms/entities/calendar-year.entity';
 import { Classes } from './lms/entities/classes.entity';
@@ -61,4 +64,7 @@ export const AppEntities = [
     RootClass,
     RelationShips,
     ProgramUser,
+    Attendance,
+    AttendanceInformation,
+    Permission,
 ];

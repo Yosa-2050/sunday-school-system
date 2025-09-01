@@ -12,6 +12,7 @@ import { RequestContextService } from './Utilities/request-context.service';
 import { AdminReportModule } from './admin-report/admin-report.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AttendanceModule } from './attendance/attendance.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { AppEntities } from './entities';
@@ -61,6 +62,7 @@ import { OrganizationModule } from './organization/organization.module';
         SharedModule,
         AdminReportModule,
         LmsModule,
+        AttendanceModule,
     ],
     controllers: [AppController],
     providers: [

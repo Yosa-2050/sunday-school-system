@@ -1,6 +1,7 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { Attendance } from '@shega/attendance/entities/attendance.entity';
 import { Profile } from '@shega/users/entities/profile.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Classes } from './classes.entity';
 
 @Entity()
@@ -20,8 +21,12 @@ export class Students extends BaseModel {
     @Column({ nullable: true })
     schoolGrade: string;
 
-    // @OneToMany((type) => Attendance, (attendance) => attendance.student, {
-    // lazy: true,
-    // })
-    // attendances: Attendance[];
+    @OneToMany(
+        (type) => Attendance,
+        (attendance) => attendance.student,
+        {
+            lazy: true,
+        },
+    )
+    attendances: Attendance[];
 }
