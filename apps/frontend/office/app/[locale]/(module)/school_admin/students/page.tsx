@@ -109,10 +109,11 @@ export default function StudentPage() {
 
     const rows = students.map((student) => (
         <Table.Tr key={student.id}>
+            <Table.Td>{student.idNumber}</Table.Td>
             <Table.Td>
                 {student.firstName} {student.lastName}
             </Table.Td>
-            <Table.Td>{student.idNumber}</Table.Td>
+
             <Table.Td>{student.isActive ? 'Active' : 'Inactive'}</Table.Td>
             <Table.Td>
                 <Menu shadow="md" width={180}>
@@ -224,8 +225,8 @@ export default function StudentPage() {
             <Table withColumnBorders striped highlightOnHover>
                 <Table.Thead>
                     <Table.Tr>
+                        <Table.Th>Id Number</Table.Th>
                         <Table.Th>Full Name</Table.Th>
-                        <Table.Th>Roll Number</Table.Th>
                         <Table.Th>Status</Table.Th>
                         <Table.Th>Actions</Table.Th>
                     </Table.Tr>

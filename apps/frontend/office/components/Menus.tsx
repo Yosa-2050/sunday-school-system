@@ -96,6 +96,12 @@ export const Menus = (): MenuTree[] => {
                     link: '/school_admin/students',
                     role: 'school_admin',
                 },
+                {
+                    label: t('attendance'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/attendance',
+                    role: 'school_admin',
+                },
             ],
         },
         // Super Admin Roles

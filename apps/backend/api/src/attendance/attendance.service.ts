@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponseDto } from '@shega/lms/dto/response/student.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -90,6 +91,8 @@ export class AttendanceService {
             }
 
             attendanceInfo.attendances = attendance;
+            await this.attendanceDataRepo.save(attendanceInfo);
+            return UtilityServices.SuccessDataResponse();
         }
         throw new BadRequestException('No student found for the attendance');
     }

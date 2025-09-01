@@ -19,6 +19,7 @@
     "menus": {
         "class": "Class",
         "students": "Students",
+        "attendance": "Attendance",
         "classManagement": "Class Management",
         "studentManagement": "Student Management",
         "dashboard": "Dashboard",

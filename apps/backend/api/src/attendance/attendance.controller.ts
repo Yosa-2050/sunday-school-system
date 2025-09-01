@@ -1,7 +1,13 @@
-import { Body, Controller, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Param,
+    ParseUUIDPipe,
+    Post,
+    Request,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/Utilities/current-user.utility';
-import { UserContext } from 'src/auth/decorators/user.context.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AttendanceService } from './attendance.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -19,7 +25,7 @@ export class AttendanceController {
     create(
         @Body() createAttendanceDto: CreateAttendanceDto,
         @Param('classId', new ParseUUIDPipe()) classId: string,
-        @UserContext() user,
+        @Request() user,
     ) {
         return this.attendanceService.create(
             createAttendanceDto,
@@ -31,7 +37,7 @@ export class AttendanceController {
     @Post('/getAttendance')
     findAttendanceList(
         @Body() getAttendance: GetAttendanceRequestDto,
-        @UserContext() user,
+        @Request() user,
     ) {
         return this.attendanceService.findAttendanceList(
             getAttendance,
