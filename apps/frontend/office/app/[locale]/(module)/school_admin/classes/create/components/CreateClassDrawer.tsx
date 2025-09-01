@@ -15,7 +15,7 @@ import { IconCheck, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchRootClasses } from 'app/[locale]/_api/admin/fetch-programs';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { type CreateClass, createClass } from './shcema/fetchClassesDetail';
+import { type CreateClass, createClass } from './schema/fetchClassesDetail';
 
 export function CreateClassDrawer() {
     const [opened, { open, close }] = useDisclosure(false);

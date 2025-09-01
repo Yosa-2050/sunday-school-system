@@ -21,7 +21,7 @@ import { GetAttendanceRequestDto } from './dto/request/get-attendance.request.dt
 export class AttendanceController {
     constructor(private readonly attendanceService: AttendanceService) {}
 
-    @Post(':classId')
+    @Post('create/:classId')
     create(
         @Body() createAttendanceDto: CreateAttendanceDto,
         @Param('classId', new ParseUUIDPipe()) classId: string,

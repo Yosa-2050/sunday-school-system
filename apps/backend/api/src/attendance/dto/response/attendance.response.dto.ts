@@ -1,6 +1,4 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { AttendanceInformation } from '@shega/attendance/entities/attendance-data.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Attendance } from '@shega/attendance/entities/attendance.entity';
 import { AttendanceStatus } from '@shega/attendance/enums/attendance-status.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -9,7 +7,6 @@ import { StudentResponseDto } from '@shega/lms/dto/response/student.response.dto
 import { Gender } from '@shega/users/enums/profile-gender.enum';
 
 export class AttendanceResponseDto {
-    schedule_detail_id: string;
     date: Date;
     isPresent: boolean;
     isPermission: boolean;
@@ -17,25 +14,33 @@ export class AttendanceResponseDto {
     isAbsent: boolean;
     attendanceDataId: string;
     isNull: boolean;
+    status: AttendanceStatus;
 
-    constructor(attendance: Attendance, data: AttendanceInformation) {
+    constructor(attendance: Attendance) {
         if (attendance) {
+            this.status = attendance.status;
             this.isAbsent = attendance.status === AttendanceStatus.Absent;
             this.isPresent = attendance.status === AttendanceStatus.Present;
             this.isPermission =
                 attendance.status === AttendanceStatus.Permission;
             this.isLate = attendance.status === AttendanceStatus.Late;
-            this.attendanceDataId = data.id;
-            this.date = data.date;
+            this.attendanceDataId = attendance.attendanceData.id;
+            this.date = attendance.attendanceData.date;
             this.isNull = false;
         } else {
             this.isPermission = false;
             this.isPresent = false;
-            this.attendanceDataId = data.id;
-            this.date = data.date;
+            this.attendanceDataId = '';
             this.isNull = true;
         }
     }
+}
+
+export class TotalAttendanceResponse {
+    present: number;
+    absent: number;
+    late: number;
+    permission: number;
 }
 
 export class AttendanceStudentResponse {
@@ -45,18 +50,13 @@ export class AttendanceStudentResponse {
     group: string;
     fullName: string;
     phoneNumber: string;
-    totalPresent: number;
-    totalPermission: number;
-    totalAbsent: number;
-    totalLate: number;
-    lastSevenAttendance: AttendanceResponseDto[];
     gender: Gender;
+    totals: TotalAttendanceResponse;
+    attendance: {
+        [date: string]: AttendanceResponseDto;
+    };
 
-    constructor(
-        attendance: Attendance[],
-        student: StudentResponseDto,
-        data?: AttendanceInformation[],
-    ) {
+    constructor(attendance: Attendance[], student: StudentResponseDto) {
         if (student.isActive) {
             this.isStudentActive = student.isActive;
             this.idNumber = student.idNumber;
@@ -65,28 +65,30 @@ export class AttendanceStudentResponse {
             this.fullName = student.fullName;
             this.gender = student.gender;
             //this.phoneNumber = student.phoneNumber;
-            this.totalPresent = attendance.filter(
-                (x) => x.status === AttendanceStatus.Present,
-            ).length;
-            this.totalPermission = attendance.filter(
-                (x) => x.status === AttendanceStatus.Permission,
-            ).length;
-            this.totalAbsent = attendance.filter(
-                (x) => x.status === AttendanceStatus.Absent,
-            ).length;
-            this.totalLate = attendance.filter(
-                (x) => x.status === AttendanceStatus.Late,
-            ).length;
+            this.totals = {
+                present: attendance.filter(
+                    (x) => x.status === AttendanceStatus.Present,
+                ).length,
+                permission: attendance.filter(
+                    (x) => x.status === AttendanceStatus.Permission,
+                ).length,
+                absent: attendance.filter(
+                    (x) => x.status === AttendanceStatus.Absent,
+                ).length,
+                late: attendance.filter(
+                    (x) => x.status === AttendanceStatus.Late,
+                ).length,
+            };
 
-            // this.lastSevenAttendance = data.map((sliced) => {
-            //   const att = attendance.find((x) => x.attendanceData?.id === sliced.id);
-            //   return new AttendanceResponseDto(att, sliced);
-            // });
+            this.attendance = {};
+
+            for (let index = 0; index < attendance.length; index++) {
+                const element = attendance[index];
+                const dateStr = element.attendanceData.date
+                    .toISOString()
+                    .split('T')[0];
+                this.attendance[dateStr] = new AttendanceResponseDto(element);
+            }
         }
     }
-}
-
-export class AttendanceResponse {
-    scheduleDays: AttendanceInformation[];
-    attendances: AttendanceStudentResponse[];
 }

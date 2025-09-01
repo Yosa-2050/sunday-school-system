@@ -24,7 +24,7 @@ import {
     useState,
 } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { JobDescriptionType } from './shcema/job-schema';
+import { JobDescriptionType } from './schema/job-schema';
 import type { JobFormData } from './types';
 import { mapEnumToOptions } from './utils';
 

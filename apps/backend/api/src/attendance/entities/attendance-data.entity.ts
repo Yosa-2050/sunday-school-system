@@ -13,7 +13,7 @@ export class AttendanceInformation extends BaseModel {
 
     @OneToMany(
         (type) => Attendance,
-        (attendance) => attendance.student,
+        (attendance) => attendance.attendanceData,
         {
             lazy: true,
             cascade: true,

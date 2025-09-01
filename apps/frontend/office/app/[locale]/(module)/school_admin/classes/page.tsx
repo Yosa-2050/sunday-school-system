@@ -28,7 +28,7 @@ import { CreateClassDrawer } from './create/components/CreateClassDrawer';
 import {
     type GetClass,
     fetchClassesApi,
-} from './create/components/shcema/fetchClassesDetail';
+} from './create/components/schema/fetchClassesDetail';
 
 export default function ClassPage() {
     const [calendarYear, setCalendarYear] = useState<string | null>(null);

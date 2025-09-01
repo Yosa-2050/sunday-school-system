@@ -15,4 +15,7 @@ export class Attendance extends BaseModel {
 
     @Column()
     status: AttendanceStatus;
+
+    @Column({ nullable: true })
+    remark: string;
 }

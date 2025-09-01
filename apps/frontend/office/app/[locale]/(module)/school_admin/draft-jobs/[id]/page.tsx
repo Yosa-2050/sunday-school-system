@@ -38,7 +38,7 @@ import { JobRequirements } from '../../classes/create/components/JobRequirements
 import {
     type JobDescriptionType,
     jobSchema,
-} from '../../classes/create/components/shcema/job-schema';
+} from '../../classes/create/components/schema/job-schema';
 import type { JobFormData } from '../../classes/create/components/types';
 
 const getDefaultValues = (job: JobDetailsViewProps | undefined) => {

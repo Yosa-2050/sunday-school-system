@@ -31,7 +31,7 @@ import { ApplicationDetails } from './components/ApplicationDetails';
 import { JobDetails } from './components/JobDetails';
 import { JobPreview } from './components/JobPreview';
 import { JobRequirements } from './components/JobRequirements';
-import { jobSchema } from './components/shcema/job-schema';
+import { jobSchema } from './components/schema/job-schema';
 import type { JobFormData } from './components/types';
 
 export default function PostJobPage() {

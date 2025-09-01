@@ -8,15 +8,12 @@ import { ClassService } from '@shega/lms/services/class.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentService } from '@shega/lms/services/student.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { Between, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateAttendanceDto } from './dto/request/create-attendance.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetAttendanceRequestDto } from './dto/request/get-attendance.request.dto';
-import {
-    AttendanceResponse,
-    AttendanceStudentResponse,
-} from './dto/response/attendance.response.dto';
+import { AttendanceStudentResponse } from './dto/response/attendance.response.dto';
 import { AttendanceInformation } from './entities/attendance-data.entity';
 import { Attendance } from './entities/attendance.entity';
 import { Permission } from './entities/permission.entity';
@@ -107,8 +104,8 @@ export class AttendanceService {
             get.classId,
             activeYear,
         );
-        let startDate = new Date(-8640000000000000);
-        let endDate = new Date(8640000000000000);
+        let startDate = new Date('1000-01-01');
+        let endDate = new Date('2500-12-31');
 
         if (get.startDate) {
             startDate = new Date(get.startDate);
@@ -134,6 +131,10 @@ export class AttendanceService {
                     date: Between(startDate, endDate),
                 },
             });
+            const uniqueInfoIds = attendanceInfo.map((item) => item.id);
+            const allAttendances = await this.repo.findBy({
+                attendanceData: { id: In(uniqueInfoIds) },
+            });
 
             totalAttendance = attendanceInfo.length;
 
@@ -142,7 +143,9 @@ export class AttendanceService {
             });
 
             for (let index = 0; index < attendanceInfo.length; index++) {
-                const element = await attendanceInfo[index].attendances;
+                const element = allAttendances.filter(
+                    (x) => x.attendanceData.id === attendanceInfo[index].id,
+                );
 
                 attendance = attendance.concat(element);
             }
@@ -167,11 +170,7 @@ export class AttendanceService {
                 }
             })
             .filter((x) => x);
-
-        const result = new AttendanceResponse();
-        result.attendances = attendanceList;
-        //result.scheduleDays = attin;
-        return result;
+        return attendanceList;
     }
     /** 
   async findAttendanceListBySchedule(

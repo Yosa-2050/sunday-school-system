@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import {
     type GetClass,
     fetchClassesApi,
-} from '../classes/create/components/shcema/fetchClassesDetail';
+} from '../classes/create/components/schema/fetchClassesDetail';
 import {
     type StudentResponse,
     fetchStudentsApi,
