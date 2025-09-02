@@ -59,3 +59,31 @@ export const fetchRelationshipsApi = async (
 
     return response;
 };
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const updateStudentApi = async ({
+    studentId,
+    data,
+}: { studentId: string; data: any }) => {
+    const response = await fetch(`/api/students/${studentId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        throw new Error('Failed to update student');
+    }
+    return response.json();
+};
+
+export const deleteRelationshipApi = async (relationshipId: string) => {
+    const response = await fetch(`/api/relationships/${relationshipId}`, {
+        method: 'DELETE',
+    });
+    if (!response.ok) {
+        throw new Error('Failed to delete relationship');
+    }
+    return response.json();
+};

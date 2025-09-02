@@ -341,15 +341,16 @@
         size: 3.375in 2.125in;
         margin: 0;
     }
-    
+
     body * {
         visibility: hidden;
     }
-    
-    .print-container, .print-container * {
+
+    .print-container,
+    .print-container * {
         visibility: visible;
     }
-    
+
     .print-container {
         position: absolute;
         left: 0;
