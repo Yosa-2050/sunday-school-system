@@ -76,3 +76,26 @@ export interface StudentByIdResponse {
         };
     };
 }
+
+export type CreateStudentRequest = {
+    firstName: '';
+    middleName: '';
+    lastName: '';
+    mothersFullName: '';
+    birthDate: '';
+    baptistName: '';
+    gender: '';
+    marriageStatus: '';
+    title: '';
+    phoneNumber: '';
+    idNumber: '';
+};
+
+export type CreateRelationRequest = {
+    firstName: '';
+    lastName: '';
+    phoneNumber: '';
+    type: '';
+    isParent: false;
+    isEmergency: false;
+};

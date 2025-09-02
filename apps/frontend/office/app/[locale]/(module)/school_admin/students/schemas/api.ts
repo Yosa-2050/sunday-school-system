@@ -1,6 +1,11 @@
 import { fetcher } from '@shega/shared';
-import type { SuccessResponse } from 'app/[locale]/_api/admin/fetch-programs';
 import type {
+    IdSuccessResponse,
+    SuccessResponse,
+} from 'app/[locale]/_api/admin/fetch-programs';
+import type {
+    CreateRelationRequest,
+    CreateStudentRequest,
     RelationShipsResponse,
     StudentByIdResponse,
     StudentResponse,
@@ -60,10 +65,10 @@ export const fetchRelationshipsApi = async (
     return response;
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const updateStudentApi = async ({
     studentId,
     data,
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 }: { studentId: string; data: any }) => {
     const response = await fetch(`/api/students/${studentId}`, {
         method: 'PUT',
@@ -84,6 +89,56 @@ export const deleteRelationshipApi = async (relationshipId: string) => {
     });
     if (!response.ok) {
         throw new Error('Failed to delete relationship');
+    }
+    return response.json();
+};
+
+export const createStudentApi = async ({
+    classId,
+    studentData,
+}: {
+    classId: string;
+    studentData: CreateStudentRequest;
+}): Promise<IdSuccessResponse> => {
+    const response: IdSuccessResponse = await fetcher(
+        `/student/create/${classId}`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(studentData),
+        },
+    );
+    return response;
+};
+
+export const createRelationshipApi = async ({
+    profileId,
+    relationshipData,
+}: {
+    profileId: string;
+    relationshipData: CreateRelationRequest;
+}): Promise<IdSuccessResponse> => {
+    const response: IdSuccessResponse = await fetcher(
+        `/student/create/${profileId}`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(relationshipData),
+        },
+    );
+    return response;
+};
+
+export const searchProfilesApi = async (query: string) => {
+    const response = await fetch(
+        `/api/profiles/search?q=${encodeURIComponent(query)}`,
+    );
+    if (!response.ok) {
+        throw new Error('Failed to search profiles');
     }
     return response.json();
 };

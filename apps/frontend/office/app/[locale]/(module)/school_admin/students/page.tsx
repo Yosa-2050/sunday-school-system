@@ -15,6 +15,7 @@ import {
     IconDots,
     IconEdit,
     IconEye,
+    IconPlus,
     IconUpload,
     IconX,
 } from '@tabler/icons-react';
@@ -29,6 +30,7 @@ import {
     type GetClass,
     fetchClassesApi,
 } from '../classes/create/components/schema/fetchClassesDetail';
+import CreateStudentModal from './components/CreateStudent';
 import { fetchStudentsApi, importStudentsApi } from './schemas/api';
 import type { StudentResponse } from './schemas/type';
 
@@ -38,13 +40,18 @@ export default function StudentPage() {
         [],
     );
     const [loadingYears, setLoadingYears] = useState(true);
-
     const [classes, setClasses] = useState<GetClass[]>([]);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
-
     const [students, setStudents] = useState<StudentResponse[]>([]);
     const [loadingStudents, setLoadingStudents] = useState(false);
+    const [createStudentModalOpened, setCreateStudentModalOpened] =
+        useState(false);
+    const [createRelationModalOpened, setCreateRelationModalOpened] =
+        useState(false);
+    const [newStudentId, setNewStudentId] = useState<string | null>(null);
+
+    const router = useRouter();
 
     // Fetch calendar years
     useEffect(() => {
@@ -66,7 +73,7 @@ export default function StudentPage() {
         getCalendarYears();
     }, []);
 
-    // Fetch classes (one-time load, since year is fixed/disabled)
+    // Fetch classes
     useEffect(() => {
         const fetchClasses = async () => {
             try {
@@ -112,7 +119,13 @@ export default function StudentPage() {
             // handle error
         }
     };
-    const router = useRouter();
+
+    const handleStudentCreated = (studentId: string) => {
+        setNewStudentId(studentId);
+        setCreateStudentModalOpened(false);
+        setCreateRelationModalOpened(true);
+        handleFetchStudents(); // Refresh the list
+    };
 
     const rows = students.map((student) => (
         <Table.Tr key={student.id}>
@@ -120,7 +133,6 @@ export default function StudentPage() {
             <Table.Td>
                 {student.firstName} {student.lastName}
             </Table.Td>
-
             <Table.Td>{student.isActive ? 'Active' : 'Inactive'}</Table.Td>
             <Table.Td>
                 <Menu shadow="md" width={200} position="bottom-end">
@@ -129,7 +141,6 @@ export default function StudentPage() {
                             <IconDots size={16} />
                         </ActionIcon>
                     </Menu.Target>
-
                     <Menu.Dropdown>
                         <Menu.Item
                             leftSection={<IconEye size={16} />}
@@ -154,7 +165,6 @@ export default function StudentPage() {
                             color="red"
                             onClick={() => {
                                 // Add your delete/inactivate logic here
-                                //console.log("Delete student:", student.id);
                             }}
                         >
                             {student.isActive ? 'Deactivate' : 'Activate'}
@@ -192,7 +202,7 @@ export default function StudentPage() {
                     value={selectedClass}
                     onChange={(val) => {
                         setSelectedClass(val);
-                        setSelectedSection(null); // reset section when class changes
+                        setSelectedSection(null);
                     }}
                     data={classes.map((c) => ({ value: c.id, label: c.name }))}
                 />
@@ -217,10 +227,10 @@ export default function StudentPage() {
                     variant="light"
                     onClick={handleFetchStudents}
                     disabled={
-                        !selectedClass || // no class selected
+                        !selectedClass ||
                         (!!classes?.find((c) => c.id === selectedClass)
                             ?.sections?.length &&
-                            !selectedSection) // class has sections but section not chosen
+                            !selectedSection)
                     }
                 >
                     Load Students
@@ -230,18 +240,33 @@ export default function StudentPage() {
             {/* Import Button */}
             <Group mb="md" justify="space-between">
                 <Text fw={500}>Students</Text>
-                <FileButton onChange={handleImport} accept=".xlsx,.xls">
-                    {(props) => (
-                        <Button
-                            {...props}
-                            variant="light"
-                            size="sm"
-                            leftSection={<IconUpload size={16} />}
-                        >
-                            Import from Excel
-                        </Button>
-                    )}
-                </FileButton>
+                <Group>
+                    <Button
+                        variant="light"
+                        leftSection={<IconPlus size={16} />}
+                        onClick={() => setCreateStudentModalOpened(true)}
+                        disabled={
+                            !selectedClass ||
+                            (!!classes?.find((c) => c.id === selectedClass)
+                                ?.sections?.length &&
+                                !selectedSection)
+                        }
+                    >
+                        Add New Student
+                    </Button>
+                    <FileButton onChange={handleImport} accept=".xlsx,.xls">
+                        {(props) => (
+                            <Button
+                                {...props}
+                                variant="light"
+                                size="sm"
+                                leftSection={<IconUpload size={16} />}
+                            >
+                                Import from Excel
+                            </Button>
+                        )}
+                    </FileButton>
+                </Group>
             </Group>
 
             {/* Student Table */}
@@ -266,6 +291,21 @@ export default function StudentPage() {
                     )}
                 </Table.Tbody>
             </Table>
+
+            {/* Modals */}
+            <CreateStudentModal
+                opened={createStudentModalOpened}
+                onClose={() => setCreateStudentModalOpened(false)}
+                onStudentCreated={handleStudentCreated}
+                classId={selectedClass}
+                sectionId={selectedSection}
+            />
+
+            {/* <CreateRelationshipModal
+                opened={createRelationModalOpened}
+                onClose={() => setCreateRelationModalOpened(false)}
+                studentId={newStudentId}
+            /> */}
         </div>
     );
 }
