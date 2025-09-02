@@ -262,4 +262,22 @@ export class ProfileService {
         const user = profile.user;
         return user;
     }
+
+    async getRelatives(profileId: string) {
+        const relationships = await this.relationShipsRepo.findBy({
+            profile1: { id: profileId },
+        });
+        const result = [];
+        for (let index = 0; index < relationships.length; index++) {
+            const element = relationships[index];
+            const profile = await element.profile2;
+            result.push({
+                ...profile,
+                type: element.type,
+                isEmergency: element.isEmergency,
+                isParent: element.isParent,
+            });
+        }
+        return result;
+    }
 }

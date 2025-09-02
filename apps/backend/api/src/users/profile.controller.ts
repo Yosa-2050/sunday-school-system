@@ -20,6 +20,7 @@ import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
+import { Public } from '@shega/auth/jwt-public';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -140,6 +141,12 @@ export class ProfileController {
     @Get('/getByPhone')
     getByPhone(@Query('phone') phone: string) {
         return this.profileService.findByPhone(phone);
+    }
+
+    @Public()
+    @Get('relatives/:profileId')
+    getRelatives(@Param('profileId', new ParseUUIDPipe()) profileId: string) {
+        return this.profileService.getRelatives(profileId);
     }
 
     @Post('/profilepicture/:profileId')

@@ -131,4 +131,9 @@ export class StudentService {
         }
         throw new BadRequestException('Nothing to upload');
     }
+
+    async findStudentsById(id: string) {
+        const student = await this.studentRepo.findOneBy({ id });
+        return student;
+    }
 }

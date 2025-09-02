@@ -13,6 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
+import { Public } from '@shega/auth/jwt-public';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
@@ -60,7 +61,7 @@ export class StudentController {
         );
     }
 
-    @Get(':classId')
+    @Get('byClassId/:classId')
     findStudents(
         @Param('classId', new ParseUUIDPipe()) id: string,
         @Request() req,
@@ -69,5 +70,14 @@ export class StudentController {
             id,
             CurrentUser.getActiveYear(req),
         );
+    }
+
+    @Public()
+    @Get('byId/:id')
+    findStudentsById(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Request() req,
+    ) {
+        return this.studentService.findStudentsById(id);
     }
 }

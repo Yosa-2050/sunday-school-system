@@ -24,7 +24,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import type { GetClass } from '../classes/create/components/schema/fetchClassesDetail';
-import type { StudentResponse } from '../students/schemas/fetchStudentDetail';
+import type { StudentResponse } from '../students/schemas/type';
 import { saveAttendanceApi } from './schemas/api';
 import {
     type AttendanceRecord,

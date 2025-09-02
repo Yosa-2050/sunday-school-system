@@ -1,7 +1,7 @@
 import { fetcher } from '@shega/shared';
 import type { SuccessResponse } from 'app/[locale]/_api/admin/fetch-programs';
 // biome-ignore lint/style/useImportType: <explanation>
-import { StudentResponse } from '../../students/schemas/fetchStudentDetail';
+import { StudentResponse } from '../../students/schemas/type';
 import type {
     AttendanceRequest,
     AttendanceViewRequest,
@@ -12,7 +12,7 @@ import type {
 export const fetchAttendanceApi = async (
     classId: string,
 ): Promise<StudentResponse[]> => {
-    const url = `/student/${classId}`;
+    const url = `/student/byClassId/${classId}`;
     const response: StudentResponse[] = await fetcher(url, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },

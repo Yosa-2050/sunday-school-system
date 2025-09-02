@@ -10,10 +10,8 @@ import {
     type GetClass,
     fetchClassesApi,
 } from '../classes/create/components/schema/fetchClassesDetail';
-import {
-    type StudentResponse,
-    fetchStudentsApi,
-} from '../students/schemas/fetchStudentDetail';
+import { fetchStudentsApi } from '../students/schemas/api';
+import type { StudentResponse } from '../students/schemas/type';
 import AttendanceCreate from './CreateAttendance';
 import AttendanceView from './ViewAttendance';
 

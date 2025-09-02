@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    ActionIcon,
     Button,
     FileButton,
     Group,
@@ -10,21 +11,26 @@ import {
     Table,
     Text,
 } from '@mantine/core';
-import { IconDots, IconPencil, IconUpload, IconX } from '@tabler/icons-react';
+import {
+    IconDots,
+    IconEdit,
+    IconEye,
+    IconUpload,
+    IconX,
+} from '@tabler/icons-react';
 import {
     type CalendarYearResponse,
     fetchCalendarYearsSchoolAdmin,
 } from 'app/[locale]/_api/admin/fetch-programs';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
     type GetClass,
     fetchClassesApi,
 } from '../classes/create/components/schema/fetchClassesDetail';
-import {
-    type StudentResponse,
-    fetchStudentsApi,
-    importStudentsApi,
-} from './schemas/fetchStudentDetail';
+import { fetchStudentsApi, importStudentsApi } from './schemas/api';
+import type { StudentResponse } from './schemas/type';
 
 export default function StudentPage() {
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
@@ -106,6 +112,7 @@ export default function StudentPage() {
             // handle error
         }
     };
+    const router = useRouter();
 
     const rows = students.map((student) => (
         <Table.Tr key={student.id}>
@@ -116,25 +123,41 @@ export default function StudentPage() {
 
             <Table.Td>{student.isActive ? 'Active' : 'Inactive'}</Table.Td>
             <Table.Td>
-                <Menu shadow="md" width={180}>
+                <Menu shadow="md" width={200} position="bottom-end">
                     <Menu.Target>
-                        <Button
-                            variant="light"
-                            size="xs"
-                            leftSection={<IconDots size={16} />}
-                        >
-                            Actions
-                        </Button>
+                        <ActionIcon variant="subtle" color="gray">
+                            <IconDots size={16} />
+                        </ActionIcon>
                     </Menu.Target>
+
                     <Menu.Dropdown>
-                        <Menu.Item leftSection={<IconPencil size={16} />}>
-                            Edit Student
+                        <Menu.Item
+                            leftSection={<IconEye size={16} />}
+                            onClick={() =>
+                                router.push(
+                                    `/school_admin/students/${student.id}`,
+                                )
+                            }
+                        >
+                            View Details
                         </Menu.Item>
                         <Menu.Item
-                            color="red"
-                            leftSection={<IconX size={16} />}
+                            leftSection={<IconEdit size={16} />}
+                            component={Link}
+                            href={`/students/${student.id}/edit`}
                         >
-                            Inactivate Student
+                            Edit Student
+                        </Menu.Item>
+                        <Menu.Divider />
+                        <Menu.Item
+                            leftSection={<IconX size={16} />}
+                            color="red"
+                            onClick={() => {
+                                // Add your delete/inactivate logic here
+                                //console.log("Delete student:", student.id);
+                            }}
+                        >
+                            {student.isActive ? 'Deactivate' : 'Activate'}
                         </Menu.Item>
                     </Menu.Dropdown>
                 </Menu>
@@ -195,8 +218,8 @@ export default function StudentPage() {
                     onClick={handleFetchStudents}
                     disabled={
                         !selectedClass || // no class selected
-                        (classes?.find((c) => c.id === selectedClass)?.sections
-                            ?.length &&
+                        (!!classes?.find((c) => c.id === selectedClass)
+                            ?.sections?.length &&
                             !selectedSection) // class has sections but section not chosen
                     }
                 >
