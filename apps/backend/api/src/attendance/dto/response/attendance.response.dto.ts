@@ -62,7 +62,7 @@ export class AttendanceStudentResponse {
             this.idNumber = student.idNumber;
             this.studentId = student.id;
             //this.group = student.group;
-            this.fullName = student.fullName;
+            this.fullName = `${student.firstName} ${student.middleName} ${student.lastName}`;
             this.gender = student.gender;
             //this.phoneNumber = student.phoneNumber;
             this.totals = {

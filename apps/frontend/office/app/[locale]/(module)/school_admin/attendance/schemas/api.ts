@@ -41,18 +41,11 @@ export const saveAttendanceApi = async (
 
 export const fetchSavedDatesApi = async (
     classId: string,
-    sectionId?: string,
 ): Promise<SavedDate[]> => {
-    const params = new URLSearchParams({ classId });
-    if (sectionId) {
-        params.append('sectionId', sectionId);
-    }
-
-    const response = await fetch(`/api/attendance/dates?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch saved dates');
-    }
-    return response.json();
+    const response: SavedDate[] = await fetcher(
+        `/attendance/getDates/${classId}`,
+    );
+    return response;
 };
 
 export const fetchAttendanceViewApi = async (

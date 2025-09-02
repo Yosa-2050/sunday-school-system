@@ -20,6 +20,7 @@ export interface AttendanceRequest {
 }
 
 export interface SavedDate {
+    id: string;
     date: string;
     formattedDate: string;
     attendanceInfoId: string;
@@ -27,7 +28,7 @@ export interface SavedDate {
 
 export interface AttendanceViewRequest {
     classId: string;
-    sectionId?: string;
+    attendanceInfoId?: string;
     startDate?: string;
     endDate?: string;
 }

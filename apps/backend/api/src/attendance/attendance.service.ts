@@ -98,12 +98,15 @@ export class AttendanceService {
         return this.repo.find();
     }
 
+    async findDates(classId: string, activeYear: string) {
+        await this.classService.isClassValid(classId, activeYear);
+
+        return this.attendanceDataRepo.findBy({ class: { id: classId } });
+    }
+
     async findAttendanceList(get: GetAttendanceRequestDto, activeYear: string) {
         //TODO: refactor attendance fetching
-        const classes = await this.classService.isClassValid(
-            get.classId,
-            activeYear,
-        );
+        await this.classService.isClassValid(get.classId, activeYear);
         let startDate = new Date('1000-01-01');
         let endDate = new Date('2500-12-31');
 

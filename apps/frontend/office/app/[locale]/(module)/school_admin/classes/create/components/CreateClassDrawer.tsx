@@ -54,6 +54,13 @@ export function CreateClassDrawer() {
             close();
             reset();
         },
+        onError: (error) => {
+            notifications.show({
+                title: 'Error',
+                message: error.message || 'Failed to save attendance',
+                color: 'red',
+            });
+        },
     });
 
     return (

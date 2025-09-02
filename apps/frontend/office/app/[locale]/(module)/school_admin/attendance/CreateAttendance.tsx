@@ -22,7 +22,6 @@ import {
     IconInfoCircle,
 } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
-import type { CalendarYearResponse } from 'app/[locale]/_api/admin/fetch-programs';
 import { useState } from 'react';
 import type { GetClass } from '../classes/create/components/schema/fetchClassesDetail';
 import type { StudentResponse } from '../students/schemas/fetchStudentDetail';
@@ -42,9 +41,6 @@ interface AttendanceCreateProps {
     students: StudentResponse[];
     loadingStudents: boolean;
     handleFetchStudents: () => void;
-    calendarYear: string | null;
-    loadingYears: boolean;
-    calendarYears: CalendarYearResponse[];
 }
 
 export default function AttendanceCreate({
@@ -56,9 +52,6 @@ export default function AttendanceCreate({
     students,
     loadingStudents,
     handleFetchStudents,
-    calendarYear,
-    loadingYears,
-    calendarYears,
 }: AttendanceCreateProps) {
     const [date, setDate] = useState<Date | null>(null);
     const [attendance, setAttendance] = useState<Record<string, string>>({});
@@ -221,69 +214,72 @@ export default function AttendanceCreate({
 
     return (
         <Box pt="md">
-            {/* Calendar Year */}
-            <Group mb="md">
-                <Text>Calendar Year:</Text>
-                {loadingYears ? (
-                    <Loader size="sm" />
-                ) : (
+            <Group mb="md" align="flex-end">
+                {/* Class Selection */}
+                <Box>
+                    <Text size="sm" fw={500} mb={5}>
+                        Select Class:
+                    </Text>
                     <Select
-                        value={calendarYear}
-                        data={calendarYears.map((y) => ({
-                            value: y.name,
-                            label: y.name,
+                        placeholder="Choose class"
+                        value={selectedClass}
+                        onChange={setSelectedClass}
+                        data={classes.map((c) => ({
+                            value: c.id,
+                            label: c.name,
                         }))}
-                        disabled
-                        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-                        onChange={() => {}}
+                        style={{ width: 200 }}
                     />
-                )}
-            </Group>
+                </Box>
 
-            <Group mb="md">
-                <Select
-                    placeholder="Select Class"
-                    value={selectedClass}
-                    onChange={(val) => {
-                        setSelectedClass(val);
-                        setSelectedSection(null);
-                    }}
-                    data={classes.map((c) => ({ value: c.id, label: c.name }))}
-                />
+                {/* Section Selection (conditionally shown) */}
                 {selectedClass &&
                 classes.find((c) => c.id === selectedClass)?.sections
                     ?.length ? (
-                    <Select
-                        placeholder="Select Section"
-                        value={selectedSection}
-                        onChange={setSelectedSection}
-                        data={
-                            classes
-                                .find((c) => c.id === selectedClass)
-                                ?.sections?.map((s) => ({
-                                    value: s.id,
-                                    label: s.name,
-                                })) ?? []
-                        }
-                    />
+                    <Box>
+                        <Text size="sm" fw={500} mb={5}>
+                            Select Section:
+                        </Text>
+                        <Select
+                            placeholder="Choose section"
+                            value={selectedSection}
+                            onChange={setSelectedSection}
+                            data={
+                                classes
+                                    .find((c) => c.id === selectedClass)
+                                    ?.sections?.map((s) => ({
+                                        value: s.id,
+                                        label: s.name,
+                                    })) ?? []
+                            }
+                            style={{ width: 200 }}
+                        />
+                    </Box>
                 ) : null}
 
-                {/* Date Selector */}
-                <DatePickerInput
-                    placeholder="Select Date"
-                    value={date}
-                    onChange={setDate}
-                    valueFormat="YYYY-MM-DD"
-                    clearable={false}
-                />
+                {/* Date Selection with Label */}
+                <Box>
+                    <Text size="sm" fw={500} mb={5}>
+                        Select Date:
+                    </Text>
+                    <DatePickerInput
+                        placeholder="Choose date"
+                        value={date}
+                        onChange={setDate}
+                        valueFormat="YYYY-MM-DD"
+                        clearable={false}
+                        style={{ width: 220 }} // Wider date picker
+                    />
+                </Box>
 
+                {/* Load Button */}
                 <Button
                     variant="light"
                     onClick={handleFetchStudents}
                     disabled={
                         !selectedClass || // no class selected
-                        (classes?.find((c) => c.id === selectedClass)?.sections
-                            ?.length &&
+                        (!!classes?.find((c) => c.id === selectedClass)
+                            ?.sections?.length &&
                             !selectedSection) // class has sections but section not chosen
                     }
                 >

@@ -4,6 +4,7 @@ import {
     Badge,
     Box,
     Button,
+    Flex,
     Group,
     ScrollArea,
     Select,
@@ -14,14 +15,13 @@ import {
 import { DatePickerInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
 import {
-    IconCalendar,
     IconCircleCheck,
     IconCircleX,
     IconClock,
     IconInfoCircle,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { GetClass } from '../classes/create/components/schema/fetchClassesDetail';
 import { fetchAttendanceViewApi, fetchSavedDatesApi } from './schemas/api';
 import {
@@ -55,16 +55,18 @@ export default function AttendanceView({
     >([]);
     const [loadingView, setLoadingView] = useState(false);
 
-    const fetchSavedDates = async () => {
+    // Add this state for the selected saved date
+    const [selectedSavedDate, setSelectedSavedDate] = useState<string | null>(
+        null,
+    );
+
+    const fetchSavedDates = async (classId: string) => {
         if (!selectedClass) {
             return;
         }
 
         try {
-            const dates = await fetchSavedDatesApi(
-                selectedClass,
-                selectedSection || undefined,
-            );
+            const dates = await fetchSavedDatesApi(classId);
             setSavedDates(dates);
         } catch (error) {
             notifications.show({
@@ -75,16 +77,18 @@ export default function AttendanceView({
         }
     };
 
-    // useEffect(() => {
-    //     if (selectedClass) {
-    //         fetchSavedDates();
-    //     }
-    // }, [selectedClass, selectedSection]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+        if (selectedClass) {
+            fetchSavedDates(selectedSection ?? selectedClass);
+        }
+    }, [selectedClass, selectedSection]);
 
     const { refetch: fetchAttendanceView } = useQuery({
         queryKey: [
             'attendanceView',
             selectedClass,
+            selectedSavedDate,
             selectedSection,
             selectedDateRange,
         ],
@@ -96,8 +100,8 @@ export default function AttendanceView({
             setLoadingView(true);
             try {
                 const request: AttendanceViewRequest = {
-                    classId: selectedClass,
-                    sectionId: selectedSection || undefined,
+                    classId: selectedSection ?? selectedClass,
+                    attendanceInfoId: selectedSavedDate || undefined,
                     startDate: selectedDateRange[0]?.toISOString(),
                     endDate: selectedDateRange[1]?.toISOString(),
                 };
@@ -115,167 +119,194 @@ export default function AttendanceView({
     return (
         <Box pt="md">
             <Group mb="md">
-                <Select
-                    placeholder="Select Class"
-                    value={selectedClass}
-                    onChange={setSelectedClass}
-                    data={classes.map((c) => ({ value: c.id, label: c.name }))}
-                />
+                {/* Class Selection */}
+                <Box>
+                    <Text size="sm" fw={500} mb={5}>
+                        Select Class:
+                    </Text>
+                    <Select
+                        placeholder="Choose class"
+                        value={selectedClass}
+                        onChange={setSelectedClass}
+                        data={classes.map((c) => ({
+                            value: c.id,
+                            label: c.name,
+                        }))}
+                        style={{ width: 200 }}
+                    />
+                </Box>
+
+                {/* Section Selection (conditionally shown) */}
                 {selectedClass &&
                 classes.find((c) => c.id === selectedClass)?.sections
                     ?.length ? (
-                    <Select
-                        placeholder="Select Section"
-                        value={selectedSection}
-                        onChange={setSelectedSection}
-                        data={
-                            classes
-                                .find((c) => c.id === selectedClass)
-                                ?.sections?.map((s) => ({
-                                    value: s.id,
-                                    label: s.name,
-                                })) ?? []
-                        }
-                    />
+                    <Box>
+                        <Text size="sm" fw={500} mb={5}>
+                            Select Section:
+                        </Text>
+                        <Select
+                            placeholder="Choose section"
+                            value={selectedSection}
+                            onChange={setSelectedSection}
+                            data={
+                                classes
+                                    .find((c) => c.id === selectedClass)
+                                    ?.sections?.map((s) => ({
+                                        value: s.id,
+                                        label: s.name,
+                                    })) ?? []
+                            }
+                            style={{ width: 200 }}
+                        />
+                    </Box>
                 ) : null}
 
-                <DatePickerInput
-                    type="range"
-                    placeholder="Select date range"
-                    value={selectedDateRange}
-                    onChange={setSelectedDateRange}
-                />
+                {/* Saved Dates Selector */}
+                <Box>
+                    <Text size="sm" fw={500} mb={5}>
+                        Saved Dates:
+                    </Text>
+                    <Select
+                        placeholder="Choose from saved dates"
+                        data={savedDates.map((savedDate) => ({
+                            value: savedDate.id,
+                            label: savedDate.date,
+                        }))}
+                        onChange={setSelectedSavedDate}
+                        style={{ width: 200 }}
+                        clearable
+                    />
+                </Box>
 
-                <Button
-                    onClick={() => fetchAttendanceView()}
-                    disabled={!selectedClass}
-                    loading={loadingView}
-                >
-                    Load Attendance
-                </Button>
+                {/* Date Range Selector */}
+                <Box>
+                    <Text size="sm" fw={500} mb={5}>
+                        Custom Date Range:
+                    </Text>
+                    <DatePickerInput
+                        type="range"
+                        placeholder="Select date range"
+                        value={selectedDateRange}
+                        onChange={setSelectedDateRange}
+                        style={{ width: 250 }}
+                    />
+                </Box>
+
+                {/* Load Button */}
+                <Box style={{ alignSelf: 'flex-end' }}>
+                    <Button
+                        onClick={() => fetchAttendanceView()}
+                        disabled={!selectedClass}
+                        loading={loadingView}
+                        style={{ marginTop: 25 }}
+                    >
+                        Load Attendance
+                    </Button>
+                </Box>
             </Group>
 
             {attendanceViewData.length > 0 && (
                 <Box>
-                    <Group mb="md">
-                        <Text size="sm" fw={500}>
-                            Saved Dates:
-                        </Text>
-                        <ScrollArea w={400} scrollbars="x">
-                            <Group gap="xs">
-                                {savedDates.map((savedDate) => (
-                                    <Badge
-                                        key={savedDate.attendanceInfoId}
-                                        variant="light"
-                                        leftSection={<IconCalendar size={12} />}
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => {
-                                            const date = new Date(
-                                                savedDate.date,
-                                            );
-                                            setSelectedDateRange([date, date]);
-                                        }}
-                                    >
-                                        {savedDate.formattedDate}
-                                    </Badge>
-                                ))}
-                            </Group>
-                        </ScrollArea>
-                    </Group>
-
-                    <ScrollArea scrollbars="x">
-                        <Table
-                            className="border shadow bg-white"
-                            withColumnBorders
-                            withRowBorders
-                            striped
-                            highlightOnHover
-                        >
-                            <Table.Thead>
-                                <Table.Tr>
-                                    <Table.Th
-                                        rowSpan={2}
-                                        className="text-center"
-                                    >
-                                        No
-                                    </Table.Th>
-                                    <Table.Th
-                                        rowSpan={2}
-                                        className="text-center"
-                                    >
-                                        ID Number
-                                    </Table.Th>
-                                    <Table.Th
-                                        rowSpan={2}
-                                        className="text-center"
-                                    >
-                                        Student
-                                    </Table.Th>
-
-                                    {Object.keys(
-                                        attendanceViewData[0]?.attendance || {},
-                                    ).map((date) => (
-                                        <Table.Th
-                                            key={date}
-                                            className="text-center"
-                                        >
-                                            {new Date(
-                                                date,
-                                            ).toLocaleDateString()}
+                    <Flex gap="md" align="flex-start">
+                        {/* Fixed Student Info Table */}
+                        <Box style={{ flex: '0 0 auto' }}>
+                            <Table withColumnBorders withRowBorders striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th className="text-center">
+                                            No
                                         </Table.Th>
-                                    ))}
+                                        <Table.Th className="text-center">
+                                            ID Number
+                                        </Table.Th>
+                                        <Table.Th className="text-center">
+                                            Student
+                                        </Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {attendanceViewData.map(
+                                        (student, index) => (
+                                            <Table.Tr
+                                                key={student.studentId}
+                                                style={{ height: '53px' }}
+                                            >
+                                                <Table.Td className="text-center">
+                                                    {index + 1}
+                                                </Table.Td>
+                                                <Table.Td className="text-center">
+                                                    {student.idNumber}
+                                                </Table.Td>
+                                                <Table.Td
+                                                    className="text-center"
+                                                    style={{
+                                                        minWidth: '200px',
+                                                    }}
+                                                >
+                                                    {student.fullName}
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        ),
+                                    )}
+                                </Table.Tbody>
+                            </Table>
+                        </Box>
 
-                                    <Table.Th
-                                        className="text-center"
-                                        style={{ background: '#f0f9ff' }}
-                                    >
-                                        Total Present
-                                    </Table.Th>
-                                    <Table.Th
-                                        className="text-center"
-                                        style={{ background: '#fef2f2' }}
-                                    >
-                                        Total Absent
-                                    </Table.Th>
-                                    <Table.Th
-                                        className="text-center"
-                                        style={{ background: '#fffbeb' }}
-                                    >
-                                        Total Late
-                                    </Table.Th>
-                                    <Table.Th
-                                        className="text-center"
-                                        style={{ background: '#eff6ff' }}
-                                    >
-                                        Total Permission
-                                    </Table.Th>
-                                </Table.Tr>
-                            </Table.Thead>
-
-                            <Table.Tbody>
-                                {attendanceViewData.map((student, index) => (
-                                    <Table.Tr key={student.studentId}>
-                                        <Table.Td className="text-center">
-                                            {index + 1}
-                                        </Table.Td>
-                                        <Table.Td className="text-center">
-                                            {student.idNumber}
-                                        </Table.Td>
-                                        <Table.Td className="text-center">
-                                            {student.fullName}
-                                        </Table.Td>
-
-                                        {Object.entries(student.attendance).map(
-                                            ([date, record]) => (
+                        {/* Scrollable Attendance Dates */}
+                        <ScrollArea scrollbars="x" style={{ flex: '1' }}>
+                            <Table withColumnBorders withRowBorders striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        {Object.keys(
+                                            attendanceViewData[0]?.attendance ||
+                                                {},
+                                        ).map((date) => (
+                                            <Table.Th
+                                                key={date}
+                                                className="text-center"
+                                                style={{ minWidth: '80px' }}
+                                            >
+                                                {new Date(
+                                                    date,
+                                                ).toLocaleDateString()}
+                                            </Table.Th>
+                                        ))}
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {attendanceViewData.map((student) => (
+                                        <Table.Tr
+                                            key={student.studentId}
+                                            style={{ height: '53px' }}
+                                        >
+                                            {Object.entries(
+                                                student.attendance,
+                                            ).map(([date, record]) => (
                                                 <Table.Td
                                                     key={date}
                                                     className="text-center"
+                                                    style={{
+                                                        textAlign: 'center',
+                                                        padding: '8px',
+                                                        minWidth: '70px',
+                                                        maxWidth: '70px',
+                                                    }}
                                                 >
                                                     <Tooltip
-                                                        label={record.status}
+                                                        label={`${record.status}${record.remarks ? ` - ${record.remarks}` : ''}`}
                                                         withArrow
                                                     >
-                                                        <Box>
+                                                        <Box
+                                                            style={{
+                                                                display: 'flex',
+                                                                justifyContent:
+                                                                    'center',
+                                                                alignItems:
+                                                                    'center',
+                                                                width: '100%',
+                                                                height: '100%',
+                                                            }}
+                                                        >
                                                             {record.status ===
                                                                 AttendanceStatus.PRESENT && (
                                                                 <IconCircleCheck
@@ -307,46 +338,108 @@ export default function AttendanceView({
                                                         </Box>
                                                     </Tooltip>
                                                 </Table.Td>
-                                            ),
-                                        )}
+                                            ))}
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        </ScrollArea>
 
-                                        <Table.Td
+                        {/* Fixed Totals Table */}
+                        <Box style={{ flex: '0 0 auto' }}>
+                            <Table withColumnBorders withRowBorders striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th
                                             className="text-center"
-                                            style={{ background: '#f0f9ff' }}
+                                            style={{
+                                                background: '#f0f9ff',
+                                                minWidth: '100px',
+                                            }}
                                         >
-                                            <Badge color="green">
-                                                {student.totals.present}
-                                            </Badge>
-                                        </Table.Td>
-                                        <Table.Td
+                                            Total Present
+                                        </Table.Th>
+                                        <Table.Th
                                             className="text-center"
-                                            style={{ background: '#fef2f2' }}
+                                            style={{
+                                                background: '#fef2f2',
+                                                minWidth: '100px',
+                                            }}
                                         >
-                                            <Badge color="red">
-                                                {student.totals.absent}
-                                            </Badge>
-                                        </Table.Td>
-                                        <Table.Td
+                                            Total Absent
+                                        </Table.Th>
+                                        <Table.Th
                                             className="text-center"
-                                            style={{ background: '#fffbeb' }}
+                                            style={{
+                                                background: '#fffbeb',
+                                                minWidth: '100px',
+                                            }}
                                         >
-                                            <Badge color="orange">
-                                                {student.totals.late}
-                                            </Badge>
-                                        </Table.Td>
-                                        <Table.Td
+                                            Total Late
+                                        </Table.Th>
+                                        <Table.Th
                                             className="text-center"
-                                            style={{ background: '#eff6ff' }}
+                                            style={{
+                                                background: '#eff6ff',
+                                                minWidth: '100px',
+                                            }}
                                         >
-                                            <Badge color="blue">
-                                                {student.totals.permission}
-                                            </Badge>
-                                        </Table.Td>
+                                            Total Permission
+                                        </Table.Th>
                                     </Table.Tr>
-                                ))}
-                            </Table.Tbody>
-                        </Table>
-                    </ScrollArea>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {attendanceViewData.map((student) => (
+                                        <Table.Tr
+                                            key={student.studentId}
+                                            style={{ height: '53px' }}
+                                        >
+                                            <Table.Td
+                                                className="text-center"
+                                                style={{
+                                                    background: '#f0f9ff',
+                                                }}
+                                            >
+                                                <Badge color="green">
+                                                    {student.totals.present}
+                                                </Badge>
+                                            </Table.Td>
+                                            <Table.Td
+                                                className="text-center"
+                                                style={{
+                                                    background: '#fef2f2',
+                                                }}
+                                            >
+                                                <Badge color="red">
+                                                    {student.totals.absent}
+                                                </Badge>
+                                            </Table.Td>
+                                            <Table.Td
+                                                className="text-center"
+                                                style={{
+                                                    background: '#fffbeb',
+                                                }}
+                                            >
+                                                <Badge color="orange">
+                                                    {student.totals.late}
+                                                </Badge>
+                                            </Table.Td>
+                                            <Table.Td
+                                                className="text-center"
+                                                style={{
+                                                    background: '#eff6ff',
+                                                }}
+                                            >
+                                                <Badge color="blue">
+                                                    {student.totals.permission}
+                                                </Badge>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        </Box>
+                    </Flex>
 
                     <Group mt="md" justify="center">
                         <Badge color="green" size="lg">

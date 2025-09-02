@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Get,
     Param,
     ParseUUIDPipe,
     Post,
@@ -41,6 +42,17 @@ export class AttendanceController {
     ) {
         return this.attendanceService.findAttendanceList(
             getAttendance,
+            CurrentUser.getActiveYear(user),
+        );
+    }
+
+    @Get('/getDates/:classId')
+    findDates(
+        @Param('classId', new ParseUUIDPipe()) classId: string,
+        @Request() user,
+    ) {
+        return this.attendanceService.findDates(
+            classId,
             CurrentUser.getActiveYear(user),
         );
     }

@@ -27,20 +27,20 @@ export class ClassService {
             id: dto.rootId,
         });
         if (!rootClass) {
-            throw new EntityNotFoundException(typeof RootClass);
+            throw new EntityNotFoundException('Root class');
         }
 
         const calendarYear = await this.calendarYearRepo.findOneBy({
             id: yearId,
         });
         if (!calendarYear) {
-            throw new EntityNotFoundException(typeof CalendarYear);
+            throw new EntityNotFoundException('Calendar year');
         }
         const existingClass = await this.classRepo.findOneBy({
-            parent: { id: dto.rootId },
+            root: { id: dto.rootId },
         });
         if (existingClass) {
-            throw new EntityAlreadyExistsException(typeof Classes);
+            throw new EntityAlreadyExistsException('Root class added');
         }
 
         const classes = this.classRepo.create({

@@ -1,6 +1,6 @@
 'use client';
 
-import { Tabs } from '@mantine/core';
+import { Group, Loader, Select, Tabs, Text } from '@mantine/core';
 import {
     type CalendarYearResponse,
     fetchCalendarYearsSchoolAdmin,
@@ -82,6 +82,24 @@ export default function AttendancePage() {
 
     return (
         <div>
+            {/* Calendar Year */}
+            <Group mb="md">
+                <Text>Calendar Year:</Text>
+                {loadingYears ? (
+                    <Loader size="sm" />
+                ) : (
+                    <Select
+                        value={calendarYear}
+                        data={calendarYears.map((y) => ({
+                            value: y.name,
+                            label: y.name,
+                        }))}
+                        disabled
+                        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
+                        onChange={() => {}}
+                    />
+                )}
+            </Group>
             <Tabs defaultValue="create">
                 <Tabs.List>
                     <Tabs.Tab value="create">Create Attendance</Tabs.Tab>
@@ -98,9 +116,6 @@ export default function AttendancePage() {
                         students={students}
                         loadingStudents={loadingStudents}
                         handleFetchStudents={handleFetchStudents}
-                        calendarYear={calendarYear}
-                        loadingYears={loadingYears}
-                        calendarYears={calendarYears}
                     />
                 </Tabs.Panel>
 
