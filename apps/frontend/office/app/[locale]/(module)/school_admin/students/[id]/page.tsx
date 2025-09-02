@@ -18,6 +18,7 @@ import {
 import {
     IconCalendar,
     IconEdit,
+    IconId,
     IconMail,
     IconMapPin,
     IconPhone,
@@ -27,13 +28,17 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { PrintIdModal, type StudentForPrint } from '../components/PrintIdModal';
 import { RelationshipList } from '../components/RelationshipList';
 import { fetchStudentsIdApi } from '../schemas/api';
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function StudentDetailPage() {
     const params = useParams();
     const router = useRouter();
     const studentId = params.id as string;
+    const [printModalOpened, setPrintModalOpened] = useState(false);
 
     const {
         data: student,
@@ -60,6 +65,20 @@ export default function StudentDetailPage() {
             </Box>
         );
     }
+
+    // Prepare student data for printing
+    const studentForPrint: StudentForPrint = {
+        id: student?.id || '',
+        idNumber: student?.idNumber || '',
+        firstName: student?.profile?.firstName || '',
+        lastName: student?.profile?.lastName || '',
+        phoneNumber: student?.profile?.phoneNumber || '',
+        className: student?.class.name || '',
+        // You might need to adjust these based on your relationship data structure
+        emergencyContact: 'Parent Name', // Replace with actual emergency contact
+        emergencyPhone: '123-456-7890', // Replace with actual emergency phone
+        //photoUrl: student?.profile?.profile_picture_id,     // Add photoUrl to your StudentResponse if needed
+    };
 
     return (
         <Box>
@@ -94,6 +113,15 @@ export default function StudentDetailPage() {
                     </Group>
 
                     <Group>
+                        {/* Print ID Button - ADD THIS */}
+                        <Button
+                            variant="light"
+                            color="blue"
+                            leftSection={<IconId size={16} />}
+                            onClick={() => setPrintModalOpened(true)}
+                        >
+                            Print ID
+                        </Button>
                         <Button
                             variant="light"
                             color="orange"
@@ -115,6 +143,13 @@ export default function StudentDetailPage() {
                 </Group>
 
                 <Divider mb="xl" />
+
+                {/* Print ID Modal */}
+                <PrintIdModal
+                    opened={printModalOpened}
+                    onClose={() => setPrintModalOpened(false)}
+                    student={studentForPrint}
+                />
 
                 {/* Personal Information */}
                 <Grid>
