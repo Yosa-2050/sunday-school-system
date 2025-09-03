@@ -11,7 +11,9 @@ import {
     Table,
     Text,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import {
+    IconCheck,
     IconDots,
     IconEdit,
     IconEye,
@@ -32,7 +34,7 @@ import {
 } from '../classes/create/components/schema/fetchClassesDetail';
 import CreateRelationModal from './components/CreateRelationShip';
 import CreateStudentModal from './components/CreateStudent';
-import { fetchStudentsApi, importStudentsApi } from './schemas/api';
+import { fetchStudentsApi, uploadFileApi } from './schemas/api';
 import type { StudentResponse } from './schemas/type';
 
 export default function StudentPage() {
@@ -114,10 +116,25 @@ export default function StudentPage() {
         }
 
         try {
-            await importStudentsApi(file, selectedSection ?? selectedClass);
+            await uploadFileApi(
+                `/student/import/${selectedSection ?? selectedClass}`,
+                file,
+            );
+            notifications.show({
+                title: 'Success',
+                message: 'Students uploaded successfully',
+                color: 'green',
+                icon: <IconCheck size={16} />,
+            });
             await handleFetchStudents(); // refresh students after import
-        } catch (err) {
-            // handle error
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        } catch (error: any) {
+            notifications.show({
+                title: 'Error',
+                message: error?.message ?? 'Failed to import students',
+                color: 'red',
+                icon: <IconX size={16} />,
+            });
         }
     };
 

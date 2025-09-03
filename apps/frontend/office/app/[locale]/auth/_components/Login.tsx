@@ -77,7 +77,7 @@ const Login = () => {
         if (role === 'administrator') {
             router.push('/admin/dashboard');
         } else if (role === 'school_admin') {
-            router.push(' /school_admin//jobs');
+            router.push(' /school_admin/dashboard');
         } else if (role === 'super_admin') {
             router.push('/admin/dashboard');
         } else if (role === 'mentor') {

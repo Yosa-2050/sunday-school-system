@@ -1,8 +1,6 @@
-import { fetcher } from '@shega/shared';
-import type {
-    IdSuccessResponse,
-    SuccessResponse,
-} from 'app/[locale]/_api/admin/fetch-programs';
+import { COOKIE_ACCESS_TOKEN, fetcher } from '@shega/shared';
+import type { IdSuccessResponse } from 'app/[locale]/_api/admin/fetch-programs';
+import { getCookie } from 'cookies-next';
 import type {
     CreateRelationRequest,
     CreateStudentRequest,
@@ -35,22 +33,32 @@ export const fetchStudentsIdApi = async (
     return response;
 };
 
-export const importStudentsApi = async (
+export const uploadFileApi = async (
+    url: string,
     file: File,
-    classId: string,
-): Promise<SuccessResponse> => {
+): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response: SuccessResponse = await fetcher(
-        `/student/import/${classId}`,
-        {
-            method: 'POST',
-            body: formData,
-        },
-    );
+    const token = getCookie(COOKIE_ACCESS_TOKEN)?.toString();
 
-    return response;
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        const error = await response
+            .json()
+            .catch(() => ({ message: 'Upload failed' }));
+        throw new Error(error.message || 'Failed to file');
+    }
+
+    const data = await response.json();
+    return data;
 };
 
 export const fetchRelationshipsApi = async (

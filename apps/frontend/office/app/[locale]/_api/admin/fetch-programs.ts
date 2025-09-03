@@ -17,7 +17,6 @@ export const fetchCalendarYears = async (
         {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
-            //body: JSON.stringify({ q: payload }),
         },
     );
 

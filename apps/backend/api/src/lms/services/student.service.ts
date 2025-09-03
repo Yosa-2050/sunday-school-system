@@ -130,7 +130,7 @@ export class StudentService {
             models.push(model);
         }
         if (models.length > 0) {
-            const saved = await this.studentRepo.save(models);
+            await this.studentRepo.save(models);
             return UtilityServices.SuccessDataResponse();
         }
         throw new BadRequestException('Nothing to upload');
