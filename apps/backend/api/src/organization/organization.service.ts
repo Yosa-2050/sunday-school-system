@@ -331,7 +331,7 @@ export class OrganizationService {
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
                 subject: 'Organization Status: Approved!',
-                content: `Congratulations! Your organization, <b>${orgName}</b>, has been approved and is now ready to post jobs on Shega Jobs.`,
+                content: `Congratulations! Your organization, <b>${orgName}</b>, has been approved and is now ready to post jobs on Herani Sunday School Management System.`,
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,

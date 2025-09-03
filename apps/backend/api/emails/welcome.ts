@@ -11,13 +11,13 @@ function generateShegaJobsWelcomeEmail({
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Welcome to Shega Jobs! Your Account is Created</title>
+  <title>Welcome to Herani Sunday School Management System! Your Account is Created</title>
 </head>
 <body style="background-color: #fff; color: #212121; margin: 0; padding: 0;">
   <div style="padding: 20px; margin: 0 auto; background-color: #eee;">
     <!-- Preview text (hidden in most email clients) -->
     <div style="display: none; max-height: 0px; overflow: hidden;">
-      Welcome to Shega Jobs! Your Account is Created
+      Welcome to Herani Sunday School Management System! Your Account is Created
     </div>
 
     <div style="background-color: #fff;">
@@ -26,14 +26,14 @@ function generateShegaJobsWelcomeEmail({
           src="${baseUrl}/static/shega-jobs-logo.png" 
           width="75" 
           height="45" 
-          alt="Shega Jobs Logo"
+          alt="Herani Sunday School Management System Logo"
           style="display: block;"
         >
       </div>
 
       <div style="padding: 25px 35px;">
         <h1 style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
-          Welcome to Shega Jobs!
+          Welcome to Herani Sunday School Management System!
         </h1>
         <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 0 0 14px;">
           Dear ${userName},
@@ -69,13 +69,13 @@ function generateShegaJobsWelcomeEmail({
 
       <div style="padding: 25px 35px;">
         <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 0;">
-          Best regards,<br>Shega Jobs Team!
+          Best regards,<br>Herani Sunday School Management System Team!
         </p>
       </div>
     </div>
 
     <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 12px; margin: 24px 0; padding: 0 20px;">
-      This message was produced and distributed by Shega Jobs, Inc. © 2025, Shega Jobs, Inc. All rights reserved. View our 
+      This message was produced and distributed by Herani Sunday School Management System, Inc. © 2025, Herani Sunday School Management System, Inc. All rights reserved. View our 
       <a 
         href="https://shegajobs.com" 
         target="_blank" 

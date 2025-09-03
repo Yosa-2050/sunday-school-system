@@ -104,7 +104,7 @@ export const NotificationTemplatesSeedData = [
         channelType: NotificationChannel.Email,
         templateName: 'orgReturnForAdjustmentEmailTemplate',
         subject:
-            'Action Required: Updates Needed for Your Organization Details on Shega Jobs',
+            'Action Required: Updates Needed for Your Organization Details on Herani Sunday School Management System',
         content: getCleanedHtmlString(getOrgReturnForAdjustmentEmailTemplate()),
     },
 ];

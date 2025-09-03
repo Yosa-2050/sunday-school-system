@@ -89,7 +89,7 @@ export class UsersController {
                 channel: NotificationChannel.Email,
                 content: `please login to your account using your email ${user.email} and password 12345678. Then reset your password.`,
                 to: user.email,
-                subject: 'Shega jobs',
+                subject: 'Herani Sunday School Management System',
                 reference: user.id,
                 type: NotificationType.User,
                 metaData: null,

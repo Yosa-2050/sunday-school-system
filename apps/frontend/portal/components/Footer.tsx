@@ -22,12 +22,13 @@ export function Footer() {
                     <Grid.Col span={{ base: 12, md: 4 }}>
                         <Stack gap="md">
                             <Title order={3} className="text-white">
-                                Shega Jobs
+                                Herani Sunday School Management System
                             </Title>
                             <Text size="sm" c="gray.3">
                                 Find your dream job or hire the perfect
-                                candidate. Shega Jobs connects talented
-                                professionals with amazing opportunities.
+                                candidate. Herani Sunday School Management
+                                System connects talented professionals with
+                                amazing opportunities.
                             </Text>
                             <Group gap="xs">
                                 <Link
@@ -116,8 +117,8 @@ export function Footer() {
 
                 <Group justify="space-between" align="center">
                     <Text size="sm" c="gray.3">
-                        © {new Date().getFullYear()} Shega Jobs. All rights
-                        reserved.
+                        © {new Date().getFullYear()} Herani Sunday School
+                        Management System. All rights reserved.
                     </Text>
                     <Group gap="xs">
                         <Link

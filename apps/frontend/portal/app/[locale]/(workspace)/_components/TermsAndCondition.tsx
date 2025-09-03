@@ -32,7 +32,8 @@ export function TermsAndConditions({
                             mb="md"
                         >
                             <Title order={1} size="h2" fw={600}>
-                                Shega Jobs Terms and Conditions
+                                Herani Sunday School Management System Terms and
+                                Conditions
                             </Title>
                             <Badge color="primary" variant="light" size="lg">
                                 <Group gap={4}>
@@ -51,11 +52,12 @@ export function TermsAndConditions({
                     {/* Introduction */}
                     <Stack gap="md">
                         <Text>
-                            Welcome to Shega Jobs! These Terms and Conditions
-                            govern your use of our platform, whether as a job
-                            seeker, an employer, mentee or mentor. By accessing
-                            or using Shega Jobs, you agree to comply with these
-                            Terms.
+                            Welcome to Herani Sunday School Management System!
+                            These Terms and Conditions govern your use of our
+                            platform, whether as a job seeker, an employer,
+                            mentee or mentor. By accessing or using Herani
+                            Sunday School Management System, you agree to comply
+                            with these Terms.
                         </Text>
                     </Stack>
 
@@ -100,9 +102,10 @@ export function TermsAndConditions({
                                 <Text component="span" fw={600}>
                                     Termination:
                                 </Text>{' '}
-                                Shega Jobs reserves the right to suspend or
-                                terminate accounts for violations of these Terms
-                                or any fraudulent, abusive, or illegal activity.
+                                Herani Sunday School Management System reserves
+                                the right to suspend or terminate accounts for
+                                violations of these Terms or any fraudulent,
+                                abusive, or illegal activity.
                             </List.Item>
                         </List>
                     </Stack>
@@ -128,8 +131,9 @@ export function TermsAndConditions({
                                 </Text>{' '}
                                 Applying for jobs does not guarantee employment.
                                 Employers are solely responsible for hiring
-                                decisions, and Shega Jobs is not liable for any
-                                employment outcomes.
+                                decisions, and Herani Sunday School Management
+                                System is not liable for any employment
+                                outcomes.
                             </List.Item>
                             <List.Item>
                                 <Text component="span" fw={600}>
@@ -164,8 +168,9 @@ export function TermsAndConditions({
                                     <List.Item>
                                         All postings must comply with applicable
                                         laws, including non-discrimination and
-                                        labor regulations. Shega Jobs may remove
-                                        postings that violate these standards.
+                                        labor regulations. Herani Sunday School
+                                        Management System may remove postings
+                                        that violate these standards.
                                     </List.Item>
                                 </List>
                             </List.Item>
@@ -200,8 +205,9 @@ export function TermsAndConditions({
                                 <Text component="span" fw={600}>
                                     Data Protection:
                                 </Text>{' '}
-                                Shega Jobs employs SSL encryption and other
-                                security measures to protect your data.
+                                Herani Sunday School Management System employs
+                                SSL encryption and other security measures to
+                                protect your data.
                             </List.Item>
                             <List.Item>
                                 <Text component="span" fw={600}>
@@ -224,8 +230,8 @@ export function TermsAndConditions({
                                 >
                                     support@shegajobs.com
                                 </Anchor>
-                                . Shega Jobs will investigate and take
-                                appropriate action.
+                                . Herani Sunday School Management System will
+                                investigate and take appropriate action.
                             </List.Item>
                         </List>
                     </Stack>
@@ -241,18 +247,19 @@ export function TermsAndConditions({
                                     Ownership:
                                 </Text>{' '}
                                 All content, trademarks, logos, and materials on
-                                Shega Jobs are owned by or licensed to us.
-                                Unauthorized use, reproduction, or distribution
-                                is prohibited.
+                                Herani Sunday School Management System are owned
+                                by or licensed to us. Unauthorized use,
+                                reproduction, or distribution is prohibited.
                             </List.Item>
                             <List.Item>
                                 <Text component="span" fw={600}>
                                     User Content:
                                 </Text>{' '}
                                 By posting job listings, resumes, or other
-                                content, you grant Shega Jobs a non-exclusive,
-                                worldwide license to display and distribute such
-                                content for platform purposes.
+                                content, you grant Herani Sunday School
+                                Management System a non-exclusive, worldwide
+                                license to display and distribute such content
+                                for platform purposes.
                             </List.Item>
                         </List>
                     </Stack>
@@ -267,10 +274,11 @@ export function TermsAndConditions({
                                 <Text component="span" fw={600}>
                                     No Warranty:
                                 </Text>{' '}
-                                Shega Jobs is provided &quot;as is&quot; without
-                                warranties of any kind. We do not guarantee job
-                                placements, uninterrupted service, or accuracy
-                                of job postings.
+                                Herani Sunday School Management System is
+                                provided &quot;as is&quot; without warranties of
+                                any kind. We do not guarantee job placements,
+                                uninterrupted service, or accuracy of job
+                                postings.
                             </List.Item>
                             <List.Item>
                                 <Text component="span" fw={600}>
@@ -303,10 +311,11 @@ export function TermsAndConditions({
                             7. Modifications
                         </Title>
                         <Text>
-                            Shega Jobs may update these Terms at any time. We
-                            will notify users of significant changes via email
-                            or platform notifications. Continued use after
-                            changes constitutes acceptance.
+                            Herani Sunday School Management System may update
+                            these Terms at any time. We will notify users of
+                            significant changes via email or platform
+                            notifications. Continued use after changes
+                            constitutes acceptance.
                         </Text>
                     </Stack>
 
@@ -338,7 +347,8 @@ export function TermsAndConditions({
                                     Entire Agreement:
                                 </Text>{' '}
                                 These Terms constitute the entire agreement
-                                between you and Shega Jobs.
+                                between you and Herani Sunday School Management
+                                System.
                             </List.Item>
                             <List.Item>
                                 <Text component="span" fw={600}>
@@ -387,8 +397,9 @@ export function TermsAndConditions({
 
                     {/* Footer */}
                     <Text size="sm" c="dimmed" ta="center">
-                        By using Shega Jobs, you acknowledge that you have read,
-                        understood, and agreed to these Terms and Conditions.
+                        By using Herani Sunday School Management System, you
+                        acknowledge that you have read, understood, and agreed
+                        to these Terms and Conditions.
                     </Text>
 
                     {updateTerms && close && (
