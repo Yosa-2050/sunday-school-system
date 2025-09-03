@@ -1,6 +1,6 @@
 import { fetcher } from '@shega/shared';
-import type { ContactFormData } from 'app/[locale]/(module) /school_admin//profile/components/ContactFormDrawer';
-import type { LocationFormData } from 'app/[locale]/(module) /school_admin//profile/components/LocationDetails';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ContactFormData, LocationFormData } from 'model/OrganizationDetail';
 
 interface UpdateOrganizationPayload {
     registrationNumber: string;
@@ -77,13 +77,13 @@ export const updateContactInfo = async (
     const grouped = {
         phoneNumbers: {
             type: 'Phone',
-            value: data.contactPersonPhone,
+            //value: data.contactPersonPhone,
             isPreferred: true,
         },
         emailAddress: {
             type: 'Communication',
             //TODO: another fix
-            value: data.email,
+            //value: data.email,
             isPreferred: true,
         },
         otherAddress: {
