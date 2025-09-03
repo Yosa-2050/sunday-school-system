@@ -30,6 +30,7 @@ import {
     type GetClass,
     fetchClassesApi,
 } from '../classes/create/components/schema/fetchClassesDetail';
+import CreateRelationModal from './components/CreateRelationShip';
 import CreateStudentModal from './components/CreateStudent';
 import { fetchStudentsApi, importStudentsApi } from './schemas/api';
 import type { StudentResponse } from './schemas/type';
@@ -301,11 +302,11 @@ export default function StudentPage() {
                 sectionId={selectedSection}
             />
 
-            {/* <CreateRelationshipModal
+            <CreateRelationModal
                 opened={createRelationModalOpened}
                 onClose={() => setCreateRelationModalOpened(false)}
                 studentId={newStudentId}
-            /> */}
+            />
         </div>
     );
 }

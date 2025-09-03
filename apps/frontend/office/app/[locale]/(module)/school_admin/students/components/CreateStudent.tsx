@@ -28,8 +28,6 @@ export default function CreateStudentModal({
         birthDate: '',
         baptistName: '',
         gender: '',
-        marriageStatus: '',
-        title: '',
         phoneNumber: '',
         idNumber: '',
     });
@@ -46,8 +44,6 @@ export default function CreateStudentModal({
                 birthDate: '',
                 baptistName: '',
                 gender: '',
-                marriageStatus: '',
-                title: '',
                 phoneNumber: '',
                 idNumber: '',
             });
@@ -171,35 +167,6 @@ export default function CreateStudentModal({
                         handleInputChange('baptistName', e.target.value)
                     }
                 />
-
-                <Group grow>
-                    <Select
-                        label="Marriage Status"
-                        data={[
-                            { value: 'SINGLE', label: 'Single' },
-                            { value: 'MARRIED', label: 'Married' },
-                            { value: 'DIVORCED', label: 'Divorced' },
-                            { value: 'WIDOWED', label: 'Widowed' },
-                        ]}
-                        value={formData.marriageStatus}
-                        onChange={(value) =>
-                            handleInputChange('marriageStatus', value || '')
-                        }
-                    />
-                    <Select
-                        label="Title"
-                        data={[
-                            { value: 'MR', label: 'Mr.' },
-                            { value: 'MRS', label: 'Mrs.' },
-                            { value: 'MISS', label: 'Miss' },
-                            { value: 'DR', label: 'Dr.' },
-                        ]}
-                        value={formData.title}
-                        onChange={(value) =>
-                            handleInputChange('title', value || '')
-                        }
-                    />
-                </Group>
 
                 <Group justify="flex-end" mt="md">
                     <Button variant="outline" onClick={onClose}>

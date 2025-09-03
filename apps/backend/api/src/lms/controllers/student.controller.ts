@@ -27,9 +27,14 @@ export class StudentController {
     constructor(private readonly studentService: StudentService) {}
 
     @Roles(UserRoleType.SchoolAdmin)
-    @Post('create')
-    createEmployee(@Body() dto: CreateStudentRequestDto, @Request() req) {
+    @Post('create/:classId')
+    createEmployee(
+        @Body() dto: CreateStudentRequestDto,
+        @Request() req,
+        @Param('classId', new ParseUUIDPipe()) id: string,
+    ) {
         return this.studentService.CreateStudentDetailed(
+            id,
             dto,
             CurrentUser.getActiveYear(req),
         );

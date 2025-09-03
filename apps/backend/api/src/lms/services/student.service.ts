@@ -32,8 +32,12 @@ export class StudentService {
         private profileService: ProfileService,
     ) {}
 
-    async CreateStudentDetailed(dto: CreateStudentRequestDto, yearId: string) {
-        const valid = await this.classService.isClassValid(dto.classId, yearId);
+    async CreateStudentDetailed(
+        classId: string,
+        dto: CreateStudentRequestDto,
+        yearId: string,
+    ) {
+        const valid = await this.classService.isClassValid(classId, yearId);
         if (!valid) {
             throw new EntityNotFoundException(typeof Classes);
         }

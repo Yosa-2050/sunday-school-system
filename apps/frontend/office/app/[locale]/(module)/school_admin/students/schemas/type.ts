@@ -85,17 +85,17 @@ export type CreateStudentRequest = {
     birthDate: '';
     baptistName: '';
     gender: '';
-    marriageStatus: '';
-    title: '';
     phoneNumber: '';
     idNumber: '';
 };
 
 export type CreateRelationRequest = {
-    firstName: '';
-    lastName: '';
-    phoneNumber: '';
-    type: '';
-    isParent: false;
-    isEmergency: false;
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+    type?: string;
+    isParent: boolean;
+    isEmergency: boolean;
+    email?: string;
+    profileId?: string;
 };
