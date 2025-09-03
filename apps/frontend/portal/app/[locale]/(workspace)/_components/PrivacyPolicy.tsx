@@ -27,7 +27,8 @@ export function PrivacyPolicy() {
                             mb="md"
                         >
                             <Title order={1} size="h2" fw={600}>
-                                Shega Jobs Privacy Policy
+                                Herani Sunday School Management System Privacy
+                                Policy
                             </Title>
                             <Badge variant="light" size="lg">
                                 <Group gap={4}>
@@ -53,12 +54,13 @@ export function PrivacyPolicy() {
                             <Text fw={500}>Our Commitment to Your Privacy</Text>
                         </Group>
                         <Text>
-                            At Shega Jobs, we are committed to protecting your
-                            privacy. This Privacy Policy explains how we
-                            collect, use, disclose, and safeguard your
-                            information when you use our platform, whether as a
-                            job seeker, an employer, mentee or Mentor. By
-                            accessing or using Shega Jobs, you consent to the
+                            At Herani Sunday School Management System, we are
+                            committed to protecting your privacy. This Privacy
+                            Policy explains how we collect, use, disclose, and
+                            safeguard your information when you use our
+                            platform, whether as a job seeker, an employer,
+                            mentee or Mentor. By accessing or using Herani
+                            Sunday School Management System, you consent to the
                             practices described in this policy.
                         </Text>
                     </Stack>
@@ -347,8 +349,9 @@ export function PrivacyPolicy() {
                         </Title>
                         <List spacing="sm" size="sm" pl={20}>
                             <List.Item>
-                                Shega Jobs is not intended for users under 18.
-                                We do not knowingly collect their data.
+                                Herani Sunday School Management System is not
+                                intended for users under 18. We do not knowingly
+                                collect their data.
                             </List.Item>
                         </List>
                     </Stack>
@@ -408,7 +411,8 @@ export function PrivacyPolicy() {
 
                     {/* Footer Text */}
                     <Text size="sm" c="dimmed" ta="center">
-                        By using Shega Jobs, you agree to this Privacy Policy.
+                        By using Herani Sunday School Management System, you
+                        agree to this Privacy Policy.
                     </Text>
                 </Stack>
             </Paper>

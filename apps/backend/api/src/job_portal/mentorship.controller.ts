@@ -84,7 +84,7 @@ export class MentorshipController {
         return this.mentorshipService.approve(
             id,
             ApprovalType.Declined,
-            dto?.note,
+            dto?.text,
         );
     }
 

@@ -28,7 +28,8 @@ import { NotesService } from '@shega/notification/notes.service';
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
-import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
+import { LoginBy } from '@shega/users/enums/login-by.enum';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
@@ -50,8 +51,8 @@ import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.r
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
-    CreateOrganizationEmployeeDto,
     CreateOrganizationEmployeeWithOrgDto,
+    CreateOrganizationUserDto,
 } from './dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from './dto/request/create-organization.dto';
@@ -330,7 +331,7 @@ export class OrganizationService {
             this.notificationService.send({
                 channel: NotificationChannel.InApp,
                 subject: 'Organization Status: Approved!',
-                content: `Congratulations! Your organization, <b>${orgName}</b>, has been approved and is now ready to post jobs on Shega Jobs.`,
+                content: `Congratulations! Your organization, <b>${orgName}</b>, has been approved and is now ready to post jobs on Herani Sunday School Management System.`,
                 to: user.id,
                 reference: user.id,
                 isRealTimeNotification: true,
@@ -610,10 +611,15 @@ export class OrganizationService {
         const pwdGenerated = this.passwordService.generatePassword();
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
-            UserRoleType.WorkProvider,
+            LoginBy.EMAIL,
+            UserRoleType.Administrator,
             dto.firstName,
             dto.middleName,
             dto.lastName,
+            '',
+            null,
+            '',
+            '',
             false,
             pwdGenerated,
             true,
@@ -643,32 +649,12 @@ export class OrganizationService {
         return saved;
     }
 
-    private async SendOrganizationCreatedNotification(
-        dto: CreateOrganizationEmployeeDto,
+    private SendOrganizationCreatedNotification(
+        dto: CreateOrganizationUserDto,
         pwdGenerated: string,
         saved: EmployeeOrganization,
     ) {
-        const signupEmailTemplate = await this.notificationService.getTemplate(
-            'signupEmailTemplate',
-            {
-                userName: dto.firstName,
-                role: UserRoleValue(UserRoleType.WorkProvider).value,
-                email: dto.email,
-                tempPassword: pwdGenerated,
-                loginUrl: UserRoleValue(UserRoleType.WorkProvider).url,
-            },
-            null,
-        );
-
-        this.notificationService.send({
-            channel: NotificationChannel.Email,
-            content: signupEmailTemplate.content,
-            to: dto.email,
-            subject: signupEmailTemplate.subject,
-            reference: saved.id,
-            type: NotificationType.Organization,
-            metaData: null,
-        });
+        return null;
     }
 
     async setOrgActivationStatus(

@@ -171,7 +171,7 @@ const UsersPage = () => {
     const roles = [
         { value: '', label: t('roles.allroles') },
         { value: 'ADMINISTRATOR', label: t('roles.administrator') },
-        { value: 'WORK_PROVIDER', label: t('roles.workProvider') },
+        { value: 'school_admin', label: t('roles.workProvider') },
         { value: 'JOB_SEEKER', label: t('roles.jobSeeker') },
         { value: 'MENTOR', label: t('roles.mentor') },
     ];
@@ -524,7 +524,7 @@ const UsersPage = () => {
                                             </Link>
                                         </Table.Td>
                                         <Table.Td>
-                                            {user.role === 'WORK_PROVIDER'
+                                            {user.role === 'school_admin'
                                                 ? 'Employer'
                                                 : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                                   user.role === 'ADMINISTRATOR'

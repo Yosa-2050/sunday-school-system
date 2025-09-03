@@ -1,14 +1,9 @@
 import {
     IconBell,
-    IconBriefcase,
-    IconBuilding,
     IconCategory,
     IconClipboardList,
-    IconFileText,
-    IconHierarchy,
     IconHome,
     IconMapPin,
-    IconPencil,
     IconStar,
     IconUserSquare,
     IconUsersGroup,
@@ -17,7 +12,7 @@ import { useTranslations } from 'next-intl';
 import type { MenuTree } from './side-menu/SideMenu';
 
 export const Menus = (): MenuTree[] => {
-    const t = useTranslations('jobPortal');
+    const t = useTranslations('menus');
 
     return [
         {
@@ -33,26 +28,8 @@ export const Menus = (): MenuTree[] => {
             role: 'administrator',
         },
         {
-            label: t('organizations'),
-            icon: <IconBuilding stroke={1.4} size={20} />,
-            link: '/admin/organizations',
-            role: 'administrator',
-        },
-        {
-            label: t('mentorManagement'),
+            label: t('programManagement'),
             icon: <IconUserSquare stroke={1.4} size={20} />,
-            link: '/admin/mentors',
-            role: 'administrator',
-        },
-        {
-            label: t('job-explorer'),
-            icon: <IconBriefcase stroke={1.4} size={20} />,
-            link: '/admin/jobs',
-            role: 'administrator',
-        },
-        {
-            label: t('mentorship'),
-            icon: <IconHierarchy stroke={1.4} size={20} />,
             link: '/admin/programs',
             role: 'administrator',
         },
@@ -88,30 +65,44 @@ export const Menus = (): MenuTree[] => {
                 },
             ],
         },
-        // Work Provider Role
+        // School Admin Role
         {
-            label: t('job-explorer'),
-            icon: <IconClipboardList stroke={1.4} size={20} />,
-            link: '/work-provider/jobs',
-            role: 'work_provider',
+            label: t('dashboard'),
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/school_admin/dashboard',
+            role: 'school_admin',
         },
         {
-            label: t('job-explorer-draft-jobs'),
-            icon: <IconPencil stroke={1.4} size={20} />,
-            link: '/work-provider/draft-jobs',
-            role: 'work_provider',
+            isGroup: true,
+            label: t('classManagement'),
+            role: 'school_admin',
+            children: [
+                {
+                    label: t('class'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/classes',
+                    role: 'school_admin',
+                },
+            ],
         },
         {
-            label: t('job-explorer-applicants'),
-            icon: <IconFileText stroke={1.4} size={20} />,
-            link: '/work-provider/applicants',
-            role: 'work_provider',
-        },
-        {
-            label: t('notifications'),
-            icon: <IconBell stroke={1.4} size={20} />,
-            link: '/work-provider/notifications',
-            role: 'work_provider',
+            isGroup: true,
+            label: t('studentManagement'),
+            role: 'school_admin',
+            children: [
+                {
+                    label: t('students'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/students',
+                    role: 'school_admin',
+                },
+                {
+                    label: t('attendance'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/attendance',
+                    role: 'school_admin',
+                },
+            ],
         },
         // Super Admin Roles
         {
@@ -127,26 +118,8 @@ export const Menus = (): MenuTree[] => {
             role: 'super_admin',
         },
         {
-            label: t('organizations'),
-            icon: <IconBuilding stroke={1.4} size={20} />,
-            link: '/admin/organizations',
-            role: 'super_admin',
-        },
-        {
-            label: t('mentorManagement'),
+            label: t('programManagement'),
             icon: <IconUserSquare stroke={1.4} size={20} />,
-            link: '/admin/mentors',
-            role: 'super_admin',
-        },
-        {
-            label: t('job-explorer'),
-            icon: <IconBriefcase stroke={1.4} size={20} />,
-            link: '/admin/jobs',
-            role: 'super_admin',
-        },
-        {
-            label: t('mentorship'),
-            icon: <IconHierarchy stroke={1.4} size={20} />,
             link: '/admin/programs',
             role: 'super_admin',
         },
@@ -180,31 +153,6 @@ export const Menus = (): MenuTree[] => {
                     role: 'super_admin',
                 },
             ],
-        },
-        // Mentor Role
-        {
-            label: t('mentorship'),
-            icon: <IconHierarchy stroke={1.4} size={20} />,
-            link: '/mentor/mentorship',
-            role: 'mentor',
-        },
-        {
-            label: t('draft-mentorship'),
-            icon: <IconPencil stroke={1.4} size={20} />,
-            link: '/mentor/mentorship/draft',
-            role: 'mentor',
-        },
-        {
-            label: t('notifications'),
-            icon: <IconBell stroke={1.4} size={20} />,
-            link: '/mentor/notifications',
-            role: 'mentor',
-        },
-        {
-            label: t('job-explorer-applicants'),
-            icon: <IconFileText stroke={1.4} size={20} />,
-            link: '/mentor/applicants',
-            role: 'mentor',
         },
     ];
 };

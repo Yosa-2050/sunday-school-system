@@ -1,12 +1,13 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { Attendance } from '@shega/attendance/entities/attendance.entity';
 import { Profile } from '@shega/users/entities/profile.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Classes } from './classes.entity';
 
 @Entity()
 export class Students extends BaseModel {
     @Column({ nullable: true })
-    id_number: string;
+    idNumber: string;
 
     @ManyToOne((type) => Profile, { eager: true, cascade: true })
     profile: Profile;
@@ -14,8 +15,18 @@ export class Students extends BaseModel {
     @ManyToOne((type) => Classes, { eager: true })
     class: Classes;
 
-    // @OneToMany((type) => Attendance, (attendance) => attendance.student, {
-    // lazy: true,
-    // })
-    // attendances: Attendance[];
+    @Column({ nullable: true })
+    schoolName: string;
+
+    @Column({ nullable: true })
+    schoolGrade: string;
+
+    @OneToMany(
+        (type) => Attendance,
+        (attendance) => attendance.student,
+        {
+            lazy: true,
+        },
+    )
+    attendances: Attendance[];
 }

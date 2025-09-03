@@ -37,7 +37,9 @@ export default function UnderConstruction() {
                     <span className="">
                         © {new Date().getFullYear()} All rights reserved by{' '}
                     </span>
-                    <span className="">Shega Jobs</span>
+                    <span className="">
+                        Herani Sunday School Management System
+                    </span>
                 </Box>
             </div>
         </main>

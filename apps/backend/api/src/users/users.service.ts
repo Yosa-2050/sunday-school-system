@@ -82,25 +82,37 @@ export class UsersService {
     }
 
     async createFromProfile(
-        email: string,
+        userName: string,
         role: UserRoleType,
         password: string,
         saveProfile = true,
         logInType: LoginBy = LoginBy.EMAIL,
         pwdChangeRequired = false,
     ) {
-        const check = await this.findOneUser(email, logInType);
+        const check = await this.findOneUser(userName, logInType);
         if (check) {
-            throw new BadRequestException(`Email ${email} already exists`);
+            throw new BadRequestException(
+                `User name ${userName} already exists`,
+            );
         }
 
         const user = this.userRepo.create({
-            email: email.toLowerCase(),
             password: await this.passwordService.hashPassword(
                 password ?? '123456789',
             ),
             pwd_change_required: !password || pwdChangeRequired,
         });
+        switch (logInType) {
+            case LoginBy.EMAIL:
+                user.email = userName.toLowerCase();
+                break;
+            case LoginBy.ID:
+                user.id = userName.toLowerCase();
+                break;
+            case LoginBy.USERNAME:
+                user.userName = userName.toLowerCase();
+                break;
+        }
         const roles = this.userRoleRepo.create();
         roles.role = role;
         roles.isDefault = true;

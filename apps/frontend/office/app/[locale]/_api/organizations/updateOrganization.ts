@@ -1,6 +1,6 @@
 import { fetcher } from '@shega/shared';
-import type { ContactFormData } from 'app/[locale]/(module)/work-provider/profile/components/ContactFormDrawer';
-import type { LocationFormData } from 'app/[locale]/(module)/work-provider/profile/components/LocationDetails';
+import type { ContactFormData } from 'app/[locale]/(module) /school_admin//profile/components/ContactFormDrawer';
+import type { LocationFormData } from 'app/[locale]/(module) /school_admin//profile/components/LocationDetails';
 
 interface UpdateOrganizationPayload {
     registrationNumber: string;

@@ -100,7 +100,7 @@ export class OrganizationController {
         return this.organizationService.organizationApproval(
             id,
             ApprovalType.Declined,
-            dto?.note,
+            dto?.text,
         );
     }
 
@@ -113,7 +113,7 @@ export class OrganizationController {
         return this.organizationService.organizationApproval(
             id,
             ApprovalType.Returned,
-            dto?.note,
+            dto?.text,
         );
     }
 
@@ -191,7 +191,7 @@ export class OrganizationController {
         return this.organizationService.findOne(id);
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Patch('companyDetail/:id')
     updateOrganization(
         @Param('id', new ParseUUIDPipe()) id: string,
@@ -204,7 +204,7 @@ export class OrganizationController {
         );
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Patch('contacts/:id')
     updateContactDetails(
         @Param('id', new ParseUUIDPipe()) id: string,
@@ -217,7 +217,7 @@ export class OrganizationController {
         );
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Patch('location/:id')
     updateLocation(
         @Param('id', new ParseUUIDPipe()) id: string,
@@ -262,11 +262,11 @@ export class OrganizationController {
             false,
             false,
             isIncludeEmployees,
-            dto.note,
+            dto.text,
         );
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Post('contactPerson')
     addContactPerson(
         @Request() req,

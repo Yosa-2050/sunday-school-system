@@ -17,12 +17,19 @@ import { ILike, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NewProfileDto } from './dto/new-profile.dto';
 import { Profile } from './entities/profile.entity';
+import { RelationShips } from './entities/relationships.entity';
 import { LoginBy } from './enums/login-by.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Gender } from './enums/profile-gender.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { RelationShipsType } from './enums/relationship-type.enum';
 
 @Injectable()
 export class ProfileService {
     constructor(
         @InjectRepository(Profile) private repo: Repository<Profile>,
+        @InjectRepository(RelationShips)
+        private relationShipsRepo: Repository<RelationShips>,
         private userService: UsersService,
         private documentService: DocumentService,
         private passwordService: PasswordService,
@@ -57,21 +64,26 @@ export class ProfileService {
     }
 
     async createNewUserProfileQDE(
-        email: string,
+        userName: string,
+        logInType: LoginBy,
         role: UserRoleType,
         firstName: string,
         middleName: string,
         lastName: string,
+        phoneNumber: string,
+        gender: Gender,
+        birthDate: string,
+        baptistName: string,
         saveProfile = true,
         password = '',
         pwdChangeRequired = false,
     ) {
         const user = await this.userService.createFromProfile(
-            email,
+            userName,
             role,
             password,
             false,
-            LoginBy.EMAIL,
+            logInType,
             pwdChangeRequired,
         );
         if (user) {
@@ -79,6 +91,10 @@ export class ProfileService {
                 firstName,
                 middleName,
                 lastName,
+                phoneNumber,
+                gender,
+                birthDate,
+                baptistName,
             });
             profile.user = user;
             if (saveProfile) {
@@ -102,6 +118,22 @@ export class ProfileService {
             lastName,
             phoneNumber,
         });
+    }
+
+    createRelationShips(
+        profile1: Profile,
+        profile2: Profile,
+        relationShipType: RelationShipsType,
+        isEmergency: boolean,
+        isParent: boolean,
+    ) {
+        const entity = this.relationShipsRepo.create();
+        entity.profile1 = profile1;
+        entity.profile2 = profile2;
+        entity.isEmergency = isEmergency;
+        entity.isParent = isParent;
+        entity.type = relationShipType;
+        return entity;
     }
 
     updateProfileQDE(
@@ -147,6 +179,16 @@ export class ProfileService {
         }
 
         throw new EntityNotFoundException('User');
+    }
+
+    async finProfileByUserId(userId: string) {
+        const profile = await this.repo.findOneBy({ user: { id: userId } });
+
+        if (profile) {
+            return profile;
+        }
+
+        throw new EntityNotFoundException('Profile');
     }
 
     async findOne(id: string) {
@@ -219,5 +261,23 @@ export class ProfileService {
 
         const user = profile.user;
         return user;
+    }
+
+    async getRelatives(profileId: string) {
+        const relationships = await this.relationShipsRepo.findBy({
+            profile1: { id: profileId },
+        });
+        const result = [];
+        for (let index = 0; index < relationships.length; index++) {
+            const element = relationships[index];
+            const profile = await element.profile2;
+            result.push({
+                ...profile,
+                type: element.type,
+                isEmergency: element.isEmergency,
+                isParent: element.isParent,
+            });
+        }
+        return result;
     }
 }

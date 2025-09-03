@@ -113,10 +113,15 @@ export class JobPortalService {
 
         const user = await this.profileService.createNewUserProfileQDE(
             dto.email,
+            LoginBy.EMAIL,
             role,
             dto.firstName,
             dto.middleName,
             dto.lastName,
+            '',
+            null,
+            '',
+            '',
             false,
             pwdGenerated,
             true,
@@ -870,10 +875,10 @@ export class JobPortalService {
         if (approvalType === ApprovalType.Approved) {
             if (programType === 'Job') {
                 subject = `Job Approved:<b>${programTitle}</b> is Now Live!`;
-                content = `Congratulations! Your job posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
+                content = `Congratulations! Your job posting for <b>${programTitle}</b> has been approved and is now live on Herani Sunday School Management System! Candidates can now view and apply.`;
             } else {
                 subject = `Mentorship Program Approved:<b>${programTitle}</b> is Now Live!`;
-                content = `Congratulations! Your Mentorship Program posting for <b>${programTitle}</b> has been approved and is now live on Shega Jobs! Candidates can now view and apply.`;
+                content = `Congratulations! Your Mentorship Program posting for <b>${programTitle}</b> has been approved and is now live on Herani Sunday School Management System! Candidates can now view and apply.`;
             }
         }
 

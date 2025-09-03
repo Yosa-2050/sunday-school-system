@@ -37,10 +37,10 @@ export default function UserProfile() {
             </Menu.Target>
 
             <Menu.Dropdown>
-                {user?.role === 'work_provider' && (
+                {user?.role === 'school_admin' && (
                     <Menu.Item
                         leftSection={<IconUser size={14} />}
-                        onClick={() => router.push('/work-provider/profile')}
+                        onClick={() => router.push('/school_admin/profile')}
                     >
                         {t('profile')}
                     </Menu.Item>

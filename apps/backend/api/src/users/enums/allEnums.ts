@@ -11,6 +11,7 @@ import { LoginBy } from './login-by.enum';
 import { Gender } from './profile-gender.enum';
 import { MarriageStatus } from './profile-marriage-status.enum';
 import { Title } from './profile-title.enum';
+import { RelationShipsType } from './relationship-type.enum';
 import { UserRoleType } from './user-role.enum';
 
 export const AllEnums = {
@@ -28,4 +29,5 @@ export const AllEnums = {
     CommitmentType,
     MentorshipType,
     ExperianceLevelType: ExperienceLevelType,
+    RelationShipsType,
 };

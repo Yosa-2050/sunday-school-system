@@ -340,7 +340,7 @@ export default function NotificationPopover() {
                     variant="subtle"
                     fullWidth
                     component="a"
-                    href="/work-provider/notifications"
+                    href="/school_admin/notifications"
                     rightSection={<IconChevronRight size={16} />}
                 >
                     View all notifications

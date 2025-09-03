@@ -46,9 +46,10 @@ const HomePageHeader = ({ filters, updateFilters }: HomePageHeaderProps) => {
                             Find The Job That Fits Your Life
                         </Title>
                         <Text size="lg" c="gray.2">
-                            Shega Jobs makes finding your ideal career simple
-                            and fast. Browse diverse job listings and kickstart
-                            your professional journey today.
+                            Herani Sunday School Management System makes finding
+                            your ideal career simple and fast. Browse diverse
+                            job listings and kickstart your professional journey
+                            today.
                         </Text>
                     </Stack>
 

@@ -4,42 +4,101 @@ import {
     Delete,
     Get,
     Param,
+    ParseUUIDPipe,
     Patch,
     Post,
+    Request,
 } from '@nestjs/common';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
+import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateLmDto } from '../dto/request/create-lm.dto';
+import { CreateUsingNameRequestDto } from '@shega/job_portal/dto/request/create-name.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateCalendarYearRequestDto } from '../dto/request/create-calendar-year.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateLmDto } from '../dto/request/update-lm.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ClassService } from '../services/class.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LmsService } from '../services/lms.service';
 
 @Controller('lms')
 export class LmsController {
-    constructor(private readonly lmsService: LmsService) {}
+    constructor(
+        private readonly lmsService: LmsService,
+        private readonly classService: ClassService,
+    ) {}
 
-    @Post()
-    create(@Body() createLmDto: CreateLmDto) {
-        return this.lmsService.create(createLmDto);
+    @Post('calendarYear/:programId')
+    create(
+        @Body() dto: CreateCalendarYearRequestDto,
+        @Param('programId', new ParseUUIDPipe()) id: string,
+    ) {
+        return this.lmsService.createCalendarYear(id, dto);
     }
 
-    @Get()
-    findAll() {
-        return this.lmsService.findAll();
+    @Get('calendarYear/:programId')
+    findAllCalendarId(@Param('programId', new ParseUUIDPipe()) id: string) {
+        return this.lmsService.findAllYear(id);
     }
 
-    @Get(':id')
+    @Get('calendarYearById/:id')
     findOne(@Param('id') id: string) {
         return this.lmsService.findOne(+id);
     }
 
-    @Patch(':id')
+    @Roles(UserRoleType.SchoolAdmin)
+    @Get('calendarYear')
+    getDefaultCalendarYear(@Request() req) {
+        return this.lmsService.findAllYear(CurrentUser.getProgramId(req));
+    }
+    //TODO: Implement inactive calendar year
+    @Patch('calendarYear/:id')
     update(@Param('id') id: string, @Body() updateLmDto: UpdateLmDto) {
         return this.lmsService.update(+id, updateLmDto);
     }
 
-    @Delete(':id')
+    @Delete('calendarYear/:id')
     remove(@Param('id') id: string) {
         return this.lmsService.remove(+id);
+    }
+
+    @Post('program')
+    createProgram(@Body() dto: CreateUsingNameRequestDto) {
+        return this.lmsService.createProgram(dto.name);
+    }
+
+    @Get('program')
+    getPrograms() {
+        return this.lmsService.getProgram();
+    }
+
+    @Get('program/:id')
+    findProgramById(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.lmsService.findOneProgram(id);
+    }
+
+    @Post('user/:programId')
+    createUser(
+        @Body() dto: CreateOrganizationUserDto,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.lmsService.CreateUserQDE(programId, dto);
+    }
+
+    @Patch('assignUser/:programId/:userId')
+    assignUser(
+        @Param('userId', new ParseUUIDPipe()) userId: string,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.lmsService.AssignUser(programId, userId);
+    }
+
+    @Get('users/:programId')
+    getUser(@Param('programId', new ParseUUIDPipe()) programId: string) {
+        return this.lmsService.GetUsers(programId);
     }
 }

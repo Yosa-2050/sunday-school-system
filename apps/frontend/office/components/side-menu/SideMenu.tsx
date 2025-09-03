@@ -15,13 +15,13 @@ export type MenuTree = {
     isExternal?: string;
     children?: MenuTree[];
     pathMatch?: number;
-    role: 'super_admin' | 'administrator' | 'work_provider' | 'mentor';
+    role: 'super_admin' | 'administrator' | 'school_admin' | 'mentor';
 };
 
 type MenuItemProps = {
     data: MenuTree;
     level?: number;
-    role: 'super_admin' | 'administrator' | 'work_provider';
+    role: 'super_admin' | 'administrator' | 'school_admin';
     isSidebarOpen: boolean;
 };
 
@@ -212,7 +212,7 @@ export function SideMenu({
     isSidebarOpen,
 }: Readonly<{
     menu: MenuTree[];
-    role: 'super_admin' | 'administrator' | 'work_provider';
+    role: 'super_admin' | 'administrator' | 'school_admin';
     isSidebarOpen: boolean;
 }>) {
     return (

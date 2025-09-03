@@ -12,7 +12,7 @@ export function getJobApplicationEmailTemplate() {
     <div style="background-color: #fff;">
       <div style="background-color:  #3496aa ; display: flex; padding: 20px 0; align-items: center; justify-content: center;">
           <h1 style="color: #FFF; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 30px; font-weight: bold;">
-          Shega Jobs
+          Herani Sunday School Management System
         </h1>
       </div>
 
@@ -34,7 +34,7 @@ export function getJobApplicationEmailTemplate() {
          </p>
                                  
           <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 0;">
-             In the meantime, you can log in to your <b>Shega Jobs</b> account to check the status of your application or explore more opportunities.      
+             In the meantime, you can log in to your <b>Herani Sunday School Management System</b> account to check the status of your application or explore more opportunities.      
          </p>
          
            <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 5px 0;">
@@ -46,13 +46,13 @@ export function getJobApplicationEmailTemplate() {
 
       <div style="padding: 25px 35px;">
         <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 14px; margin: 0;">
-          Best regards,<br>Shega Jobs Team
+          Best regards,<br>Herani Sunday School Management System Team
         </p>
       </div>
     </div>
 
     <p style="color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 12px; margin: 24px 0; padding: 0 20px;">
-      This message was produced and distributed by Shega Jobs. © 2025, Shega Jobs. All rights reserved.</p>
+      This message was produced and distributed by Herani Sunday School Management System. © 2025, Herani Sunday School Management System. All rights reserved.</p>
   </div>
 </body>
 </html>`.trim();

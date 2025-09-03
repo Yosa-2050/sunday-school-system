@@ -28,8 +28,8 @@ export default function PageWrapper({
         if (role === 'administrator') {
             window.location.href = '/admin/dashboard';
         }
-        if (role === 'work_provider') {
-            window.location.href = '/work-provider/jobs';
+        if (role === 'school_admin') {
+            window.location.href = '/school_admin/dashboard';
         }
     }
     return (
@@ -101,7 +101,8 @@ export default function PageWrapper({
                     c="gray"
                     className="absolute bottom-4 text-center"
                 >
-                    {new Date().getFullYear()} Shega Jobs. {t('rightsReserved')}
+                    {new Date().getFullYear()} Herani Sunday School Management
+                    System. {t('rightsReserved')}
                 </Text>
             </Flex>
         </Flex>

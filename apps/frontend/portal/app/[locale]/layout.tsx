@@ -23,7 +23,7 @@ const inter = Roboto({
 });
 
 export const metadata: Metadata = {
-    title: 'Shega Jobs',
+    title: 'Herani Sunday School Management System',
     description:
         'Empowering Job Seekers and connecting them to the best of the best',
 };
@@ -42,7 +42,7 @@ export default async function RootLayout({
 
     const role = cookieValues.get('role')?.value as
         | 'administrator'
-        | 'work_provider';
+        | 'school_admin';
 
     const colorArray = generateColors(defaultTheme);
     const styles: Record<string, string> = {

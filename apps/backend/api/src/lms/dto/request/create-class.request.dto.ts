@@ -12,6 +12,10 @@ export class ClassRequestDto {
     description: string;
 
     @ApiProperty()
+    @IsString()
+    rootId: string;
+
+    @ApiProperty()
     @IsArray()
     @IsOptional()
     section?: string[];

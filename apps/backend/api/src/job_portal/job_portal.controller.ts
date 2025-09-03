@@ -46,7 +46,7 @@ export class JobPortalController {
         private readonly documentService: DocumentService,
     ) {}
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Post()
     create(@Request() req, @Body() dto: CreateJobPortalDto) {
         return this.jobPortalService.create(
@@ -96,7 +96,7 @@ export class JobPortalController {
         this.documentService.generateCsv(data, res, 'jobList');
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Post('byProvider')
     getAllPostedJobsByProvider(@Request() req, @Body() dto: { q: string }) {
         return this.jobPortalService.getJobsByStatusAndByOrgPaginated(
@@ -107,7 +107,7 @@ export class JobPortalController {
         );
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Post('byProvider/draft')
     getAllDraftJobsByProvider(@Request() req, @Body() dto: { q: string }) {
         return this.jobPortalService.getJobsByStatusAndByOrgPaginated(
@@ -132,11 +132,11 @@ export class JobPortalController {
         return this.jobPortalService.programApproval(
             id,
             ApprovalType.Declined,
-            dto?.note,
+            dto?.text,
         );
     }
 
-    @Roles(UserRoleType.WorkProvider, UserRoleType.Mentor)
+    @Roles(UserRoleType.Mentor)
     @Post('applications/:programId')
     findAppliedPrograms(
         @Request() req,
@@ -146,13 +146,13 @@ export class JobPortalController {
         return this.jobPortalService.applicationsByProgramId(id, request);
     }
 
-    @Roles(UserRoleType.WorkProvider, UserRoleType.Mentor)
+    @Roles(UserRoleType.Mentor)
     @Get('applicant/:applicantId')
     getApplicantDetails(@Param('applicantId') applicantId: string) {
         return this.jobService.getDetails(applicantId);
     }
 
-    @Roles(UserRoleType.WorkProvider, UserRoleType.Mentor)
+    @Roles(UserRoleType.Mentor)
     @Post('shortList/:programId')
     shortlistApplicants(
         @Request() req,
@@ -167,7 +167,7 @@ export class JobPortalController {
         );
     }
 
-    @Roles(UserRoleType.WorkProvider, UserRoleType.Mentor)
+    @Roles(UserRoleType.Mentor)
     @Patch('rejectNotShortList/:programId')
     rejectNotShortlisted(
         @Request() req,
@@ -180,7 +180,7 @@ export class JobPortalController {
         );
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Patch('closeProgram/:id')
     closeProgram(@Param('id', new ParseUUIDPipe()) id: string, @Request() req) {
         return this.jobPortalService.openCloseProgram(
@@ -191,7 +191,7 @@ export class JobPortalController {
         );
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Patch('openProgram/:id')
     openProgram(@Param('id', new ParseUUIDPipe()) id: string, @Request() req) {
         return this.jobPortalService.openCloseProgram(
@@ -207,7 +207,7 @@ export class JobPortalController {
         return this.jobPortalService.findOneByJobId(id);
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Patch(':id')
     update(
         @Param('id') id: string,
@@ -221,7 +221,7 @@ export class JobPortalController {
         );
     }
 
-    @Roles(UserRoleType.WorkProvider)
+    @Roles()
     @Delete(':id')
     deletePostedJob(@Param('id') id: string, @Request() req) {
         return this.jobPortalService.remove(

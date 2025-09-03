@@ -19,8 +19,8 @@
             "confirmPasswordPlaceholder": "Confirm Your New Password"
         },
         "pageWrapper": {
-            "shegaobs": "Shega Jobs",
-            "rightsReserved": "© All rights reserved by Shega Jobs"
+            "shegaobs": "Herani Sunday School Management System",
+            "rightsReserved": "© All rights reserved by Herani Sunday School Management System"
         },
         "login": {
             "title": "Login",
@@ -36,7 +36,7 @@
             "loginFailed": "Username or Password is incorrect",
             "loginSuccess": "Login Successful",
             "rememberMe": "Remember me",
-            "rightsReserved": "© All rights reserved by Shega Jobs"
+            "rightsReserved": "© All rights reserved by Herani Sunday School Management System"
         },
         "forgotPassword": {
             "title": "Forgot your password?",
@@ -51,7 +51,7 @@
             "newPassword": "New Password",
             "confirmPassword": "Confirm New Password",
             "proceedBtn": "Proceed",
-            "rightsReserved": "© All rights reserved by Shega Jobs",
+            "rightsReserved": "© All rights reserved by Herani Sunday School Management System",
             "agreeToTermsAndPrivacyConditions": "I agree to the {terms} and {privacy}.",
             "terms": "Terms & Conditions",
             "privacy": "Privacy Policy."

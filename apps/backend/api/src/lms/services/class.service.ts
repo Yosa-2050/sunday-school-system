@@ -1,61 +1,55 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ClassRequestDto } from '../dto/request/create-class.request.dto';
+import { CalendarYear } from '../entities/calendar-year.entity';
 import { Classes } from '../entities/classes.entity';
+import { Program } from '../entities/program.entity';
+import { RootClass } from '../entities/root-class.entity';
 
 @Injectable()
 export class ClassService {
     constructor(
         @InjectRepository(Classes) private classRepo: Repository<Classes>,
+        @InjectRepository(RootClass)
+        private rootClassRepo: Repository<RootClass>,
+        @InjectRepository(CalendarYear)
+        private calendarYearRepo: Repository<CalendarYear>,
+        @InjectRepository(Program) private programRepo: Repository<Program>,
     ) {}
 
-    async create(dto: ClassRequestDto, isRoot: boolean, parentId?: string) {
-        if (isRoot) {
-            const existingClass = await this.classRepo.findOneBy({
-                name: dto.name,
-                isRoot: true,
-            });
-            if (existingClass) {
-                throw new BadRequestException(
-                    `Classes exists with the name ${dto.name}`,
-                );
-            }
-            return this.classRepo.save(
-                this.classRepo.create({
-                    ...dto,
-                    isRoot: true,
-                    hasSection: false,
-                    isSection: false,
-                }),
-            );
+    async create(dto: ClassRequestDto, yearId: string) {
+        const rootClass = await this.rootClassRepo.findOneBy({
+            id: dto.rootId,
+        });
+        if (!rootClass) {
+            throw new EntityNotFoundException('Root class');
         }
-        if (!parentId) {
-            throw new BadRequestException('Root class not provided');
+
+        const calendarYear = await this.calendarYearRepo.findOneBy({
+            id: yearId,
+        });
+        if (!calendarYear) {
+            throw new EntityNotFoundException('Calendar year');
         }
         const existingClass = await this.classRepo.findOneBy({
-            name: dto.name,
-            parent: { id: parentId },
+            root: { id: dto.rootId },
         });
         if (existingClass) {
-            throw new BadRequestException(
-                `Classes exists with the same name ${dto.name}`,
-            );
+            throw new EntityAlreadyExistsException('Root class added');
         }
-        const parentClass = await this.findOne(parentId);
-        if (!parentClass.isRoot) {
-            throw new BadRequestException('Parent class should be root');
-        }
+
         const classes = this.classRepo.create({
             ...dto,
-            isRoot: false,
             hasSection: false,
             isSection: false,
         });
-        classes.parent = parentClass;
+        classes.root = rootClass;
+        classes.calendarYear = calendarYear;
         if (dto.section) {
             classes.sections = [];
             for (let index = 0; index < dto.section.length; index++) {
@@ -63,7 +57,6 @@ export class ClassService {
                 (await classes.sections).push(
                     this.classRepo.create({
                         name: element,
-                        isRoot: false,
                         hasSection: false,
                         isSection: true,
                     }),
@@ -73,12 +66,54 @@ export class ClassService {
         return this.classRepo.save(classes);
     }
 
-    findAll(isRoot: boolean) {
-        return this.classRepo.findBy({ isRoot });
+    async createRoot(name: string, programId: string) {
+        const program = await this.programRepo.findOneBy({ id: programId });
+        if (!program) {
+            throw new EntityNotFoundException(typeof Program);
+        }
+        const existingClass = await this.rootClassRepo.findOneBy({
+            name: name,
+            program: { id: programId },
+        });
+        if (existingClass) {
+            throw new EntityAlreadyExistsException(typeof RootClass);
+        }
+        const classes = this.rootClassRepo.create({ name });
+        classes.program = program;
+        return this.rootClassRepo.save(classes);
     }
 
-    async findOne(id: string) {
-        const _class = await this.classRepo.findOneBy({ id });
+    findAll(yearId: string) {
+        return this.classRepo.find({
+            where: { calendarYear: { id: yearId }, isSection: false },
+            relations: ['sections'],
+        });
+    }
+
+    findAllRootClass(programId: string) {
+        return this.rootClassRepo.findBy({ program: { id: programId } });
+    }
+
+    async isClassValid(id: string, yearId: string) {
+        const validClass = await this.findOne(id, yearId);
+        if (validClass.isActive && !validClass.hasSection) {
+            return validClass;
+        }
+        return null;
+    }
+
+    async findOne(id: string, yearId: string) {
+        const _class = await this.classRepo.findOne({
+            where: [
+                { id, calendarYear: { id: yearId }, isSection: false },
+                {
+                    id,
+                    parent: { calendarYear: { id: yearId } },
+                    isSection: true,
+                },
+            ],
+        });
+
         if (!_class) {
             throw new EntityNotFoundException(typeof Classes);
         }

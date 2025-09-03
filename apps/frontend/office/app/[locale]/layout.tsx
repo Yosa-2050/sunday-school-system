@@ -17,7 +17,7 @@ import { getUserAction } from './_api/get-user-action';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-    title: 'Shega Jobs',
+    title: 'Herani Sunday School Management System',
     description:
         'Empowering Job Seekers and connecting them to the best of the best',
 };
@@ -36,7 +36,7 @@ export default async function RootLayout({
 
     const role = cookieValues.get('role')?.value as
         | 'administrator'
-        | 'work_provider';
+        | 'school_admin';
 
     logger.log({ user, role });
 

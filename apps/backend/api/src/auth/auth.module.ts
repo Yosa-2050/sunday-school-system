@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { PasswordService } from '@shega/Utilities/password.service';
 import { JobPortalModule } from '@shega/job_portal/job_portal.module';
+import { LmsModule } from '@shega/lms/lms.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { OrganizationModule } from '@shega/organization/organization.module';
 import { UsersModule } from '@shega/users/users.module';
@@ -21,6 +22,7 @@ import { LocalStrategy } from './local.strategy';
         NotificationModule,
         OrganizationModule,
         JobPortalModule,
+        LmsModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],

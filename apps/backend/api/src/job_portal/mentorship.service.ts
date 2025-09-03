@@ -76,10 +76,15 @@ export class MentorshipService {
 
         const user = await this.profileService.createNewUserProfileQDE(
             dto.email,
+            LoginBy.EMAIL,
             role,
             dto.firstName,
             dto.middleName,
             dto.lastName,
+            '',
+            null,
+            '',
+            '',
             false,
             pwdGenerated,
             true,
