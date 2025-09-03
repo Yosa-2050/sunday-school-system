@@ -309,13 +309,13 @@ export default function CreateRelationModal({
                                 onClick={handleSubmit}
                                 loading={createRelationshipMutation.isPending}
                                 disabled={
-                                    !formData.type ||
-                                    (!selectedProfile &&
-                                        !(
-                                            formData.firstName &&
-                                            formData.lastName &&
-                                            formData.phoneNumber
-                                        ))
+                                    !(
+                                        formData.type &&
+                                        (selectedProfile ||
+                                            (formData.firstName &&
+                                                formData.lastName &&
+                                                formData.phoneNumber))
+                                    )
                                 }
                             >
                                 Add Emergency Contact
