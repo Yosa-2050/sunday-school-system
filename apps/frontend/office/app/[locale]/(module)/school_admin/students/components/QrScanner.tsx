@@ -227,20 +227,20 @@ export default function QRScanner({
 
                     <Group justify="center" mt="md">
                         <Badge
-                            // biome-ignore lint/nursery/noNestedTernary: <explanation>
                             color={
                                 scanning
                                     ? 'blue'
-                                    : cameraError
+                                    : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                      cameraError
                                       ? 'red'
                                       : 'green'
                             }
                             variant="light"
                         >
-                            {/* biome-ignore lint/nursery/noNestedTernary: <explanation> */}
                             {cameraError
                                 ? 'Camera Error'
-                                : scanning
+                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
+                                  scanning
                                   ? 'Processing...'
                                   : 'Ready to scan'}
                         </Badge>
