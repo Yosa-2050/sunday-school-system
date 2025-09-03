@@ -16,7 +16,7 @@ import {
     Title,
 } from '@mantine/core';
 import { IconEdit } from '@tabler/icons-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     fetchCities,
     fetchCountries,
@@ -26,7 +26,6 @@ import {
     getAddressById,
     getCountryById,
 } from 'app/[locale]/_api/organizations/get-addresses';
-import { updateLocation } from 'app/[locale]/_api/organizations/updateOrganization';
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -126,20 +125,21 @@ export const LocationSection = ({
         enabled: !!selectedRegion,
     });
 
-    const mutation = useMutation({
-        mutationFn: (data: LocationFormData) => updateLocation(id ?? '', data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['organization_id', id],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['can_organization_submit'],
-            });
-            setIsEditingLocation(false);
-        },
-    });
+    // const mutation = useMutation({
+    //     //TODO: fix me
+    //     mutationFn: (data: LocationFormData) => updateLocation(id ?? '', data),
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries({
+    //             queryKey: ['organization_id', id],
+    //         });
+    //         queryClient.invalidateQueries({
+    //             queryKey: ['can_organization_submit'],
+    //         });
+    //         setIsEditingLocation(false);
+    //     },
+    // });
 
-    const onSubmit = (data: LocationFormData) => mutation.mutate(data);
+    //const onSubmit = (data: LocationFormData) => mutation.mutate(data);
 
     const fields = [
         {
@@ -204,8 +204,8 @@ export const LocationSection = ({
                                 </Button>
                                 <Button
                                     size="xs"
-                                    loading={mutation.isPending}
-                                    onClick={handleSubmit(onSubmit)}
+                                    // loading={mutation.isPending}
+                                    // onClick={handleSubmit(onSubmit)}
                                 >
                                     Save Changes
                                 </Button>
