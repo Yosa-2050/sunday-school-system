@@ -24,6 +24,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import type { GetClass } from '../classes/create/components/schema/fetchClassesDetail';
+import QRScanner from '../students/components/QrScanner';
 import type { StudentResponse } from '../students/schemas/type';
 import { saveAttendanceApi } from './schemas/api';
 import {
@@ -211,7 +212,16 @@ export default function AttendanceCreate({
             </Table.Tr>
         );
     });
+    const [attendanceDataId, setAttendanceDataId] = useState(
+        'current-attendance-session',
+    );
+    const [classId, setClassId] = useState('your-class-id');
+    const [refreshCount, setRefreshCount] = useState(0);
 
+    const handleAttendanceRecorded = () => {
+        // Refresh attendance data or update UI
+        setRefreshCount((prev) => prev + 1);
+    };
     return (
         <Box pt="md">
             <Group mb="md" align="flex-end">
@@ -285,6 +295,13 @@ export default function AttendanceCreate({
                 >
                     Load Students
                 </Button>
+
+                {/* QR Scanner */}
+                <QRScanner
+                    attendanceDataId={attendanceDataId}
+                    classId={classId}
+                    onAttendanceRecorded={handleAttendanceRecorded}
+                />
             </Group>
 
             {/* Student Table */}
