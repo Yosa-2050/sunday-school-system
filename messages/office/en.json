@@ -1,8 +1,4 @@
 {
-    "jobsPage": {
-        "createJob": "Create Job",
-        "jobTitleLabel": "Job Title"
-    },
     "users": {
         "emailLabel": "Email",
         "emailPlaceholder": "Enter email address",
@@ -31,7 +27,9 @@
         "categories": "Categories"
     },
     "header": {
-        "title": "Admin Dashboard"
+        "title": "Admin Dashboard",
+        "logout": "Logout",
+        "profile": "Profile"
     },
     "navbar": {
         "header": "Job Portal Admin",
@@ -43,7 +41,7 @@
     },
     "main": {
         "welcome": "Welcome to the Admin Dashboard",
-        "description": "Manage job listings, applicants, and more."
+        "description": "Manage programs"
     },
     "auth": {
         "OTP": {
@@ -240,59 +238,6 @@
             "companyNameRequired": "Organization name is required"
         }
     },
-    "draftListPage": {
-        "title": "Draft Job Listings",
-        "searchPlaceholder": "Search by Org Name or Job Title"
-    },
-    "jobsListPage": {
-        "title": "Job Listings",
-        "postJob": "Post a Job",
-        "searchPlaceholder": "Search by Org Name or Job Title",
-        "selectCategory": "Select a category",
-        "allCategories": "All Categories",
-        "noJobsMessage": "You haven’t any posted jobs yet.",
-        "exportCSV": "Export to CSV",
-        "tableHeaders": {
-            "title": "Title",
-            "employmentType": "Employment Type",
-            "salaryRange": "Salary Range",
-            "location": "Location",
-            "status": "Status",
-            "actions": "Actions"
-        },
-        "actions": {
-            "edit": "Edit",
-            "close": "Close",
-            "viewApplications": "View Applications",
-            "reactivate": "Reactivate"
-        },
-        "sampleJobs": [
-            {
-                "id": "1",
-                "title": "Frontend Developer",
-                "description": "Develop and maintain web applications.",
-                "employmentType": "Full-time",
-                "category": "Software Development",
-                "company": "Herani Tech",
-                "salaryRange": "$50k - $70k",
-                "location": "Remote",
-                "status": "Waiting Approval",
-                "postedAt": "2024-02-15T12:00:00Z"
-            },
-            {
-                "id": "2",
-                "title": "Project Manager",
-                "description": "Manage and oversee projects from start to finish.",
-                "employmentType": "Contract",
-                "category": "Management",
-                "company": "Meklit Solutions",
-                "salaryRange": "$60k - $90k",
-                "location": "New York",
-                "status": "Approved",
-                "postedAt": "2024-01-20T09:30:00Z"
-            }
-        ]
-    },
     "locationsPage": {
         "title": "Locations List",
         "addRegion": "Add Region",
@@ -311,14 +256,6 @@
         "regionAdded": "Region added successfully",
         "regionNotAdded": "Something went wrong while adding region",
         "searchPlaceholder": "Search Location"
-    },
-    "skillsPage": {
-        "title": "Skills List",
-        "addSkill": "Add Skill",
-        "skillName": "Skill Name",
-        "submit": "Submit",
-        "isActive": "Is Active",
-        "actions": "Actions"
     },
     "categoriesPage": {
         "title": "Categories List",
@@ -355,41 +292,6 @@
             "edit": "Edit",
             "delete": "Delete",
             "approvalStatus": "Approval Status"
-        }
-    },
-    "createMentors": {
-        "createUserTitle": "Create Mentor",
-        "roleLabel": "Role",
-        "rolePlaceholder": "Select your role",
-        "roles": {
-            "jobSeeker": "Applicants",
-            "workProvider": "Job Providers",
-            "administrator": "Administrator"
-        },
-        "firstNameLabel": "First Name",
-        "firstNamePlaceholder": "Enter first name",
-        "middleNameLabel": "Father's Name",
-        "middleNamePlaceholder": "Enter father’s name",
-        "lastNameLabel": "Grandfather's Name",
-        "lastNamePlaceholder": "Enter grandfather’s name",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter email address",
-        "companyNameLabel": "Organization Name",
-        "companyNamePlaceholder": "Enter organization name",
-        "createUserButton": "Create Organization",
-        "notifications": {
-            "successTitle": "Success",
-            "successMessage": "Mentor Created Successfully",
-            "errorTitle": "Error",
-            "errorMessage": "Error creating Mentor"
-        },
-        "validation": {
-            "firstNameRequired": "First name is required",
-            "middleNameRequired": "Father name is required",
-            "lastNameRequired": "Grandfather name is required",
-            "emailRequired": "Email is required",
-            "invalidEmail": "Invalid Email address",
-            "companyNameRequired": "Organization name is required"
         }
     },
     "notification": {

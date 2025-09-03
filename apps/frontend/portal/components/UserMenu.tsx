@@ -11,7 +11,7 @@ export function UserMenu() {
     const router = useRouter();
     const { user, setUser } = useAuth();
     const isAuthenticated = !!user;
-    const t = useTranslations('jobPortal');
+    const t = useTranslations('header');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     if (!isAuthenticated) {

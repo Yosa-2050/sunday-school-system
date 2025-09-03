@@ -8,7 +8,7 @@ import { deleteCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
 
 export default function UserProfile() {
-    const t = useTranslations('jobPortal');
+    const t = useTranslations('header');
     const { user, setUser } = useAuth();
     const [opened, { toggle }] = useDisclosure(false);
     const router = useRouter();
