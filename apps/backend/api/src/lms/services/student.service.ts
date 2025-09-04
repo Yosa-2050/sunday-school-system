@@ -140,4 +140,12 @@ export class StudentService {
         const student = await this.studentRepo.findOneBy({ id });
         return student;
     }
+
+    async findStudentsByClassId(id: string, classId: string) {
+        const student = await this.studentRepo.findOneBy({
+            id,
+            class: { id: classId },
+        });
+        return student;
+    }
 }

@@ -12,7 +12,10 @@ import { CurrentUser } from 'src/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AttendanceService } from './attendance.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateAttendanceDto } from './dto/request/create-attendance.dto';
+import {
+    CreateAttendanceDto,
+    StudentAttendance,
+} from './dto/request/create-attendance.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetAttendanceRequestDto } from './dto/request/get-attendance.request.dto';
 
@@ -30,6 +33,19 @@ export class AttendanceController {
     ) {
         return this.attendanceService.create(
             createAttendanceDto,
+            classId,
+            CurrentUser.getActiveYear(user),
+        );
+    }
+
+    @Post('individual/:classId')
+    createIndividual(
+        @Body() dto: StudentAttendance,
+        @Param('classId', new ParseUUIDPipe()) classId: string,
+        @Request() user,
+    ) {
+        return this.attendanceService.createIndividual(
+            dto,
             classId,
             CurrentUser.getActiveYear(user),
         );
