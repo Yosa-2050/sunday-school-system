@@ -45,7 +45,7 @@ export class ClassService {
 
         const classes = this.classRepo.create({
             ...dto,
-            hasSection: false,
+            hasSection: dto.section?.length > 0,
             isSection: false,
         });
         classes.root = rootClass;

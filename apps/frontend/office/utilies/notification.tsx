@@ -1,12 +1,12 @@
 import { notifications } from '@mantine/notifications';
-import { IconCheck } from '@tabler/icons-react';
+import { IconCheck, IconX } from '@tabler/icons-react';
 
 export const showError = (message: string) => {
     notifications.show({
-        title: 'Success',
-        message: 'Category updated successfully',
-        color: 'green',
-        icon: <IconCheck size={16} />,
+        title: 'Failed',
+        message: message,
+        color: 'red',
+        icon: <IconX size={16} />,
     });
 };
 
