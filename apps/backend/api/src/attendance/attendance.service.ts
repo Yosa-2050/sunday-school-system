@@ -1,5 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DateService } from '@shega/Utilities/date.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponseDto } from '@shega/lms/dto/response/student.response.dto';
@@ -10,7 +14,10 @@ import { StudentService } from '@shega/lms/services/student.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Between, In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateAttendanceDto } from './dto/request/create-attendance.dto';
+import {
+    CreateAttendanceDto,
+    StudentAttendance,
+} from './dto/request/create-attendance.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetAttendanceRequestDto } from './dto/request/get-attendance.request.dto';
 import { AttendanceStudentResponse } from './dto/response/attendance.response.dto';
@@ -22,14 +29,65 @@ import { AttendanceStatus } from './enums/attendance-status.enum';
 @Injectable()
 export class AttendanceService {
     constructor(
-        @InjectRepository(Attendance) private repo: Repository<Attendance>,
+        @InjectRepository(Attendance)
+        private attendanceRepo: Repository<Attendance>,
         @InjectRepository(AttendanceInformation)
         private attendanceDataRepo: Repository<AttendanceInformation>,
         @InjectRepository(Permission)
         private permissionRepo: Repository<Permission>,
         private classService: ClassService,
         private studentService: StudentService,
+        private dateService: DateService,
     ) {}
+
+    async createIndividual(
+        dto: StudentAttendance,
+        classId: string,
+        activeCalendarYear: string,
+    ) {
+        const student = await this.studentService.findStudentsByClassId(
+            dto.studentId,
+            classId,
+        );
+        if (!student) {
+            throw new EntityNotFoundException('Student');
+        }
+        const currentDate = this.dateService.getCurrentDate();
+        const startOfDay = new Date(currentDate);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(currentDate);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        let existingAttendance = await this.attendanceDataRepo.findOneBy({
+            class: { id: classId },
+            date: Between(startOfDay, endOfDay), // Find between start and end of day
+        });
+        const classes = await this.classService.isClassValid(
+            classId,
+            activeCalendarYear,
+        );
+        if (!existingAttendance) {
+            const attendanceInfo = this.attendanceDataRepo.create();
+            attendanceInfo.date = currentDate;
+            attendanceInfo.class = classes;
+            existingAttendance =
+                await this.attendanceDataRepo.save(attendanceInfo);
+        }
+
+        const existingAtt = await this.attendanceRepo.findOneBy({
+            student: { id: student.id },
+            attendanceData: { id: existingAttendance.id },
+        });
+        if (existingAtt) {
+            throw new EntityAlreadyExistsException('Attendance');
+        }
+        const attendance = this.attendanceRepo.create();
+        attendance.attendanceData = existingAttendance;
+        attendance.student = student;
+        attendance.status = dto.status;
+        return this.attendanceRepo.save(attendance);
+    }
 
     async create(
         dto: CreateAttendanceDto,
@@ -73,7 +131,7 @@ export class AttendanceService {
                                 ? AttendanceStatus.Permission
                                 : AttendanceStatus.Absent;
                         }
-                        return this.repo.create({
+                        return this.attendanceRepo.create({
                             student: std,
                             status: attDto.status,
                         });
@@ -95,7 +153,7 @@ export class AttendanceService {
     }
 
     findAll() {
-        return this.repo.find();
+        return this.attendanceRepo.find();
     }
 
     async findDates(classId: string, activeYear: string) {
@@ -135,7 +193,7 @@ export class AttendanceService {
                 },
             });
             const uniqueInfoIds = attendanceInfo.map((item) => item.id);
-            const allAttendances = await this.repo.findBy({
+            const allAttendances = await this.attendanceRepo.findBy({
                 attendanceData: { id: In(uniqueInfoIds) },
             });
 

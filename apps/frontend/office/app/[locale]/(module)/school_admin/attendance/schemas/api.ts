@@ -1,8 +1,12 @@
 import { fetcher } from '@shega/shared';
-import type { SuccessResponse } from 'app/[locale]/_api/admin/fetch-programs';
+import type {
+    IdSuccessResponse,
+    SuccessResponse,
+} from 'app/[locale]/_api/admin/fetch-programs';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponse } from '../../students/schemas/type';
 import type {
+    AttendanceRecord,
     AttendanceRequest,
     AttendanceViewRequest,
     AttendanceViewResponse,
@@ -27,6 +31,24 @@ export const saveAttendanceApi = async (
 ): Promise<SuccessResponse> => {
     const response: SuccessResponse = await fetcher(
         `/attendance/create/${classId}`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(attendanceData),
+        },
+    );
+
+    return response;
+};
+
+export const saveIndividualAttendanceApi = async (
+    classId: string,
+    attendanceData: AttendanceRecord,
+): Promise<IdSuccessResponse> => {
+    const response: IdSuccessResponse = await fetcher(
+        `/attendance/individual/${classId}`,
         {
             method: 'POST',
             headers: {
