@@ -297,11 +297,7 @@ export default function AttendanceCreate({
                 </Button>
 
                 {/* QR Scanner */}
-                <QRScanner
-                    attendanceDataId={attendanceDataId}
-                    classId={classId}
-                    onAttendanceRecorded={handleAttendanceRecorded}
-                />
+                <QRScanner onAttendanceRecorded={handleAttendanceRecorded} />
             </Group>
 
             {/* Student Table */}

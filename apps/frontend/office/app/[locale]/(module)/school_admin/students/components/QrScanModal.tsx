@@ -2,7 +2,7 @@
 'use client';
 
 import { Stack, Text } from '@mantine/core';
-import { Scanner } from '@yudiel/react-qr-scanner';
+import { type IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
 import { useState } from 'react';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AttendanceStatus } from '../../attendance/schemas/types';
@@ -32,14 +32,16 @@ export default function QRScannerModal({
 }: QRScannerModalProps) {
     const [isProcessing, setIsProcessing] = useState(false);
 
-    const handleScan = (results: ScanResult[]) => {
+    // Use the correct type from the library: IDetectedBarcode[]
+    const handleScan = (detectedCodes: IDetectedBarcode[]) => {
         try {
-            if (isProcessing || !results || results.length === 0) {
+            if (isProcessing || !detectedCodes || detectedCodes.length === 0) {
                 return;
             }
 
-            const firstResult = results[0];
+            const firstResult = detectedCodes[0];
             if (firstResult) {
+                // The library provides the raw value directly, no need to parse rawValue property
                 const qrData: QRCodeData = JSON.parse(firstResult.rawValue);
 
                 if (qrData.studentId) {
