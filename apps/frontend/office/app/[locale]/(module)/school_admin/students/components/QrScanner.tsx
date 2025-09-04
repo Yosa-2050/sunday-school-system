@@ -1,39 +1,58 @@
-// components/QRScanner.tsx (with react-qr-reader, no ref)
 'use client';
 
 import {
-    Badge,
+    ActionIcon,
     Button,
     Group,
-    Loader,
     Modal,
     Paper,
+    Radio,
+    Select,
+    Stack,
     Text,
 } from '@mantine/core';
-import { IconCamera, IconScan, IconX } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
+import { IconArrowLeft, IconScan } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { QrReader } from 'react-qr-reader';
 import { showError, showSuccess } from 'utilies/notification';
+import { saveIndividualAttendanceApi } from '../../attendance/schemas/api';
+import { AttendanceStatus } from '../../attendance/schemas/types';
+import { fetchClassesApi } from '../../classes/create/components/schema/fetchClassesDetail';
+import QRScannerModal from './QrScanModal';
 
 interface QRScannerProps {
-    attendanceDataId: string;
-    classId: string;
     onAttendanceRecorded: () => void;
 }
 
-export default function QRScanner({
-    attendanceDataId,
-    classId,
-    onAttendanceRecorded,
-}: QRScannerProps) {
-    const [opened, setOpened] = useState(false);
-    const [scanning, setScanning] = useState(false);
-    const [lastScanned, setLastScanned] = useState<string | null>(null);
-    const [cameraError, setCameraError] = useState<string | null>(null);
+interface Class {
+    id: string;
+    name: string;
+}
 
-    const recordAttendanceMutation = useMutation({
-        mutationFn: async (studentId: string) => {
+export default function QRScanner({ onAttendanceRecorded }: QRScannerProps) {
+    const [opened, setOpened] = useState(false);
+    const [selectedClass, setSelectedClass] = useState<string | null>(null);
+    const [attendanceStatus, setAttendanceStatus] = useState<AttendanceStatus>(
+        AttendanceStatus.PRESENT,
+    );
+
+    // Fetch classes for selection
+    const { data: classes = [], isLoading: loadingClasses } = useQuery<Class[]>(
+        {
+            queryKey: ['classes'],
+            queryFn: fetchClassesApi,
+        },
+    );
+
+    const handleStudentScanned = async (studentId: string) => {
+        try {
+            if (!selectedClass) {
+                return;
+            }
+            const reponse = saveIndividualAttendanceApi(selectedClass, {
+                studentId,
+                status: attendanceStatus,
+            });
             const response = await fetch('/api/attendance/record', {
                 method: 'POST',
                 headers: {
@@ -41,84 +60,36 @@ export default function QRScanner({
                 },
                 body: JSON.stringify({
                     studentId,
-                    attendanceDataId,
-                    classId,
+                    classId: selectedClass,
+                    status: attendanceStatus,
                     timestamp: new Date().toISOString(),
                 }),
             });
 
             if (!response.ok) {
-                throw new Error('Failed to record attendance');
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.error || 'Failed to record attendance',
+                );
             }
 
-            return response.json();
-        },
-        onSuccess: () => {
-            showSuccess('Attendance recorded successfully!');
+            showSuccess(`Attendance recorded for student ${studentId}`);
             onAttendanceRecorded();
-            setScanning(false);
-        },
-        onError: (error) => {
+        } catch (error) {
             showError(
                 error instanceof Error
                     ? error.message
                     : 'Failed to record attendance',
             );
-            setScanning(false);
-        },
-    });
-
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const handleScan = (result: any) => {
-        if (result && !scanning) {
-            const studentId = result.text;
-
-            // Prevent duplicate scans within 2 seconds
-            if (
-                lastScanned === studentId &&
-                Date.now() -
-                    Number.parseInt(
-                        localStorage.getItem('lastScanTime') || '0',
-                    ) <
-                    2000
-            ) {
-                return;
-            }
-
-            setScanning(true);
-            setLastScanned(studentId);
-            localStorage.setItem('lastScanTime', Date.now().toString());
-
-            recordAttendanceMutation.mutate(studentId);
         }
     };
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const handleError = (error: any) => {
-        //console.error('QR Scanner error:', error);
-        setCameraError(error.message);
-
-        if (error.name === 'NotAllowedError') {
-            showError('Camera permission denied. Please allow camera access.');
-        } else if (error.name === 'NotFoundError') {
-            showError('No camera found on this device.');
-        } else {
-            showError(`Camera error: ${error.message}`);
-        }
-    };
-
-    const openScanner = () => {
-        setOpened(true);
-        setScanning(false);
-        setLastScanned(null);
-        setCameraError(null);
-    };
-
+    const openScanner = () => setOpened(true);
     const closeScanner = () => {
         setOpened(false);
-        setScanning(false);
-        setCameraError(null);
+        setSelectedClass(null);
     };
+    const resetScanner = () => setSelectedClass(null);
 
     return (
         <>
@@ -135,126 +106,84 @@ export default function QRScanner({
             <Modal
                 opened={opened}
                 onClose={closeScanner}
-                title="Scan Student QR Code"
+                title={
+                    <Group>
+                        {selectedClass && (
+                            <ActionIcon
+                                variant="subtle"
+                                onClick={resetScanner}
+                                size="sm"
+                            >
+                                <IconArrowLeft size={16} />
+                            </ActionIcon>
+                        )}
+                        <span>
+                            {selectedClass
+                                ? `Scanning - ${classes.find((c) => c.id === selectedClass)?.name}`
+                                : 'Setup Attendance Scanner'}
+                        </span>
+                    </Group>
+                }
                 size="lg"
                 centered
+                closeOnClickOutside={false}
             >
                 <Paper p="md" withBorder>
-                    <Text size="sm" c="dimmed" mb="md" ta="center">
-                        Position the QR code in front of the camera
-                    </Text>
-
-                    {cameraError ? (
-                        <div
-                            style={{
-                                height: '300px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                background: '#f8f9fa',
-                                borderRadius: '8px',
-                            }}
-                        >
-                            <IconCamera size={48} color="#868e96" />
-                            <Text ta="center" c="dimmed" mt="md">
-                                {cameraError}
+                    {/* biome-ignore lint/style/noNegationElse: <explanation> */}
+                    {!selectedClass ? (
+                        // Class selection step
+                        <Stack>
+                            <Text size="sm" c="dimmed" mb="md">
+                                Configure attendance settings before scanning
                             </Text>
-                            <Button
-                                variant="light"
-                                mt="md"
-                                onClick={openScanner}
+
+                            <Select
+                                label="Select Class"
+                                placeholder="Choose a class"
+                                data={classes.map((cls) => ({
+                                    value: cls.id,
+                                    label: cls.name,
+                                }))}
+                                value={selectedClass}
+                                onChange={setSelectedClass}
+                                disabled={loadingClasses}
+                                required
+                            />
+
+                            <Radio.Group
+                                label="Default Attendance Status"
+                                value={attendanceStatus}
+                                onChange={(value) =>
+                                    setAttendanceStatus(
+                                        value as
+                                            | AttendanceStatus.PRESENT
+                                            | AttendanceStatus.LATE,
+                                    )
+                                }
+                                description="You can change this for individual students later"
                             >
-                                Try Again
+                                <Group mt="xs">
+                                    <Radio value="PRESENT" label="Present" />
+                                    <Radio value="LATE" label="Late" />
+                                </Group>
+                            </Radio.Group>
+
+                            <Button
+                                onClick={() => setSelectedClass(selectedClass)}
+                                disabled={!selectedClass}
+                                fullWidth
+                                mt="md"
+                            >
+                                Start Scanning
                             </Button>
-                        </div>
+                        </Stack>
                     ) : (
-                        <div
-                            style={{
-                                position: 'relative',
-                                width: '100%',
-                                height: '300px',
-                                overflow: 'hidden',
-                            }}
-                        >
-                            <QrReader
-                                onResult={handleScan}
-                                //onError={handleError}
-                                constraints={{ facingMode: 'environment' }}
-                                scanDelay={300}
-                                //style={{ width: '100%', height: '100%' }}
-                            />
-
-                            {scanning && (
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        bottom: 0,
-                                        background: 'rgba(0, 0, 0, 0.7)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        zIndex: 10,
-                                    }}
-                                >
-                                    <Loader size="lg" color="white" />
-                                    <Text c="white" ml="md">
-                                        Processing...
-                                    </Text>
-                                </div>
-                            )}
-
-                            {/* Scanner overlay frame */}
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: '200px',
-                                    height: '200px',
-                                    border: '4px solid #228be6',
-                                    borderRadius: '12px',
-                                    pointerEvents: 'none',
-                                    zIndex: 5,
-                                }}
-                            />
-                        </div>
+                        // Scanner modal component
+                        <QRScannerModal
+                            onStudentScanned={handleStudentScanned}
+                            attendanceStatus={attendanceStatus}
+                        />
                     )}
-
-                    <Group justify="center" mt="md">
-                        <Badge
-                            color={
-                                scanning
-                                    ? 'blue'
-                                    : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                      cameraError
-                                      ? 'red'
-                                      : 'green'
-                            }
-                            variant="light"
-                        >
-                            {cameraError
-                                ? 'Camera Error'
-                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                  scanning
-                                  ? 'Processing...'
-                                  : 'Ready to scan'}
-                        </Badge>
-                    </Group>
-
-                    <Group justify="center" mt="lg">
-                        <Button
-                            variant="outline"
-                            onClick={closeScanner}
-                            leftSection={<IconX size={16} />}
-                        >
-                            Close Scanner
-                        </Button>
-                    </Group>
                 </Paper>
             </Modal>
         </>

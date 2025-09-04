@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DateService } from '@shega/Utilities/date.service';
@@ -74,6 +75,13 @@ export class AttendanceService {
                 await this.attendanceDataRepo.save(attendanceInfo);
         }
 
+        const existingAtt = await this.attendanceRepo.findOneBy({
+            student: { id: student.id },
+            attendanceData: { id: existingAttendance.id },
+        });
+        if (existingAtt) {
+            throw new EntityAlreadyExistsException('Attendance');
+        }
         const attendance = this.attendanceRepo.create();
         attendance.attendanceData = existingAttendance;
         attendance.student = student;
