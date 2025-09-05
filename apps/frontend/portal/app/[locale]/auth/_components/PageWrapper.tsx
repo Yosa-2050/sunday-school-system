@@ -1,7 +1,6 @@
 'use client';
 
 import { Link, useRouter } from '@/i18n/routing';
-import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Text } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import { getCookie } from 'cookies-next';
@@ -37,37 +36,6 @@ export default function PageWrapper({
                 className={`absolute inset-0 w-full h-[100vh] z-0 md:w-1/2 md:relative
                 `}
             >
-                <Carousel
-                    loop={true}
-                    withControls={false}
-                    plugins={[autoplay.current]}
-                    onMouseEnter={autoplay.current.stop}
-                    onMouseLeave={autoplay.current.reset}
-                    className="absolute inset-0 w-full h-[100vh]"
-                >
-                    <Carousel.Slide>
-                        <Image
-                            src="/job-search-im-unemployed-free-photo.webp"
-                            alt="Background 1"
-                            className="w-full h-[100vh] object-cover"
-                        />
-                    </Carousel.Slide>
-                    <Carousel.Slide>
-                        <Image
-                            src="/istockphoto-537503733-612x612.jpg"
-                            alt="Background 2"
-                            className="w-full h-[100vh] object-cover"
-                        />
-                    </Carousel.Slide>
-                    <Carousel.Slide>
-                        <Image
-                            src="/0270_637846635946108934.png"
-                            alt="Background 3"
-                            className="w-full h-[100vh] object-cover"
-                        />
-                    </Carousel.Slide>
-                </Carousel>
-
                 {/* Dark overlay to improve contrast on mobile */}
                 <Box className="absolute inset-0 bg-black/20" />
             </Box>

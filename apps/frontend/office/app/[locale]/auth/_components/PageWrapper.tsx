@@ -1,8 +1,7 @@
 'use client';
 
 import { Link } from '@/i18n/routing';
-import { Carousel } from '@mantine/carousel';
-import { Box, Flex, Image, Text } from '@mantine/core';
+import { Flex, Image, Paper, Text } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import { getCookie } from 'cookies-next';
 import Autoplay from 'embla-carousel-autoplay';
@@ -32,79 +31,57 @@ export default function PageWrapper({
             window.location.href = '/school_admin/dashboard';
         }
     }
+
     return (
-        <Flex className="relative min-h-screen w-full">
-            <Box
-                className={`absolute inset-0 w-full h-[100vh] z-0 md:w-1/2 md:relative
-                `}
+        <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            h="100vh"
+            w="100%"
+            className="bg-primary-50"
+            px="md" // padding on small devices
+        >
+            <Paper
+                withBorder
+                shadow="md"
+                radius="md"
+                p="xl"
+                w="100%"
+                maw="90%" // responsive: 90% of viewport on small
+                miw="300px" // never shrink too small
+                style={{ maxWidth: '600px' }} // max width on large screens
+                className="bg-primary-0"
             >
-                <Carousel
-                    loop={true}
-                    withControls={false}
-                    plugins={[autoplay.current]}
-                    onMouseEnter={autoplay.current.stop}
-                    onMouseLeave={autoplay.current.reset}
-                    className="absolute inset-0 w-full h-[100vh]"
+                {/* Header (Logo) */}
+                <Flex justify="center" mb="lg">
+                    <Link href="/">
+                        <Image
+                            src={Logo.src}
+                            alt="Logo"
+                            width={100}
+                            height={60}
+                        />
+                        Herani Sunday School Management System.
+                    </Link>
+                </Flex>
+
+                {/* Main Content */}
+                <Flex
+                    direction="column"
+                    align="center"
+                    justify="center"
+                    w="100%"
                 >
-                    <Carousel.Slide>
-                        <Image
-                            src="/job-search-im-unemployed-free-photo.webp"
-                            alt="Background 1"
-                            className="w-full h-[100vh] object-cover"
-                        />
-                    </Carousel.Slide>
-                    <Carousel.Slide>
-                        <Image
-                            src="/istockphoto-537503733-612x612.jpg"
-                            alt="Background 2"
-                            className="w-full h-[100vh] object-cover"
-                        />
-                    </Carousel.Slide>
-                    <Carousel.Slide>
-                        <Image
-                            src="/0270_637846635946108934.png"
-                            alt="Background 3"
-                            className="w-full h-[100vh] object-cover"
-                        />
-                    </Carousel.Slide>
-                </Carousel>
-
-                {/* Dark overlay to improve contrast on mobile */}
-                <Box className="absolute inset-0 bg-black/20" />
-            </Box>
-
-            {/* Content Section (Ensures it's above background) */}
-            <Flex
-                direction="column"
-                align="center"
-                justify="center"
-                className={
-                    'relative z-10 w-full md:w-1/2  backdrop-blur-none p-6 bg-primary-0'
-                }
-                h={'100vh'}
-            >
-                <Link href="/">
-                    <Image
-                        src={Logo.src}
-                        alt="Logo"
-                        width={40}
-                        height={30}
-                        className="block w-[30%] absolute top-10 left-2"
-                    />
-                </Link>
-
-                {children}
+                    {children}
+                </Flex>
 
                 {/* Footer */}
-                <Text
-                    size="sm"
-                    c="gray"
-                    className="absolute bottom-4 text-center"
-                >
-                    {new Date().getFullYear()} Herani Sunday School Management
+                <Text size="sm" c="gray" ta="center" mt="xl">
+                    © {new Date().getFullYear()} Herani Sunday School Management
                     System. {t('rightsReserved')}
                 </Text>
-            </Flex>
+            </Paper>
         </Flex>
     );
 }
