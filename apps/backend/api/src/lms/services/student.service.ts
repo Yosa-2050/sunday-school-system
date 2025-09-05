@@ -138,6 +138,15 @@ export class StudentService {
 
     async findStudentsById(id: string) {
         const student = await this.studentRepo.findOneBy({ id });
+        if (student) {
+            const classes = await this.classRepo.findOneBy({
+                id: student.class.id,
+            });
+            if (classes?.isSection) {
+                const parent = await classes.parent;
+                student.class.name = `${parent.name} - ${classes.name}`;
+            }
+        }
         return student;
     }
 
