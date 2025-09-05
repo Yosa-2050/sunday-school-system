@@ -3,6 +3,7 @@
 import { Button, Group, Modal, Select, Stack, TextInput } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { showError, showSuccess } from 'utilies/notification';
 import { createStudentApi } from '../schemas/api';
 import type { CreateStudentRequest } from '../schemas/type';
 
@@ -11,7 +12,7 @@ interface CreateStudentModalProps {
     onClose: () => void;
     onStudentCreated: (studentId: string) => void;
     classId: string | null;
-    sectionId: string | null;
+    LoadStudent: () => void;
 }
 
 export default function CreateStudentModal({
@@ -19,6 +20,7 @@ export default function CreateStudentModal({
     onClose,
     onStudentCreated,
     classId,
+    LoadStudent,
 }: CreateStudentModalProps) {
     const [formData, setFormData] = useState<CreateStudentRequest>({
         firstName: '',
@@ -47,9 +49,10 @@ export default function CreateStudentModal({
                 phoneNumber: '',
                 idNumber: '',
             });
+            showSuccess('Student Created');
         },
         onError: (error) => {
-            //console.error('Failed to create student:', error);
+            showError(error.message);
         },
     });
 
@@ -67,6 +70,20 @@ export default function CreateStudentModal({
             //console.error('Failed to create student:', error);
         }
     };
+
+    const handleClose = () => {
+        // ✅ call parent’s LoadStudent method
+        LoadStudent();
+        onClose(); // close modal properly
+    };
+
+    const today = new Date();
+    const threeYearsAgo = new Date(
+        today.getFullYear() - 3,
+        today.getMonth(),
+        today.getDate(),
+    );
+    const maxDate = threeYearsAgo.toISOString().split('T')[0];
 
     const handleInputChange = (
         field: keyof CreateStudentRequest,
@@ -94,6 +111,15 @@ export default function CreateStudentModal({
                         required
                     />
                     <TextInput
+                        label="Middle Name"
+                        value={formData.middleName}
+                        onChange={(e) =>
+                            handleInputChange('middleName', e.target.value)
+                        }
+                        required
+                    />
+
+                    <TextInput
                         label="Last Name"
                         value={formData.lastName}
                         onChange={(e) =>
@@ -102,14 +128,6 @@ export default function CreateStudentModal({
                         required
                     />
                 </Group>
-
-                <TextInput
-                    label="Middle Name"
-                    value={formData.middleName}
-                    onChange={(e) =>
-                        handleInputChange('middleName', e.target.value)
-                    }
-                />
 
                 <Group grow>
                     <TextInput
@@ -142,16 +160,17 @@ export default function CreateStudentModal({
                         label="Birth Date"
                         type="date"
                         value={formData.birthDate}
+                        max={maxDate} // disallows future and < 3 years
                         onChange={(e) =>
                             handleInputChange('birthDate', e.target.value)
                         }
                     />
+
                     <Select
                         label="Gender"
                         data={[
                             { value: 'MALE', label: 'Male' },
                             { value: 'FEMALE', label: 'Female' },
-                            { value: 'OTHER', label: 'Other' },
                         ]}
                         value={formData.gender}
                         onChange={(value) =>
@@ -179,7 +198,8 @@ export default function CreateStudentModal({
                             !(
                                 formData.firstName &&
                                 formData.lastName &&
-                                formData.idNumber
+                                formData.idNumber &&
+                                formData.middleName
                             )
                         }
                     >
