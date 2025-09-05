@@ -58,7 +58,10 @@ const Login = () => {
     const updateSetUser = ({
         data,
         user,
-    }: { data: Data; user: { id: string; createdBy: string } }) => {
+    }: {
+        data: Data;
+        user: { id: string; createdBy: string };
+    }) => {
         setUser({
             ...user,
             role: data.role as

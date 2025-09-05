@@ -10,6 +10,8 @@ import { ProgramUser } from './lms/entities/program-users.entity';
 import { Program } from './lms/entities/program.entity';
 import { RootClass } from './lms/entities/root-class.entity';
 import { Students } from './lms/entities/students.entity';
+import { Subjects } from './lms/entities/subject.entity';
+import { Teacher } from './lms/entities/teacher.entity';
 import { LocationInfo } from './location/entities/LocationInfo.entity';
 import { ContactDetails } from './location/entities/contact-details.entity';
 import { Country } from './location/entities/country.entity';
@@ -67,4 +69,6 @@ export const AppEntities = [
     Attendance,
     AttendanceInformation,
     Permission,
+    Subjects,
+    Teacher,
 ];

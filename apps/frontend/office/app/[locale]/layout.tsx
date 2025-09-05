@@ -18,8 +18,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'Herani Sunday School Management System',
-    description:
-        'Empowering Job Seekers and connecting them to the best of the best',
+    description: 'School management system for everything',
 };
 
 //bluish theme

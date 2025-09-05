@@ -315,8 +315,8 @@ export default function StudentPage() {
                 opened={createStudentModalOpened}
                 onClose={() => setCreateStudentModalOpened(false)}
                 onStudentCreated={handleStudentCreated}
-                classId={selectedClass}
-                sectionId={selectedSection}
+                classId={selectedSection ?? selectedClass}
+                LoadStudent={() => handleFetchStudents()}
             />
 
             <CreateRelationModal
