@@ -13,7 +13,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateUsingNameRequestDto } from '@shega/job_portal/dto/request/create-name.request.dto';
+import { CreateUsingNameRequestDto } from '@shega/education/dto/request/create-name.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { GroupService } from '../service/group.service';
 

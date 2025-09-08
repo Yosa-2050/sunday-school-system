@@ -1,25 +1,15 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
-// biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto2 } from '@shega/Utilities/models/paginated.request2';
-import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { DocumentService } from '@shega/document/document.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
-import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
-import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -33,49 +23,28 @@ import {
     UpdateExperienceRequestDto,
 } from './dto/request/add-experiance.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { GetJobApplicationsForApplicantRequestDto } from './dto/request/get-job-applications.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { JobApplicationRequestDto } from './dto/request/job-application.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
-import { ApplicantSkills } from './entities/applicants-skills.entity';
-import { Applicants } from './entities/applicants.entity';
 import { EducationHistory } from './entities/educational-history.entity';
 import { Experience } from './entities/experience.entity';
-import { Applications } from './entities/job-application.entity';
-import { Jobs } from './entities/jobs.entity';
-import { Mentorship } from './entities/mentorship.entity';
-import { Programs } from './entities/programs.entity';
-import { SavedPrograms } from './entities/savedPrograms.entity';
-import { ProgramType } from './enums/program-type.enum';
+import { QualificationSkills } from './entities/qualification-skills.entity';
+import { Qualification } from './entities/qualification.entity';
 // biome-ignore lint/style/useImportType: <explanation>
-import { JobPortalService } from './job_portal.service';
+import { QualificationService } from './qualification.service';
 
-export class JobsService {
+export class QualificationDetailService {
     constructor(
-        private readonly documentService: DocumentService,
         private readonly profileService: ProfileService,
-        private readonly jobPortalService: JobPortalService,
-        @InjectRepository(Applicants)
-        private applicantRepo: Repository<Applicants>,
-        @InjectRepository(Applications)
-        private jobApplicantRepo: Repository<Applications>,
-        @InjectRepository(ApplicantSkills)
-        private readonly applicantSkillRepo: Repository<ApplicantSkills>,
+        private readonly jobPortalService: QualificationService,
+        @InjectRepository(Qualification)
+        private applicantRepo: Repository<Qualification>,
+        @InjectRepository(QualificationSkills)
+        private readonly applicantSkillRepo: Repository<QualificationSkills>,
         @InjectRepository(Experience)
         private readonly experienceRepo: Repository<Experience>,
         @InjectRepository(EducationHistory)
         private readonly educationalHistoryRepo: Repository<EducationHistory>,
         private readonly notificationService: NotificationService,
-        @InjectRepository(SavedPrograms)
-        private savedProgramsRepo: Repository<SavedPrograms>,
-        @InjectRepository(Programs)
-        private programsRepo: Repository<Programs>,
         private addressService: AddressService,
-        @InjectRepository(Jobs)
-        private jobRepo: Repository<Jobs>,
-        @InjectRepository(Mentorship)
-        private mentorshipRepo: Repository<Mentorship>,
     ) {}
 
     async getApplicantDetail(id: string) {
@@ -88,109 +57,6 @@ export class JobsService {
         userDetails.applicantId = applicant?.id;
         userDetails.profileId = profile?.id;
         return userDetails;
-    }
-
-    async apply(
-        programId: string,
-        applicantId: string,
-        dto: JobApplicationRequestDto,
-    ) {
-        const applicant = await this.FindApplicantOrThrow(applicantId);
-        if (!(await this.GetCanApplyApplicant(applicant))?.canApply) {
-            throw new BadRequestException('User can not apply');
-        }
-        const existingApp = await this.programsRepo.findOneBy({
-            id: programId,
-            applications: { applicants: { id: applicant.id } },
-        });
-        if (existingApp) {
-            throw new BadRequestException('Already applied for the job');
-        }
-
-        const program = await this.programsRepo.findOneBy({ id: programId });
-
-        if (!program) {
-            throw new EntityNotFoundException('Program');
-        }
-
-        const application = this.jobApplicantRepo.create(dto);
-        application.program = program;
-        application.applicants = applicant;
-
-        const savedJobApplication = this.jobApplicantRepo.save(application);
-        if (savedJobApplication) {
-            const user = await this.profileService.findUserByProfileId(
-                applicant.profile.id,
-            );
-            const programType =
-                program.programType === ProgramType.Job
-                    ? 'Job'
-                    : 'Mentorship program';
-
-            let userId = '';
-
-            if (program.programType === ProgramType.Job) {
-                const job = await this.jobRepo.findOneBy({
-                    program: { id: program.id },
-                });
-
-                const jobPostedUser =
-                    await this.profileService.findUserByProfileId(
-                        job.postedBy.employee.profile.id,
-                    );
-                userId = jobPostedUser.id;
-            } else if (program.programType === ProgramType.Mentorship) {
-                const mentorship = await this.mentorshipRepo.findOneBy({
-                    program: { id: program.id },
-                });
-
-                const jobPostedUser =
-                    await this.profileService.findUserByProfileId(
-                        mentorship.mentor.profile.id,
-                    );
-                userId = jobPostedUser.id;
-            }
-
-            const metaData = {
-                applicantId: applicant.id,
-            };
-
-            this.notificationService.send({
-                channel: NotificationChannel.InApp,
-                subject: `New Applicant for Your ${programType} Post!`,
-                content: `A new candidate has applied for your ${program.title} position. Review their application and decide your next steps.`,
-                to: userId,
-                reference: userId,
-                isRealTimeNotification: true,
-                isNotifyToAllUser: false,
-                type: NotificationType.Applicant,
-                metaData,
-            });
-        }
-        return UtilityServices.SuccessIdResponse();
-    }
-
-    private async GetJobTemplate(
-        applicant: Applicants,
-        program: Programs,
-        dateToday: Date,
-    ) {
-        const job = await this.jobPortalService.findOneJobByProgramId(
-            program.id,
-        );
-        return await this.notificationService.getTemplate(
-            'jobApplicationEmailTemplate',
-            {
-                jobSeekerName: applicant.profile.firstName,
-                jobTitle: program.title,
-                companyName: job.organization.name,
-                applicationDate: dateToday.toLocaleDateString(),
-            },
-            {
-                jobTitle: program.title,
-                companyName: job.organization.name,
-            },
-        );
     }
 
     private async FindApplicantOrThrow(applicantId: string) {
@@ -212,45 +78,6 @@ export class JobsService {
         return this.applicantRepo.save(applicant);
     }
 
-    async jobsApplied(
-        id: string,
-        request: GetJobApplicationsForApplicantRequestDto,
-    ) {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const where: any = {};
-
-        if (request.status) {
-            where.status = request.status;
-        }
-        where.applicants = { id };
-
-        const [data, count] = await this.jobApplicantRepo.findAndCount({
-            where,
-            skip: (request.pagination.page - 1) * request.pagination.limit,
-            take: request.pagination.limit,
-        });
-        if (!data) {
-            throw new BadRequestException('No applied jobs');
-        }
-        return new PaginatedResponseDto<Applications[]>(
-            data,
-            count,
-            request.pagination.page,
-            request.pagination.limit,
-        );
-    }
-
-    async jobsAppliedByProgramId(id: string) {
-        const existingApp = await this.jobApplicantRepo.findOneBy({
-            program: { id },
-        });
-        if (!existingApp) {
-            throw new BadRequestException('No applied jobs');
-        }
-
-        return existingApp;
-    }
-
     async updateApplicantDetail(
         applicantId: string,
         dto: UpdateApplicantRequestDto,
@@ -259,11 +86,7 @@ export class JobsService {
 
         const updated = await this.applicantRepo.update(
             { id: applicantId },
-            {
-                bio: dto.bio,
-                coverLetter: dto.coverLetter,
-                headline: dto.headline,
-            }, //CV from file upload
+            {}, //CV from file upload
         );
 
         return UtilityServices.EnsureUpdated(updated, applicantId);
@@ -445,7 +268,7 @@ export class JobsService {
         });
 
         if (!applicant) {
-            throw new EntityNotFoundException(typeof Applicants);
+            throw new EntityNotFoundException(typeof Qualification);
         }
 
         const user = await this.profileService.findUserByProfileId(
@@ -455,90 +278,17 @@ export class JobsService {
         return { email: user.email, ...applicant };
     }
 
-    async uploadCv(applicantId: string, file: Express.Multer.File) {
-        await this.FindApplicantOrThrow(applicantId);
-        const documentId = await this.documentService.create(file, applicantId);
+    // async uploadCv(applicantId: string, file: Express.Multer.File) {
+    //     await this.FindApplicantOrThrow(applicantId);
+    //     const documentId = await this.documentService.create(file, applicantId);
 
-        const updated = await this.applicantRepo.update(
-            { id: applicantId },
-            { cv: documentId }, //CV from file upload
-        );
+    //     const updated = await this.applicantRepo.update(
+    //         { id: applicantId },
+    //         { cv: documentId }, //CV from file upload
+    //     );
 
-        return UtilityServices.EnsureUpdated(updated, applicantId);
-    }
-
-    async saveProgram(applicantId: string, programId: string) {
-        const programSaved = await this.savedProgramsRepo.findOne({
-            where: {
-                applicant: { id: applicantId },
-                program: { id: programId },
-            },
-        });
-
-        if (programSaved) {
-            throw new BadRequestException('ALREADY_PROGRAM_SAVED');
-        }
-        const applicant = await this.applicantRepo.findOneBy({
-            id: applicantId,
-        });
-        const program = await this.jobPortalService.findOneProgram(programId);
-        if (!program) {
-            throw new NotFoundException(
-                `Program Not Found with ProgramId ${programId}`,
-            );
-        }
-        const savedProgram = this.savedProgramsRepo.create();
-        savedProgram.applicant = applicant;
-        savedProgram.program = program;
-
-        return this.savedProgramsRepo.save(savedProgram);
-    }
-
-    async unsaveProgram(applicantId: string, programId: string) {
-        const programSaved = await this.savedProgramsRepo.findOne({
-            where: {
-                applicant: { id: applicantId },
-                program: { id: programId },
-            },
-        });
-
-        if (!programSaved) {
-            throw new NotFoundException(
-                `Program not saved with applicantId ${applicantId} and programId ${programId}`,
-            );
-        }
-
-        const deleted = await this.savedProgramsRepo.delete(programSaved.id);
-
-        return UtilityServices.EnsureDeleted(deleted, programSaved.id);
-    }
-
-    async getSavedProgramsByApplicantId(
-        applicantId: string,
-        paginationDto: PaginationDto2,
-    ) {
-        const [data, total] = await this.savedProgramsRepo
-            .createQueryBuilder('savedPrograms')
-            .leftJoinAndSelect('savedPrograms.program', 'program')
-            .leftJoinAndSelect('program.country', 'country')
-            .leftJoinAndSelect('program.state', 'state')
-            .leftJoinAndSelect('program.city', 'city')
-            .leftJoin('savedPrograms.applicant', 'applicant')
-            .where('savedPrograms.applicantId = :applicantId', { applicantId })
-            .orderBy('savedPrograms.createdAt', 'DESC')
-            .skip((paginationDto.page - 1) * paginationDto.limit)
-            .take(paginationDto.limit)
-            .getManyAndCount();
-
-        const programList = data.map((job) => job.program);
-
-        return new PaginatedResponseDto<Programs[]>(
-            programList,
-            total,
-            paginationDto.page,
-            paginationDto.limit,
-        );
-    }
+    //     return UtilityServices.EnsureUpdated(updated, applicantId);
+    // }
 
     async checkApplicantStatus(applicantId: string) {
         const applicant = await this.applicantRepo.findOneBy({
@@ -549,7 +299,7 @@ export class JobsService {
 
         const updated = await this.applicantRepo.update(
             { id: applicantId },
-            { canApply: canApply.canApply },
+            { save: canApply.canApply },
         );
 
         const result = UtilityServices.EnsureUpdated(updated, applicantId);
@@ -558,7 +308,7 @@ export class JobsService {
         }
     }
 
-    private async GetCanApplyApplicant(applicant: Applicants) {
+    private async GetCanApplyApplicant(applicant: Qualification) {
         let canApply = true;
         const profile = applicant.profile;
         const applyObject = {
@@ -569,11 +319,6 @@ export class JobsService {
             experiance: true,
             canApply: true,
         };
-
-        if (!applicant.cv) {
-            canApply = false;
-            applyObject.cv = false;
-        }
 
         if (!profile.profile_picture_id) {
             applyObject.profilePic = false;

@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { EmploymentType } from '@shega/job_portal/enums/employment-type.enum';
-import { WorkPlaceType } from '@shega/job_portal/enums/work-place-type.enum';
+import { EmploymentType } from '@shega/education/enums/employment-type.enum';
+import { WorkPlaceType } from '@shega/education/enums/work-place-type.enum';
 import { Transform } from 'class-transformer';
 import {
     IsDateString,

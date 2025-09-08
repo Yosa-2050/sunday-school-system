@@ -3,7 +3,7 @@ import {
     OptionalEnum,
     OptionalUUID,
 } from '@shega/Utilities/decorators/optional-uuid.decorator';
-import { JobDescriptionType } from '@shega/job_portal/enums/job-description-type.enum';
+import { JobDescriptionType } from '@shega/education/enums/job-description-type.enum';
 import { Type } from 'class-transformer';
 import {
     IsArray,

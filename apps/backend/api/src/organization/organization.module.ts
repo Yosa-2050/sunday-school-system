@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DocumentModule } from '@shega/document/document.module';
-import { Category } from '@shega/job_portal/entities/category.entity';
+import { Category } from '@shega/education/entities/category.entity';
 import { AddressModule } from '@shega/location/address.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { UsersModule } from '@shega/users/users.module';

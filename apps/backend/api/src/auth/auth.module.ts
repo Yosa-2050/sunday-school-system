@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { PasswordService } from '@shega/Utilities/password.service';
-import { JobPortalModule } from '@shega/job_portal/job_portal.module';
+import { JobPortalModule } from '@shega/education/qualification.module';
 import { LmsModule } from '@shega/lms/lms.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { OrganizationModule } from '@shega/organization/organization.module';

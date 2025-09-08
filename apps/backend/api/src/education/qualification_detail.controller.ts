@@ -14,12 +14,12 @@ import { ListStringRequestModel } from '@shega/Utilities/models/list-string.mode
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateUsingNameRequestDto } from './dto/request/create-name.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { JobPortalService } from './job_portal.service';
+import { QualificationService } from './qualification.service';
 
-@ApiTags('job-detail')
-@Controller('job-detail')
-export class JobDetailController {
-    constructor(private jobPortalService: JobPortalService) {}
+@ApiTags('qualification-detail')
+@Controller('qualification-detail')
+export class QualificationDetailController {
+    constructor(private jobPortalService: QualificationService) {}
 
     @Post('categories')
     postCategories(@Body() dto: CreateUsingNameRequestDto) {

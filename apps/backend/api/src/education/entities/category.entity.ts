@@ -17,7 +17,7 @@ export class Category extends BaseModel {
             cascade: true,
         },
     )
-    childs: Category[];
+    child: Category[];
 
     @Column()
     isRoot: boolean;

@@ -2,16 +2,16 @@ import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EducationalRequirementType } from '../enums/education-requirement-type.enum';
-import { Applicants } from './applicants.entity';
 import { Category } from './category.entity';
+import { Qualification } from './qualification.entity';
 
 @Entity()
 export class EducationHistory extends BaseModel {
-    @ManyToOne(() => Applicants, {
+    @ManyToOne(() => Qualification, {
         lazy: true,
         nullable: false,
     })
-    applicant: Applicants;
+    applicant: Qualification;
 
     @Column()
     school: string;

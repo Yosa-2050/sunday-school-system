@@ -7,9 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
-import { JobsService } from '@shega/job_portal/jobs.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { MentorshipService } from '@shega/job_portal/mentorship.service';
+import { QualificationDetailService } from '@shega/education/qualification-detail.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LmsService } from '@shega/lms/services/lms.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
@@ -49,8 +47,7 @@ export class AuthService {
         private notificationService: NotificationService,
         private organizationService: OrganizationService,
         private classService: ClsService,
-        private jobService: JobsService,
-        private mentorService: MentorshipService,
+        private jobService: QualificationDetailService,
         private lmsService: LmsService,
     ) {}
 
@@ -92,11 +89,6 @@ export class AuthService {
                 break;
             case UserRoleType.JobSeeker:
                 details = await this.jobService.getApplicantDetail(
-                    user.profile.id,
-                );
-                break;
-            case UserRoleType.Mentor:
-                details = await this.mentorService.getMentorshipDetail(
                     user.profile.id,
                 );
                 break;

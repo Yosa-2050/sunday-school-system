@@ -6,15 +6,15 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { EmploymentType } from '../enums/employment-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { WorkPlaceType } from '../enums/work-place-type.enum';
-import { Applicants } from './applicants.entity';
+import { Qualification } from './qualification.entity';
 
 @Entity()
 export class Experience extends BaseModel {
-    @ManyToOne(() => Applicants, {
+    @ManyToOne(() => Qualification, {
         lazy: true,
         nullable: false,
     })
-    applicant: Applicants;
+    applicant: Qualification;
 
     @Column()
     title: string;

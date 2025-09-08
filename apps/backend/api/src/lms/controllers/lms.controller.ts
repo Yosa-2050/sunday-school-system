@@ -12,7 +12,7 @@ import {
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateUsingNameRequestDto } from '@shega/job_portal/dto/request/create-name.request.dto';
+import { CreateUsingNameRequestDto } from '@shega/education/dto/request/create-name.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';

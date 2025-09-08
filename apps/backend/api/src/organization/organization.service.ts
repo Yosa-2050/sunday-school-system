@@ -16,7 +16,7 @@ import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
-import { Category } from '@shega/job_portal/entities/category.entity';
+import { Category } from '@shega/education/entities/category.entity';
 import { AddressService } from '@shega/location/address.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { LocationModel } from '@shega/location/dto/model/location.model';
