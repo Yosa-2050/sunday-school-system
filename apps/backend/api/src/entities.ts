@@ -4,6 +4,12 @@ import { AttendanceInformation } from './attendance/entities/attendance-data.ent
 import { Attendance } from './attendance/entities/attendance.entity';
 import { Permission } from './attendance/entities/permission.entity';
 import { Document } from './document/entities/document.entity';
+import { Category } from './education/entities/category.entity';
+import { EducationHistory } from './education/entities/educational-history.entity';
+import { Experience } from './education/entities/experience.entity';
+import { QualificationSkills } from './education/entities/qualification-skills.entity';
+import { Qualification } from './education/entities/qualification.entity';
+import { Skills } from './education/entities/skills.entity';
 import { CalendarYear } from './lms/entities/calendar-year.entity';
 import { Classes } from './lms/entities/classes.entity';
 import { ProgramUser } from './lms/entities/program-users.entity';
@@ -40,22 +46,13 @@ export const AppEntities = [
     Country,
     LocationInfo,
     Notification,
-    //Jobs,
-    //ProgramCategory,
-    //ProgramSkills,
-    //Category,
-    //Skills,
-    //Applicants,
-    //Applications,
+    Category,
+    Skills,
     NotificationTemplate,
-    //ApplicantSkills,
-    //EducationHistory,
-    //Experience,
-    //ProgramDescription,
-    //Programs,
-    //Mentors,
-    //Mentorship,
-    //SavedPrograms,
+    Qualification,
+    QualificationSkills,
+    EducationHistory,
+    Experience,
     LookUps,
     Notes,
     Program,
