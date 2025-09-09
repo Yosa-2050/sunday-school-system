@@ -1,5 +1,4 @@
 import { fetcher } from '@shega/shared';
-import type { JobDescriptionType } from 'app/[locale]/(module)/mentor/mentorship/create/components/shcema/job-schema';
 
 export type CreateMentorship = {
     title: string;
@@ -15,7 +14,6 @@ export type CreateMentorship = {
     educationalRequirment: string;
     skills: string[];
     catagories: string[];
-    jobDescriptions: { type: JobDescriptionType; description: string }[];
     isPublished: boolean;
     mentorshipType: string;
     commitment: string;
