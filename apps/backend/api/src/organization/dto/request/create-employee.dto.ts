@@ -11,7 +11,6 @@ import { Type } from 'class-transformer';
 import {
     IsDefined,
     IsEmail,
-    IsEnum,
     IsNotEmptyObject,
     IsObject,
     IsOptional,
@@ -39,7 +38,7 @@ export class CreateEmployeeDto {
     profile_dto: NewProfileDto;
 
     @ApiProperty()
-    @IsEnum(UserRoleType)
+    @OptionalEnum(UserRoleType)
     role: UserRoleType;
 
     @ApiProperty()

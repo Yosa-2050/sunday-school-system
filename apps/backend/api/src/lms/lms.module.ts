@@ -11,6 +11,9 @@ import { ProgramUser } from './entities/program-users.entity';
 import { Program } from './entities/program.entity';
 import { RootClass } from './entities/root-class.entity';
 import { Students } from './entities/students.entity';
+import { SubjectAssignment } from './entities/subject-assignment.entity';
+import { TeacherAssignment } from './entities/teacher-assignment.entity';
+import { Teacher } from './entities/teacher.entity';
 import { ClassService } from './services/class.service';
 import { LmsService } from './services/lms.service';
 import { StudentService } from './services/student.service';
@@ -24,6 +27,9 @@ import { StudentService } from './services/student.service';
             RootClass,
             CalendarYear,
             ProgramUser,
+            Teacher,
+            SubjectAssignment,
+            TeacherAssignment,
         ]),
         UsersModule,
         NotificationModule,

@@ -1,13 +1,12 @@
 export enum UserRoleType {
     SuperAdmin = 'SUPER_ADMIN',
-    JobSeeker = 'JOB_SEEKER',
     Administrator = 'ADMINISTRATOR',
-    Mentor = 'MENTOR',
     Student = 'STUDENT',
     SchoolAdmin = 'SCHOOL_ADMIN',
+    Teacher = 'Teacher',
 }
 export function validateEmployeeRole(value: string): boolean {
-    const validEmployee: string[] = [UserRoleType.JobSeeker];
+    const validEmployee: string[] = [UserRoleType.Teacher];
     return validEmployee.includes(value);
 }
 
@@ -17,8 +16,12 @@ export function UserRoleValue(value: string) {
         url: '',
     };
     switch (value) {
-        case UserRoleType.JobSeeker.toString():
-            retVal.value = 'Job Seeker';
+        case UserRoleType.Teacher.toString():
+            retVal.value = 'Teacher';
+            retVal.url = process.env.PORTAL_URL;
+            break;
+        case UserRoleType.Student.toString():
+            retVal.value = 'Student';
             retVal.url = process.env.PORTAL_URL;
             break;
         case UserRoleType.Administrator.toString():
@@ -29,8 +32,8 @@ export function UserRoleValue(value: string) {
             retVal.value = 'Administrator';
             retVal.url = process.env.OFFICE_URL;
             break;
-        case UserRoleType.Mentor.toString():
-            retVal.value = 'Mentor';
+        case UserRoleType.SchoolAdmin.toString():
+            retVal.value = 'School Administrator';
             retVal.url = process.env.OFFICE_URL;
             break;
     }

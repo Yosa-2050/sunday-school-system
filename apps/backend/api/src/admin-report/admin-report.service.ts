@@ -20,9 +20,6 @@ export class AdminReportService {
         const response = new CountTotalsResponseDto();
         response.totalRegisteredUsers = await this.userRepo.count();
         response.totalRegisteredEmployer = await this.organizationRepo.count();
-        response.totalRegisteredJobSeekers = await this.getCountUserByRole(
-            UserRoleType.JobSeeker,
-        );
         response.totalRegisteredAdmin =
             (await this.getCountUserByRole(UserRoleType.Administrator)) +
             (await this.getCountUserByRole(UserRoleType.SuperAdmin));

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
@@ -191,6 +191,18 @@ export class LmsService {
 
         if (!activeYear) {
             return null;
+        }
+        return activeYear;
+    }
+
+    async calendarYearById(yearId: string) {
+        const activeYear = await this.calendarYearRepo.findOneBy({
+            id: yearId,
+            isActive: true,
+        });
+
+        if (!activeYear) {
+            throw new UnauthorizedException();
         }
         return activeYear;
     }

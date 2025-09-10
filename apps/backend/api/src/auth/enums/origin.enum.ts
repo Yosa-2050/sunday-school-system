@@ -7,11 +7,13 @@ export enum OriginEnums {
 }
 
 export function validateRole(role: UserRoleType, origin: OriginEnums): boolean {
-    const portalRoles: UserRoleType[] = [UserRoleType.JobSeeker];
+    const portalRoles: UserRoleType[] = [
+        UserRoleType.Student,
+        UserRoleType.Teacher,
+    ];
     const officeRoles: UserRoleType[] = [
         UserRoleType.Administrator,
         UserRoleType.SuperAdmin,
-        UserRoleType.Mentor,
         UserRoleType.SchoolAdmin,
     ];
     if (origin === OriginEnums.office) {

@@ -4,16 +4,28 @@ import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-import { Classes } from '../entities/classes.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddSubjectAssignmentDto } from '../dto/request/add-subject-assignment.request.dto';
 import { Program } from '../entities/program.entity';
+import { SubjectAssignment } from '../entities/subject-assignment.entity';
 import { Subjects } from '../entities/subject.entity';
+import { TeacherAssignment } from '../entities/teacher-assignment.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ClassService } from './class.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { TeacherService } from './teacher.service';
 
 @Injectable()
 export class SubjectService {
     constructor(
         @InjectRepository(Subjects) private subjectRepo: Repository<Subjects>,
-        @InjectRepository(Classes) private classRepo: Repository<Classes>,
         @InjectRepository(Program) private programRepo: Repository<Program>,
+        @InjectRepository(SubjectAssignment)
+        private subjectAssignmentRepo: Repository<SubjectAssignment>,
+        @InjectRepository(TeacherAssignment)
+        private teacherAssignmentRepo: Repository<TeacherAssignment>,
+        private classService: ClassService,
+        private teacherService: TeacherService,
     ) {}
 
     async create(name: string, programId: string) {
@@ -37,5 +49,77 @@ export class SubjectService {
         return this.subjectRepo.find({
             where: { program: { id: programId } },
         });
+    }
+
+    findOneByProgramId(id: string, programId: string) {
+        return this.subjectRepo.findOneBy({
+            id,
+            isActive: true,
+            program: { id: programId },
+        });
+    }
+
+    async assignSubject(
+        dto: AddSubjectAssignmentDto,
+        programId: string,
+        yearId: string,
+    ) {
+        const existing = await this.subjectAssignmentRepo.findOneBy({
+            class: { id: dto.classId },
+            subject: { id: dto.subjectId },
+        });
+        if (existing) {
+            throw new EntityAlreadyExistsException('Assigned Subject');
+        }
+        const cls = await this.classService.findOne(dto.classId, yearId);
+        const subject = await this.findOneByProgramId(dto.subjectId, programId);
+        const teacher = await this.teacherService.findTeacherById(
+            dto.teacherId,
+            yearId,
+        );
+        if (dto.teacherId && !teacher) {
+            throw new EntityNotFoundException('Teacher');
+        }
+        const subjAssignment = this.subjectAssignmentRepo.create();
+        subjAssignment.class = cls;
+        subjAssignment.subject = subject;
+        subjAssignment.subjectTitle = dto.subjectTitle;
+        if (teacher) {
+            const teacherAssignment = await this.teacherAssignmentRepo.create();
+            teacherAssignment.subjectAssignment = subjAssignment;
+            teacherAssignment.teacher = teacher;
+            teacherAssignment.teacherType = dto.teacherType;
+            teacherAssignment.isMain = true;
+            return this.teacherAssignmentRepo.save(teacherAssignment);
+        }
+        return this.subjectAssignmentRepo.save(subjAssignment);
+    }
+
+    async getAssignedSubject(classId: string, yearId: string) {
+        const cls = await this.classService.findOne(classId, yearId);
+
+        return cls.subjects;
+    }
+
+    async getAssignedTeachers(
+        classId: string,
+        subjectId: string,
+        yearId: string,
+    ) {
+        await this.classService.findOne(classId, yearId);
+
+        const assign = await this.subjectAssignmentRepo.findOneBy({
+            class: { id: classId },
+            subject: { id: subjectId },
+        });
+        if (!assign) {
+            throw new EntityNotFoundException('Subject Assignment');
+        }
+
+        const teachers = await this.teacherAssignmentRepo.findBy({
+            subjectAssignment: { id: assign.id },
+        });
+
+        return teachers;
     }
 }

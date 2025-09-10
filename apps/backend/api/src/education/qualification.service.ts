@@ -11,10 +11,7 @@ import { NotificationService } from '@shega/notification/notification.service';
 import { Organization } from '@shega/organization/entities/organization.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/organization.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
-import { UserRoleType, UserRoleValue } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -48,60 +45,6 @@ export class QualificationService {
         private readonly notificationService: NotificationService,
         private readonly userService: UsersService,
     ) {}
-
-    async createJobSeeker(dto: CreateBasicUserDto) {
-        const pwdGenerated = this.passwordService.generatePassword();
-
-        const role = UserRoleType.JobSeeker;
-
-        const user = await this.profileService.createNewUserProfileQDE(
-            dto.email,
-            LoginBy.EMAIL,
-            role,
-            dto.firstName,
-            dto.middleName,
-            dto.lastName,
-            '',
-            null,
-            '',
-            '',
-            false,
-            pwdGenerated,
-            true,
-        );
-
-        let applicants = this.applicationRepo.create();
-        applicants.profile = user;
-
-        applicants = await this.applicationRepo.save(applicants);
-
-        const signupEmailTemplate = await this.notificationService.getTemplate(
-            'signupEmailTemplate',
-            {
-                userName: dto.firstName,
-                role: UserRoleValue(role).value,
-                email: dto.email,
-                tempPassword: pwdGenerated,
-                loginUrl: UserRoleValue(role).url,
-            },
-            null,
-        );
-
-        if (applicants?.id) {
-            this.notificationService.send({
-                channel: NotificationChannel.Email,
-                content: signupEmailTemplate.content,
-                to: dto.email,
-                subject: signupEmailTemplate.subject,
-                reference: user.id,
-                type: NotificationType.Applicant,
-                metaData: null,
-            });
-            return user;
-        }
-
-        throw new BadRequestException('Unable to create user');
-    }
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     private async SendNotificationForJobCreatedToAdmin(jobCreated: any) {
