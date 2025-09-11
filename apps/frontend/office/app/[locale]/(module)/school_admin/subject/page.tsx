@@ -15,7 +15,7 @@ import {
     fetchCalendarYearsSchoolAdmin,
 } from 'app/[locale]/_api/admin/fetch-programs';
 import { useCallback, useEffect, useState } from 'react';
-import { CreateSubjectDrawer } from './component/CreateSubjectDrawer';
+import { SubjectDrawer } from './component/SubjectDrawer';
 import { fetchSubjectsApi } from './schemas/api';
 import type { GetSubjectResponse } from './schemas/type';
 
@@ -28,6 +28,11 @@ export default function SubjectPage() {
 
     const [subjects, setSubjects] = useState<GetSubjectResponse[]>([]);
     const [loadingSubject, setLoadingSubject] = useState(false);
+    const [editSubject, setEditSubject] = useState<GetSubjectResponse | null>(
+        null,
+    );
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
 
     // Fetch calendar years once
     useEffect(() => {
@@ -68,6 +73,28 @@ export default function SubjectPage() {
         fetchSubjects();
     }, [calendarYear, fetchSubjects]);
 
+    const handleEditClick = (subject: GetSubjectResponse) => {
+        setEditSubject(subject);
+        setDrawerMode('edit');
+        setDrawerOpen(true);
+    };
+
+    const handleCreateClick = () => {
+        setEditSubject(null);
+        setDrawerMode('create');
+        setDrawerOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setDrawerOpen(false);
+        setEditSubject(null);
+    };
+
+    const handleDrawerCompleted = () => {
+        fetchSubjects();
+        handleDrawerClose();
+    };
+
     const rows = subjects.map((item, index) => (
         <Table.Tr key={item.id}>
             <Table.Td>{index + 1}</Table.Td>
@@ -85,7 +112,10 @@ export default function SubjectPage() {
                         </Button>
                     </Menu.Target>
                     <Menu.Dropdown>
-                        <Menu.Item leftSection={<IconPencil size={16} />}>
+                        <Menu.Item
+                            leftSection={<IconPencil size={16} />}
+                            onClick={() => handleEditClick(item)}
+                        >
                             Edit Subject
                         </Menu.Item>
                         <Menu.Item
@@ -124,8 +154,17 @@ export default function SubjectPage() {
                 mb="md"
             >
                 <Text fw={500}>Subjects</Text>
-                <CreateSubjectDrawer onCreated={fetchSubjects} />
+                <Button onClick={handleCreateClick}>+ Add Subject</Button>
             </Group>
+
+            {/* Subject Drawer */}
+            <SubjectDrawer
+                mode={drawerMode}
+                subject={editSubject}
+                opened={drawerOpen}
+                onClose={handleDrawerClose}
+                onCompleted={handleDrawerCompleted}
+            />
 
             <Table withColumnBorders striped highlightOnHover>
                 <Table.Thead>

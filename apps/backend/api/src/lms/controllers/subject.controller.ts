@@ -4,6 +4,7 @@ import {
     Get,
     Param,
     ParseUUIDPipe,
+    Patch,
     Post,
     Request,
 } from '@nestjs/common';
@@ -25,6 +26,19 @@ export class SubjectController {
     @Post('root')
     create(@Body() dto: StringRequestModel, @Request() req) {
         return this.subjectService.create(
+            dto.text,
+            CurrentUser.getProgramId(req),
+        );
+    }
+
+    @Patch('root/:id')
+    update(
+        @Body() dto: StringRequestModel,
+        @Request() req,
+        @Param('id', new ParseUUIDPipe()) id: string,
+    ) {
+        return this.subjectService.update(
+            id,
             dto.text,
             CurrentUser.getProgramId(req),
         );

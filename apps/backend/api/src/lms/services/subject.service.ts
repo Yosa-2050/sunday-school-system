@@ -45,6 +45,18 @@ export class SubjectService {
         return this.subjectRepo.save(create);
     }
 
+    async update(id: string, name: string, programId: string) {
+        const subject = await this.subjectRepo.findOneBy({
+            id,
+            program: { id: programId },
+        });
+        if (!subject) {
+            throw new EntityNotFoundException(Subjects.name);
+        }
+        subject.name = name;
+        return this.subjectRepo.save(subject);
+    }
+
     findAllRootSubjects(programId: string) {
         return this.subjectRepo.find({
             where: { program: { id: programId } },

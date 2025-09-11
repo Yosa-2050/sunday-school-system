@@ -18,3 +18,18 @@ export const createSubjectApi = async (data: CreateWithTextRequest) => {
     }
     return res;
 };
+
+export const updateSubjectApi = async (
+    id: string,
+    data: CreateWithTextRequest,
+) => {
+    const res: IdSuccessResponse = await fetcher(`/subject/root/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res) {
+        throw new Error('Failed to update subect');
+    }
+    return res;
+};
