@@ -38,6 +38,17 @@ export class AttendanceController {
         );
     }
 
+    @Post('complete/:attendanceId')
+    complete(
+        @Param('attendanceId', new ParseUUIDPipe()) attendanceId: string,
+        @Request() user,
+    ) {
+        return this.attendanceService.Complete(
+            attendanceId,
+            CurrentUser.getProgramId(user),
+        );
+    }
+
     @Post('individual/:classId')
     createIndividual(
         @Body() dto: StudentAttendance,

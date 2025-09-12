@@ -1,19 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OptionalEnum } from '@shega/Utilities/decorators/optional-uuid.decorator';
+import {
+    OptionalEnum,
+    OptionalUUID,
+} from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { TeacherType } from '@shega/lms/enums/teacher-type.enums';
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 export class AddSubjectAssignmentDto {
     @ApiProperty()
     @IsString()
+    @IsUUID()
     subjectId: string;
 
     @ApiProperty()
     @IsString()
+    @IsUUID()
     classId: string;
 
     @ApiProperty()
-    @IsString()
-    @IsOptional()
+    @OptionalUUID()
     teacherId: string;
 
     @ApiProperty()

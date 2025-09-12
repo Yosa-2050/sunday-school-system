@@ -89,6 +89,12 @@ export const Menus = (): MenuTree[] => {
                     link: '/school_admin/subject',
                     role: 'school_admin',
                 },
+                {
+                    label: t('assignSubject'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/assign_subject',
+                    role: 'school_admin',
+                },
             ],
         },
         {

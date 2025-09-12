@@ -6,6 +6,7 @@ import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exce
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddSubjectAssignmentDto } from '../dto/request/add-subject-assignment.request.dto';
+import { SubjectResponseDto } from '../dto/response/subject.response.dto';
 import { Program } from '../entities/program.entity';
 import { SubjectAssignment } from '../entities/subject-assignment.entity';
 import { Subjects } from '../entities/subject.entity';
@@ -110,7 +111,8 @@ export class SubjectService {
     async getAssignedSubject(classId: string, yearId: string) {
         const cls = await this.classService.findOne(classId, yearId);
 
-        return cls.subjects;
+        const subjects = await cls.subjects;
+        return subjects.map((x) => new SubjectResponseDto(x));
     }
 
     async getAssignedTeachers(

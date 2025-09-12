@@ -60,7 +60,7 @@ export class SubjectController {
         );
     }
 
-    @Get('subjects:/classId')
+    @Get('assigned/:classId')
     findSubjects(
         @Request() req,
         @Param('classId', new ParseUUIDPipe()) classId: string,
