@@ -21,3 +21,13 @@ export class GetAttendanceRequestDto {
     @IsDateString()
     endDate?: Date;
 }
+
+export class GetAttendanceDetailRequestDto {
+    @ApiProperty()
+    @OptionalUUID()
+    classId: string;
+
+    @ApiProperty()
+    @OptionalUUID()
+    subjectId: string;
+}

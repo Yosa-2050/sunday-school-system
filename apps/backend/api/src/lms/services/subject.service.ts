@@ -64,12 +64,16 @@ export class SubjectService {
         });
     }
 
-    findOneByProgramId(id: string, programId: string) {
-        return this.subjectRepo.findOneBy({
+    async findOneByProgramIdOrThrow(id: string, programId: string) {
+        const sub = await this.subjectRepo.findOneBy({
             id,
             isActive: true,
             program: { id: programId },
         });
+        if (!sub) {
+            throw new EntityNotFoundException('Subject');
+        }
+        return sub;
     }
 
     async assignSubject(
@@ -85,7 +89,10 @@ export class SubjectService {
             throw new EntityAlreadyExistsException('Assigned Subject');
         }
         const cls = await this.classService.findOne(dto.classId, yearId);
-        const subject = await this.findOneByProgramId(dto.subjectId, programId);
+        const subject = await this.findOneByProgramIdOrThrow(
+            dto.subjectId,
+            programId,
+        );
         const teacher = await this.teacherService.findTeacherById(
             dto.teacherId,
             yearId,
@@ -113,6 +120,18 @@ export class SubjectService {
 
         const subjects = await cls.subjects;
         return subjects.map((x) => new SubjectResponseDto(x));
+    }
+
+    async getAssignedSubjectByIdOrThrow(id: string) {
+        const subjAssignment = await this.subjectAssignmentRepo.findOneBy({
+            id,
+        });
+
+        if (!subjAssignment) {
+            throw new EntityNotFoundException('Subject Assignment');
+        }
+
+        return subjAssignment;
     }
 
     async getAssignedTeachers(

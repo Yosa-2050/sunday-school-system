@@ -6,6 +6,7 @@ import type {
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponse } from '../../students/schemas/type';
 import type {
+    AttendanceDetailResponse,
     AttendanceRecord,
     AttendanceRequest,
     AttendanceViewRequest,
@@ -85,4 +86,45 @@ export const fetchAttendanceViewApi = async (
     );
 
     return response;
+};
+
+export const fetchAttendanceDetailsApi = async (
+    classId: string,
+    subjectId: string,
+): Promise<AttendanceDetailResponse[]> => {
+    const response: AttendanceDetailResponse[] = await fetcher(
+        '/attendance/getAttendanceDetail',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ classId, subjectId }),
+        },
+    );
+
+    return response;
+};
+
+export const completeAttendanceApi = async (
+    attendanceId: string,
+): Promise<IdSuccessResponse> => {
+    const response: IdSuccessResponse = await fetcher(
+        `/attendance/complete/${attendanceId}`,
+        {
+            method: 'PATCHn',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        },
+    );
+
+    return response;
+};
+
+export const deleteAttendanceApi = async (
+    attendanceId: string,
+): Promise<void> => {
+    // Your implementation here
+    //console.log('Deleting attendance:', attendanceId);
 };

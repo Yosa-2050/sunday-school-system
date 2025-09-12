@@ -4,6 +4,7 @@ import {
     Get,
     Param,
     ParseUUIDPipe,
+    Patch,
     Post,
     Request,
 } from '@nestjs/common';
@@ -17,7 +18,10 @@ import {
     StudentAttendance,
 } from './dto/request/create-attendance.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { GetAttendanceRequestDto } from './dto/request/get-attendance.request.dto';
+import {
+    GetAttendanceDetailRequestDto,
+    GetAttendanceRequestDto,
+} from './dto/request/get-attendance.request.dto';
 
 @ApiBearerAuth()
 @ApiTags('attendance')
@@ -35,10 +39,11 @@ export class AttendanceController {
             createAttendanceDto,
             classId,
             CurrentUser.getActiveYear(user),
+            CurrentUser.getProgramId(user),
         );
     }
 
-    @Post('complete/:attendanceId')
+    @Patch('complete/:attendanceId')
     complete(
         @Param('attendanceId', new ParseUUIDPipe()) attendanceId: string,
         @Request() user,
@@ -69,6 +74,17 @@ export class AttendanceController {
     ) {
         return this.attendanceService.findAttendanceList(
             getAttendance,
+            CurrentUser.getActiveYear(user),
+        );
+    }
+
+    @Post('/getAttendanceDetail')
+    findAttendanceDetails(
+        @Body() detail: GetAttendanceDetailRequestDto,
+        @Request() user,
+    ) {
+        return this.attendanceService.findAttendanceDetailList(
+            detail,
             CurrentUser.getActiveYear(user),
         );
     }

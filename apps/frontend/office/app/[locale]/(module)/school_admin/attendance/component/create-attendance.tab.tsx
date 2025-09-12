@@ -21,17 +21,18 @@ import {
     IconClock,
     IconInfoCircle,
 } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import type { GetClass } from '../classes/create/components/schema/fetchClassesDetail';
-import QRScanner from '../students/components/QrScanner';
-import type { StudentResponse } from '../students/schemas/type';
-import { saveAttendanceApi } from './schemas/api';
+import { fetchSubjectsAssignmentApi } from '../../assign_subject/schemas/api';
+import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
+import QRScanner from '../../students/components/QrScanner';
+import type { StudentResponse } from '../../students/schemas/type';
+import { saveAttendanceApi } from '../schemas/api';
 import {
     type AttendanceRecord,
     type AttendanceRequest,
     AttendanceStatus,
-} from './schemas/types';
+} from '../schemas/types';
 
 interface AttendanceCreateProps {
     classes: GetClass[];
@@ -57,11 +58,21 @@ export default function AttendanceCreate({
     const [date, setDate] = useState<Date | null>(null);
     const [attendance, setAttendance] = useState<Record<string, string>>({});
     const [remarks, setRemarks] = useState<Record<string, string>>({});
+    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+
+    // fetch subjects when class/section changes
+    const { data: subjects = [], isLoading: loadingSubjects } = useQuery({
+        queryKey: ['subjects', selectedClass, selectedSection],
+        queryFn: () =>
+            fetchSubjectsAssignmentApi(selectedSection ?? selectedClass ?? ''),
+        enabled: !!selectedClass, // only fetch when a class is selected
+        staleTime: 5 * 60 * 1000, // cache for 5 minutes
+    });
 
     const saveAttendance = useMutation({
         mutationFn: async () => {
-            if (!(selectedClass && date)) {
-                throw new Error('Class and date are required');
+            if (!(selectedClass && date && selectedSubject)) {
+                throw new Error('Class, subject and date are required');
             }
 
             const attendanceRecords: AttendanceRecord[] = students.map(
@@ -78,6 +89,7 @@ export default function AttendanceCreate({
                 date: date.toISOString(),
                 classId: selectedClass,
                 sectionId: selectedSection,
+                subjectId: selectedSubject,
                 attendance: attendanceRecords,
             };
 
@@ -92,9 +104,9 @@ export default function AttendanceCreate({
                 message: 'Attendance saved successfully!',
                 color: 'green',
             });
-            // Reset form after successful save
             setAttendance({});
             setRemarks({});
+            setSelectedSubject(null); // reset subject after save
         },
         onError: (error) => {
             notifications.show({
@@ -212,6 +224,7 @@ export default function AttendanceCreate({
             </Table.Tr>
         );
     });
+
     const [attendanceDataId, setAttendanceDataId] = useState(
         'current-attendance-session',
     );
@@ -219,9 +232,13 @@ export default function AttendanceCreate({
     const [refreshCount, setRefreshCount] = useState(0);
 
     const handleAttendanceRecorded = () => {
-        // Refresh attendance data or update UI
         setRefreshCount((prev) => prev + 1);
     };
+
+    const disableButtons =
+        !selectedClass ||
+        (!!classes?.find((c) => c.id === selectedClass)?.sections?.length &&
+            !selectedSection);
     return (
         <Box pt="md">
             <Group mb="md" align="flex-end">
@@ -267,7 +284,27 @@ export default function AttendanceCreate({
                     </Box>
                 ) : null}
 
-                {/* Date Selection with Label */}
+                {/* Subject Selection (populated dynamically) */}
+                <Box>
+                    <Text size="sm" fw={500} mb={5}>
+                        Select Subject:
+                    </Text>
+                    <Select
+                        placeholder={
+                            loadingSubjects ? 'Loading...' : 'Choose subject'
+                        }
+                        value={selectedSubject}
+                        onChange={setSelectedSubject}
+                        data={subjects.map((s) => ({
+                            value: s.id,
+                            label: s.subjectTitle,
+                        }))}
+                        style={{ width: 200 }}
+                        disabled={loadingSubjects || !subjects.length}
+                    />
+                </Box>
+
+                {/* Date Selection */}
                 <Box>
                     <Text size="sm" fw={500} mb={5}>
                         Select Date:
@@ -278,7 +315,7 @@ export default function AttendanceCreate({
                         onChange={setDate}
                         valueFormat="YYYY-MM-DD"
                         clearable={false}
-                        style={{ width: 220 }} // Wider date picker
+                        style={{ width: 220 }}
                     />
                 </Box>
 
@@ -286,18 +323,16 @@ export default function AttendanceCreate({
                 <Button
                     variant="light"
                     onClick={handleFetchStudents}
-                    disabled={
-                        !selectedClass || // no class selected
-                        (!!classes?.find((c) => c.id === selectedClass)
-                            ?.sections?.length &&
-                            !selectedSection) // class has sections but section not chosen
-                    }
+                    disabled={disableButtons}
                 >
                     Load Students
                 </Button>
 
                 {/* QR Scanner */}
-                <QRScanner onAttendanceRecorded={handleAttendanceRecorded} />
+                <QRScanner
+                    onAttendanceRecorded={handleAttendanceRecorded}
+                    disable={disableButtons}
+                />
             </Group>
 
             {/* Student Table */}
@@ -386,7 +421,7 @@ export default function AttendanceCreate({
                 <Button
                     onClick={() => saveAttendance.mutate()}
                     disabled={
-                        !(students.length && date) ||
+                        !(students.length && date && selectedSubject) ||
                         Object.keys(attendance).length === 0
                     }
                     loading={saveAttendance.isPending}

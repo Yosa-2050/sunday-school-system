@@ -16,6 +16,7 @@ export interface AttendanceRequest {
     date: string; // ISO string format
     classId: string;
     sectionId?: string | null;
+    subjectId: string;
     attendance: AttendanceRecord[];
 }
 
@@ -31,6 +32,11 @@ export interface AttendanceViewRequest {
     attendanceInfoId?: string;
     startDate?: string;
     endDate?: string;
+}
+
+export interface AttendanceDetailViewRequest {
+    classId?: string;
+    subjectId?: string;
 }
 
 export interface AttendanceViewResponse {
@@ -49,4 +55,19 @@ export interface AttendanceViewResponse {
         late: number;
         permission: number;
     };
+}
+
+export interface AttendanceDetailResponse {
+    id: string;
+    classId: string;
+    className: string;
+    subjectId: string;
+    subjectName: string;
+    teacherId?: string;
+    teacherName?: string;
+    date: string;
+    isCompleted: boolean;
+    totalStudents: number;
+    presentCount: number;
+    absentCount: number;
 }

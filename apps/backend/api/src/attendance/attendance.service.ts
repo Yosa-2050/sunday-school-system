@@ -8,9 +8,15 @@ import { UtilityServices } from '@shega/Utilities/service/utility.services';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponseDto } from '@shega/lms/dto/response/student.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from '@shega/lms/services/class.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentService } from '@shega/lms/services/student.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { SubjectService } from '@shega/lms/services/subject.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { TeacherService } from '@shega/lms/services/teacher.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Between, In, Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -19,7 +25,11 @@ import {
     StudentAttendance,
 } from './dto/request/create-attendance.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { GetAttendanceRequestDto } from './dto/request/get-attendance.request.dto';
+import {
+    GetAttendanceDetailRequestDto,
+    GetAttendanceRequestDto,
+} from './dto/request/get-attendance.request.dto';
+import { AttendanceDetailResponse } from './dto/response/attendance-detail.response.dto';
 import { AttendanceStudentResponse } from './dto/response/attendance.response.dto';
 import { AttendanceInformation } from './entities/attendance-data.entity';
 import { Attendance } from './entities/attendance.entity';
@@ -37,6 +47,8 @@ export class AttendanceService {
         private permissionRepo: Repository<Permission>,
         private classService: ClassService,
         private studentService: StudentService,
+        private subjectService: SubjectService,
+        private teacherService: TeacherService,
         private dateService: DateService,
     ) {}
 
@@ -63,6 +75,11 @@ export class AttendanceService {
             class: { id: classId },
             date: Between(startOfDay, endOfDay), // Find between start and end of day
         });
+
+        if (existingAttendance.isCompleted) {
+            throw new BadRequestException('Attendance completed');
+        }
+
         const classes = await this.classService.isClassValid(
             classId,
             activeCalendarYear,
@@ -77,13 +94,13 @@ export class AttendanceService {
 
         const existingAtt = await this.attendanceRepo.findOneBy({
             student: { id: student.id },
-            attendanceData: { id: existingAttendance.id },
+            attendanceDataId: existingAttendance.id,
         });
         if (existingAtt) {
             throw new EntityAlreadyExistsException('Attendance');
         }
         const attendance = this.attendanceRepo.create();
-        attendance.attendanceData = existingAttendance;
+        attendance.attendanceDataId = existingAttendance.id;
         attendance.student = student;
         attendance.status = dto.status;
         return this.attendanceRepo.save(attendance);
@@ -93,15 +110,37 @@ export class AttendanceService {
         dto: CreateAttendanceDto,
         classId: string,
         activeCalendarYear: string,
+        programId: string,
     ) {
-        const existingAttendance = await this.attendanceDataRepo.findOneBy({
-            class: { id: classId },
-            date: dto.date,
-        });
-        if (existingAttendance) {
-            throw new BadRequestException(
-                'Attendance found on the selected date',
+        let existingAttendance: AttendanceInformation;
+
+        let subject: SubjectAssignment;
+        if (dto.subjectId) {
+            existingAttendance = await this.attendanceDataRepo.findOneBy({
+                class: { id: classId },
+                subject: { id: dto.subjectId },
+                date: dto.date,
+            });
+
+            if (existingAttendance) {
+                throw new BadRequestException(
+                    'Attendance found on the selected date',
+                );
+            }
+            subject = await this.subjectService.getAssignedSubjectByIdOrThrow(
+                dto.subjectId,
             );
+        } else {
+            existingAttendance = await this.attendanceDataRepo.findOneBy({
+                class: { id: classId },
+                date: dto.date,
+            });
+
+            if (existingAttendance) {
+                throw new BadRequestException(
+                    'Attendance found on the selected date',
+                );
+            }
         }
 
         const classes = await this.classService.isClassValid(
@@ -111,6 +150,8 @@ export class AttendanceService {
         const attendanceInfo = this.attendanceDataRepo.create();
         attendanceInfo.date = dto.date;
         attendanceInfo.class = classes;
+        attendanceInfo.subject = subject;
+        const saved = await this.attendanceDataRepo.save(attendanceInfo);
 
         const students = await this.studentService.findStudents(
             classId,
@@ -134,6 +175,7 @@ export class AttendanceService {
                         return this.attendanceRepo.create({
                             student: std,
                             status: attDto.status,
+                            attendanceDataId: saved.id,
                         });
                     }
                 })
@@ -145,8 +187,8 @@ export class AttendanceService {
                 );
             }
 
-            attendanceInfo.attendances = attendance;
-            await this.attendanceDataRepo.save(attendanceInfo);
+            //attendanceInfo.attendances = attendance;
+            await this.attendanceRepo.save(attendance);
             return UtilityServices.SuccessDataResponse();
         }
         throw new BadRequestException('No student found for the attendance');
@@ -178,23 +220,25 @@ export class AttendanceService {
 
         let attendance: Attendance[] = [];
         let totalAttendance = 0;
-
+        let attendanceInfo: AttendanceInformation[] = [];
         if (get.attendanceInfoId) {
-            const attendanceInfo = await this.attendanceDataRepo.findOneBy({
+            const info = await this.attendanceDataRepo.findOneBy({
                 id: get.attendanceInfoId,
             });
-
-            attendance = await attendanceInfo.attendances;
+            attendance = await this.attendanceRepo.findBy({
+                attendanceDataId: info.id,
+            });
             totalAttendance = 1;
+            attendanceInfo.push(info);
         } else {
-            const attendanceInfo = await this.attendanceDataRepo.find({
+            attendanceInfo = await this.attendanceDataRepo.find({
                 where: {
                     date: Between(startDate, endDate),
                 },
             });
             const uniqueInfoIds = attendanceInfo.map((item) => item.id);
             const allAttendances = await this.attendanceRepo.findBy({
-                attendanceData: { id: In(uniqueInfoIds) },
+                attendanceDataId: In(uniqueInfoIds),
             });
 
             totalAttendance = attendanceInfo.length;
@@ -205,7 +249,7 @@ export class AttendanceService {
 
             for (let index = 0; index < attendanceInfo.length; index++) {
                 const element = allAttendances.filter(
-                    (x) => x.attendanceData.id === attendanceInfo[index].id,
+                    (x) => x.attendanceDataId === attendanceInfo[index].id,
                 );
 
                 attendance = attendance.concat(element);
@@ -225,13 +269,66 @@ export class AttendanceService {
                 );
                 const std = students.find((x) => x.id === element);
 
-                const att = new AttendanceStudentResponse(attend, std);
+                const att = new AttendanceStudentResponse(
+                    attend,
+                    std,
+                    attendanceInfo,
+                );
                 if (att?.idNumber) {
                     return att;
                 }
             })
             .filter((x) => x);
         return attendanceList;
+    }
+
+    async Complete(id: string, arg1: string) {
+        const attend = await this.attendanceDataRepo.findOneBy({ id });
+        if (!attend) {
+            throw new EntityNotFoundException('Attendance');
+        }
+        attend.isCompleted = true;
+        return this.attendanceDataRepo.save(attend);
+    }
+
+    async findAttendanceDetailList(
+        dto: GetAttendanceDetailRequestDto,
+        arg1: string,
+    ) {
+        let details: AttendanceInformation[];
+        if (!dto.classId) {
+            details = await this.attendanceDataRepo.find();
+        }
+        if (dto.subjectId) {
+            details = await this.attendanceDataRepo.findBy({
+                subject: { id: dto.subjectId },
+            });
+        }
+        if (dto.classId) {
+            details = await this.attendanceDataRepo.findBy({
+                class: { id: dto.classId },
+            });
+        }
+        const response = [];
+        for (let index = 0; index < details.length; index++) {
+            const element = details[index];
+            const present = await this.attendanceRepo.count({
+                where: {
+                    status: AttendanceStatus.Present,
+                    attendanceDataId: element.id,
+                },
+            });
+            const absent = await this.attendanceRepo.count({
+                where: {
+                    status: AttendanceStatus.Absent,
+                    attendanceDataId: element.id,
+                },
+            });
+            response.push(
+                new AttendanceDetailResponse(element, present, absent),
+            );
+        }
+        return response;
     }
     /** 
   async findAttendanceListBySchedule(

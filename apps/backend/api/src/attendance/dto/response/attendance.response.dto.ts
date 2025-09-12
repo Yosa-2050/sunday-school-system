@@ -1,4 +1,6 @@
 // biome-ignore lint/style/useImportType: <explanation>
+import { AttendanceInformation } from '@shega/attendance/entities/attendance-data.entity';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Attendance } from '@shega/attendance/entities/attendance.entity';
 import { AttendanceStatus } from '@shega/attendance/enums/attendance-status.enum';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -16,7 +18,7 @@ export class AttendanceResponseDto {
     isNull: boolean;
     status: AttendanceStatus;
 
-    constructor(attendance: Attendance) {
+    constructor(attendance: Attendance, data: AttendanceInformation) {
         if (attendance) {
             this.status = attendance.status;
             this.isAbsent = attendance.status === AttendanceStatus.Absent;
@@ -24,8 +26,8 @@ export class AttendanceResponseDto {
             this.isPermission =
                 attendance.status === AttendanceStatus.Permission;
             this.isLate = attendance.status === AttendanceStatus.Late;
-            this.attendanceDataId = attendance.attendanceData.id;
-            this.date = attendance.attendanceData.date;
+            this.attendanceDataId = data.id;
+            this.date = data.date;
             this.isNull = false;
         } else {
             this.isPermission = false;
@@ -56,7 +58,11 @@ export class AttendanceStudentResponse {
         [date: string]: AttendanceResponseDto;
     };
 
-    constructor(attendance: Attendance[], student: StudentResponseDto) {
+    constructor(
+        attendance: Attendance[],
+        student: StudentResponseDto,
+        attendanceInfo: AttendanceInformation[],
+    ) {
         if (student.isActive) {
             this.isStudentActive = student.isActive;
             this.idNumber = student.idNumber;
@@ -84,10 +90,14 @@ export class AttendanceStudentResponse {
 
             for (let index = 0; index < attendance.length; index++) {
                 const element = attendance[index];
-                const dateStr = element.attendanceData.date
-                    .toISOString()
-                    .split('T')[0];
-                this.attendance[dateStr] = new AttendanceResponseDto(element);
+                const info = attendanceInfo.find(
+                    (x) => x.id === element.attendanceDataId,
+                );
+                const dateStr = info?.date.toISOString().split('T')[0];
+                this.attendance[dateStr] = new AttendanceResponseDto(
+                    element,
+                    info,
+                );
             }
         }
     }

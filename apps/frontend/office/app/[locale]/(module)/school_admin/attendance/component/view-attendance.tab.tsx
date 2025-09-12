@@ -22,14 +22,14 @@ import {
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import type { GetClass } from '../classes/create/components/schema/fetchClassesDetail';
-import { fetchAttendanceViewApi, fetchSavedDatesApi } from './schemas/api';
+import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
+import { fetchAttendanceViewApi, fetchSavedDatesApi } from '../schemas/api';
 import {
     AttendanceStatus,
     type AttendanceViewRequest,
     type AttendanceViewResponse,
     type SavedDate,
-} from './schemas/types';
+} from '../schemas/types';
 
 interface AttendanceViewProps {
     classes: GetClass[];

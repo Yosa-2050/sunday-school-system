@@ -1,27 +1,23 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Classes } from '@shega/lms/entities/classes.entity';
-import { Subjects } from '@shega/lms/entities/subject.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { Attendance } from './attendance.entity';
+import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
+import { Teacher } from '@shega/lms/entities/teacher.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
 export class AttendanceInformation extends BaseModel {
     @ManyToOne(() => Classes, { eager: true })
     class: Classes;
 
-    @ManyToOne(() => Subjects, { nullable: true, eager: true })
-    subject: Subjects;
+    @ManyToOne(() => SubjectAssignment, { nullable: true, eager: true })
+    subject: SubjectAssignment;
+
+    @ManyToOne(() => Teacher, { nullable: true, eager: true })
+    teacher: Teacher;
 
     @Column()
     date: Date;
 
-    @OneToMany(
-        () => Attendance,
-        (attendance) => attendance.attendanceData,
-        {
-            lazy: true,
-            cascade: true,
-        },
-    )
-    attendances: Attendance[];
+    @Column({ default: false })
+    isCompleted: boolean;
 }

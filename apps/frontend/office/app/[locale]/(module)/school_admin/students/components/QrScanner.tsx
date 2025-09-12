@@ -26,9 +26,13 @@ import QRScannerModal from './QrScanModal';
 
 interface QRScannerProps {
     onAttendanceRecorded: () => void;
+    disable: boolean;
 }
 
-export default function QRScanner({ onAttendanceRecorded }: QRScannerProps) {
+export default function QRScanner({
+    onAttendanceRecorded,
+    disable,
+}: QRScannerProps) {
     const [opened, setOpened] = useState(false);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
@@ -136,6 +140,7 @@ export default function QRScanner({ onAttendanceRecorded }: QRScannerProps) {
                 variant="light"
                 color="blue"
                 size="md"
+                disabled={disable}
             >
                 Scan QR Code
             </Button>
