@@ -12,6 +12,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { showError, showSuccess } from 'utilies/notification';
+import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
 import { fetchSubjectsApi } from '../../subject/schemas/api';
 import { fetchTeacherApi } from '../../teacher/schema/api';
 import { createSubjectAssignmentApi } from '../schemas/api';
@@ -27,8 +28,8 @@ const TeacherType = {
 
 // Drawer Component
 interface AssignmentDrawerProps {
-    classId: string;
-    className: string;
+    classes?: GetClass;
+    section?: GetClass;
     mode: 'create' | 'edit';
     assignment?: SubjectAssignmentResponse | null;
     opened: boolean;
@@ -38,8 +39,8 @@ interface AssignmentDrawerProps {
 
 export function AssignmentDrawer({
     mode,
-    classId,
-    className,
+    classes,
+    section,
     assignment,
     opened,
     onClose,
@@ -57,7 +58,7 @@ export function AssignmentDrawer({
     } = useForm<CreateSubjectAssignmentRequest>({
         defaultValues: {
             subjectId: assignment?.subjectId || '',
-            classId: classId || '',
+            classId: assignment?.classId || '',
             teacherId: assignment?.teacherId || '',
             subjectTitle: assignment?.subjectTitle || '',
             description: assignment?.description || '',
@@ -124,6 +125,7 @@ export function AssignmentDrawer({
     };
 
     const onSubmit = (data: CreateSubjectAssignmentRequest) => {
+        data.classId = section?.id ?? classes?.id;
         mutation.mutate(data);
     };
 
@@ -141,7 +143,7 @@ export function AssignmentDrawer({
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack>
-                    Class: {className}
+                    Class: {`${classes?.name} ${section?.name}`}
                     <Controller
                         name="subjectId"
                         control={control}

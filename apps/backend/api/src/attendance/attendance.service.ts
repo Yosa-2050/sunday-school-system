@@ -303,8 +303,7 @@ export class AttendanceService {
             details = await this.attendanceDataRepo.findBy({
                 subject: { id: dto.subjectId },
             });
-        }
-        if (dto.classId) {
+        } else if (dto.classId) {
             details = await this.attendanceDataRepo.findBy({
                 class: { id: dto.classId },
             });

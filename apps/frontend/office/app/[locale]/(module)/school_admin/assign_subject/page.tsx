@@ -15,7 +15,7 @@ import {
     type CalendarYearResponse,
     fetchCalendarYearsSchoolAdmin,
 } from 'app/[locale]/_api/admin/fetch-programs';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     type GetClass,
     fetchClassesApi,
@@ -74,6 +74,7 @@ export default function SubjectAssignmentPage() {
 
     const handleDrawerCompleted = () => {
         handleDrawerClose();
+        fetchAssignment();
     };
 
     const getSelectedClassId = {
@@ -118,21 +119,21 @@ export default function SubjectAssignmentPage() {
         fetchClasses();
     }, []);
 
-    useEffect(() => {
-        const fetchAssignment = async () => {
-            const selected = getSelectedClassId.id;
-            if (selected) {
-                try {
-                    const data = await fetchSubjectsAssignmentApi(selected);
-                    setSubjAssignment(data);
-                } catch (err) {
-                    // handle error
-                }
+    const fetchAssignment = useCallback(async () => {
+        const selected = getSelectedClassId.id;
+        if (selected) {
+            try {
+                const data = await fetchSubjectsAssignmentApi(selected);
+                setSubjAssignment(data);
+            } catch (err) {
+                // handle error
             }
-        };
-
-        fetchAssignment();
+        }
     }, [getSelectedClassId.id]);
+
+    useEffect(() => {
+        fetchAssignment();
+    }, [fetchAssignment]);
 
     const rows = subjAssignment.map((item, index) => (
         <Table.Tr key={item.id}>
@@ -259,8 +260,10 @@ export default function SubjectAssignmentPage() {
 
             {/* Assignment Drawer */}
             <AssignmentDrawer
-                classId={selectedSection ?? selectedClass ?? ''}
-                className={`${classes.find((x) => x.id === selectedClass)?.name} ${classes.find((x) => x.id === selectedClass)?.sections?.find((x) => x.id === selectedSection)?.name ?? ''} `}
+                classes={classes.find((x) => x.id === selectedClass)}
+                section={classes
+                    .find((x) => x.id === selectedClass)
+                    ?.sections?.find((x) => x.id === selectedSection)}
                 mode={drawerMode}
                 assignment={editAssignment}
                 opened={drawerOpen}
