@@ -3,14 +3,9 @@
 import useIsAuthorized from '@/hooks/useIsAuthorized';
 import { Link, useRouter } from '@/i18n/routing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Group, Paper, Stepper, Title } from '@mantine/core';
+import { Button, Group, Paper, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import {
-    IconArrowLeft,
-    IconArrowRight,
-    IconCheck,
-    IconCircleX,
-} from '@tabler/icons-react';
+import { IconArrowLeft, IconArrowRight, IconCheck } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchEnum } from 'app/[locale]/_api/enum';
 import {
@@ -27,10 +22,6 @@ import {
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { ApplicationDetails } from './components/ApplicationDetails';
-import { JobDetails } from './components/JobDetails';
-import { JobPreview } from './components/JobPreview';
-import { JobRequirements } from './components/JobRequirements';
 import { jobSchema } from './components/schema/job-schema';
 import type { JobFormData } from './components/types';
 
@@ -313,97 +304,6 @@ export default function PostJobPage() {
                         <Title order={2}>Post a New Job</Title>
                     </Group>
                 </Group>
-
-                <Stepper
-                    active={active}
-                    onStepClick={setActive}
-                    styles={{
-                        stepLabel: {
-                            marginTop: 10,
-                        },
-                        step: {
-                            '&[data-error]': {
-                                color: 'var(--mantine-color-red-6)',
-                            },
-                        },
-                        stepIcon: {
-                            '&[data-error]': {
-                                backgroundColor: 'var(--mantine-color-red-6)',
-                                borderColor: 'var(--mantine-color-red-6)',
-                            },
-                        },
-                    }}
-                >
-                    <Stepper.Step
-                        label="Job Details"
-                        description="Basic job information and salary"
-                        completedIcon={
-                            hasStepErrors(0) ? (
-                                <IconCircleX size="1.1rem" color="white" />
-                            ) : undefined
-                        }
-                        color={hasStepErrors(0) ? 'red' : ''}
-                        data-error={hasStepErrors(0)}
-                        allowStepSelect={true}
-                    >
-                        <JobDetails
-                            employmentTypes={employmentTypes}
-                            workPlaceTypes={workPlaceTypes}
-                            countries={countries}
-                            regions={regions}
-                            cities={cities}
-                            salaryFrequencyTypes={salaryFrequencyTypes}
-                            salaryTypes={salaryTypes}
-                        />
-                    </Stepper.Step>
-
-                    <Stepper.Step
-                        label="Requirements"
-                        description="Job requirements"
-                        completedIcon={
-                            hasStepErrors(0) ? (
-                                <IconCircleX size="1.1rem" color="white" />
-                            ) : undefined
-                        }
-                        color={hasStepErrors(0) ? 'red' : ''}
-                        data-error={hasStepErrors(1)}
-                        allowStepSelect={true}
-                    >
-                        <JobRequirements
-                            categories={categories}
-                            skills={skills}
-                            educationalRequirmentTypes={
-                                educationalRequirmentType
-                            }
-                        />
-                    </Stepper.Step>
-
-                    <Stepper.Step
-                        label="Application"
-                        description="Application details"
-                        completedIcon={
-                            hasStepErrors(0) ? (
-                                <IconCircleX size="1.1rem" color="white" />
-                            ) : undefined
-                        }
-                        color={hasStepErrors(0) ? 'red' : ''}
-                        data-error={hasStepErrors(2)}
-                        allowStepSelect={true}
-                        onClick={nextStep}
-                    >
-                        <ApplicationDetails
-                            control={control}
-                            errors={formState.errors}
-                        />
-                    </Stepper.Step>
-
-                    <Stepper.Step
-                        label="Preview"
-                        description="Review job posting"
-                    >
-                        <JobPreview formData={methods.getValues()} />
-                    </Stepper.Step>
-                </Stepper>
 
                 <Group justify="space-between" mt="xl">
                     <Button
