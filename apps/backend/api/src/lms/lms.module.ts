@@ -6,6 +6,7 @@ import { ClassController } from './controllers/classes.controller';
 import { LmsController } from './controllers/lms.controller';
 import { StudentController } from './controllers/student.controller';
 import { SubjectController } from './controllers/subject.controller';
+import { TeacherController } from './controllers/teacher.controller';
 import { CalendarYear } from './entities/calendar-year.entity';
 import { Classes } from './entities/classes.entity';
 import { ProgramUser } from './entities/program-users.entity';
@@ -44,6 +45,7 @@ import { TeacherService } from './services/teacher.service';
         ClassController,
         StudentController,
         SubjectController,
+        TeacherController,
     ],
     providers: [
         LmsService,

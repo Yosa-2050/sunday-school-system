@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TeacherResponseDto } from '@shega/education/dto/response/teacher.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateEmployeeDto } from '@shega/organization/dto/request/create-employee.dto';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
@@ -32,13 +33,13 @@ export class TeacherService {
             dto.email,
             LoginBy.EMAIL,
             UserRoleType.Teacher,
-            dto.profile_dto.firstName,
-            dto.profile_dto.middleName,
-            dto.profile_dto.lastName,
-            dto.profile_dto.phoneNumber,
-            dto.profile_dto.gender,
-            dto.profile_dto.birthDate,
-            dto.profile_dto.baptistName,
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            dto.phoneNumber,
+            dto.gender,
+            dto.birthDate,
+            dto.baptistName,
             false,
             dto.password,
             true,
@@ -51,11 +52,18 @@ export class TeacherService {
         return saved;
     }
 
-    findTeachers(yearId: string) {
-        return this.teacherRepo.findBy({
+    async findTeachers(yearId: string) {
+        const teachers = await this.teacherRepo.findBy({
             year: { id: yearId },
             isActive: true,
         });
+
+        return await Promise.all(
+            teachers.map(async (x) => {
+                const user = await x.profile.user;
+                return new TeacherResponseDto(x, user.email);
+            }),
+        );
     }
 
     findTeacherById(id: string, yearId: string) {

@@ -9,8 +9,8 @@ import {
 } from '@tabler/icons-react';
 import { useDownloadProfilePicture } from 'app/[locale]/_api/profile';
 import type { Organization } from 'model/Organization';
-import { formatDate } from 'utilies/format-date';
-import { getStatusColor } from 'utilies/get-status-color';
+import { formatDate } from 'utilities/format-date';
+import { getStatusColor } from 'utilities/get-status-color';
 
 const OrganizationBasic = ({
     organizationData,

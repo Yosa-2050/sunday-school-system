@@ -11,7 +11,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { showError, showSuccess } from 'utilies/notification';
+import { showError, showSuccess } from 'utilities/notification';
 import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
 import { fetchSubjectsApi } from '../../subject/schemas/api';
 import { fetchTeacherApi } from '../../teacher/schema/api';

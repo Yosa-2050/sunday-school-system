@@ -116,6 +116,19 @@ export const Menus = (): MenuTree[] => {
                 },
             ],
         },
+        {
+            isGroup: true,
+            label: t('teacherManagement'),
+            role: 'school_admin',
+            children: [
+                {
+                    label: t('teacher'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/teacher',
+                    role: 'school_admin',
+                },
+            ],
+        },
         // Super Admin Roles
         {
             label: t('dashboard'),

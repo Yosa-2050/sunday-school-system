@@ -15,7 +15,7 @@ import {
 import { IconArrowLeft, IconCheck, IconScan } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
-import { showError } from 'utilies/notification';
+import { showError } from 'utilities/notification';
 import { saveIndividualAttendanceApi } from '../../attendance/schemas/api';
 import { AttendanceStatus } from '../../attendance/schemas/types';
 import {

@@ -1,5 +1,5 @@
 import { Box, LoadingOverlay } from '@mantine/core';
-import { cn } from 'utilies/cn';
+import { cn } from 'utilities/cn';
 
 export function EntityPageLoading({ className }: { className?: string }) {
     return (

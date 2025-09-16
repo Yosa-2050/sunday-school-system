@@ -1,5 +1,5 @@
 import { Box, Stack, Title, Tooltip } from '@mantine/core';
-import { cn } from 'utilies/cn';
+import { cn } from 'utilities/cn';
 import { GoBack } from './GoBack';
 
 const PageContainer = ({

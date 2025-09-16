@@ -13,7 +13,7 @@ import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useToggle } from 'react-use';
-import { cn } from 'utilies/cn';
+import { cn } from 'utilities/cn';
 import { ColorSchemeControl } from './ColorSchema';
 import { Sidebar } from './Sidebar';
 import UserProfile from './UserProfile';

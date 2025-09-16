@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import { IconMail } from '@tabler/icons-react';
 import type { Contact, Organization } from 'model/Organization';
-import { getContactIcon } from 'utilies/get-contact-info';
+import { getContactIcon } from 'utilities/get-contact-info';
 
 const ContactInformation = ({
     organizationData,

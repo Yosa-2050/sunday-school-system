@@ -25,7 +25,7 @@ import {
 } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { showError, showSuccess } from 'utilies/notification';
+import { showError, showSuccess } from 'utilities/notification';
 import { fetchSubjectsAssignmentApi } from '../../assign_subject/schemas/api';
 import { fetchClassesApi } from '../../classes/create/components/schema/fetchClassesDetail';
 import {

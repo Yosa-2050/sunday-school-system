@@ -4,7 +4,7 @@ import { Button, Drawer, Stack, TextInput } from '@mantine/core';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { showError, showSuccess } from 'utilies/notification';
+import { showError, showSuccess } from 'utilities/notification';
 import { createSubjectApi, updateSubjectApi } from '../schemas/api';
 import type {
     CreateWithTextRequest,

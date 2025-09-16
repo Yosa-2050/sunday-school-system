@@ -22,11 +22,7 @@ export class TeacherController {
 
     @Roles(UserRoleType.SchoolAdmin)
     @Post('create')
-    createTeacher(
-        @Body() dto: CreateEmployeeDto,
-        @Request() req,
-        @Param('classId', new ParseUUIDPipe()) id: string,
-    ) {
+    createTeacher(@Body() dto: CreateEmployeeDto, @Request() req) {
         return this.teacherService.CreateTeacher(
             dto,
             CurrentUser.getActiveYear(req),
@@ -34,10 +30,7 @@ export class TeacherController {
     }
 
     @Get()
-    findTeachers(
-        @Param('classId', new ParseUUIDPipe()) id: string,
-        @Request() req,
-    ) {
+    findTeachers(@Request() req) {
         return this.teacherService.findTeachers(CurrentUser.getActiveYear(req));
     }
 
