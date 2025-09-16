@@ -83,6 +83,18 @@ export const Menus = (): MenuTree[] => {
                     link: '/school_admin/classes',
                     role: 'school_admin',
                 },
+                {
+                    label: t('subject'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/subject',
+                    role: 'school_admin',
+                },
+                {
+                    label: t('assignSubject'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/assign_subject',
+                    role: 'school_admin',
+                },
             ],
         },
         {
@@ -100,6 +112,19 @@ export const Menus = (): MenuTree[] => {
                     label: t('attendance'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/attendance',
+                    role: 'school_admin',
+                },
+            ],
+        },
+        {
+            isGroup: true,
+            label: t('teacherManagement'),
+            role: 'school_admin',
+            children: [
+                {
+                    label: t('teacher'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/teacher',
                     role: 'school_admin',
                 },
             ],

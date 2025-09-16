@@ -4,7 +4,7 @@ import { useToggle } from '@mantine/hooks';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
-import { cn } from 'utilies/cn';
+import { cn } from 'utilities/cn';
 import classes from './SideMenu.module.css';
 export type MenuTree = {
     isGroup?: boolean;

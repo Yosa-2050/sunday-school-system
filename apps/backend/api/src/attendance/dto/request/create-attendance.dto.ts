@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { OptionalUUID } from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { AttendanceStatus } from '@shega/attendance/enums/attendance-status.enum';
 import { Transform, Type } from 'class-transformer';
 import {
@@ -16,6 +17,14 @@ export class StudentAttendance {
     studentId: string;
 
     @ApiProperty()
+    @OptionalUUID()
+    subjectId: string;
+
+    @ApiProperty()
+    @OptionalUUID()
+    teacherId: string;
+
+    @ApiProperty()
     @IsEnum(AttendanceStatus)
     status: AttendanceStatus;
 }
@@ -25,6 +34,14 @@ export class CreateAttendanceDto {
     @IsDate()
     @Transform(({ value }) => value && new Date(new Date(value).toUTCString()))
     date: Date;
+
+    @ApiProperty()
+    @OptionalUUID()
+    subjectId: string;
+
+    @ApiProperty()
+    @OptionalUUID()
+    teacherId: string;
 
     @IsDefined()
     @IsArray()

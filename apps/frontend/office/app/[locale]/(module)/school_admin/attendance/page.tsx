@@ -12,8 +12,9 @@ import {
 } from '../classes/create/components/schema/fetchClassesDetail';
 import { fetchStudentsApi } from '../students/schemas/api';
 import type { StudentResponse } from '../students/schemas/type';
-import AttendanceCreate from './CreateAttendance';
-import AttendanceView from './ViewAttendance';
+import AttendanceDetailTable from './component/attendance-data.tab';
+import AttendanceCreate from './component/create-attendance.tab';
+import AttendanceView from './component/view-attendance.tab';
 
 export default function AttendancePage() {
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
@@ -102,6 +103,7 @@ export default function AttendancePage() {
                 <Tabs.List>
                     <Tabs.Tab value="create">Create Attendance</Tabs.Tab>
                     <Tabs.Tab value="view">View Attendance</Tabs.Tab>
+                    <Tabs.Tab value="detail">View Attendance Detail</Tabs.Tab>
                 </Tabs.List>
 
                 <Tabs.Panel value="create" pt="md">
@@ -125,6 +127,10 @@ export default function AttendancePage() {
                         selectedSection={selectedSection}
                         setSelectedClass={setSelectedClass}
                     />
+                </Tabs.Panel>
+
+                <Tabs.Panel value="detail" pt="md">
+                    <AttendanceDetailTable />
                 </Tabs.Panel>
             </Tabs>
         </div>

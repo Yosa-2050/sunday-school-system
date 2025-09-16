@@ -11,9 +11,7 @@ import {
     Table,
     Text,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import {
-    IconCheck,
     IconDots,
     IconEdit,
     IconEye,
@@ -28,13 +26,19 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { showError, showSuccess } from 'utilities/notification';
+import { useActiveSelection } from 'utilities/utilities';
 import {
     type GetClass,
     fetchClassesApi,
 } from '../classes/create/components/schema/fetchClassesDetail';
 import CreateRelationModal from './components/CreateRelationShip';
-import CreateStudentModal from './components/CreateStudent';
-import { fetchStudentsApi, uploadFileApi } from './schemas/api';
+import CreateProfileModal from './components/create-profile.modal';
+import {
+    createStudentApi,
+    fetchStudentsApi,
+    uploadFileApi,
+} from './schemas/api';
 import type { StudentResponse } from './schemas/type';
 
 export default function StudentPage() {
@@ -55,6 +59,8 @@ export default function StudentPage() {
     const [newStudentId, setNewStudentId] = useState<string | null>(null);
 
     const router = useRouter();
+
+    const SelectedClassId = useActiveSelection(selectedSection, selectedClass);
 
     // Fetch calendar years
     useEffect(() => {
@@ -100,9 +106,7 @@ export default function StudentPage() {
 
         try {
             setLoadingStudents(true);
-            const data = await fetchStudentsApi(
-                selectedSection ?? selectedClass,
-            );
+            const data = await fetchStudentsApi(SelectedClassId ?? '');
             setStudents(data);
         } finally {
             setLoadingStudents(false);
@@ -116,25 +120,12 @@ export default function StudentPage() {
         }
 
         try {
-            await uploadFileApi(
-                `/student/import/${selectedSection ?? selectedClass}`,
-                file,
-            );
-            notifications.show({
-                title: 'Success',
-                message: 'Students uploaded successfully',
-                color: 'green',
-                icon: <IconCheck size={16} />,
-            });
-            await handleFetchStudents(); // refresh students after import
+            await uploadFileApi(`/student/import/${SelectedClassId}`, file);
+            showSuccess('Students uploaded successfully');
+            await handleFetchStudents();
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         } catch (error: any) {
-            notifications.show({
-                title: 'Error',
-                message: error?.message ?? 'Failed to import students',
-                color: 'red',
-                icon: <IconX size={16} />,
-            });
+            showError(error.message);
         }
     };
 
@@ -193,6 +184,10 @@ export default function StudentPage() {
         </Table.Tr>
     ));
 
+    const disableAction =
+        !selectedClass ||
+        (!!classes?.find((c) => c.id === selectedClass)?.sections?.length &&
+            !selectedSection);
     return (
         <div>
             {/* Calendar Year */}
@@ -244,12 +239,7 @@ export default function StudentPage() {
                 <Button
                     variant="light"
                     onClick={handleFetchStudents}
-                    disabled={
-                        !selectedClass ||
-                        (!!classes?.find((c) => c.id === selectedClass)
-                            ?.sections?.length &&
-                            !selectedSection)
-                    }
+                    disabled={disableAction}
                 >
                     Load Students
                 </Button>
@@ -263,12 +253,7 @@ export default function StudentPage() {
                         variant="light"
                         leftSection={<IconPlus size={16} />}
                         onClick={() => setCreateStudentModalOpened(true)}
-                        disabled={
-                            !selectedClass ||
-                            (!!classes?.find((c) => c.id === selectedClass)
-                                ?.sections?.length &&
-                                !selectedSection)
-                        }
+                        disabled={disableAction}
                     >
                         Add New Student
                     </Button>
@@ -311,12 +296,21 @@ export default function StudentPage() {
             </Table>
 
             {/* Modals */}
-            <CreateStudentModal
+            <CreateProfileModal
                 opened={createStudentModalOpened}
-                onClose={() => setCreateStudentModalOpened(false)}
-                onStudentCreated={handleStudentCreated}
-                classId={selectedSection ?? selectedClass}
-                LoadStudent={() => handleFetchStudents()}
+                onClose={() => {
+                    setCreateStudentModalOpened(false);
+                    handleFetchStudents();
+                }}
+                onCreated={handleStudentCreated}
+                mutationFn={({ SelectedClassId, data }) =>
+                    createStudentApi({
+                        classId: SelectedClassId,
+                        studentData: data,
+                    })
+                }
+                extraData={{ SelectedClassId }}
+                title="Add Student"
             />
 
             <CreateRelationModal

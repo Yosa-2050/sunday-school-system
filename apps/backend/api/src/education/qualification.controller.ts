@@ -13,10 +13,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
-import { Roles } from '@shega/auth/decorators/roles.decorator';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CreateBasicUserDto } from '@shega/users/dto/create-user.dto';
-import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     AddEducationalHistoryRequestDto,
@@ -26,7 +22,7 @@ import {
 import {
     AddExperienceRequestDto,
     UpdateExperienceRequestDto,
-} from './dto/request/add-experiance.request.dto';
+} from './dto/request/add-experience.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -34,20 +30,13 @@ import { QualificationDetailService } from './qualification-detail.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { QualificationService } from './qualification.service';
 
-@Roles(UserRoleType.JobSeeker)
-@ApiTags('job-seeker')
-@Controller('job-seeker')
+@ApiTags('qualification')
+@Controller('qualification')
 export class JobSeekerController {
     constructor(
         private readonly jobPortalService: QualificationService,
         private readonly jobsService: QualificationDetailService,
     ) {}
-
-    @Roles(UserRoleType.Administrator, UserRoleType.SuperAdmin)
-    @Post('newUser')
-    createNewUser(@Body() dto: CreateBasicUserDto) {
-        return this.jobPortalService.createJobSeeker(dto);
-    }
 
     // @Post('upload/cv')
     // @ApiConsumes('multipart/form-data')
@@ -157,11 +146,5 @@ export class JobSeekerController {
         return this.jobsService.checkApplicantStatus(
             CurrentUser.getApplicantId(req),
         );
-    }
-
-    @Roles(UserRoleType.Mentor)
-    @Get('applicant/:applicantId')
-    getApplicantDetails(@Param('applicantId') applicantId: string) {
-        return this.jobsService.getDetails(applicantId);
     }
 }

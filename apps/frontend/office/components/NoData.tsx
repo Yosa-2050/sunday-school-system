@@ -1,7 +1,7 @@
 import { Box, Text } from '@mantine/core';
 import { IconFoldersFilled } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { cn } from 'utilies/cn';
+import { cn } from 'utilities/cn';
 
 export default function NoData({
     entity,

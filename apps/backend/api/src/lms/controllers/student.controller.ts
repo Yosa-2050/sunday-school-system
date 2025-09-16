@@ -13,7 +13,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
-import { Public } from '@shega/auth/jwt-public';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
@@ -28,7 +27,7 @@ export class StudentController {
 
     @Roles(UserRoleType.SchoolAdmin)
     @Post('create/:classId')
-    createEmployee(
+    createStudent(
         @Body() dto: CreateStudentRequestDto,
         @Request() req,
         @Param('classId', new ParseUUIDPipe()) id: string,
@@ -77,7 +76,6 @@ export class StudentController {
         );
     }
 
-    @Public()
     @Get('byId/:id')
     findStudentsById(
         @Param('id', new ParseUUIDPipe()) id: string,

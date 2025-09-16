@@ -10,7 +10,7 @@ import QueryProviders from 'providers/Query.provider';
 
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
-import { cn } from 'utilies/cn';
+import { cn } from 'utilities/cn';
 import { generateColors, lightenHexColor } from 'utility/colors';
 import { getUserAction } from './_api/get-user-action';
 

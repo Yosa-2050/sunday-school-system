@@ -87,11 +87,6 @@ export class AuthService {
                     user.profile.id,
                 );
                 break;
-            case UserRoleType.JobSeeker:
-                details = await this.jobService.getApplicantDetail(
-                    user.profile.id,
-                );
-                break;
             default:
                 throw new UnauthorizedException();
         }

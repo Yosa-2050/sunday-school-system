@@ -13,7 +13,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconAlertCircle } from '@tabler/icons-react';
 import type { Organization } from 'model/Organization';
 import type { JSX } from 'react';
-import { formatDate } from 'utilies/format-date';
+import { formatDate } from 'utilities/format-date';
 
 const AdjustmentCollapsable = ({
     organizationData,

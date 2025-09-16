@@ -21,7 +21,7 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
 import type { ControllerRenderProps, FieldError } from 'react-hook-form';
-import { cn } from 'utilies/cn';
+import { cn } from 'utilities/cn';
 import CustomHeading from './control/CustomHeading';
 import HardbreakControl from './control/HardbreakControl';
 import { IframeControl } from './control/IframeControl';

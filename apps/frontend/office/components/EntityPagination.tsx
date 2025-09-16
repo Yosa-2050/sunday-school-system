@@ -2,7 +2,7 @@
 
 import { Box, Pagination } from '@mantine/core';
 import { PER_PAGE } from '@shega/shared';
-import { cn } from 'utilies/cn';
+import { cn } from 'utilities/cn';
 
 type EntityPaginationProps = {
     total: number;

@@ -87,6 +87,7 @@ export type CreateStudentRequest = {
     gender: '';
     phoneNumber: '';
     idNumber: '';
+    email: '';
 };
 
 export type CreateRelationRequest = {

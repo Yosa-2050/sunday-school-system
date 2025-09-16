@@ -3,25 +3,30 @@
 import { Button, Group, Modal, Select, Stack, TextInput } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { showError, showSuccess } from 'utilies/notification';
-import { createStudentApi } from '../schemas/api';
+import { showError, showSuccess } from 'utilities/notification';
 import type { CreateStudentRequest } from '../schemas/type';
 
-interface CreateStudentModalProps {
+interface CreateProfileModalProps {
     opened: boolean;
     onClose: () => void;
-    onStudentCreated: (studentId: string) => void;
-    classId: string | null;
-    LoadStudent: () => void;
+    onCreated: (id: string) => void;
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    mutationFn: (payload: any) => Promise<{ id: string }>; // inject API function
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    extraData?: Record<string, any>; // e.g. { classId }
+    title?: string;
+    type?: string;
 }
 
-export default function CreateStudentModal({
+export default function CreateProfileModal({
     opened,
     onClose,
-    onStudentCreated,
-    classId,
-    LoadStudent,
-}: CreateStudentModalProps) {
+    onCreated,
+    mutationFn,
+    extraData = {},
+    title = 'Add New Profile',
+    type = '',
+}: CreateProfileModalProps) {
     const [formData, setFormData] = useState<CreateStudentRequest>({
         firstName: '',
         middleName: '',
@@ -32,12 +37,13 @@ export default function CreateStudentModal({
         gender: '',
         phoneNumber: '',
         idNumber: '',
+        email: '',
     });
 
-    const createStudentMutation = useMutation({
-        mutationFn: createStudentApi,
+    const mutation = useMutation({
+        mutationFn: mutationFn,
         onSuccess: (data) => {
-            onStudentCreated(data.id);
+            onCreated(data.id);
             setFormData({
                 firstName: '',
                 middleName: '',
@@ -48,33 +54,22 @@ export default function CreateStudentModal({
                 gender: '',
                 phoneNumber: '',
                 idNumber: '',
+                email: '',
             });
-            showSuccess('Student Created');
+            showSuccess('Created Successfully');
         },
-        onError: (error) => {
-            showError(error.message);
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        onError: (error: any) => {
+            showError(error.message || 'Failed to create');
         },
     });
 
     const handleSubmit = async () => {
-        if (!classId) {
-            return;
-        }
-
         try {
-            const studentData = {
-                ...formData,
-            };
-            await createStudentMutation.mutateAsync({ classId, studentData });
-        } catch (error) {
-            //console.error('Failed to create student:', error);
+            await mutation.mutateAsync({ ...extraData, data: formData });
+        } catch (e) {
+            // error is already handled in onError
         }
-    };
-
-    const handleClose = () => {
-        // ✅ call parent’s LoadStudent method
-        LoadStudent();
-        onClose(); // close modal properly
     };
 
     const today = new Date();
@@ -96,7 +91,7 @@ export default function CreateStudentModal({
         <Modal
             opened={opened}
             onClose={onClose}
-            title="Add New Student"
+            title={title}
             size="lg"
             centered
         >
@@ -118,7 +113,6 @@ export default function CreateStudentModal({
                         }
                         required
                     />
-
                     <TextInput
                         label="Last Name"
                         value={formData.lastName}
@@ -130,6 +124,16 @@ export default function CreateStudentModal({
                 </Group>
 
                 <Group grow>
+                    {type === 'Teacher' ? (
+                        <TextInput
+                            label="Email"
+                            value={formData.email}
+                            onChange={(e) =>
+                                handleInputChange('email', e.target.value)
+                            }
+                            required={type === 'Teacher'}
+                        />
+                    ) : null}
                     <TextInput
                         label="ID Number"
                         value={formData.idNumber}
@@ -160,12 +164,11 @@ export default function CreateStudentModal({
                         label="Birth Date"
                         type="date"
                         value={formData.birthDate}
-                        max={maxDate} // disallows future and < 3 years
+                        max={maxDate}
                         onChange={(e) =>
                             handleInputChange('birthDate', e.target.value)
                         }
                     />
-
                     <Select
                         label="Gender"
                         data={[
@@ -193,17 +196,17 @@ export default function CreateStudentModal({
                     </Button>
                     <Button
                         onClick={handleSubmit}
-                        loading={createStudentMutation.isPending}
+                        loading={mutation.isPending}
                         disabled={
                             !(
                                 formData.firstName &&
                                 formData.lastName &&
-                                formData.idNumber &&
-                                formData.middleName
+                                formData.middleName &&
+                                formData.idNumber
                             )
                         }
                     >
-                        Create Student
+                        Create
                     </Button>
                 </Group>
             </Stack>

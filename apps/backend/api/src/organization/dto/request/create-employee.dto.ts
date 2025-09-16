@@ -11,15 +11,13 @@ import { Type } from 'class-transformer';
 import {
     IsDefined,
     IsEmail,
-    IsEnum,
-    IsNotEmptyObject,
     IsObject,
     IsOptional,
     IsString,
     ValidateNested,
 } from 'class-validator';
 
-export class CreateEmployeeDto {
+export class CreateEmployeeDto extends NewProfileDto {
     @ApiProperty()
     @IsString()
     @IsEmail()
@@ -31,22 +29,14 @@ export class CreateEmployeeDto {
     password: string;
 
     @ApiProperty()
-    @IsDefined()
-    @IsNotEmptyObject()
-    @IsObject()
-    @ValidateNested()
-    @Type(() => NewProfileDto)
-    profile_dto: NewProfileDto;
-
-    @ApiProperty()
-    @IsEnum(UserRoleType)
+    @OptionalEnum(UserRoleType)
     role: UserRoleType;
 
     @ApiProperty()
     @IsDefined()
-    @IsNotEmptyObject()
     @IsObject()
     @ValidateNested()
+    @IsOptional()
     @Type(() => ContactDetailsRequest)
     contactDetails: ContactDetailsRequest;
 }

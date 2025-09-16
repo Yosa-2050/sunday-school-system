@@ -33,7 +33,7 @@ export class EmployeesService {
             dto.email,
             dto.password,
             dto.role,
-            dto.profile_dto,
+            dto,
             null,
             false,
         );

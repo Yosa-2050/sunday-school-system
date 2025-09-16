@@ -21,7 +21,7 @@ import {
 import {
     AddExperienceRequestDto,
     UpdateExperienceRequestDto,
-} from './dto/request/add-experiance.request.dto';
+} from './dto/request/add-experience.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 import { EducationHistory } from './entities/educational-history.entity';

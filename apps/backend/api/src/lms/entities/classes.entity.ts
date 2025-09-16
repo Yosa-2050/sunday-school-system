@@ -3,6 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CalendarYear } from './calendar-year.entity';
 import { RootClass } from './root-class.entity';
 import { Students } from './students.entity';
+import { SubjectAssignment } from './subject-assignment.entity';
 
 @Entity()
 export class Classes extends BaseModel {
@@ -42,4 +43,11 @@ export class Classes extends BaseModel {
         { lazy: true },
     )
     students: Students[];
+
+    @OneToMany(
+        () => SubjectAssignment,
+        (assign) => assign.class,
+        { lazy: true },
+    )
+    subjects: SubjectAssignment[];
 }
