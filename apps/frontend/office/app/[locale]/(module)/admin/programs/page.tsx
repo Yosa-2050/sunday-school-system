@@ -28,6 +28,7 @@ import { fetchPrograms } from 'app/[locale]/_api/admin/fetch-programs';
 // import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
+import { CreateProgramDrawer } from './_components/create-program.drawer';
 
 const programList = () => {
     const router = useRouter();
@@ -154,6 +155,7 @@ const programList = () => {
                     entity="mentorships"
                     total={data?.total ?? 0}
                 /> */}
+                <CreateProgramDrawer />
             </Paper>
         </PageContainer>
     );

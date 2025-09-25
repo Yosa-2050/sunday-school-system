@@ -5,6 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import {
     type CreateProgram,
     createProgram,
@@ -21,8 +22,6 @@ export function CreateProgramDrawer() {
         mutationFn: async (data: CreateProgram) => createProgram(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['programs'] });
-
-            // Example: Uncomment if you actually have programId in scope
             // queryClient.invalidateQueries({
             //   queryKey: ['rootClasses', programId],
             // });
@@ -65,7 +64,7 @@ export function CreateProgramDrawer() {
                         <TextInput
                             label="Description"
                             placeholder="Enter Description"
-                            {...register('description')}
+                            // {...register('description')}
                             required
                         />
 
