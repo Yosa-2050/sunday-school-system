@@ -21,7 +21,7 @@ import {
     entityParamSchema,
     entityParamSerializer,
 } from '@shega/shared';
-import { EntityFilter, /**EntityPagination,*/ EntitySearch } from '@shega/ui';
+import { EntitySearch } from '@shega/ui';
 import { IconEye } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPrograms } from 'app/[locale]/_api/admin/fetch-programs';
@@ -70,16 +70,7 @@ const programList = () => {
                         placeholder={t('searchPlaceholder')}
                         className="!w-[300px]"
                     />
-                    <EntityFilter
-                        entity="programs"
-                        filterOptions={[
-                            { value: '', label: 'All Status' },
-                            { value: 'true', label: 'Active' },
-                            { value: 'false', label: 'In Active' },
-                        ]}
-                        mode="select"
-                        field="program.status"
-                    />
+
                     <CreateProgramDrawer />
                 </Group>
             </Paper>
