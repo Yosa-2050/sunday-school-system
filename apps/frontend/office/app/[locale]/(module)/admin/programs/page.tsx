@@ -80,6 +80,7 @@ const programList = () => {
                         mode="select"
                         field="program.status"
                     />
+                    <CreateProgramDrawer />
                 </Group>
             </Paper>
             <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
@@ -155,7 +156,6 @@ const programList = () => {
                     entity="mentorships"
                     total={data?.total ?? 0}
                 /> */}
-                <CreateProgramDrawer />
             </Paper>
         </PageContainer>
     );
