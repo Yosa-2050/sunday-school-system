@@ -118,6 +118,19 @@ export const createRootClass = async (programId: string, text: string) => {
     return res;
 };
 
+//new function for the createprogram
+export const createProgram = async (data: CreateProgram) => {
+    const res: IdSuccessResponse = await fetcher('/lms/program', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res) {
+        throw new Error('Faild to create program');
+    }
+    return res;
+};
+
 export type ProgramResponse = {
     id: string;
     createdAt: string;

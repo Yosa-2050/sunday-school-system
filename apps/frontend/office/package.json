@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "dev": "lsof -ti:4444 | xargs kill -9; next dev --turbopack --port 4444",
+        "dev": "next dev --turbopack --port 4444",
         "build": "next build ",
         "start": "next start"
     },
