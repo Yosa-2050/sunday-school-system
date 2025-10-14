@@ -8,9 +8,12 @@ import {
     Post,
 } from '@nestjs/common';
 import { Public } from '@shega/auth/jwt-public';
-import type { DocumentService } from '@shega/document/document.service';
-import type { DepartmentService } from './department.service';
-import type { AddDepartmentRequestDto } from './dto/request/add-department.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DocumentService } from '@shega/document/document.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { DepartmentService } from './department.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddDepartmentRequestDto } from './dto/request/add-department.request.dto';
 
 @Public()
 @Controller('department')
