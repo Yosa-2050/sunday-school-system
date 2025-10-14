@@ -60,6 +60,20 @@ export class SubjectController {
         );
     }
 
+    @Patch('assignSubject/:id')
+    updateAssignSubject(
+        @Param('id', new ParseUUIDPipe()) id: string,
+        @Body() dto: AddSubjectAssignmentDto,
+        @Request() req,
+    ) {
+        return this.subjectService.updateSubjectAssignment(
+            id,
+            dto,
+            CurrentUser.getProgramId(req),
+            CurrentUser.getActiveYear(req),
+        );
+    }
+
     @Get('assigned/:classId')
     findSubjects(
         @Request() req,

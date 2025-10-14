@@ -228,7 +228,9 @@ export default function TeacherPage() {
                     handleFetchTeachers();
                 }}
                 onCreated={handleTeacherCreated}
-                mutationFn={({ data }) => createTeacherApi({ data })}
+                mutationFn={({ profileId, data }) =>
+                    createTeacherApi({ profileId, data })
+                }
                 title="Add Teacher"
                 type="Teacher"
             />

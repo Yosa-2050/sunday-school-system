@@ -29,6 +29,18 @@ export class TeacherController {
         );
     }
 
+    @Roles(UserRoleType.SchoolAdmin)
+    @Post('addExisting/:profileId')
+    addExistingTeacher(
+        @Param('profileId', new ParseUUIDPipe()) profileId: string,
+        @Request() req,
+    ) {
+        return this.teacherService.addExistingTeacher(
+            profileId,
+            CurrentUser.getActiveYear(req),
+        );
+    }
+
     @Get()
     findTeachers(@Request() req) {
         return this.teacherService.findTeachers(CurrentUser.getActiveYear(req));

@@ -76,6 +76,73 @@ export class SubjectService {
         return sub;
     }
 
+    async updateSubjectAssignment(
+        id: string,
+        dto: AddSubjectAssignmentDto,
+        programId: string,
+        yearId: string,
+    ) {
+        const toUpdate = await this.subjectAssignmentRepo.findOneBy({ id });
+        if (!toUpdate) {
+            throw new EntityNotFoundException('Assigned Subject');
+        }
+
+        // Check for duplicate assignment (excluding the current record being updated)
+        const existingAssignment = await this.subjectAssignmentRepo.findOneBy({
+            class: { id: dto.classId },
+            subject: { id: dto.subjectId },
+        });
+
+        if (existingAssignment && existingAssignment.id !== id) {
+            throw new EntityAlreadyExistsException('Assigned Subject');
+        }
+
+        const cls = await this.classService.findOne(dto.classId, yearId);
+        const subject = await this.findOneByProgramIdOrThrow(
+            dto.subjectId,
+            programId,
+        );
+        const teacher = await this.teacherService.findTeacherById(
+            dto.teacherId,
+            yearId,
+        );
+
+        if (dto.teacherId && !teacher) {
+            throw new EntityNotFoundException('Teacher');
+        }
+
+        // Update the actual record (toUpdate) instead of existingAssignment
+        toUpdate.class = cls;
+        toUpdate.subject = subject;
+        toUpdate.subjectTitle = dto.subjectTitle;
+
+        // Handle teacher assignment
+        if (teacher) {
+            // Find existing teacher assignment or create new one
+            let teacherAssignment = await this.teacherAssignmentRepo.findOne({
+                where: { subjectAssignment: { id: toUpdate.id } },
+            });
+
+            if (!teacherAssignment) {
+                teacherAssignment = this.teacherAssignmentRepo.create();
+                teacherAssignment.subjectAssignment = toUpdate;
+                teacherAssignment.isMain = true;
+            }
+
+            teacherAssignment.teacher = teacher;
+            teacherAssignment.teacherType = dto.teacherType;
+
+            await this.teacherAssignmentRepo.save(teacherAssignment);
+        } else {
+            // Remove teacher assignment if teacher is removed
+            await this.teacherAssignmentRepo.delete({
+                subjectAssignment: { id: toUpdate.id },
+            });
+        }
+
+        return this.subjectAssignmentRepo.save(toUpdate);
+    }
+
     async assignSubject(
         dto: AddSubjectAssignmentDto,
         programId: string,
@@ -85,6 +152,7 @@ export class SubjectService {
             class: { id: dto.classId },
             subject: { id: dto.subjectId },
         });
+
         if (existing) {
             throw new EntityAlreadyExistsException('Assigned Subject');
         }

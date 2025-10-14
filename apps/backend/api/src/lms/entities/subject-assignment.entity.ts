@@ -1,7 +1,8 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Classes } from './classes.entity';
 import { Subjects } from './subject.entity';
+import { TeacherAssignment } from './teacher-assignment.entity';
 
 @Entity()
 export class SubjectAssignment extends BaseModel {
@@ -16,4 +17,13 @@ export class SubjectAssignment extends BaseModel {
 
     @Column({ nullable: true })
     description: string;
+
+    @OneToMany(
+        (type) => TeacherAssignment,
+        (teacher) => teacher.subjectAssignment,
+        {
+            lazy: true,
+        },
+    )
+    teachers: TeacherAssignment[];
 }

@@ -7,6 +7,7 @@ import type {
     RelationShipsResponse,
     StudentByIdResponse,
     StudentResponse,
+    UserResponse,
 } from './type';
 
 export const fetchStudentsApi = async (
@@ -141,12 +142,15 @@ export const createRelationshipApi = async ({
     return response;
 };
 
-export const searchProfilesApi = async (query: string) => {
-    const response = await fetch(
-        `/api/profiles/search?q=${encodeURIComponent(query)}`,
-    );
-    if (!response.ok) {
-        throw new Error('Failed to search profiles');
-    }
-    return response.json();
+export const searchProfilesApi = async (
+    query: string,
+): Promise<UserResponse[]> => {
+    const response: UserResponse[] = await fetcher('/profile/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: query }),
+    });
+    return response;
 };

@@ -13,8 +13,14 @@ export type StudentResponse = {
     gender: Gender;
 };
 
+export interface UserResponse {
+    email?: string;
+    profile: ProfileResponse;
+}
+
 export interface ProfileResponse {
     id: string;
+    email: string;
     createdBy: string;
     createdAt: string;
     isActive: boolean;

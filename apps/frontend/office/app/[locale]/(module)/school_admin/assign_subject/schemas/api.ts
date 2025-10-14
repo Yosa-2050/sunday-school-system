@@ -18,6 +18,22 @@ export const createSubjectAssignmentApi = async (
     return res;
 };
 
+export const updateSubjectAssignmentApi = async (
+    data: CreateSubjectAssignmentRequest,
+) => {
+    const res: IdSuccessResponse = await fetcher(
+        `/subject/assignSubject/${data.id}`,
+        {
+            method: 'PATCH',
+            body: JSON.stringify(data),
+        },
+    );
+    if (!res) {
+        throw new Error('Failed to create subject assignment');
+    }
+    return res;
+};
+
 export const fetchSubjectsAssignmentApi = async (
     classId: string,
 ): Promise<SubjectAssignmentResponse[]> => {

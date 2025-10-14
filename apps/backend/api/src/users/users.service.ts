@@ -360,4 +360,21 @@ export class UsersService {
     GetSuperAdmin() {
         return this.findOneUser(process.env.default_user, LoginBy.EMAIL);
     }
+
+    search(query: string) {
+        if (!query || query.trim().length < 2) {
+            return [];
+        }
+
+        return this.userRepo
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.profile', 'profile')
+            .where('profile.firstName ILIKE :query', { query: `%${query}%` })
+            .orWhere('profile.middleName ILIKE :query', { query: `%${query}%` })
+            .orWhere('profile.lastName ILIKE :query', { query: `%${query}%` })
+            .orWhere('user.email ILIKE :query', { query: `%${query}%` })
+            .orderBy('profile.firstName', 'ASC')
+            .limit(10)
+            .getMany();
+    }
 }
