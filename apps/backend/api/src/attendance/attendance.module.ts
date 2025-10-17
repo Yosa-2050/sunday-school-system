@@ -8,6 +8,9 @@ import { AttendanceService } from './attendance.service';
 import { AttendanceInformation } from './entities/attendance-data.entity';
 import { Attendance } from './entities/attendance.entity';
 import { Permission } from './entities/permission.entity';
+import { Test } from './entities/test.entity';
+import { TestController } from './test.controller';
+import { TestService } from './test.service';
 
 @Module({
     imports: [
@@ -15,13 +18,14 @@ import { Permission } from './entities/permission.entity';
             Attendance,
             AttendanceInformation,
             Permission,
+            Test,
         ]),
         LmsModule,
         UsersModule,
         NotificationModule,
     ],
-    controllers: [AttendanceController],
-    providers: [AttendanceService],
+    controllers: [AttendanceController, TestController],
+    providers: [AttendanceService, TestService],
     //exports: [LmsService],
 })
 export class AttendanceModule {}
