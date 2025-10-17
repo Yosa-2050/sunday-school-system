@@ -9,6 +9,3 @@ export type DepartmentResponse = {
 export type CreateDepartment = {
     name: string;
 };
-export type CreateWithTextRequest = {
-    text: string;
-};
