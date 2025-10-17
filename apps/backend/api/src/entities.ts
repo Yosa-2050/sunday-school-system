@@ -27,6 +27,7 @@ import { Location } from './location/entities/location.entity';
 import { Notes } from './notification/entities/notes.entity';
 import { Notification } from './notification/entities/notification.entity';
 import { NotificationTemplate } from './notification/entities/notificationTemplate.entity';
+import { Department } from './organization/entities/department.entity';
 import { Otp } from './users/entities/otp.entity';
 import { Profile } from './users/entities/profile.entity';
 import { RelationShips } from './users/entities/relationships.entity';
@@ -72,4 +73,5 @@ export const AppEntities = [
     Teacher,
     SubjectAssignment,
     TeacherAssignment,
+    Department,
 ];
