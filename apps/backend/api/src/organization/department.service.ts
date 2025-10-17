@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import type { Repository } from 'typeorm';
-import type { AddDepartmentRequestDto } from './dto/request/add-department.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Repository } from 'typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
+import { AddDepartmentRequestDto } from './dto/request/add-department.request.dto';
 import { Department } from './entities/department.entity';
 
 @Injectable()
