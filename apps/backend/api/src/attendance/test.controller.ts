@@ -22,9 +22,15 @@ export class TestController {
     create(@Body() dto: TestRequestDto) {
         return this.testService.create(dto);
     }
+
     @Get()
     findAll() {
         return this.testService.findAll();
+    }
+
+    @Get('bySubjectId/:subjectId')
+    findAllBySubjectId(@Param('subjectId') subjectId: string) {
+        return this.testService.findBySubjectId(subjectId);
     }
 
     @Get(':id')

@@ -23,7 +23,7 @@ import { IconDots, IconEye, IconPencil, IconX } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useCallback, useEffect, useState } from 'react';
-import { CreateDepartmentDrawer } from './_components/CreateDepartment.drawer';
+import { CreateDepartmentDrawer } from './components/CreateDepartment.drawer';
 import { fetchDepartmentsApi } from './schemas/api';
 import type { DepartmentResponse } from './schemas/type';
 
