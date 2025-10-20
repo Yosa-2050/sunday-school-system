@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
+import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
 import type { Repository } from 'typeorm/repository/Repository';
 import type { TestRequestDto } from './dto/request/create-test.request.dto';
 import { Test } from './entities/test.entity';
@@ -9,9 +11,20 @@ export class TestService {
     constructor(
         @InjectRepository(Test)
         private readonly testRepository: Repository<Test>,
+        @InjectRepository(SubjectAssignment)
+        private readonly subjectAssignmentRepository: Repository<SubjectAssignment>,
     ) {}
-    create(dto: TestRequestDto) {
+    async create(dto: TestRequestDto) {
+        const subjectAssignment =
+            await this.subjectAssignmentRepository.findOne({
+                where: { id: dto.subjectId },
+            });
+        if (!subjectAssignment) {
+            throw new EntityNotFoundException('Subject Assignment');
+        }
         const test = this.testRepository.create(dto);
+        test.subject = subjectAssignment;
+
         return this.testRepository.save(test);
     }
     findAll() {
@@ -25,5 +38,10 @@ export class TestService {
     }
     delete(id: string) {
         return this.testRepository.delete({ id });
+    }
+    findBySubjectId(subjectId: string) {
+        return this.testRepository.find({
+            where: { subject: { id: subjectId } },
+        });
     }
 }

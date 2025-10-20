@@ -1,10 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OptionalUUID } from '@shega/Utilities/decorators/optional-uuid.decorator';
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import {
+    IsBoolean,
+    IsNumber,
+    IsOptional,
+    IsString,
+    IsUUID,
+} from 'class-validator';
 
 export class TestRequestDto {
     @ApiProperty()
-    @OptionalUUID()
+    @IsUUID()
     subjectId: string;
 
     @ApiProperty()
@@ -25,10 +30,12 @@ export class TestRequestDto {
 
     @ApiProperty()
     @IsString()
+    @IsOptional()
     content: string;
 
     @ApiProperty()
     @IsString()
+    @IsOptional()
     documentId: string;
 
     @ApiProperty()

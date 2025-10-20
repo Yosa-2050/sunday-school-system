@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
 import { LmsModule } from '@shega/lms/lms.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { UsersModule } from '@shega/users/users.module';
@@ -19,6 +20,7 @@ import { TestService } from './test.service';
             AttendanceInformation,
             Permission,
             Test,
+            SubjectAssignment,
         ]),
         LmsModule,
         UsersModule,

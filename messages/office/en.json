@@ -15,6 +15,7 @@
     "menus": {
         "class": "Class",
         "subject": "Subject",
+        "test": "Test",
         "assignSubject": "Assign Subject",
         "students": "Students",
         "teacher": "Teachers",
