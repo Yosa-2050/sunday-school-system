@@ -27,6 +27,16 @@ export class TestService {
 
         return this.testRepository.save(test);
     }
+
+    async remove(id: string) {
+        const test = await this.testRepository.findOne({ where: { id } });
+        if (!test) {
+            throw 'Test not found';
+        }
+        await this.testRepository.remove(test);
+        return { message: 'Test deleted successfully' };
+    }
+
     findAll() {
         return this.testRepository.find();
     }

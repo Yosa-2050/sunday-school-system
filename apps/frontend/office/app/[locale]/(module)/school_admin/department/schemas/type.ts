@@ -4,6 +4,7 @@ export type DepartmentResponse = {
     createdBy: string;
     isActive: boolean;
     name: string;
+    description: string;
 };
 
 export type CreateDepartment = {

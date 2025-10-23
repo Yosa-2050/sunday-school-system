@@ -58,6 +58,12 @@ const DepartmentList = () => {
         setDrawerOpen(true);
     };
 
+    const handleDeleteClick = (test: DepartmentResponse) => {
+        setEditDepartment(test);
+        setDrawerMode('delete');
+        setDrawerOpen(true);
+    };
+
     const handleDrawerClose = () => {
         setDrawerOpen(false);
         setEditDepartment(null);
@@ -160,6 +166,9 @@ const DepartmentList = () => {
                                             {department.createdAt}
                                         </Table.Td>
                                         <Table.Td>
+                                            {department.description}
+                                        </Table.Td>
+                                        <Table.Td>
                                             <Menu
                                                 shadow="md"
                                                 width={200}
@@ -204,14 +213,18 @@ const DepartmentList = () => {
                                                     </Menu.Item>
                                                     <Menu.Divider />
                                                     <Menu.Item
+                                                        // Add your delete/inactivate logic here
+                                                        color="red"
                                                         leftSection={
                                                             <IconX size={16} />
                                                         }
-                                                        color="red"
-                                                        onClick={() => {
-                                                            // Add your delete/inactivate logic here
-                                                        }}
+                                                        onClick={() =>
+                                                            handleDeleteClick(
+                                                                department,
+                                                            )
+                                                        }
                                                     >
+                                                        Delete
                                                         {department.isActive
                                                             ? 'Deactivate'
                                                             : 'Activate'}

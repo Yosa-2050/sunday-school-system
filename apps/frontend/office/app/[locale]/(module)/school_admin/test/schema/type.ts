@@ -1,4 +1,4 @@
-export interface TestResponse {
+export type TestResponse = {
     id: string;
     name: string;
     description: string;
@@ -7,4 +7,8 @@ export interface TestResponse {
     documentId?: string;
     isGroupAssignment: boolean;
     classId?: string;
-}
+};
+
+export type CreateTest = {
+    name: string;
+};

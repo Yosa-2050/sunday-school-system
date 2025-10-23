@@ -1,22 +1,25 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Test extends BaseModel {
-    @ManyToOne(() => SubjectAssignment, { eager: true })
+    @ManyToOne(() => SubjectAssignment, { eager: true, nullable: true })
+    @JoinColumn({ name: 'subjectId' }) // use 'subjectId' as foreign key
     subject: SubjectAssignment;
+
+    @Column({ nullable: true })
+    subjectId: string;
 
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     description: string;
 
     @Column()
     weight: number;
 
-    //Assignment, Test, Quiz
     @Column({ default: 'TEST' })
     type: string;
 

@@ -1,5 +1,6 @@
 import { fetcher } from '@shega/shared';
 import type { TestResponse } from './type';
+import type { CreateTest } from './type';
 
 //export const CreateTest = async ()=> {
 export const CreateTestApi = async (testData: {
@@ -42,21 +43,14 @@ export const FetchTestByIdApi = async (id: string) => {
     return response;
 };
 
-export const UpdateTestApi = async (
+export const updateTestApi = async (
     id: string,
-    testData: {
-        name: string;
-        description?: string;
-        type: string;
-        weight: number;
-        classId?: string;
-        isGroupAssignment?: boolean;
-    },
-) => {
-    const response = await fetcher(`/test/${id}`, {
+    body: CreateTest,
+): Promise<TestResponse> => {
+    const response: TestResponse = await fetcher(`/test/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testData),
+        body: JSON.stringify(body),
     });
 
     return response;
