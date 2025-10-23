@@ -10,11 +10,18 @@ import {
     Table,
     Text,
 } from '@mantine/core';
-import { IconDots, IconPencil, IconPlus, IconX } from '@tabler/icons-react';
+import {
+    IconDots,
+    IconEye,
+    IconPencil,
+    IconPlus,
+    IconX,
+} from '@tabler/icons-react';
 import {
     type CalendarYearResponse,
     fetchCalendarYearsSchoolAdmin,
 } from 'app/[locale]/_api/admin/fetch-programs';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchSubjectsAssignmentApi } from '../assign_subject/schemas/api';
 import type { SubjectAssignmentResponse } from '../assign_subject/schemas/type';
@@ -33,6 +40,7 @@ export default function TestPage() {
 
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
+    const router = useRouter();
     const [editTest, setEditTest] = useState<TestResponse | null>(null);
 
     const [classes, setClasses] = useState<GetClass[]>([]);
@@ -54,6 +62,12 @@ export default function TestPage() {
     const handleEditClick = (test: TestResponse) => {
         setEditTest(test);
         setDrawerMode('edit');
+        setDrawerOpen(true);
+    };
+
+    const handleDeleteClick = (test: TestResponse) => {
+        setEditTest(test);
+        setDrawerMode('delete');
         setDrawerOpen(true);
     };
 
@@ -143,9 +157,9 @@ export default function TestPage() {
         <Table.Tr key={test.id}>
             <Table.Td>{index + 1}</Table.Td>
             <Table.Td>{test.name}</Table.Td>
-            <Table.Td>{test.description}</Table.Td>
+            {/* <Table.Td>{test.description}</Table.Td> */}
             <Table.Td>{test.type}</Table.Td>
-            <Table.Td>{test.documentId ?? '-'}</Table.Td>
+            {/* <Table.Td>{test.documentId ?? '-'}</Table.Td> */}
             <Table.Td>{test.weight}</Table.Td>
             <Table.Td>{test.isGroupAssignment ? 'Yes' : 'No'}</Table.Td>
             <Table.Td>
@@ -161,14 +175,23 @@ export default function TestPage() {
                     </Menu.Target>
                     <Menu.Dropdown>
                         <Menu.Item
+                            leftSection={<IconEye size={16} />}
+                            onClick={() =>
+                                router.push(`/school_admin/test/${test.id}`)
+                            }
+                        >
+                            View Details
+                        </Menu.Item>
+                        <Menu.Item
                             leftSection={<IconPencil size={16} />}
                             onClick={() => handleEditClick(test)}
                         >
-                            Edit
+                            Edit Test
                         </Menu.Item>
                         <Menu.Item
                             color="red"
                             leftSection={<IconX size={16} />}
+                            onClick={() => handleDeleteClick(test)}
                         >
                             Delete
                         </Menu.Item>
@@ -278,7 +301,7 @@ export default function TestPage() {
             <TestDrawer
                 subject={subjects.find((s) => s.id === selectedSubject)}
                 mode={drawerMode}
-                // test={editTest}
+                test={editTest}
                 opened={drawerOpen}
                 onClose={handleDrawerClose}
                 onCompleted={handleDrawerCompleted}
@@ -289,9 +312,9 @@ export default function TestPage() {
                     <Table.Tr>
                         <Table.Th w={40}>#</Table.Th>
                         <Table.Th>Name</Table.Th>
-                        <Table.Th>Description</Table.Th>
+                        {/* <Table.Th>Description</Table.Th> */}
                         <Table.Th>Type</Table.Th>
-                        <Table.Th>Document</Table.Th>
+                        {/* <Table.Th>Document</Table.Th> */}
                         <Table.Th>Weight</Table.Th>
                         <Table.Th>Group</Table.Th>
                         <Table.Th>Actions</Table.Th>

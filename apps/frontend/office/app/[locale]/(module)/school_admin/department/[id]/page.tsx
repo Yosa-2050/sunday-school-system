@@ -1,15 +1,7 @@
 'use client';
 
 import { PageContainer, PageTitle } from '@/components/PageContainer';
-import {
-    Card,
-    Group,
-    LoadingOverlay,
-    Paper,
-    Stack,
-    Tabs,
-    Text,
-} from '@mantine/core';
+import { Card, Group, LoadingOverlay, Stack, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { fetchDepartmentById } from '../schemas/api';
@@ -43,6 +35,10 @@ export default function DepartmentDetailPage() {
                         </Text>
                     </Group>
                     <Group justify="space-between">
+                        <Text fw={600}>Description:</Text>
+                        <Text>{data?.description}</Text>
+                    </Group>
+                    <Group justify="space-between">
                         <Text fw={600}>Created By:</Text>
                         <Text>{data?.createdBy}</Text>
                     </Group>
@@ -52,19 +48,6 @@ export default function DepartmentDetailPage() {
                     </Group>
                 </Stack>
             </Card>
-
-            {/* 🔹 Tabs for Calendar Year + Root Classes */}
-            <Paper shadow="xs" p="md" mt="lg" radius="md">
-                <Tabs defaultValue="calendarYears">
-                    <Tabs.List>
-                        <Tabs.Tab value="calendarYears">
-                            Calendar Years
-                        </Tabs.Tab>
-                        <Tabs.Tab value="rootClasses">Root Classes</Tabs.Tab>
-                        <Tabs.Tab value="users">Users</Tabs.Tab>
-                    </Tabs.List>
-                </Tabs>
-            </Paper>
         </PageContainer>
     );
 }
