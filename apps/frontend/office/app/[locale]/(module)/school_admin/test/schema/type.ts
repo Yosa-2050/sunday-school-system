@@ -1,4 +1,6 @@
 export type TestResponse = {
+    createdAt: string | number | Date;
+    subjectId: string;
     id: string;
     name: string;
     description: string;
@@ -9,6 +11,12 @@ export type TestResponse = {
     classId?: string;
 };
 
-export type CreateTest = {
+export type CreateTestRequest = {
+    subjectId: string;
     name: string;
+    description?: string;
+    type: string;
+    weight: number;
+    isGroupAssignment: boolean;
+    classId?: string;
 };

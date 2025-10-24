@@ -1,16 +1,8 @@
 import { fetcher } from '@shega/shared';
-import type { TestResponse } from './type';
-import type { CreateTest } from './type';
+import type { CreateTestRequest, TestResponse } from './type';
 
 //export const CreateTest = async ()=> {
-export const CreateTestApi = async (testData: {
-    name: string;
-    description?: string;
-    type: string;
-    weight: number;
-    classId?: string;
-    isGroupAssignment?: boolean;
-}) => {
+export const CreateTestApi = async (testData: CreateTestRequest) => {
     const response = await fetcher('/test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,8 +26,8 @@ export const FetchTestBySubjectIdApi = async (
     return response;
 };
 
-export const FetchTestByIdApi = async (id: string) => {
-    const response = await fetcher(`/test/${id}`, {
+export const FetchTestByIdApi = async (id: string): Promise<TestResponse> => {
+    const response: TestResponse = await fetcher(`/test/${id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -45,7 +37,7 @@ export const FetchTestByIdApi = async (id: string) => {
 
 export const updateTestApi = async (
     id: string,
-    body: CreateTest,
+    body: CreateTestRequest,
 ): Promise<TestResponse> => {
     const response: TestResponse = await fetcher(`/test/${id}`, {
         method: 'PATCH',

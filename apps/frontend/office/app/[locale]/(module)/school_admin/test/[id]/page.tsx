@@ -21,22 +21,14 @@ export default function TestDetailPage() {
     return (
         <PageContainer>
             <PageTitle>Test Detail</PageTitle>
-            {/* 🔹 Test Info Section */}
             <Card shadow="sm" withBorder p="lg" radius="md" mt="md">
                 <Stack gap="xs">
                     <Group justify="space-between">
                         <Text fw={700}>Test Name:</Text>
                         <Text>{data?.name}</Text>
                     </Group>
-
-                    {/*<Group justify="space-between">
-                        <Text fw={700}>Subject ID:</Text>
-                        <Text>{data.subjectId}</Text>
-                    </Group> */}
-
                     <Group justify="space-between">
                         <Text fw={700}>Description:</Text>
-                        {/* <Text c={data?.description}></Text> */}
                         <Text>{data?.description}</Text>
                     </Group>
 
