@@ -23,7 +23,7 @@ import { IconDots, IconEye, IconPencil, IconX } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { parseAsJson, useQueryState } from 'nuqs';
 import { useCallback, useEffect, useState } from 'react';
-import { CreateDepartmentDrawer } from './_components/CreateDepartment.drawer';
+import { CreateDepartmentDrawer } from './components/CreateDepartment.drawer';
 import { fetchDepartmentsApi } from './schemas/api';
 import type { DepartmentResponse } from './schemas/type';
 
@@ -33,7 +33,9 @@ const DepartmentList = () => {
     const [editDepartment, setEditDepartment] =
         useState<DepartmentResponse | null>(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
+    const [drawerMode, setDrawerMode] = useState<'create' | 'edit' | 'delete'>(
+        'create',
+    );
     const router = useRouter();
     const t = useTranslations('departmentsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -55,6 +57,12 @@ const DepartmentList = () => {
     const handleCreateClick = () => {
         setEditDepartment(null);
         setDrawerMode('create');
+        setDrawerOpen(true);
+    };
+
+    const handleDeleteClick = (test: DepartmentResponse) => {
+        setEditDepartment(test);
+        setDrawerMode('delete');
         setDrawerOpen(true);
     };
 
@@ -160,6 +168,9 @@ const DepartmentList = () => {
                                             {department.createdAt}
                                         </Table.Td>
                                         <Table.Td>
+                                            {department.description}
+                                        </Table.Td>
+                                        <Table.Td>
                                             <Menu
                                                 shadow="md"
                                                 width={200}
@@ -204,14 +215,18 @@ const DepartmentList = () => {
                                                     </Menu.Item>
                                                     <Menu.Divider />
                                                     <Menu.Item
+                                                        // Add your delete/inactivate logic here
+                                                        color="red"
                                                         leftSection={
                                                             <IconX size={16} />
                                                         }
-                                                        color="red"
-                                                        onClick={() => {
-                                                            // Add your delete/inactivate logic here
-                                                        }}
+                                                        onClick={() =>
+                                                            handleDeleteClick(
+                                                                department,
+                                                            )
+                                                        }
                                                     >
+                                                        Delete
                                                         {department.isActive
                                                             ? 'Deactivate'
                                                             : 'Activate'}

@@ -46,3 +46,12 @@ export const updateDepartmentApi = async (
 
     return response;
 };
+
+export const DeleteDepartmentApi = async (id: string) => {
+    const response = await fetcher(`/department/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    return response;
+};
