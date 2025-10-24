@@ -69,8 +69,7 @@ export function CreateDepartmentDrawer({
             reset();
             onCompleted?.();
         },
-        onError: (error: Error) =>
-            showError(error.message || 'Failed to save department'),
+        onError: (error: Error) => showError(error.message),
     });
 
     const deleteMutation = useMutation({
@@ -113,14 +112,6 @@ export function CreateDepartmentDrawer({
             opened={opened}
             onClose={handleClose}
             title={title}
-            //changed to if else statment
-            // title={
-            //     mode === 'create'
-            //         ? 'Create Department'
-            //         : mode === 'edit'
-            //           ? 'Edit Department'
-            //           : 'Delete Department'
-            // }
             position="right"
             size="md"
         >

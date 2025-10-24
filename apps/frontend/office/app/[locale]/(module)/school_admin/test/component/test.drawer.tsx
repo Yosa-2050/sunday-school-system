@@ -17,31 +17,12 @@ import { Controller, useForm } from 'react-hook-form';
 import { showError, showSuccess } from 'utilities/notification';
 import type { SubjectAssignmentResponse } from '../../assign_subject/schemas/type';
 import { CreateTestApi, DeleteTestApi, updateTestApi } from '../schema/api';
-
-interface CreateTestRequest {
-    subjectId: string;
-    name: string;
-    description?: string;
-    type: string;
-    weight: number;
-    isGroupAssignment: boolean;
-    classId?: string;
-}
-
-interface TestResponse {
-    id: string;
-    name: string;
-    description?: string;
-    type: string;
-    weight: number;
-    isGroupAssignment: boolean;
-    subjectId: string;
-}
+import type { CreateTestRequest, TestResponse } from '../schema/type';
 
 interface TestDrawerProps {
     subject?: SubjectAssignmentResponse;
     mode: 'create' | 'edit' | 'delete';
-    test?: TestResponse | null;
+    test?: TestResponse;
     opened: boolean;
     onClose: () => void;
     onCompleted?: () => void;
@@ -168,14 +149,6 @@ export function TestDrawer({
             opened={opened}
             onClose={handleClose}
             title={title}
-            //changed to if else statment
-            // title={
-            //     mode === 'create'
-            //         ? 'Create Test'
-            //         : mode === 'edit'
-            //           ? 'Edit Test'
-            //           : 'Delete Test'
-            // }
             position="right"
             size="md"
         >

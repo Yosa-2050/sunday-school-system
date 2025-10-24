@@ -33,7 +33,9 @@ const DepartmentList = () => {
     const [editDepartment, setEditDepartment] =
         useState<DepartmentResponse | null>(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
+    const [drawerMode, setDrawerMode] = useState<'create' | 'edit' | 'delete'>(
+        'create',
+    );
     const router = useRouter();
     const t = useTranslations('departmentsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');

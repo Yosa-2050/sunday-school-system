@@ -39,7 +39,9 @@ export default function TestPage() {
     const [loadingYears, setLoadingYears] = useState(true);
 
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
+    const [drawerMode, setDrawerMode] = useState<'create' | 'edit' | 'delete'>(
+        'create',
+    );
     const router = useRouter();
     const [editTest, setEditTest] = useState<TestResponse | null>(null);
 
@@ -105,10 +107,11 @@ export default function TestPage() {
             try {
                 const data = await fetchClassesApi();
                 setClasses(data);
-            } catch (err) {
-                //console.error('Error fetching classes', err);
+            } catch (error) {
+                //showError(error.message)
             }
         };
+
         fetchClasses();
     }, []);
 
@@ -123,8 +126,8 @@ export default function TestPage() {
                 const data =
                     await fetchSubjectsAssignmentApi(getSelectedClassId);
                 setSubjects(data);
-            } catch (err) {
-                //console.error('Error fetching subjects', err);
+            } catch (error) {
+                //showError(error?.message)
             }
         };
         fetchSubjects();
@@ -301,7 +304,7 @@ export default function TestPage() {
             <TestDrawer
                 subject={subjects.find((s) => s.id === selectedSubject)}
                 mode={drawerMode}
-                test={editTest}
+                test={editTest ?? undefined}
                 opened={drawerOpen}
                 onClose={handleDrawerClose}
                 onCompleted={handleDrawerCompleted}
