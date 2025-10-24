@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
 import type { Repository } from 'typeorm/repository/Repository';
 import type { TestRequestDto } from './dto/request/create-test.request.dto';
@@ -31,10 +32,10 @@ export class TestService {
     async remove(id: string) {
         const test = await this.testRepository.findOne({ where: { id } });
         if (!test) {
-            throw 'Test not found';
+            throw new EntityNotFoundException('Test');
         }
-        await this.testRepository.remove(test);
-        return { message: 'Test deleted successfully' };
+        const deleted = await this.testRepository.delete(test.id);
+        return UtilityServices.EnsureDeleted(deleted, id);
     }
 
     findAll() {

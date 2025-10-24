@@ -85,8 +85,7 @@ export function CreateDepartmentDrawer({
             showSuccess('Department deleted successfully');
             onCompleted?.();
         },
-        onError: (error: Error) =>
-            showError(error.message || 'Failed to delete department'),
+        onError: (error: Error) => showError(error.message),
     });
 
     const onSubmit = (data: CreateDepartment) => {
