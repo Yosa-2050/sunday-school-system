@@ -238,12 +238,15 @@ export default function StudentDetailPage() {
                                     >
                                         <IconMail size={16} />
                                     </ThemeIcon>
-                                    {/* <Box>
+                                    <Box>
                                         <Text size="sm" c="dimmed">
                                             Email
                                         </Text>
-                                        <Text>{student.email || 'No email provided'}</Text>
-                                    </Box> */}
+                                        <Text>
+                                            {student.email ||
+                                                'No email provided'}
+                                        </Text>
+                                    </Box>
                                 </Group>
 
                                 <Group>
