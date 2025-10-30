@@ -126,6 +126,12 @@ export const Menus = (): MenuTree[] => {
                     link: '/school_admin/attendance',
                     role: 'school_admin',
                 },
+                {
+                    label: t('notifications'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/notification',
+                    role: 'school_admin',
+                },
             ],
         },
         {

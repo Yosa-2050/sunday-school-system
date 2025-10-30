@@ -440,6 +440,13 @@ export default function CreateProfileModal({
                                 disabled={!!selectedProfile}
                             />
 
+                <TextInput
+                    label="Email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    required
+                />
+
                             <TextInput
                                 label="Baptist Name"
                                 value={formData.baptistName}

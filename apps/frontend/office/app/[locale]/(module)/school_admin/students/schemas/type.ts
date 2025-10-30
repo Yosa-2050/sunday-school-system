@@ -64,6 +64,7 @@ export interface StudentByIdResponse {
     schoolName: string | null;
     schoolGrade: string | null;
     profile: ProfileResponse;
+    email: string;
     class: {
         id: string;
         createdBy: string;
