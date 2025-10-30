@@ -100,7 +100,6 @@ export class NotificationService {
             subject: req.subject,
             status: NotificationStatus.Pending,
         });
-
         this.notificationRepo.save(notification);
         if (req.channel === NotificationChannel.Email) {
             this.emailService.sendEmail(

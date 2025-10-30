@@ -12,12 +12,16 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
+// biome-ignore lint/style/useImportType: <explanation>
+import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateStudentRequestDto } from '../dto/request/create-student.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { SendStudentNotificationDto } from '../dto/request/send-notification-student.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentService } from '../services/student.service';
 
@@ -36,6 +40,41 @@ export class StudentController {
             id,
             dto,
             CurrentUser.getActiveYear(req),
+        );
+    }
+
+    @Post('sendNotification')
+    SendNotification(@Body() dto: StringRequestModel) {
+        return this.studentService.sendNotificationForAllStudent(
+            dto.text,
+            '',
+            [],
+            2,
+        );
+    }
+
+    @Post('sendNotificationForStudent')
+    SendNotificationForSelectedStudent(
+        @Body() dto: SendStudentNotificationDto,
+    ) {
+        return this.studentService.sendNotificationForAllStudent(
+            dto.text,
+            '',
+            dto.list,
+            1,
+        );
+    }
+
+    @Post('sendNotification/:classId')
+    SendNotificationForClass(
+        @Body() dto: StringRequestModel,
+        @Param('classId', new ParseUUIDPipe()) classId: string,
+    ) {
+        return this.studentService.sendNotificationForAllStudent(
+            dto.text,
+            classId,
+            [],
+            0,
         );
     }
 

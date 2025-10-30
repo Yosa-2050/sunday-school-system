@@ -3,8 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
-import type { Repository } from 'typeorm/repository/Repository';
-import type { TestRequestDto } from './dto/request/create-test.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { Repository } from 'typeorm/repository/Repository';
+// biome-ignore lint/style/useImportType: <explanation>
+import { TestRequestDto } from './dto/request/create-test.request.dto';
 import { Test } from './entities/test.entity';
 
 @Injectable()
