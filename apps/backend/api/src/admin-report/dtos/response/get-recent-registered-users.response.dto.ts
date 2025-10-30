@@ -1,4 +1,5 @@
-import type { User } from '@shega/users/entities/user.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { User } from '@shega/users/entities/user.entity';
 
 export class GetRecentRegisteredUsersResponseDto {
     fullName: string;
