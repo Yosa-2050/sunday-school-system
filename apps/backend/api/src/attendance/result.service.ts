@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
+import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { Students } from '@shega/lms/entities/students.entity';
 //import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -26,13 +27,13 @@ export class ResultService {
 
     async create(dto: ResultForSingleStudentRequestDto) {
         let result = this.resultRepository.create();
-        result.score = dto.score;
-
+        result.score = dto.score; //creates empty result
+        //checks for test id exists
         const test = await this.testRepository.findOneBy({ id: dto.testId });
         if (!test) {
             throw new EntityNotFoundException('Test');
         }
-
+        //check if student exists
         //check if student class and test are same
         const student = await this.studentRepository.findOneBy({
             id: dto.studentId,
@@ -40,16 +41,16 @@ export class ResultService {
         if (!student) {
             throw new EntityNotFoundException('student');
         }
-
+        //check if result existed for student and test
         const existing = await this.findResultByStudentAndTest(
             dto.studentId,
             dto.testId,
         );
         if (existing) {
-            result = existing;
+            result = existing; // if existed update
         } else {
             result.test = test;
-            result.student = student;
+            result.student = student; //if not existed insert
         }
         result.score = dto.score;
 
@@ -57,8 +58,26 @@ export class ResultService {
         return await this.resultRepository.save(result);
     }
 
-    createMultiple(dto: ResultForMultipleStudentRequestDto) {
-        //
+    async createMultiple(dto: ResultForMultipleStudentRequestDto) {
+        const test = await this.testRepository.findOneBy({ id: dto.testId });
+        if (!test) {
+            throw new EntityNotFoundException('Test');
+        }
+
+        for (let index = 0; index < dto.result.length; index++) {
+            const element = dto.result[index];
+            const student = await this.studentRepository.findOneBy({
+                id: element.studentId,
+            });
+            if (!student) {
+                throw new EntityNotFoundException('student');
+            }
+
+            const result = this.resultRepository.create();
+            result.score = element.score;
+            await this.resultRepository.save(result);
+        }
+        return UtilityServices.SuccessDataResponse();
     }
 
     async findOne(resultId: string) {

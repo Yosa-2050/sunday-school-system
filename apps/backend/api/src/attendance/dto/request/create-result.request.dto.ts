@@ -24,7 +24,7 @@ export class ResultForSingleStudentRequestDto extends ResultRequestDto {
     testId: string;
 }
 
-export class ResultForMultipleStudentRequestDto extends ResultRequestDto {
+export class ResultForMultipleStudentRequestDto {
     @ApiProperty()
     @IsUUID()
     testId: string;
