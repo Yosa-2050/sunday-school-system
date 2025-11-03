@@ -73,8 +73,20 @@ export class ResultService {
                 throw new EntityNotFoundException('student');
             }
 
-            const result = this.resultRepository.create();
+            let result = this.resultRepository.create();
+
+            const existing = await this.findResultByStudentAndTest(
+                element.studentId,
+                dto.testId,
+            );
+            if (existing) {
+                result = existing;
+            } else {
+                result.test = test;
+                result.student = student;
+            }
             result.score = element.score;
+
             await this.resultRepository.save(result);
         }
         return UtilityServices.SuccessDataResponse();
