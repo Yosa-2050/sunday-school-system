@@ -19,7 +19,7 @@ export class SubjectAssignment extends BaseModel {
     description: string;
 
     @OneToMany(
-        (type) => TeacherAssignment,
+        () => TeacherAssignment,
         (teacher) => teacher.subjectAssignment,
         {
             lazy: true,
