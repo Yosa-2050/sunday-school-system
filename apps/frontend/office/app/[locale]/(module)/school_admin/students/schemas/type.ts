@@ -85,16 +85,16 @@ export interface StudentByIdResponse {
 }
 
 export type CreateStudentRequest = {
-    firstName: '';
-    middleName: '';
-    lastName: '';
-    mothersFullName: '';
-    birthDate: '';
-    baptistName: '';
-    gender: '';
-    phoneNumber: '';
-    idNumber: '';
-    email: '';
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
+    mothersFullName?: string;
+    birthDate?: string;
+    baptistName?: string;
+    gender?: string;
+    phoneNumber?: string;
+    idNumber?: string;
+    email?: string;
 };
 
 export type CreateRelationRequest = {

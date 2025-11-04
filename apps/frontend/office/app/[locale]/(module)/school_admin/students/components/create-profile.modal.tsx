@@ -126,7 +126,7 @@ export default function CreateProfileModal({
         setSelectedProfile(user);
         // Pre-fill the form with the selected profile data
         setFormData({
-            firstName: user?.profile?.firstName || undefined,
+            firstName: user?.profile?.firstName || '',
             middleName: user.profile.middleName || '',
             lastName: user.profile.lastName,
             mothersFullName: user.profile.mothersFullName || '',
@@ -440,12 +440,23 @@ export default function CreateProfileModal({
                                 disabled={!!selectedProfile}
                             />
 
-                <TextInput
-                    label="Email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    required
-                />
+                            <TextInput
+                                label="Email"
+                                value={formData.email}
+                                onChange={(e) =>
+                                    handleInputChange('email', e.target.value)
+                                }
+                                required
+                            />
+
+                            <TextInput
+                                label="Email"
+                                value={formData.email}
+                                onChange={(e) =>
+                                    handleInputChange('email', e.target.value)
+                                }
+                                required
+                            />
 
                             <TextInput
                                 label="Baptist Name"
