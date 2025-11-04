@@ -18,6 +18,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
+import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { Public } from '@shega/auth/jwt-public';
@@ -37,12 +39,15 @@ import { LoginBy } from './enums/login-by.enum';
 import { UserRoleType, UserRoleValue } from './enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from './profile.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UsersService } from './users.service';
 
 @ApiTags('Profile')
 @Controller('profile')
 export class ProfileController {
     constructor(
         private profileService: ProfileService,
+        private userService: UsersService,
         private notificationService: NotificationService,
         private passwordService: PasswordService,
     ) {}
@@ -193,5 +198,10 @@ export class ProfileController {
         @Body() dto: UpdateProfileDto,
     ) {
         return this.profileService.update(id, dto);
+    }
+
+    @Post('/search')
+    searchProfile(@Body() body: StringRequestModel) {
+        return this.userService.search(body.text);
     }
 }

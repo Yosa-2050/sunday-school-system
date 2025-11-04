@@ -16,7 +16,11 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { createRelationshipApi, searchProfilesApi } from '../schemas/api';
-import type { CreateRelationRequest, ProfileResponse } from '../schemas/type';
+import type {
+    CreateRelationRequest,
+    ProfileResponse,
+    UserResponse,
+} from '../schemas/type';
 
 interface CreateRelationModalProps {
     opened: boolean;
@@ -171,27 +175,30 @@ export default function CreateRelationModal({
                             </Text>
                             <Stack gap="sm">
                                 {searchProfilesQuery.data.map(
-                                    (profile: ProfileResponse) => (
+                                    (user: UserResponse) => (
                                         <Paper
-                                            key={profile.id}
+                                            key={user.profile.id}
                                             p="md"
                                             withBorder
                                         >
                                             <Group justify="space-between">
                                                 <Box>
                                                     <Text fw={500}>
-                                                        {profile.firstName}{' '}
-                                                        {profile.lastName}
+                                                        {user.profile.firstName}{' '}
+                                                        {user.profile.lastName}
                                                     </Text>
                                                     <Text size="sm" c="dimmed">
-                                                        {profile.phoneNumber}
+                                                        {
+                                                            user.profile
+                                                                .phoneNumber
+                                                        }
                                                     </Text>
                                                 </Box>
                                                 <Button
                                                     size="sm"
                                                     onClick={() =>
                                                         handleSelectProfile(
-                                                            profile,
+                                                            user.profile,
                                                         )
                                                     }
                                                 >

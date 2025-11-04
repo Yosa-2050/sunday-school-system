@@ -13,7 +13,7 @@ export class TeacherAssignment extends BaseModel {
     @ManyToOne(() => Teacher, { eager: true, nullable: true })
     teacher: Teacher;
 
-    @Column()
+    @Column({ nullable: true })
     teacherType: TeacherType;
 
     @Column()

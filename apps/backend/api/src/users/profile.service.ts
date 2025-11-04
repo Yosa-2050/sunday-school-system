@@ -163,6 +163,10 @@ export class ProfileService {
         return this.repo.findOneBy({ id: profileId });
     }
 
+    async findByIdOrThrow(profileId: string) {
+        return await this.repo.findOneByOrFail({ id: profileId });
+    }
+
     async findByUserId(userId: string) {
         const user = await this.userService.findById(userId);
 

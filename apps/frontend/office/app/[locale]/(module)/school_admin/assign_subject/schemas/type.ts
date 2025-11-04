@@ -12,6 +12,7 @@ export interface SubjectAssignmentResponse {
 }
 
 export interface CreateSubjectAssignmentRequest {
+    id?: string;
     subjectId: string;
     classId?: string;
     teacherId?: string;

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { TeacherResponseDto } from '@shega/education/dto/response/teacher.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateEmployeeDto } from '@shega/organization/dto/request/create-employee.dto';
@@ -44,6 +45,24 @@ export class TeacherService {
             dto.password,
             true,
         );
+
+        const model = this.teacherRepo.create();
+        model.profile = profile;
+        model.year = cYear;
+        const saved = await this.teacherRepo.save(model);
+        return saved;
+    }
+
+    async addExistingTeacher(profileId: string, yearId: string) {
+        const cYear = await this.lmsService.calendarYearById(yearId);
+        const profile = await this.profileService.findByIdOrThrow(profileId);
+
+        const teacher = await this.teacherRepo.findOneBy({
+            profile: { id: profileId },
+        });
+        if (teacher) {
+            throw new EntityAlreadyExistsException('Profile');
+        }
 
         const model = this.teacherRepo.create();
         model.profile = profile;

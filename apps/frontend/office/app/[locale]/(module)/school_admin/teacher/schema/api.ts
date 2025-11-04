@@ -9,10 +9,24 @@ export const fetchTeacherApi = async (): Promise<TeacherResponse[]> => {
 };
 
 export const createTeacherApi = async ({
+    profileId,
     data,
 }: {
+    profileId: string;
     data: CreateStudentRequest;
 }): Promise<IdSuccessResponse> => {
+    if (profileId) {
+        const response: IdSuccessResponse = await fetcher(
+            `/teacher/addExisting/${profileId}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        return response;
+    }
     const response: IdSuccessResponse = await fetcher('/teacher/create', {
         method: 'POST',
         headers: {

@@ -15,7 +15,10 @@ import { showError, showSuccess } from 'utilities/notification';
 import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
 import { fetchSubjectsApi } from '../../subject/schemas/api';
 import { fetchTeacherApi } from '../../teacher/schema/api';
-import { createSubjectAssignmentApi } from '../schemas/api';
+import {
+    createSubjectAssignmentApi,
+    updateSubjectAssignmentApi,
+} from '../schemas/api';
 import type {
     CreateSubjectAssignmentRequest,
     SubjectAssignmentResponse,
@@ -63,6 +66,7 @@ export function AssignmentDrawer({
             subjectTitle: assignment?.subjectTitle || '',
             description: assignment?.description || '',
             teacherType: assignment?.teacherType || '',
+            id: assignment?.id || '',
         },
     });
 
@@ -76,20 +80,6 @@ export function AssignmentDrawer({
         queryFn: fetchTeacherApi,
     });
 
-    const selectedTeacherId = watch('teacherId');
-
-    // // Set teacher type when teacher is selected
-    // useEffect(() => {
-    //     if (selectedTeacherId) {
-    //         const selectedTeacher = teachers.find(t => t.id === selectedTeacherId);
-    //         if (selectedTeacher?.teacherType) {
-    //             setValue('teacherType', selectedTeacher.teacherType);
-    //         }
-    //     } else {
-    //         setValue('teacherType', '');
-    //     }
-    // }, [selectedTeacherId, teachers, setValue]);
-
     // Reset form when assignment changes or drawer opens
     useEffect(() => {
         if (opened) {
@@ -100,12 +90,16 @@ export function AssignmentDrawer({
                 subjectTitle: assignment?.subjectTitle || '',
                 description: assignment?.description || '',
                 teacherType: assignment?.teacherType || '',
+                id: assignment?.id || '',
             });
         }
     }, [opened, assignment, reset]);
 
     const mutation = useMutation({
-        mutationFn: createSubjectAssignmentApi,
+        mutationFn:
+            mode === 'create'
+                ? createSubjectAssignmentApi
+                : updateSubjectAssignmentApi,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['subjectAssignments'] });
             showSuccess(
@@ -126,6 +120,9 @@ export function AssignmentDrawer({
 
     const onSubmit = (data: CreateSubjectAssignmentRequest) => {
         data.classId = section?.id ?? classes?.id;
+        if (mode === 'edit' && assignment?.id) {
+            data.id = assignment.id;
+        }
         mutation.mutate(data);
     };
 
@@ -143,7 +140,7 @@ export function AssignmentDrawer({
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack>
-                    Class: {`${classes?.name} ${section?.name}`}
+                    Class: {`${classes?.name} ${section ? section?.name : ''}`}
                     <Controller
                         name="subjectId"
                         control={control}
@@ -197,11 +194,29 @@ export function AssignmentDrawer({
                             />
                         )}
                     />
-                    {/* {watch('teacherType') && (
-                        <Text size="sm">
-                            Teacher Type: {TeacherType[watch('teacherType') as TeacherTypeKey] || watch('teacherType')}
-                        </Text>
-                    )} */}
+                    {/* Teacher Type - Only enabled when teacher is selected */}
+                    <Controller
+                        name="teacherType"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                label="Teacher Type"
+                                placeholder="Select teacher type"
+                                data={Object.entries(TeacherType).map(
+                                    ([key, value]) => ({
+                                        value: key,
+                                        label: value,
+                                    }),
+                                )}
+                                value={field.value || null}
+                                onChange={field.onChange}
+                                disabled={
+                                    !watch('teacherId') || loadingTeachers
+                                }
+                                clearable
+                            />
+                        )}
+                    />
                     <Controller
                         name="description"
                         control={control}
