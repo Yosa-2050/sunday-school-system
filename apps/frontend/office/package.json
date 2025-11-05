@@ -63,6 +63,7 @@
         "next-intl": "^3.26.5",
         "next-nprogress-bar": "^2.4.7",
         "nuqs": "^2.4.0",
+        "print-js": "^1.6.0",
         "qr-scanner": "^1.4.2",
         "qrcode.react": "^4.2.0",
         "react": "19.0.0",
