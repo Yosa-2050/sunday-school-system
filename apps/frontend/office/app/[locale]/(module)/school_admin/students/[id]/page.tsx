@@ -29,9 +29,10 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { PrintIdModal, type StudentForPrint } from '../components/PrintIdModal';
+import { PrintIdModal } from '../components/PrintIdModal';
 import { RelationshipList } from '../components/RelationshipList';
 import { fetchStudentsIdApi } from '../schemas/api';
+import type { StudentForPrint } from '../schemas/type';
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function StudentDetailPage() {
@@ -148,7 +149,7 @@ export default function StudentDetailPage() {
                 <PrintIdModal
                     opened={printModalOpened}
                     onClose={() => setPrintModalOpened(false)}
-                    student={studentForPrint}
+                    students={[studentForPrint]}
                 />
 
                 {/* Personal Information */}

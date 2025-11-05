@@ -33,13 +33,14 @@ import {
     fetchClassesApi,
 } from '../classes/create/components/schema/fetchClassesDetail';
 import CreateRelationModal from './components/CreateRelationShip';
+import { PrintIdModal } from './components/PrintIdModal';
 import CreateProfileModal from './components/create-profile.modal';
 import {
     createStudentApi,
     fetchStudentsApi,
     uploadFileApi,
 } from './schemas/api';
-import type { StudentResponse } from './schemas/type';
+import type { StudentForPrint, StudentResponse } from './schemas/type';
 
 export default function StudentPage() {
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
@@ -57,11 +58,20 @@ export default function StudentPage() {
     const [createRelationModalOpened, setCreateRelationModalOpened] =
         useState(false);
     const [newStudentId, setNewStudentId] = useState<string | null>(null);
+    // On your student list page
+    const [selectedStudents, setSelectedStudents] = useState<StudentForPrint[]>(
+        [],
+    );
+    const [printModalOpen, setPrintModalOpen] = useState(false);
 
     const router = useRouter();
 
     const SelectedClassId = useActiveSelection(selectedSection, selectedClass);
-
+    // Function to handle batch printing
+    const handleBatchPrint = (studentsToPrint: StudentResponse[]) => {
+        setSelectedStudents(studentsToPrint);
+        setPrintModalOpen(true);
+    };
     // Fetch calendar years
     useEffect(() => {
         const getCalendarYears = async () => {
@@ -252,6 +262,14 @@ export default function StudentPage() {
                     <Button
                         variant="light"
                         leftSection={<IconPlus size={16} />}
+                        onClick={() => handleBatchPrint(students)} // or all students
+                        disabled={disableAction}
+                    >
+                        Print ID Cards
+                    </Button>
+                    <Button
+                        variant="light"
+                        leftSection={<IconPlus size={16} />}
                         onClick={() => setCreateStudentModalOpened(true)}
                         disabled={disableAction}
                     >
@@ -317,6 +335,12 @@ export default function StudentPage() {
                 opened={createRelationModalOpened}
                 onClose={() => setCreateRelationModalOpened(false)}
                 studentId={newStudentId}
+            />
+
+            <PrintIdModal
+                opened={printModalOpen}
+                onClose={() => setPrintModalOpen(false)}
+                students={selectedStudents}
             />
         </div>
     );
