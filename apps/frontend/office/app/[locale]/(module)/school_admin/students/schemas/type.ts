@@ -107,3 +107,15 @@ export type CreateRelationRequest = {
     email?: string;
     profileId?: string;
 };
+
+export interface StudentForPrint {
+    id: string;
+    idNumber: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber?: string;
+    emergencyContact?: string;
+    emergencyPhone?: string;
+    className?: string;
+    photoUrl?: string;
+}
