@@ -13,7 +13,6 @@ import {
 } from '@mantine/core';
 import {
     IconEmergencyBed,
-    IconId,
     IconPhone,
     IconPrinter,
     IconSchool,
@@ -65,7 +64,7 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
             style: `
                 @page { 
                     size: A4; 
-                    margin: 0.5in;
+                    margin: 0.4in;
                 }
                 body { 
                     -webkit-print-color-adjust: exact;
@@ -76,21 +75,22 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
                 .print-grid {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
-                    gap: 0.3in;
+                    gap: 0.25in;
                     width: 100%;
                     padding: 0.1in;
                 }
                 .id-card {
                     border: 2px solid #e0e0e0;
-                    border-radius: 12px;
-                    padding: 0.15in;
+                    border-radius: 8px;
+                    padding: 0.12in;
                     background: white;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                    height: 3.2in;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                    min-height: 2.8in;
                     display: flex;
                     flex-direction: column;
                     position: relative;
                     overflow: hidden;
+                    page-break-inside: avoid;
                 }
                 .id-card::before {
                     content: '';
@@ -98,37 +98,59 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
                     top: 0;
                     left: 0;
                     right: 0;
-                    height: 4px;
+                    height: 3px;
                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 }
                 .id-main-content {
                     flex: 1;
                     display: flex;
                     flex-direction: column;
+                    gap: 8px;
                 }
                 .id-header {
                     display: flex;
                     align-items: flex-start;
-                    gap: 12px;
-                    margin-bottom: 12px;
+                    gap: 8px;
+                    margin-bottom: 4px;
                 }
                 .student-info {
                     flex: 1;
                     min-width: 0;
                 }
+                .student-name {
+                    font-weight: 700;
+                    font-size: 14px;
+                    line-height: 1.2;
+                    margin-bottom: 2px;
+                }
+                .student-id {
+                    font-size: 11px;
+                    color: #666;
+                    margin-bottom: 4px;
+                }
                 .student-details {
-                    margin-top: 8px;
+                    margin-top: 4px;
                 }
                 .id-footer {
                     margin-top: auto;
-                    padding-top: 8px;
+                    padding-top: 6px;
                 }
                 .cutting-guide {
-                    border: 1px dashed #ccc;
-                    margin: 0.1in;
-                    height: calc(100% - 0.2in);
-                    border-radius: 8px;
+                    border: 1px dashed #ddd;
+                    margin: 0.08in;
+                    height: calc(100% - 0.16in);
+                    border-radius: 6px;
                     pointer-events: none;
+                }
+                .detail-item {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 6px;
+                    margin-bottom: 4px;
+                }
+                .detail-text {
+                    font-size: 11px;
+                    line-height: 1.3;
                 }
             `,
         });
@@ -156,32 +178,29 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
                     align="flex-start"
                     className="id-header"
                 >
-                    <Group align="flex-start" gap="md" style={{ flex: 1 }}>
+                    <Group align="flex-start" gap="sm" style={{ flex: 1 }}>
                         <Avatar
-                            size={70}
+                            size={50}
                             src={student.photoUrl}
                             style={{
-                                border: '3px solid #f0f0f0',
-                                borderRadius: '8px',
+                                border: '2px solid #f0f0f0',
+                                borderRadius: '6px',
+                                flexShrink: 0,
                             }}
                         >
-                            <IconUser size={30} />
+                            <IconUser size={20} />
                         </Avatar>
                         <Box className="student-info">
-                            <Text
-                                fw={500}
-                                size="sm"
-                                style={{ lineHeight: 1.2 }}
-                            >
+                            <Text className="student-name" truncate>
                                 {student.firstName} {student.lastName}
                             </Text>
-                            <Text size="xs" c="dimmed" mt={2}>
+                            <Text className="student-id">
                                 {student.idNumber}
                             </Text>
                             {student.className && (
-                                <Group gap={6} mt={6}>
-                                    <IconSchool size={14} />
-                                    <Text size="sm" fw={500}>
+                                <Group gap={4} mt={2}>
+                                    <IconSchool size={12} />
+                                    <Text size="11px" truncate>
                                         {student.className}
                                     </Text>
                                 </Group>
@@ -193,40 +212,57 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
                     <Box style={{ textAlign: 'center', flexShrink: 0 }}>
                         <QRCodeSVG
                             value={generateQRData(student)}
-                            size={80}
+                            size={60}
                             level="H"
                             includeMargin
                         />
-                        <Text size="xs" c="dimmed" mt={4}>
-                            Scan here
+                        <Text size="10px" c="dimmed" mt={2}>
+                            Scan Me
                         </Text>
                     </Box>
                 </Group>
 
                 {/* Student Details */}
                 <Box className="student-details">
-                    <Stack gap={6}>
+                    <Stack gap={4}>
                         {student.phoneNumber && (
-                            <Group gap={8}>
-                                <IconPhone size={16} color="#666" />
-                                <Text size="sm">{student.phoneNumber}</Text>
-                            </Group>
+                            <Box className="detail-item">
+                                <IconPhone
+                                    size={12}
+                                    color="#666"
+                                    style={{ marginTop: '1px', flexShrink: 0 }}
+                                />
+                                <Text className="detail-text" truncate>
+                                    {student.phoneNumber}
+                                </Text>
+                            </Box>
                         )}
 
                         {student.emergencyContact && (
                             <Box>
-                                <Group gap={8} mb={2}>
-                                    <IconEmergencyBed size={16} color="#666" />
-                                    <Text size="sm" fw={500}>
+                                <Box className="detail-item">
+                                    <IconEmergencyBed
+                                        size={12}
+                                        color="#666"
+                                        style={{
+                                            marginTop: '1px',
+                                            flexShrink: 0,
+                                        }}
+                                    />
+                                    <Text className="detail-text" fw={500}>
                                         Emergency Contact
                                     </Text>
-                                </Group>
-                                <Box pl={24}>
-                                    <Text size="sm">
+                                </Box>
+                                <Box style={{ marginLeft: '18px' }}>
+                                    <Text className="detail-text" truncate>
                                         {student.emergencyContact}
                                     </Text>
                                     {student.emergencyPhone && (
-                                        <Text size="sm" c="dimmed">
+                                        <Text
+                                            className="detail-text"
+                                            c="dimmed"
+                                            truncate
+                                        >
                                             {student.emergencyPhone}
                                         </Text>
                                     )}
@@ -239,17 +275,11 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
 
             {/* Footer */}
             <Box className="id-footer">
-                <Divider mb={8} />
+                <Divider mb={4} />
                 <Group justify="space-between">
-                    <Text size="xs" c="dimmed">
-                        Issued: {new Date().toLocaleDateString()}
+                    <Text size="5x" c="dimmed">
+                        ID Card
                     </Text>
-                    <Group gap={4}>
-                        <IconId size={14} />
-                        <Text size="xs" fw={500}>
-                            Student ID Card
-                        </Text>
-                    </Group>
                 </Group>
             </Box>
         </Box>
@@ -272,8 +302,8 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
                     style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '20px',
-                        padding: '20px',
+                        gap: '16px',
+                        padding: '16px',
                         maxWidth: '8.3in',
                         margin: '0 auto',
                         backgroundColor: '#f8f9fa',
@@ -301,7 +331,7 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
 
             {/* Print Instructions */}
             <Text size="sm" c="dimmed" ta="center" mt="md">
-                Each ID card has cutting guides for easy separation
+                Each ID card has cutting guides and is optimized for printing
             </Text>
         </Modal>
     );
