@@ -61,104 +61,197 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
         printJS({
             printable: 'print-id-container',
             type: 'html',
-            targetStyles: ['*'], // include all Mantine styles
+            targetStyles: ['*'],
             style: `
-        @page { size: A4; margin: 0.3in; }
-        body { -webkit-print-color-adjust: exact; }
-        .print-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          grid-auto-rows: 1.8in;
-          gap: 0.2in;
-          width: 100%;
-        }
-        .id-card {
-          border: 1px solid #ccc;
-          border-radius: 6px;
-          padding: 0.1in;
-          background: white;
-          box-shadow: 0 0 2px rgba(0,0,0,0.1);
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          height: 1.8in;
-        }
-        .id-header {
-          display: flex;
-          align-items: flex-start;
-          gap: 6px;
-        }
-        .id-footer {
-          font-size: 8px;
-          color: #555;
-          display: flex;
-          justify-content: space-between;
-        }
-      `,
+                @page { 
+                    size: A4; 
+                    margin: 0.5in;
+                }
+                body { 
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                    margin: 0;
+                    padding: 0;
+                }
+                .print-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 0.3in;
+                    width: 100%;
+                    padding: 0.1in;
+                }
+                .id-card {
+                    border: 2px solid #e0e0e0;
+                    border-radius: 12px;
+                    padding: 0.15in;
+                    background: white;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    height: 3.2in;
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                    overflow: hidden;
+                }
+                .id-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                }
+                .id-main-content {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .id-header {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 12px;
+                    margin-bottom: 12px;
+                }
+                .student-info {
+                    flex: 1;
+                    min-width: 0;
+                }
+                .student-details {
+                    margin-top: 8px;
+                }
+                .id-footer {
+                    margin-top: auto;
+                    padding-top: 8px;
+                }
+                .cutting-guide {
+                    border: 1px dashed #ccc;
+                    margin: 0.1in;
+                    height: calc(100% - 0.2in);
+                    border-radius: 8px;
+                    pointer-events: none;
+                }
+            `,
         });
     };
 
     // Render single ID card
     const renderCard = (student: StudentForPrint) => (
         <Box key={student.id} className="id-card">
-            <Box className="id-header">
-                <Avatar
-                    size={40}
-                    src={student.photoUrl}
-                    style={{ border: '1px solid #eee' }}
-                >
-                    <IconUser size={16} />
-                </Avatar>
-                <Box style={{ flex: 1, minWidth: 0 }}>
-                    <Text fw={700} size="xs">
-                        {student.firstName} {student.lastName}
-                    </Text>
-                    <Text size="10px" c="dimmed">
-                        ID: {student.idNumber}
-                    </Text>
-                    {student.className && (
-                        <Group gap={4} mt={2}>
-                            <IconSchool size={10} />
-                            <Text size="9px">{student.className}</Text>
-                        </Group>
-                    )}
-                </Box>
-                <Box style={{ textAlign: 'center' }}>
-                    <QRCodeSVG
-                        value={generateQRData(student)}
-                        size={45}
-                        level="H"
-                    />
-                </Box>
-            </Box>
+            {/* Cutting guide overlay */}
+            <Box
+                className="cutting-guide"
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                }}
+            />
 
-            <Stack gap={1} mt={4}>
-                {student.phoneNumber && (
-                    <Group gap={3}>
-                        <IconPhone size={10} />
-                        <Text size="9px">{student.phoneNumber}</Text>
-                    </Group>
-                )}
-                {student.emergencyContact && (
-                    <Group gap={3}>
-                        <IconEmergencyBed size={10} />
-                        <Box>
-                            <Text size="9px">{student.emergencyContact}</Text>
-                            {student.emergencyPhone && (
-                                <Text size="9px" c="dimmed">
-                                    {student.emergencyPhone}
-                                </Text>
+            <Box className="id-main-content">
+                {/* Header with Avatar and QR Code */}
+                <Group
+                    justify="space-between"
+                    align="flex-start"
+                    className="id-header"
+                >
+                    <Group align="flex-start" gap="md" style={{ flex: 1 }}>
+                        <Avatar
+                            size={70}
+                            src={student.photoUrl}
+                            style={{
+                                border: '3px solid #f0f0f0',
+                                borderRadius: '8px',
+                            }}
+                        >
+                            <IconUser size={30} />
+                        </Avatar>
+                        <Box className="student-info">
+                            <Text
+                                fw={500}
+                                size="sm"
+                                style={{ lineHeight: 1.2 }}
+                            >
+                                {student.firstName} {student.lastName}
+                            </Text>
+                            <Text size="xs" c="dimmed" mt={2}>
+                                {student.idNumber}
+                            </Text>
+                            {student.className && (
+                                <Group gap={6} mt={6}>
+                                    <IconSchool size={14} />
+                                    <Text size="sm" fw={500}>
+                                        {student.className}
+                                    </Text>
+                                </Group>
                             )}
                         </Box>
                     </Group>
-                )}
-            </Stack>
 
-            <Divider my={3} />
-            <Group justify="space-between" className="id-footer">
-                <Text>{new Date().toLocaleDateString()}</Text>
-                <IconId size={10} />
-            </Group>
+                    {/* QR Code */}
+                    <Box style={{ textAlign: 'center', flexShrink: 0 }}>
+                        <QRCodeSVG
+                            value={generateQRData(student)}
+                            size={80}
+                            level="H"
+                            includeMargin
+                        />
+                        <Text size="xs" c="dimmed" mt={4}>
+                            Scan here
+                        </Text>
+                    </Box>
+                </Group>
+
+                {/* Student Details */}
+                <Box className="student-details">
+                    <Stack gap={6}>
+                        {student.phoneNumber && (
+                            <Group gap={8}>
+                                <IconPhone size={16} color="#666" />
+                                <Text size="sm">{student.phoneNumber}</Text>
+                            </Group>
+                        )}
+
+                        {student.emergencyContact && (
+                            <Box>
+                                <Group gap={8} mb={2}>
+                                    <IconEmergencyBed size={16} color="#666" />
+                                    <Text size="sm" fw={500}>
+                                        Emergency Contact
+                                    </Text>
+                                </Group>
+                                <Box pl={24}>
+                                    <Text size="sm">
+                                        {student.emergencyContact}
+                                    </Text>
+                                    {student.emergencyPhone && (
+                                        <Text size="sm" c="dimmed">
+                                            {student.emergencyPhone}
+                                        </Text>
+                                    )}
+                                </Box>
+                            </Box>
+                        )}
+                    </Stack>
+                </Box>
+            </Box>
+
+            {/* Footer */}
+            <Box className="id-footer">
+                <Divider mb={8} />
+                <Group justify="space-between">
+                    <Text size="xs" c="dimmed">
+                        Issued: {new Date().toLocaleDateString()}
+                    </Text>
+                    <Group gap={4}>
+                        <IconId size={14} />
+                        <Text size="xs" fw={500}>
+                            Student ID Card
+                        </Text>
+                    </Group>
+                </Group>
+            </Box>
         </Box>
     );
 
@@ -179,9 +272,12 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
                     style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '12px',
+                        gap: '20px',
+                        padding: '20px',
                         maxWidth: '8.3in',
                         margin: '0 auto',
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: '8px',
                     }}
                 >
                     {students.map(renderCard)}
@@ -194,13 +290,19 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
                     leftSection={<IconPrinter size={16} />}
                     onClick={handlePrint}
                     variant="filled"
+                    size="md"
                 >
                     Print {students.length} ID Cards
                 </Button>
-                <Button variant="outline" onClick={onClose}>
+                <Button variant="outline" onClick={onClose} size="md">
                     Close
                 </Button>
             </Group>
+
+            {/* Print Instructions */}
+            <Text size="sm" c="dimmed" ta="center" mt="md">
+                Each ID card has cutting guides for easy separation
+            </Text>
         </Modal>
     );
 }
