@@ -13,15 +13,14 @@ import {
 } from '@mantine/core';
 import {
     IconEmergencyBed,
-    IconId,
     IconPhone,
     IconPrinter,
     IconSchool,
     IconUser,
 } from '@tabler/icons-react';
+import printJS from 'print-js';
 import { QRCodeSVG } from 'qrcode.react';
 import { useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
 
 export interface StudentForPrint {
     id: string;
@@ -42,159 +41,247 @@ interface PrintIdModalProps {
 }
 
 export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
-    const printRef = useRef<HTMLDivElement>(null);
+    const printAreaRef = useRef<HTMLDivElement>(null);
 
-    const handlePrint = useReactToPrint({
-        contentRef: printRef,
-        pageStyle: `
-            @page {
-                size: A4;
-                margin: 0.15in;
-            }
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                -webkit-print-color-adjust: exact;
-            }
-            .print-container {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(5, 1.8in); /* 5 rows per page */
-                gap: 0.1in;
-                width: 100%;
-                height: 100%;
-                page-break-after: always;
-            }
-            .id-card {
-                width: 3.7in;
-                height: 1.8in;
-                padding: 0.08in;
-                border: 1px solid #000;
-                box-sizing: border-box;
-            }
-        `,
-        documentTitle: `Student ID Cards - ${students.length} students`,
-    });
-
-    // Generate QR code data for a student
-    const generateQRData = (student: StudentForPrint) => {
-        return JSON.stringify({
+    // Generate QR data
+    const generateQRData = (student: StudentForPrint) =>
+        JSON.stringify({
             studentId: student.id,
             idNumber: student.idNumber,
             classId: student.className,
             timestamp: new Date().toISOString(),
         });
+
+    // Print handler
+    const handlePrint = () => {
+        if (!printAreaRef.current) {
+            return;
+        }
+        printJS({
+            printable: 'print-id-container',
+            type: 'html',
+            targetStyles: ['*'],
+            style: `
+                @page { 
+                    size: A4; 
+                    margin: 0.4in;
+                }
+                body { 
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                    margin: 0;
+                    padding: 0;
+                }
+                .print-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 0.25in;
+                    width: 100%;
+                    padding: 0.1in;
+                }
+                .id-card {
+                    border: 2px solid #e0e0e0;
+                    border-radius: 8px;
+                    padding: 0.12in;
+                    background: white;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                    min-height: 2.8in;
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                    overflow: hidden;
+                    page-break-inside: avoid;
+                }
+                .id-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                }
+                .id-main-content {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+                .id-header {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 8px;
+                    margin-bottom: 4px;
+                }
+                .student-info {
+                    flex: 1;
+                    min-width: 0;
+                }
+                .student-name {
+                    font-weight: 700;
+                    font-size: 14px;
+                    line-height: 1.2;
+                    margin-bottom: 2px;
+                }
+                .student-id {
+                    font-size: 11px;
+                    color: #666;
+                    margin-bottom: 4px;
+                }
+                .student-details {
+                    margin-top: 4px;
+                }
+                .id-footer {
+                    margin-top: auto;
+                    padding-top: 6px;
+                }
+                .cutting-guide {
+                    border: 1px dashed #ddd;
+                    margin: 0.08in;
+                    height: calc(100% - 0.16in);
+                    border-radius: 6px;
+                    pointer-events: none;
+                }
+                .detail-item {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 6px;
+                    margin-bottom: 4px;
+                }
+                .detail-text {
+                    font-size: 11px;
+                    line-height: 1.3;
+                }
+            `,
+        });
     };
 
-    // Render a single ID card
-    const renderIdCard = (student: StudentForPrint) => (
-        <Box
-            key={student.id}
-            className="id-card"
-            style={{
-                border: '1px solid #e0e0e0',
-                borderRadius: '4px',
-                backgroundColor: 'white',
-                padding: '8px',
-                height: '1.9in',
-                display: 'flex',
-                flexDirection: 'column',
-                minWidth: 0, // Important for grid layout
-            }}
-        >
-            <Group
-                align="flex-start"
-                gap={4}
-                wrap="nowrap"
-                style={{ flex: 1, minWidth: 0 }}
-            >
-                {/* Left Side - Photo and Basic Info */}
-                <Box style={{ flex: 1, minWidth: 0 }}>
-                    <Group gap={4} mb={4}>
+    // Render single ID card
+    const renderCard = (student: StudentForPrint) => (
+        <Box key={student.id} className="id-card">
+            {/* Cutting guide overlay */}
+            <Box
+                className="cutting-guide"
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                }}
+            />
+
+            <Box className="id-main-content">
+                {/* Header with Avatar and QR Code */}
+                <Group
+                    justify="space-between"
+                    align="flex-start"
+                    className="id-header"
+                >
+                    <Group align="flex-start" gap="sm" style={{ flex: 1 }}>
                         <Avatar
-                            size={35}
+                            size={50}
                             src={student.photoUrl}
                             style={{
-                                border: '1px solid #dee2e6',
+                                border: '2px solid #f0f0f0',
+                                borderRadius: '6px',
                                 flexShrink: 0,
                             }}
                         >
-                            <IconUser size={16} />
+                            <IconUser size={20} />
                         </Avatar>
-                        <Box style={{ minWidth: 0 }}>
-                            <Text
-                                fw={700}
-                                size="xs"
-                                style={{ lineHeight: 1.1 }}
-                            >
+                        <Box className="student-info">
+                            <Text className="student-name" truncate>
                                 {student.firstName} {student.lastName}
                             </Text>
-                            <Text size="10px" c="dimmed">
-                                ID: {student.idNumber}
+                            <Text className="student-id">
+                                {student.idNumber}
                             </Text>
+                            {student.className && (
+                                <Group gap={4} mt={2}>
+                                    <IconSchool size={12} />
+                                    <Text size="11px" truncate>
+                                        {student.className}
+                                    </Text>
+                                </Group>
+                            )}
                         </Box>
                     </Group>
 
-                    <Stack gap={1}>
+                    {/* QR Code */}
+                    <Box style={{ textAlign: 'center', flexShrink: 0 }}>
+                        <QRCodeSVG
+                            value={generateQRData(student)}
+                            size={60}
+                            level="H"
+                            includeMargin
+                        />
+                        <Text size="10px" c="dimmed" mt={2}>
+                            Scan Me
+                        </Text>
+                    </Box>
+                </Group>
+
+                {/* Student Details */}
+                <Box className="student-details">
+                    <Stack gap={4}>
                         {student.phoneNumber && (
-                            <Group gap={2}>
-                                <IconPhone size={10} />
-                                <Text size="9px" truncate>
+                            <Box className="detail-item">
+                                <IconPhone
+                                    size={12}
+                                    color="#666"
+                                    style={{ marginTop: '1px', flexShrink: 0 }}
+                                />
+                                <Text className="detail-text" truncate>
                                     {student.phoneNumber}
                                 </Text>
-                            </Group>
-                        )}
-
-                        {student.className && (
-                            <Group gap={2}>
-                                <IconSchool size={10} />
-                                <Text size="9px" truncate>
-                                    {student.className}
-                                </Text>
-                            </Group>
+                            </Box>
                         )}
 
                         {student.emergencyContact && (
-                            <Group gap={2}>
-                                <IconEmergencyBed size={10} />
-                                <Box style={{ minWidth: 0 }}>
-                                    <Text size="9px" truncate>
+                            <Box>
+                                <Box className="detail-item">
+                                    <IconEmergencyBed
+                                        size={12}
+                                        color="#666"
+                                        style={{
+                                            marginTop: '1px',
+                                            flexShrink: 0,
+                                        }}
+                                    />
+                                    <Text className="detail-text" fw={500}>
+                                        Emergency Contact
+                                    </Text>
+                                </Box>
+                                <Box style={{ marginLeft: '18px' }}>
+                                    <Text className="detail-text" truncate>
                                         {student.emergencyContact}
                                     </Text>
                                     {student.emergencyPhone && (
-                                        <Text size="9px" c="dimmed" truncate>
+                                        <Text
+                                            className="detail-text"
+                                            c="dimmed"
+                                            truncate
+                                        >
                                             {student.emergencyPhone}
                                         </Text>
                                     )}
                                 </Box>
-                            </Group>
+                            </Box>
                         )}
                     </Stack>
                 </Box>
-
-                {/* Right Side - QR Code */}
-                <Box style={{ textAlign: 'center', flexShrink: 0 }}>
-                    <QRCodeSVG
-                        value={generateQRData(student)}
-                        size={50}
-                        level="H"
-                        includeMargin
-                    />
-                    <Text size="7px" c="dimmed" mt={1}>
-                        Scan for details
-                    </Text>
-                </Box>
-            </Group>
+            </Box>
 
             {/* Footer */}
-            <Divider my={2} />
-            <Group justify="space-between">
-                <Text size="7px" c="dimmed">
-                    {new Date().toLocaleDateString()}
-                </Text>
-                <IconId size={10} />
-            </Group>
+            <Box className="id-footer">
+                <Divider mb={4} />
+                <Group justify="space-between">
+                    <Text size="5x" c="dimmed">
+                        ID Card
+                    </Text>
+                </Group>
+            </Box>
         </Box>
     );
 
@@ -202,44 +289,50 @@ export function PrintIdModal({ opened, onClose, students }: PrintIdModalProps) {
         <Modal
             opened={opened}
             onClose={onClose}
-            title={`Print Student ID Cards (${students.length} students)`}
+            title={`Print Student ID Cards (${students.length})`}
             size="xl"
             centered
         >
-            <Box>
-                {/* Preview */}
-                <Paper withBorder p="md" mb="xl">
-                    <Box ref={printRef} style={{ width: '100%' }}>
-                        <Box
-                            className="print-container"
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: '12px',
-                                width: '100%',
-                                maxWidth: '8.3in', // A4 width
-                                margin: '0 auto',
-                            }}
-                        >
-                            {students.map(renderIdCard)}
-                        </Box>
-                    </Box>
-                </Paper>
+            <Paper withBorder p="md" mb="xl">
+                {/* Printable Area */}
+                <Box
+                    id="print-id-container"
+                    ref={printAreaRef}
+                    className="print-grid"
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: '16px',
+                        padding: '16px',
+                        maxWidth: '8.3in',
+                        margin: '0 auto',
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: '8px',
+                    }}
+                >
+                    {students.map(renderCard)}
+                </Box>
+            </Paper>
 
-                {/* Action Buttons */}
-                <Group justify="center">
-                    <Button
-                        leftSection={<IconPrinter size={16} />}
-                        onClick={handlePrint}
-                        variant="filled"
-                    >
-                        Print {students.length} ID Cards
-                    </Button>
-                    <Button variant="outline" onClick={onClose}>
-                        Close
-                    </Button>
-                </Group>
-            </Box>
+            {/* Actions */}
+            <Group justify="center" mt="md">
+                <Button
+                    leftSection={<IconPrinter size={16} />}
+                    onClick={handlePrint}
+                    variant="filled"
+                    size="md"
+                >
+                    Print {students.length} ID Cards
+                </Button>
+                <Button variant="outline" onClick={onClose} size="md">
+                    Close
+                </Button>
+            </Group>
+
+            {/* Print Instructions */}
+            <Text size="sm" c="dimmed" ta="center" mt="md">
+                Each ID card has cutting guides and is optimized for printing
+            </Text>
         </Modal>
     );
 }
