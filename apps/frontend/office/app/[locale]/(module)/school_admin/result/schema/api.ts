@@ -2,7 +2,7 @@ import { fetcher } from '@shega/shared';
 import type { SuccessResponse } from 'app/[locale]/_api/admin/fetch-programs';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponse } from '../../students/schemas/type';
-import type { ResultRequest } from './type';
+import type { ResultRequest, ResultResponse } from './type';
 
 export const fetchResultApi = async (
     classId: string,
@@ -25,6 +25,20 @@ export const saveResultApi = async (
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(resultData),
+    });
+
+    return response;
+};
+
+export const fetchResultViewApi = async (
+    testId: string,
+): Promise<ResultResponse[]> => {
+    const url = `/result/byTest/${testId}`;
+    const response: ResultResponse[] = await fetcher(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
     });
 
     return response;

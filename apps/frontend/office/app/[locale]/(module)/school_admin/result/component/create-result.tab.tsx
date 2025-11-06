@@ -76,6 +76,7 @@ export default function ResultCreate({
             const resultData: ResultRequest = {
                 testId: selectedTest,
                 result: resultRecords,
+                selectedTest,
             };
 
             return saveResultApi(resultData);
