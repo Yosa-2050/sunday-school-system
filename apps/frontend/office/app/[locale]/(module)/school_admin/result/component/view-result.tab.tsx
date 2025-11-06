@@ -9,7 +9,7 @@ import type { StudentResponse } from '../../students/schemas/type';
 import { FetchTestBySubjectIdApi } from '../../test/schema/api';
 import {} from '../../test/schema/type';
 import { fetchResultViewApi } from '../schema/api';
-import type { ResultResponse } from '../schema/type';
+import type { ResultViewResponse } from '../schema/type';
 
 interface ResultViewProps {
     classes: GetClass[];
@@ -20,6 +20,45 @@ interface ResultViewProps {
     students: StudentResponse[];
 }
 
+export const dummyResultViewData: ResultViewResponse[] = [
+    {
+        id: '121',
+        studentId: 'stu-001',
+        fullName: 'Mekdes Tadesse',
+        idNumber: 'A1001',
+        results: {
+            Math: 85,
+            English: 90,
+            Physics: 78,
+        },
+        totals: 253, // sum of the above
+    },
+    {
+        id: '121',
+        studentId: 'stu-002',
+        fullName: 'Samuel Bekele',
+        idNumber: 'A1002',
+        results: {
+            Math: 92,
+            English: 88,
+            Physics: 95,
+        },
+        totals: 275,
+    },
+    {
+        id: '1235',
+        studentId: 'stu-003',
+        fullName: 'Hana Worku',
+        idNumber: 'A1003',
+        results: {
+            Math: 70,
+            English: 80,
+            Physics: 68,
+        },
+        totals: 218,
+    },
+];
+
 export default function ResultView({
     classes,
     selectedClass,
@@ -28,7 +67,9 @@ export default function ResultView({
     setSelectedSection,
     students,
 }: ResultViewProps) {
-    const [resultViewData, setResultViewData] = useState<ResultResponse[]>([]);
+    const [resultViewData, setResultViewData] = useState<ResultViewResponse[]>(
+        [],
+    );
     const [loadingView, setLoadingView] = useState(false);
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
     const [selectedTest, setSelectedTest] = useState<string | null>(null);
@@ -60,7 +101,7 @@ export default function ResultView({
             setLoadingView(true);
             try {
                 const data = await fetchResultViewApi(selectedTest);
-                setResultViewData(data);
+                setResultViewData(dummyResultViewData);
                 return data;
             } finally {
                 setLoadingView(false);
@@ -197,7 +238,7 @@ export default function ResultView({
                                                 {index + 1}
                                             </Table.Td>
                                             <Table.Td className="text-center">
-                                                {result.student.idNumber}
+                                                {result.idNumber}
                                             </Table.Td>
                                             <Table.Td
                                                 className="text-center"
@@ -205,10 +246,7 @@ export default function ResultView({
                                                     minWidth: '200px',
                                                 }}
                                             >
-                                                {
-                                                    result.student.profile
-                                                        .firstName
-                                                }
+                                                {result.fullName}
                                             </Table.Td>
                                             <Table.Td
                                                 className="text-center"
@@ -216,7 +254,7 @@ export default function ResultView({
                                                     minWidth: '200px',
                                                 }}
                                             >
-                                                {result.score}
+                                                {result.totals}
                                             </Table.Td>
                                         </Table.Tr>
                                     ))}

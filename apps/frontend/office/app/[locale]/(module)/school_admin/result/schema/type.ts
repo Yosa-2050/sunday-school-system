@@ -17,3 +17,14 @@ export interface ResultResponse {
     testId: string;
     score: number;
 }
+
+export interface ResultViewResponse {
+    id: string;
+    studentId: string;
+    fullName: string;
+    idNumber: string;
+    results: {
+        [testName: string]: number;
+    };
+    totals: number;
+}
