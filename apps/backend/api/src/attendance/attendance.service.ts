@@ -76,7 +76,7 @@ export class AttendanceService {
             date: Between(startOfDay, endOfDay), // Find between start and end of day
         });
 
-        if (existingAttendance.isCompleted) {
+        if (existingAttendance?.isCompleted) {
             throw new BadRequestException('Attendance completed');
         }
 
@@ -282,10 +282,35 @@ export class AttendanceService {
         return attendanceList;
     }
 
-    async Complete(id: string, arg1: string) {
+    async Complete(id: string, activeCalendarYear: string) {
         const attend = await this.attendanceDataRepo.findOneBy({ id });
         if (!attend) {
             throw new EntityNotFoundException('Attendance');
+        }
+        const attendances = await this.attendanceRepo.findBy({
+            attendanceDataId: id,
+        });
+
+        const students = await this.studentService.findStudents(
+            attend.class.id,
+            activeCalendarYear,
+        );
+
+        const attendance = students
+            .map((stud) => {
+                const std = attendances.find((x) => x.student.id === stud.id);
+
+                if (!std) {
+                    return this.attendanceRepo.create({
+                        student: stud,
+                        status: AttendanceStatus.Absent,
+                        attendanceDataId: id,
+                    });
+                }
+            })
+            .filter((att) => att);
+        if (attendance && attendance.length > 0) {
+            await this.attendanceRepo.save(attendance);
         }
         attend.isCompleted = true;
         return this.attendanceDataRepo.save(attend);
