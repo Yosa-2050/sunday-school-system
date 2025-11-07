@@ -112,7 +112,7 @@ export const completeAttendanceApi = async (
     const response: IdSuccessResponse = await fetcher(
         `/attendance/complete/${attendanceId}`,
         {
-            method: 'PATCHn',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
