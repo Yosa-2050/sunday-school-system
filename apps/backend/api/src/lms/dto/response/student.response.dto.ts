@@ -12,6 +12,7 @@ export class StudentResponseDto {
         this.idNumber = student.idNumber;
         this.isActive = student.isActive;
         this.gender = student.profile.gender;
+        this.fullName = `${student.profile.firstName} ${student.profile.middleName} ${student.profile.lastName}`;
     }
     id: string;
     fullName: string;

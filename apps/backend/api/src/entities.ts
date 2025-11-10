@@ -3,6 +3,7 @@ import { LookUps } from './Utilities/entities/lookups.entity';
 import { AttendanceInformation } from './attendance/entities/attendance-data.entity';
 import { Attendance } from './attendance/entities/attendance.entity';
 import { Permission } from './attendance/entities/permission.entity';
+import { Result } from './attendance/entities/result.entity';
 import { Test } from './attendance/entities/test.entity';
 import { Document } from './document/entities/document.entity';
 import { Category } from './education/entities/category.entity';
@@ -76,4 +77,5 @@ export const AppEntities = [
     TeacherAssignment,
     Department,
     Test,
+    Result,
 ];

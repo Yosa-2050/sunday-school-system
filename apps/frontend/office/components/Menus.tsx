@@ -107,6 +107,12 @@ export const Menus = (): MenuTree[] => {
                     link: '/school_admin/test',
                     role: 'school_admin',
                 },
+                {
+                    label: t('result'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/result',
+                    role: 'school_admin',
+                },
             ],
         },
         {
