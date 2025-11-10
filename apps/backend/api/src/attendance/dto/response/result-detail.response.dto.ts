@@ -12,6 +12,12 @@ export class ResultDetailResponse {
         this.fullName = student.fullName;
         this.gender = student.gender;
         this.totals = result.reduce((sum, item) => sum + item.score, 0);
+        this.results = {};
+        for (let index = 0; index < result.length; index++) {
+            const element = result[index];
+            this.results[element?.test?.name ?? `test ${index}`] =
+                element.score ?? 0;
+        }
     }
     studentId: string;
     isStudentActive: boolean;
