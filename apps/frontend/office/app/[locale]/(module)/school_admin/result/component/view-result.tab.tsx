@@ -14,10 +14,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { fetchSubjectsAssignmentApi } from '../../assign_subject/schemas/api';
 import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
-import type { StudentResponse } from '../../students/schemas/type';
 import { FetchTestBySubjectIdApi } from '../../test/schema/api';
 import {} from '../../test/schema/type';
-import { dummyResultViewApi as getResultViewApi } from '../schema/api';
+import { getResultViewApi } from '../schema/api';
 import type { ResultViewResponse } from '../schema/type';
 
 interface ResultViewProps {
@@ -26,7 +25,6 @@ interface ResultViewProps {
     setSelectedClass: (classId: string | null) => void;
     selectedSection: string | null;
     setSelectedSection: (sectionId: string | null) => void;
-    students: StudentResponse[];
 }
 
 export default function ResultView({
@@ -35,7 +33,6 @@ export default function ResultView({
     setSelectedClass,
     selectedSection,
     setSelectedSection,
-    students,
 }: ResultViewProps) {
     const [resultViewData, setResultViewData] = useState<ResultViewResponse[]>(
         [],
