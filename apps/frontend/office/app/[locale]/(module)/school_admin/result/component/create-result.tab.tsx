@@ -112,6 +112,7 @@ export default function ResultCreate({
                     <TextInput
                         size="xs"
                         placeholder="score"
+                        type="number"
                         value={scores[student.id] || ''}
                         onChange={(e) =>
                             handleScoreChange(student.id, e.target.value)

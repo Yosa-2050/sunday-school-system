@@ -1,6 +1,15 @@
 'use client';
 
-import { Box, Button, Flex, Group, Select, Table, Text } from '@mantine/core';
+import {
+    Box,
+    Button,
+    Flex,
+    Group,
+    ScrollArea,
+    Select,
+    Table,
+    Text,
+} from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { fetchSubjectsAssignmentApi } from '../../assign_subject/schemas/api';
@@ -8,7 +17,7 @@ import type { GetClass } from '../../classes/create/components/schema/fetchClass
 import type { StudentResponse } from '../../students/schemas/type';
 import { FetchTestBySubjectIdApi } from '../../test/schema/api';
 import {} from '../../test/schema/type';
-import { fetchResultViewApi } from '../schema/api';
+import { dummyResultViewApi as getResultViewApi } from '../schema/api';
 import type { ResultViewResponse } from '../schema/type';
 
 interface ResultViewProps {
@@ -19,45 +28,6 @@ interface ResultViewProps {
     setSelectedSection: (sectionId: string | null) => void;
     students: StudentResponse[];
 }
-
-export const dummyResultViewData: ResultViewResponse[] = [
-    {
-        id: '121',
-        studentId: 'stu-001',
-        fullName: 'Mekdes Tadesse',
-        idNumber: 'A1001',
-        results: {
-            Math: 85,
-            English: 90,
-            Physics: 78,
-        },
-        totals: 253, // sum of the above
-    },
-    {
-        id: '121',
-        studentId: 'stu-002',
-        fullName: 'Samuel Bekele',
-        idNumber: 'A1002',
-        results: {
-            Math: 92,
-            English: 88,
-            Physics: 95,
-        },
-        totals: 275,
-    },
-    {
-        id: '1235',
-        studentId: 'stu-003',
-        fullName: 'Hana Worku',
-        idNumber: 'A1003',
-        results: {
-            Math: 70,
-            English: 80,
-            Physics: 68,
-        },
-        totals: 218,
-    },
-];
 
 export default function ResultView({
     classes,
@@ -79,29 +49,29 @@ export default function ResultView({
         queryKey: ['subjects', selectedClass, selectedSection],
         queryFn: () =>
             fetchSubjectsAssignmentApi(selectedSection ?? selectedClass ?? ''),
-        enabled: !!selectedClass, // only fetch when a class is selected
-        staleTime: 5 * 60 * 1000, // cache for 5 minutes
+        enabled: !!selectedClass,
+        staleTime: 5 * 60 * 1000,
     });
 
     // fetch tests when subject changes
     const { data: tests = [], isLoading: loadingTests } = useQuery({
         queryKey: ['tests', selectedSubject],
         queryFn: () => FetchTestBySubjectIdApi(selectedSubject ?? ''),
-        enabled: !!selectedSubject, // only fetch when a subject is selected
-        staleTime: 5 * 60 * 1000, // cache for 5 minutes
+        enabled: !!selectedSubject,
+        staleTime: 5 * 60 * 1000,
     });
 
     const { refetch: fetchResultView } = useQuery({
         queryKey: ['resultView', selectedClass, selectedSection, selectedTest],
         queryFn: async () => {
-            if (!selectedTest) {
-                throw new Error('Test is required');
-            }
-
             setLoadingView(true);
             try {
-                const data = await fetchResultViewApi(selectedTest);
-                setResultViewData(dummyResultViewData);
+                const data = await getResultViewApi(
+                    selectedClass ?? '',
+                    selectedSubject ?? '',
+                    selectedTest ?? '',
+                );
+                setResultViewData(data);
                 return data;
             } finally {
                 setLoadingView(false);
@@ -112,8 +82,8 @@ export default function ResultView({
 
     return (
         <Box pt="md">
-            <Group mb="md">
-                {/* Class Selection */}
+            <Group mb="md" wrap="wrap">
+                {/* Class */}
                 <Box>
                     <Text size="sm" fw={500} mb={5}>
                         Select Class:
@@ -130,7 +100,6 @@ export default function ResultView({
                     />
                 </Box>
 
-                {/* Section Selection (conditionally shown) */}
                 {selectedClass &&
                 classes.find((c) => c.id === selectedClass)?.sections
                     ?.length ? (
@@ -154,6 +123,7 @@ export default function ResultView({
                         />
                     </Box>
                 ) : null}
+
                 <Box>
                     <Text size="sm" fw={500} mb={5}>
                         Select Subject:
@@ -169,18 +139,16 @@ export default function ResultView({
                             label: s.subjectTitle,
                         }))}
                         style={{ width: 200 }}
-                        //  disabled={loadingSubjects || !subjects.length}
                     />
                 </Box>
 
-                {/* Test Selection (populated dynamically) */}
                 <Box>
                     <Text size="sm" fw={500} mb={5}>
                         Select Test:
                     </Text>
                     <Select
                         placeholder={
-                            loadingSubjects ? 'Loading...' : 'Choose subject'
+                            loadingSubjects ? 'Loading...' : 'Choose test'
                         }
                         value={selectedTest}
                         onChange={setSelectedTest}
@@ -189,11 +157,9 @@ export default function ResultView({
                             label: t.name,
                         }))}
                         style={{ width: 200 }}
-                        // disabled={loadingSubjects || !subjects.length}
                     />
                 </Box>
 
-                {/* Load Button */}
                 <Box style={{ alignSelf: 'flex-end' }}>
                     <Button
                         onClick={() => fetchResultView()}
@@ -209,7 +175,7 @@ export default function ResultView({
             {resultViewData.length > 0 && (
                 <Box>
                     <Flex gap="md" align="flex-start">
-                        {/* Fixed Student Info Table */}
+                        {/* Student Info Table */}
                         <Box style={{ flex: '0 0 auto' }}>
                             <Table withColumnBorders withRowBorders striped>
                                 <Table.Thead>
@@ -222,9 +188,6 @@ export default function ResultView({
                                         </Table.Th>
                                         <Table.Th className="text-center">
                                             Student
-                                        </Table.Th>
-                                        <Table.Th className="text-center">
-                                            Scores
                                         </Table.Th>
                                     </Table.Tr>
                                 </Table.Thead>
@@ -240,20 +203,80 @@ export default function ResultView({
                                             <Table.Td className="text-center">
                                                 {result.idNumber}
                                             </Table.Td>
-                                            <Table.Td
-                                                className="text-center"
-                                                style={{
-                                                    minWidth: '200px',
-                                                }}
-                                            >
+                                            <Table.Td className="text-center">
                                                 {result.fullName}
                                             </Table.Td>
-                                            <Table.Td
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        </Box>
+
+                        {/* Scores Scrollable Table */}
+                        <ScrollArea
+                            scrollbars="x"
+                            style={{ flex: '1', maxWidth: '70%' }}
+                        >
+                            <Table withColumnBorders withRowBorders striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        {Object.keys(
+                                            resultViewData[0]?.results || {},
+                                        ).map((subject) => (
+                                            <Table.Th
+                                                key={subject}
                                                 className="text-center"
-                                                style={{
-                                                    minWidth: '200px',
-                                                }}
+                                                style={{ minWidth: '80px' }}
                                             >
+                                                {subject}
+                                            </Table.Th>
+                                        ))}
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {resultViewData.map((student) => (
+                                        <Table.Tr
+                                            key={student.studentId}
+                                            style={{ height: '53px' }}
+                                        >
+                                            {Object.entries(
+                                                student.results ?? [],
+                                            )?.map(([subject, score]) => (
+                                                <Table.Td
+                                                    key={subject}
+                                                    className="text-center"
+                                                    style={{
+                                                        textAlign: 'center',
+                                                        padding: '8px',
+                                                        minWidth: '70px',
+                                                    }}
+                                                >
+                                                    {score}
+                                                </Table.Td>
+                                            ))}
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        </ScrollArea>
+
+                        {/* Totals Table */}
+                        <Box style={{ flex: '0 0 auto' }}>
+                            <Table withColumnBorders withRowBorders striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th className="text-center">
+                                            Total
+                                        </Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {resultViewData.map((result) => (
+                                        <Table.Tr
+                                            key={result.id}
+                                            style={{ height: '53px' }}
+                                        >
+                                            <Table.Td className="text-center">
                                                 {result.totals}
                                             </Table.Td>
                                         </Table.Tr>

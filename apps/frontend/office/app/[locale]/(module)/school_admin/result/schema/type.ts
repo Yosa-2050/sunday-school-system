@@ -23,7 +23,7 @@ export interface ResultViewResponse {
     studentId: string;
     fullName: string;
     idNumber: string;
-    results: {
+    results?: {
         [testName: string]: number;
     };
     totals: number;
