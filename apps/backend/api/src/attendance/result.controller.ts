@@ -1,18 +1,19 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Public } from '@shega/auth/jwt-public';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     ResultForMultipleStudentRequestDto,
     ResultForSingleStudentRequestDto,
 } from './dto/request/create-result.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { GetResultRequestDto } from './dto/request/get-result.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ResultService } from './result.service';
 
 @ApiBearerAuth()
 @ApiTags('result')
 @Controller('result')
-@Public()
 export class ResultController {
     constructor(private readonly resultService: ResultService) {}
 
@@ -36,8 +37,13 @@ export class ResultController {
         return this.resultService.findResultByTestId(testId);
     }
 
-    @Get()
-    findAll() {
-        return this.resultService.findAll();
+    @Post('getResults')
+    findAll(@Body() dto: GetResultRequestDto, @Request() user) {
+        return this.resultService.findAllResult(
+            CurrentUser.getActiveYear(user),
+            dto.classId,
+            dto.subjectId,
+            dto.testId,
+        );
     }
 }

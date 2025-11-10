@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { Students } from '@shega/lms/entities/students.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { StudentService } from '@shega/lms/services/student.service';
 //import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm/repository/Repository';
@@ -11,6 +13,7 @@ import {
     ResultForMultipleStudentRequestDto,
     ResultForSingleStudentRequestDto,
 } from './dto/request/create-result.request.dto';
+import { ResultDetailResponse } from './dto/response/result-detail.response.dto';
 import { Result } from './entities/result.entity';
 import { Test } from './entities/test.entity';
 
@@ -23,6 +26,7 @@ export class ResultService {
         private readonly testRepository: Repository<Test>,
         @InjectRepository(Result)
         private readonly resultRepository: Repository<Result>,
+        private readonly studentService: StudentService,
     ) {}
 
     async create(dto: ResultForSingleStudentRequestDto) {
@@ -118,5 +122,48 @@ export class ResultService {
 
     async findAll() {
         await this.resultRepository.find();
+    }
+
+    async findAllResult(
+        activeYear: string,
+        classId: string,
+        subjectId?: string,
+        testId?: string,
+    ) {
+        const query = this.resultRepository
+            .createQueryBuilder('result')
+            .leftJoinAndSelect('result.student', 'student')
+            .leftJoinAndSelect('result.test', 'test')
+            .leftJoinAndSelect('test.subject', 'subject')
+            .leftJoinAndSelect('student.class', 'classes')
+            .leftJoinAndSelect('student.profile', 'profile')
+            .where('classes.id = :classId', { classId });
+
+        if (subjectId) {
+            query.andWhere('subject.id = :subjectId', { subjectId });
+        }
+
+        if (testId) {
+            query.andWhere('test.id = :testId', { testId });
+        }
+
+        const result = await query.getMany();
+
+        const students = await this.studentService.findStudents(
+            classId,
+            activeYear,
+        );
+        const uniqueIds = students.map((item) => item.id);
+        const resultList = uniqueIds
+            .map((element) => {
+                const results = result.filter((x) => x.student.id === element);
+                const std = students.find((x) => x.id === element);
+                const att = new ResultDetailResponse(std, results);
+                if (att?.idNumber) {
+                    return att;
+                }
+            })
+            .filter((x) => x);
+        return resultList;
     }
 }
