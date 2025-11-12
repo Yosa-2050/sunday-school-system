@@ -16,7 +16,7 @@ import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { OrganizationMembers } from './entities/organization-member.entity';
 
 @Injectable()
-export class EmployeesService {
+export class OrganizationMemberService {
     constructor(
         @InjectRepository(OrganizationMembers)
         private employeeRepo: Repository<OrganizationMembers>,

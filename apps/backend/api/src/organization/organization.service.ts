@@ -59,12 +59,12 @@ import { CreateOrganizationDto } from './dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto';
 import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
-import { EmployeesService } from './employees.service';
 import { Branch } from './entities/branch.entity';
 import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { OrganizationMembers } from './entities/organization-member.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
+import { OrganizationMemberService } from './organization-member.service';
 
 @Injectable()
 export class OrganizationService {
@@ -135,7 +135,8 @@ export class OrganizationService {
         @InjectRepository(Category)
         private categoryRepo: Repository<Category>,
         @InjectRepository(Branch) private branchRepo: Repository<Branch>,
-        @Inject(EmployeesService) private employeeService: EmployeesService,
+        @Inject(OrganizationMemberService)
+        private employeeService: OrganizationMemberService,
         @Inject(AddressService) private addressService: AddressService,
         @Inject(ProfileService) private profileService: ProfileService,
         @Inject(NotificationService)
