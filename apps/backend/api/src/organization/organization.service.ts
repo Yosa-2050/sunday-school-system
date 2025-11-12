@@ -62,7 +62,7 @@ import { GetOrganizationListResponseDto } from './dto/response/get-organization.
 import { EmployeesService } from './employees.service';
 import { Branch } from './entities/branch.entity';
 import { EmployeeOrganization } from './entities/employee-organization.entity';
-import { Employee } from './entities/employee.entity';
+import { OrganizationMembers } from './entities/organization-member.entity';
 import { Organization } from './entities/organization.entity';
 import { EmployeeType } from './enums/employee-type.enum';
 
@@ -130,8 +130,8 @@ export class OrganizationService {
         private organizationRepo: Repository<Organization>,
         @InjectRepository(EmployeeOrganization)
         private employeeOrgRepo: Repository<EmployeeOrganization>,
-        @InjectRepository(Employee)
-        private employeeRepo: Repository<Employee>,
+        @InjectRepository(OrganizationMembers)
+        private employeeRepo: Repository<OrganizationMembers>,
         @InjectRepository(Category)
         private categoryRepo: Repository<Category>,
         @InjectRepository(Branch) private branchRepo: Repository<Branch>,

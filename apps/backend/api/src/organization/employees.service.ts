@@ -13,12 +13,13 @@ import { CreateEmployeeDto } from './dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
 import { EmployeeOrganization } from './entities/employee-organization.entity';
-import { Employee } from './entities/employee.entity';
+import { OrganizationMembers } from './entities/organization-member.entity';
 
 @Injectable()
 export class EmployeesService {
     constructor(
-        @InjectRepository(Employee) private employeeRepo: Repository<Employee>,
+        @InjectRepository(OrganizationMembers)
+        private employeeRepo: Repository<OrganizationMembers>,
         @InjectRepository(EmployeeOrganization)
         private employeeOrgRepo: Repository<EmployeeOrganization>,
         private profileService: ProfileService,

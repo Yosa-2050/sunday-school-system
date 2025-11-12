@@ -3,10 +3,10 @@ import { Profile } from '@shega/users/entities/profile.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Employee extends BaseModel {
+export class OrganizationMembers extends BaseModel {
     @Column({ nullable: true })
     id_number: string;
 
-    @ManyToOne((type) => Profile, { eager: true, cascade: true })
+    @ManyToOne(() => Profile, { eager: true, cascade: true })
     profile: Profile;
 }

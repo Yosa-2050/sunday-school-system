@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { EmployeeType } from '../enums/employee-type.enum';
 import { Branch } from './branch.entity';
-import { Employee } from './employee.entity';
+import { OrganizationMembers } from './organization-member.entity';
 import { Organization } from './organization.entity';
 
 @Entity()
@@ -15,12 +15,12 @@ export class EmployeeOrganization extends BaseModel {
     })
     organization: Organization;
 
-    @ManyToOne(() => Employee, {
+    @ManyToOne(() => OrganizationMembers, {
         eager: true,
         nullable: false,
         cascade: ['insert'],
     })
-    employee: Employee;
+    employee: OrganizationMembers;
 
     @Column({ nullable: true })
     email: string;
