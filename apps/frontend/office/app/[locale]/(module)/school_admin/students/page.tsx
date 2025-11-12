@@ -32,14 +32,8 @@ import {
     type GetClass,
     fetchClassesApi,
 } from '../classes/create/components/schema/fetchClassesDetail';
-import CreateRelationModal from './components/CreateRelationShip';
 import { PrintIdModal } from './components/PrintIdModal';
-import CreateProfileModal from './components/create-profile.modal';
-import {
-    createStudentApi,
-    fetchStudentsApi,
-    uploadFileApi,
-} from './schemas/api';
+import { fetchStudentsApi, uploadFileApi } from './schemas/api';
 import type { StudentForPrint, StudentResponse } from './schemas/type';
 
 export default function StudentPage() {
@@ -55,10 +49,10 @@ export default function StudentPage() {
     const [loadingStudents, setLoadingStudents] = useState(false);
     const [createStudentModalOpened, setCreateStudentModalOpened] =
         useState(false);
+
     const [createRelationModalOpened, setCreateRelationModalOpened] =
         useState(false);
     const [newStudentId, setNewStudentId] = useState<string | null>(null);
-    // On your student list page
     const [selectedStudents, setSelectedStudents] = useState<StudentForPrint[]>(
         [],
     );
@@ -106,7 +100,6 @@ export default function StudentPage() {
         fetchClasses();
     }, []);
 
-    // Fetch students manually (on button click)
     const handleFetchStudents = async () => {
         if (!selectedClass) {
             return;
@@ -146,8 +139,9 @@ export default function StudentPage() {
         handleFetchStudents(); // Refresh the list
     };
 
-    const rows = students.map((student) => (
+    const rows = students.map((student, index) => (
         <Table.Tr key={student.id}>
+            <Table.Td className="text-center">{index + 1}</Table.Td>
             <Table.Td>{student.idNumber}</Table.Td>
             <Table.Td>
                 {student.firstName} {student.lastName}
@@ -174,7 +168,7 @@ export default function StudentPage() {
                         <Menu.Item
                             leftSection={<IconEdit size={16} />}
                             component={Link}
-                            href={`/students/${student.id}/edit`}
+                            href={'/school_admin/students/create'}
                         >
                             Edit Student
                         </Menu.Item>
@@ -257,7 +251,13 @@ export default function StudentPage() {
 
             {/* Import Button */}
             <Group mb="md" justify="space-between">
-                <Text fw={500}>Students</Text>
+                {students.length > 0 && (
+                    <Text fw={500} size="md">
+                        Total Students:{students.length}
+                    </Text>
+                )}
+                {/* the below text is used to make the buttons fixed on the right side  */}
+                <Text fw={500}>{/* Students */}</Text>
                 <Group>
                     <Button
                         variant="light"
@@ -270,8 +270,9 @@ export default function StudentPage() {
                     <Button
                         variant="light"
                         leftSection={<IconPlus size={16} />}
-                        onClick={() => setCreateStudentModalOpened(true)}
-                        disabled={disableAction}
+                        onClick={() =>
+                            router.push('/school_admin/students/create')
+                        }
                     >
                         Add New Student
                     </Button>
@@ -294,6 +295,7 @@ export default function StudentPage() {
             <Table withColumnBorders striped highlightOnHover>
                 <Table.Thead>
                     <Table.Tr>
+                        <Table.Th>No</Table.Th>
                         <Table.Th>Id Number</Table.Th>
                         <Table.Th>Full Name</Table.Th>
                         <Table.Th>Status</Table.Th>
@@ -313,7 +315,7 @@ export default function StudentPage() {
                 </Table.Tbody>
             </Table>
 
-            {/* Modals */}
+            {/* Modals
             <CreateProfileModal
                 opened={createStudentModalOpened}
                 onClose={() => {
@@ -329,13 +331,15 @@ export default function StudentPage() {
                 }
                 extraData={{ SelectedClassId }}
                 title="Add Student"
-            />
+            /> */}
 
+            {/* 
             <CreateRelationModal
                 opened={createRelationModalOpened}
                 onClose={() => setCreateRelationModalOpened(false)}
                 studentId={newStudentId}
             />
+            <CreateStudentPage /> */}
 
             <PrintIdModal
                 opened={printModalOpen}
