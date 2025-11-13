@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EmployeeType } from '@shega/organization/enums/employee-type.enum';
+import { OrganizationMemberType } from '@shega/organization/enums/employee-type.enum';
 import { IsEnum, IsString, IsUUID } from 'class-validator';
 
-export class AssignEmployeeRequestDto {
+export class AssignMembersToOrganizationRequestDto {
     @ApiProperty()
     @IsString()
     @IsUUID()
@@ -11,13 +11,13 @@ export class AssignEmployeeRequestDto {
     @ApiProperty()
     @IsString()
     @IsUUID()
-    employeeId: string;
+    profileId: string;
 
     @ApiProperty()
     @IsString()
     branchId: string;
 
     @ApiProperty()
-    @IsEnum(EmployeeType)
-    type: EmployeeType;
+    @IsEnum(OrganizationMemberType)
+    type: OrganizationMemberType;
 }

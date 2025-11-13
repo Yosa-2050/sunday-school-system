@@ -7,12 +7,11 @@ import { NotificationModule } from '@shega/notification/notification.module';
 import { UsersModule } from '@shega/users/users.module';
 import { DepartmentController } from './department.controller';
 import { DepartmentService } from './department.service';
-import { OrganizationMemberController } from './employees.controller';
 import { Branch } from './entities/branch.entity';
 import { Department } from './entities/department.entity';
-import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { OrganizationMembers } from './entities/organization-member.entity';
 import { Organization } from './entities/organization.entity';
+import { OrganizationMemberController } from './organization-member.controller';
 import { OrganizationMemberService } from './organization-member.service';
 import { OrganizationController } from './organization.controller';
 import { OrganizationService } from './organization.service';
@@ -23,7 +22,6 @@ import { OrganizationService } from './organization.service';
             Organization,
             Branch,
             OrganizationMembers,
-            EmployeeOrganization,
             Category,
             Department,
         ]),

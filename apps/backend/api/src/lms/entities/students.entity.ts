@@ -9,7 +9,7 @@ export class Students extends BaseModel {
     @Column({ nullable: true })
     idNumber: string;
 
-    @ManyToOne((type) => Profile, { eager: true, cascade: true })
+    @ManyToOne(() => Profile, { eager: true, cascade: true })
     profile: Profile;
 
     @ManyToOne((type) => Classes, { eager: true })

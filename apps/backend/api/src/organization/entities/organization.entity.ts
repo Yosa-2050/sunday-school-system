@@ -14,7 +14,7 @@ import { CompanySize } from '../enums/company-size.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CompanyType } from '../enums/company-type.enum';
 import { Branch } from './branch.entity';
-import { EmployeeOrganization } from './employee-organization.entity';
+import { OrganizationMembers } from './organization-member.entity';
 
 @Entity()
 export class Organization extends BaseModel {
@@ -56,13 +56,13 @@ export class Organization extends BaseModel {
     hasBranches: boolean;
 
     @OneToMany(
-        (type) => EmployeeOrganization,
-        (employee) => employee.organization,
+        (type) => OrganizationMembers,
+        (member) => member.organization,
         {
             lazy: true,
         },
     )
-    employee: EmployeeOrganization[];
+    members: OrganizationMembers[];
 
     @Column({ nullable: true })
     status: ApprovalType;

@@ -6,7 +6,7 @@ import { MentorshipType } from '@shega/education/enums/mentorship-type.enum';
 import { SalaryFrequencyType } from '@shega/education/enums/salary-frequency-type.enum';
 import { SalaryType } from '@shega/education/enums/salary-type.enum';
 import { WorkPlaceType } from '@shega/education/enums/work-place-type.enum';
-import { EmployeeType } from '@shega/organization/enums/employee-type.enum';
+import { OrganizationMemberType } from '@shega/organization/enums/employee-type.enum';
 import { LoginBy } from './login-by.enum';
 import { Gender } from './profile-gender.enum';
 import { MarriageStatus } from './profile-marriage-status.enum';
@@ -21,13 +21,13 @@ export const AllEnums = {
     MarriageStatus,
     Title,
     EducationalRequirementType,
-    EmployeeType,
+    EmployeeType: OrganizationMemberType,
     EmploymentType,
     SalaryFrequencyType,
     SalaryType,
     WorkPlaceType,
     CommitmentType,
     MentorshipType,
-    ExperianceLevelType: ExperienceLevelType,
+    ExperienceLevelType: ExperienceLevelType,
     RelationShipsType,
 };

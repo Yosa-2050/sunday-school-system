@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationModule } from '@shega/notification/notification.module';
+import { OrganizationModule } from '@shega/organization/organization.module';
 import { UsersModule } from '@shega/users/users.module';
 import { ClassController } from './controllers/classes.controller';
 import { LmsController } from './controllers/lms.controller';
@@ -39,6 +40,7 @@ import { TeacherService } from './services/teacher.service';
         ]),
         UsersModule,
         NotificationModule,
+        OrganizationModule,
     ],
     controllers: [
         LmsController,

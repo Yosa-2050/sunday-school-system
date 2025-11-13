@@ -41,7 +41,7 @@ import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
+import { AssignMembersToOrganizationRequestDto } from './dto/request/assign-person-to-org.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
@@ -131,7 +131,7 @@ export class OrganizationController {
     }
 
     @Post('/assignEmployee')
-    assignEmployee(@Body() request: AssignEmployeeRequestDto) {
+    assignEmployee(@Body() request: AssignMembersToOrganizationRequestDto) {
         return this.organizationService.assignEmployee(request);
     }
 
@@ -166,7 +166,7 @@ export class OrganizationController {
 
     @Get('/listEmployee/:organizationId')
     findAllEmployee(@Param('organizationId') id: string) {
-        return this.organizationService.findEmployee(id);
+        return this.organizationService.findMembers(id);
     }
 
     @Get('/listBranches/:organizationId')

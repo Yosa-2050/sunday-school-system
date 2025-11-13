@@ -10,8 +10,8 @@ export class TeacherResponseDto {
 
     constructor(teacher: Teacher, email: string) {
         this.id = teacher.id;
-        this.firstName = teacher.profile.firstName;
-        this.lastName = teacher.profile.lastName;
+        this.firstName = teacher.member.profile.firstName;
+        this.lastName = teacher.member.profile.lastName;
         this.isActive = teacher.isActive;
         this.email = email;
     }

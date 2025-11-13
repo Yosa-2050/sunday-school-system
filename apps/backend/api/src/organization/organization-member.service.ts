@@ -12,24 +12,17 @@ import { Repository } from 'typeorm';
 import { CreateEmployeeDto } from './dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
-import { EmployeeOrganization } from './entities/employee-organization.entity';
 import { OrganizationMembers } from './entities/organization-member.entity';
 
 @Injectable()
 export class OrganizationMemberService {
     constructor(
         @InjectRepository(OrganizationMembers)
-        private employeeRepo: Repository<OrganizationMembers>,
-        @InjectRepository(EmployeeOrganization)
-        private employeeOrgRepo: Repository<EmployeeOrganization>,
+        private organizationMemberRepo: Repository<OrganizationMembers>,
         private profileService: ProfileService,
         private addressService: AddressService,
     ) {}
     async CreateEmployee(dto: CreateEmployeeDto) {
-        //if (!validateEmployeeRole(dto.role)) {
-        //  throw new BadRequestException('This Role Can Not Be Created');
-        // }
-
         const profile = await this.profileService.createNewUserProfile(
             dto.email,
             dto.password,
@@ -39,23 +32,23 @@ export class OrganizationMemberService {
             false,
         );
 
-        const model = this.employeeRepo.create();
+        const model = this.organizationMemberRepo.create();
         model.profile = profile;
-        const employee = await this.employeeRepo.save(model);
+        const member = await this.organizationMemberRepo.save(model);
         this.addressService.createContactDetails(
             dto.contactDetails,
-            employee.profile.id,
+            member.profile.id,
             ReferenceType.Profile,
         );
-        return profile;
+        return member;
     }
 
     findAll() {
-        return this.employeeRepo.find();
+        return this.organizationMemberRepo.find();
     }
 
-    async findOne(id: string) {
-        const employee = await this.employeeRepo.findOneBy({ id });
+    async findByIdOrThrow(id: string) {
+        const employee = await this.organizationMemberRepo.findOneBy({ id });
         if (employee) {
             return employee;
         }
@@ -75,7 +68,7 @@ export class OrganizationMemberService {
     }
 
     getEmployeeByProfileId(profileId: string) {
-        return this.employeeRepo.findOneBy({
+        return this.organizationMemberRepo.findOneBy({
             profile: { id: profileId },
             isActive: true,
         });

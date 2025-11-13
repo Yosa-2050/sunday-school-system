@@ -22,7 +22,7 @@ export class OrganizationMemberController {
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.employeesService.findOne(id);
+        return this.employeesService.findByIdOrThrow(id);
     }
 
     @Patch(':id')
