@@ -13,7 +13,8 @@ import { NotificationService } from '@shega/notification/notification.service';
 import { NotificationTemplates } from '@shega/notification/seeds/notification-templates.const';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
-import { LoginBy } from '@shega/users/enums/login-by.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { OrganizationMemberService } from '@shega/organization/organization-member.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
@@ -40,6 +41,7 @@ export class LmsService {
         private passwordService: PasswordService,
         private profileService: ProfileService,
         private notificationService: NotificationService,
+        private memberServices: OrganizationMemberService,
     ) {}
 
     async createCalendarYear(
@@ -115,30 +117,20 @@ export class LmsService {
             throw new EntityNotFoundException('Program');
         }
         const pwdGenerated = this.passwordService.generatePassword();
-        const profile = await this.profileService.createNewUserProfileQDE(
-            dto.email,
-            LoginBy.EMAIL,
-            UserRoleType.SchoolAdmin,
-            dto.firstName,
-            dto.middleName,
-            dto.lastName,
-            '',
-            null,
-            '',
-            '',
-            false,
+
+        const member = await this.memberServices.CreateSQDEMember(
+            dto,
             pwdGenerated,
-            true,
         );
 
         const model = this.programUserRepo.create();
-        model.profile = profile;
+        model.member = member;
         model.program = program;
 
         const programUser = await this.programUserRepo.save(model);
         const notificationDetail: NotificationDetailsDto = {
             toEmailAddress: [dto.email],
-            referenceId: programUser.profile.id,
+            referenceId: programUser.member.id,
             templateName: NotificationTemplates.SignUp,
             metaData: {
                 userName: dto.email,
@@ -154,7 +146,7 @@ export class LmsService {
         return programUser;
     }
 
-    async AssignUser(programId: string, userId: string) {
+    async AssignUser(programId: string, memberId: string) {
         const program = await this.programRepo.findOneBy({
             name: programId,
         });
@@ -162,10 +154,10 @@ export class LmsService {
             throw new EntityNotFoundException('Program');
         }
 
-        const profile = await this.profileService.finProfileByUserId(userId);
+        const profile = await this.memberServices.findByIdOrThrow(memberId);
 
         const model = this.programUserRepo.create();
-        model.profile = profile;
+        model.member = profile;
         model.program = program;
 
         return await this.programUserRepo.save(model);
@@ -177,7 +169,7 @@ export class LmsService {
         });
         if (programUsers && programUsers.length > 0) {
             return programUsers.map((x) => {
-                return x.profile;
+                return x.member;
             });
         }
         return null;
@@ -209,7 +201,7 @@ export class LmsService {
 
     async getSchoolAdminDetail(id: string) {
         const programUser = await this.programUserRepo.findOneBy({
-            profile: { id },
+            member: { id },
         });
 
         const profile = await this.profileService.findById(id);

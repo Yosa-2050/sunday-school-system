@@ -4,12 +4,17 @@ import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exce
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
+import { LoginBy } from '@shega/users/enums/login-by.enum';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateEmployeeDto } from './dto/request/create-employee.dto';
+import {
+    CreateEmployeeDto,
+    CreateOrganizationUserDto,
+} from './dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
 import { OrganizationMembers } from './entities/organization-member.entity';
@@ -72,5 +77,31 @@ export class OrganizationMemberService {
             profile: { id: profileId },
             isActive: true,
         });
+    }
+
+    async CreateSQDEMember(
+        dto: CreateOrganizationUserDto,
+        pwdGenerated: string,
+    ) {
+        const profile = await this.profileService.createNewUserProfileQDE(
+            dto.email,
+            LoginBy.EMAIL,
+            UserRoleType.SchoolAdmin,
+            dto.firstName,
+            dto.middleName,
+            dto.lastName,
+            '',
+            null,
+            '',
+            '',
+            false,
+            pwdGenerated,
+            true,
+        );
+
+        const model = this.organizationMemberRepo.create();
+        model.profile = profile;
+        const member = await this.organizationMemberRepo.save(model);
+        return member;
     }
 }
