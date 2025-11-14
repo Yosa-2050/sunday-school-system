@@ -4,6 +4,8 @@ import {
     ActionIcon,
     Box,
     Button,
+    Checkbox,
+    Divider,
     Group,
     Loader,
     Select,
@@ -18,7 +20,11 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { showSuccess } from 'utilities/notification';
 import { createStudentApi, searchProfilesApi } from '../schemas/api';
-import type { CreateStudentRequest, UserResponse } from '../schemas/type';
+import type {
+    CreateRelationRequest,
+    CreateStudentRequest,
+    UserResponse,
+} from '../schemas/type';
 
 export default function CreateStudentPage() {
     const router = useRouter();
@@ -39,6 +45,18 @@ export default function CreateStudentPage() {
         idNumber: '',
         email: '',
     });
+
+    const [relationFormData, setRelationFormData] =
+        useState<CreateRelationRequest>({
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            phoneNumber: '',
+            type: '',
+            email: '',
+            isParent: false,
+            isEmergency: false,
+        });
 
     const [type, setType] = useState<'Student' | 'Teacher'>('Student');
 
@@ -112,6 +130,13 @@ export default function CreateStudentPage() {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+    const handleInputChangeRelation = (
+        field: keyof CreateRelationRequest,
+        value: string,
+    ) => {
+        setRelationFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
     const handleSubmit = async () => {
         setErrorMessage('');
         setSuccessMessage('created');
@@ -122,8 +147,9 @@ export default function CreateStudentPage() {
                 ? {
                       ...formData,
                       profileId: selectedProfile.profile.id,
+                      relationship: relationFormData,
                   }
-                : { ...formData };
+                : { ...formData, relationship: relationFormData };
             await createStudentApi({ classId, studentData: payload });
             showSuccess('Student created successfully!');
             router.push('/school_admin/students');
@@ -335,7 +361,6 @@ export default function CreateStudentPage() {
                                             e.target.value,
                                         )
                                     }
-                                    required
                                     disabled={!!selectedProfile}
                                 />
 
@@ -416,6 +441,123 @@ export default function CreateStudentPage() {
                                     required
                                 />
                             )}
+                        </Stack>
+                        <Stack>
+                            <>
+                                <Text
+                                    fw={600}
+                                    mb="3px"
+                                    size="lg"
+                                    c="dark"
+                                    mt="md"
+                                >
+                                    Guardian Information
+                                </Text>
+                                <Divider />
+
+                                <Group grow>
+                                    <TextInput
+                                        label="First Name"
+                                        placeholder="Enter first name"
+                                        value={relationFormData.firstName}
+                                        onChange={(e) =>
+                                            handleInputChangeRelation(
+                                                'firstName',
+                                                e.target.value,
+                                            )
+                                        }
+                                        required
+                                        disabled={!!selectedProfile}
+                                    />
+                                    <TextInput
+                                        label="Middle Name"
+                                        placeholder="Enter middle name"
+                                        value={relationFormData.middleName}
+                                        onChange={(e) =>
+                                            handleInputChangeRelation(
+                                                'middleName',
+                                                e.target.value,
+                                            )
+                                        }
+                                        required
+                                        disabled={!!selectedProfile}
+                                    />
+                                    <TextInput
+                                        label="Last Name"
+                                        placeholder="Enter last name"
+                                        value={relationFormData.lastName}
+                                        onChange={(e) =>
+                                            handleInputChangeRelation(
+                                                'lastName',
+                                                e.target.value,
+                                            )
+                                        }
+                                        required
+                                        disabled={!!selectedProfile}
+                                    />
+                                </Group>
+
+                                <Group grow>
+                                    <TextInput
+                                        label="Email"
+                                        value={relationFormData.email}
+                                        onChange={(e) =>
+                                            handleInputChangeRelation(
+                                                'email',
+                                                e.target.value,
+                                            )
+                                        }
+                                        disabled={!!selectedProfile}
+                                    />
+
+                                    <TextInput
+                                        label="Phone Number"
+                                        value={relationFormData.phoneNumber}
+                                        onChange={(e) =>
+                                            handleInputChangeRelation(
+                                                'phoneNumber',
+                                                e.target.value,
+                                            )
+                                        }
+                                        disabled={!!selectedProfile}
+                                    />
+                                </Group>
+
+                                <TextInput
+                                    label="Relationship Type"
+                                    placeholder="e.g., Parent, Guardian, Sibling"
+                                    value={relationFormData.type}
+                                    onChange={(e) =>
+                                        setRelationFormData({
+                                            ...relationFormData,
+                                            type: e.target.value,
+                                        })
+                                    }
+                                />
+
+                                <Group>
+                                    <Checkbox
+                                        label="Is Emergency Contact"
+                                        checked={relationFormData.isEmergency}
+                                        onChange={(e) =>
+                                            setRelationFormData({
+                                                ...relationFormData,
+                                                isEmergency: e.target.checked,
+                                            })
+                                        }
+                                    />
+                                    <Checkbox
+                                        label="Is Parent"
+                                        checked={relationFormData.isParent}
+                                        onChange={(e) =>
+                                            setRelationFormData({
+                                                ...relationFormData,
+                                                isParent: e.target.checked,
+                                            })
+                                        }
+                                    />
+                                </Group>
+                            </>
                         </Stack>
                     </>
                 )}

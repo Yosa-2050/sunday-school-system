@@ -19,6 +19,7 @@ import { createRelationshipApi, searchProfilesApi } from '../schemas/api';
 import type {
     CreateRelationRequest,
     ProfileResponse,
+    RelationShipsResponse,
     UserResponse,
 } from '../schemas/type';
 
@@ -26,18 +27,21 @@ interface CreateRelationModalProps {
     opened: boolean;
     onClose: () => void;
     studentId: string | null;
+    relation: RelationShipsResponse | null | undefined;
 }
 
 export default function CreateRelationModal({
     opened,
     onClose,
     studentId,
+    relation,
 }: CreateRelationModalProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedProfile, setSelectedProfile] =
         useState<ProfileResponse | null>(null);
     const [formData, setFormData] = useState<CreateRelationRequest>({
         firstName: '',
+        middleName: '',
         lastName: '',
         phoneNumber: '',
         type: '',
@@ -184,7 +188,11 @@ export default function CreateRelationModal({
                                             <Group justify="space-between">
                                                 <Box>
                                                     <Text fw={500}>
-                                                        {user.profile.firstName}{' '}
+                                                        {user.profile.firstName}
+                                                        {
+                                                            user.profile
+                                                                .middleName
+                                                        }
                                                         {user.profile.lastName}
                                                     </Text>
                                                     <Text size="sm" c="dimmed">
@@ -237,6 +245,18 @@ export default function CreateRelationModal({
                             disabled={!!selectedProfile}
                         />
                         <TextInput
+                            label="Middle Name"
+                            value={formData.middleName}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    middleName: e.target.value,
+                                })
+                            }
+                            required
+                            disabled={!!selectedProfile}
+                        />
+                        <TextInput
                             label="Last Name"
                             value={formData.lastName}
                             onChange={(e) =>
@@ -282,7 +302,6 @@ export default function CreateRelationModal({
                                     type: e.target.value,
                                 })
                             }
-                            required
                         />
 
                         <Group>

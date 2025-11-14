@@ -34,20 +34,9 @@ export interface ProfileResponse {
     marriageStatus: string | null;
     title: string | null;
     phoneNumber: string | null;
-    profile_picture_id: string | null;
-    baptistName: string | null;
-    relation: {
-        firstName: string;
-        middleName: string | null;
-        lastName: string;
-        id: string;
-        createdBy: string;
-        createdAt: string;
-        isActive: boolean;
-        type: string; // e.g., "MOTHER", "FATHER", etc.
-        isParent: boolean;
-        isEmergency: boolean;
-    }[];
+    profile_picture_id?: string | null;
+    baptistName?: string | null;
+    relation: RelationShipsResponse[];
 }
 
 export interface RelationShipsResponse extends ProfileResponse {
@@ -95,10 +84,12 @@ export type CreateStudentRequest = {
     phoneNumber?: string;
     idNumber?: string;
     email?: string;
+    relationShip?: CreateRelationRequest;
 };
 
 export type CreateRelationRequest = {
     firstName?: string;
+    middleName?: string;
     lastName?: string;
     phoneNumber?: string;
     type?: string;

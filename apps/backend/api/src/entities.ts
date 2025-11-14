@@ -29,7 +29,11 @@ import { Location } from './location/entities/location.entity';
 import { Notes } from './notification/entities/notes.entity';
 import { Notification } from './notification/entities/notification.entity';
 import { NotificationTemplate } from './notification/entities/notificationTemplate.entity';
+import { Branch } from './organization/entities/branch.entity';
 import { Department } from './organization/entities/department.entity';
+import { EmployeeOrganization } from './organization/entities/employee-organization.entity';
+import { Employee } from './organization/entities/employee.entity';
+import { Organization } from './organization/entities/organization.entity';
 import { Otp } from './users/entities/otp.entity';
 import { Profile } from './users/entities/profile.entity';
 import { RelationShips } from './users/entities/relationships.entity';
@@ -37,13 +41,13 @@ import { UserRoles } from './users/entities/role.entity';
 import { User } from './users/entities/user.entity';
 
 export const AppEntities = [
-    //Organization,
-    //Branch,
-    //Employee,
+    Organization,
+    Branch,
+    Employee,
     User,
     UserRoles,
     Profile,
-    //EmployeeOrganization,
+    EmployeeOrganization,
     Otp,
     Document,
     ContactDetails,

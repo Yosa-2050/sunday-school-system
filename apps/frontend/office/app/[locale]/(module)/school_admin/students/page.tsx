@@ -32,6 +32,7 @@ import {
     type GetClass,
     fetchClassesApi,
 } from '../classes/create/components/schema/fetchClassesDetail';
+import CreateRelationModal from './components/CreateRelationShip';
 import { PrintIdModal } from './components/PrintIdModal';
 import { fetchStudentsApi, uploadFileApi } from './schemas/api';
 import type { StudentForPrint, StudentResponse } from './schemas/type';
@@ -333,13 +334,12 @@ export default function StudentPage() {
                 title="Add Student"
             /> */}
 
-            {/* 
             <CreateRelationModal
                 opened={createRelationModalOpened}
                 onClose={() => setCreateRelationModalOpened(false)}
                 studentId={newStudentId}
             />
-            <CreateStudentPage /> */}
+            {/* <CreateStudentPage /> */}
 
             <PrintIdModal
                 opened={printModalOpen}
