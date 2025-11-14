@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddDepartmentRequestDto } from './dto/request/add-department.request.dto';
-import { Department } from './entities/department.entity';
+import { AddDepartmentRequestDto } from '../dto/request/add-department.request.dto';
+import { Department } from '../entities/department.entity';
 
 @Injectable()
 export class DepartmentService {

@@ -14,7 +14,7 @@ import { NotificationTemplates } from '@shega/notification/seeds/notification-te
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationMemberService } from '@shega/organization/organization-member.service';
+import { OrganizationMemberService } from '@shega/organization/services/organization-member.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';

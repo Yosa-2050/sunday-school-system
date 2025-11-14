@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationMemberService } from '../organization-member.service';
+import { OrganizationMemberService } from '../services/organization-member.service';
 
 @ApiTags('organization-member')
 @Controller('organization-member')

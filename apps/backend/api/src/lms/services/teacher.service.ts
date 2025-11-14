@@ -6,7 +6,7 @@ import { TeacherResponseDto } from '@shega/education/dto/response/teacher.respon
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateEmployeeDto } from '@shega/organization/dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationMemberService } from '@shega/organization/organization-member.service';
+import { OrganizationMemberService } from '@shega/organization/services/organization-member.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';

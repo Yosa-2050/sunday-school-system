@@ -54,7 +54,7 @@ import { UpdateOrganizationInfoDto } from '../dto/request/update-organization.dt
 // biome-ignore lint/style/useImportType: <explanation>
 import { GetOrganizationListResponseDto } from '../dto/response/get-organization.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationService } from '../organization.service';
+import { OrganizationService } from '../services/organization.service';
 
 @Controller('organization')
 export class OrganizationController {

@@ -8,13 +8,13 @@ import { UsersModule } from '@shega/users/users.module';
 import { DepartmentController } from './controllers/department.controller';
 import { OrganizationMemberController } from './controllers/organization-member.controller';
 import { OrganizationController } from './controllers/organization.controller';
-import { DepartmentService } from './department.service';
 import { Branch } from './entities/branch.entity';
 import { Department } from './entities/department.entity';
 import { OrganizationMembers } from './entities/organization-member.entity';
 import { Organization } from './entities/organization.entity';
-import { OrganizationMemberService } from './organization-member.service';
-import { OrganizationService } from './organization.service';
+import { DepartmentService } from './services/department.service';
+import { OrganizationMemberService } from './services/organization-member.service';
+import { OrganizationService } from './services/organization.service';
 
 @Module({
     imports: [

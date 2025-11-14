@@ -44,25 +44,26 @@ import {
 } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
+
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
+import { AddOrganizationBranchDto } from '../dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AssignMembersToOrganizationRequestDto } from './dto/request/assign-person-to-org.request.dto';
+import { AssignMembersToOrganizationRequestDto } from '../dto/request/assign-person-to-org.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
     CreateOrganizationEmployeeWithOrgDto,
     CreateOrganizationUserDto,
-} from './dto/request/create-employee.dto';
+} from '../dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateOrganizationDto } from './dto/request/create-organization.dto';
+import { CreateOrganizationDto } from '../dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto';
-import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
-import { Branch } from './entities/branch.entity';
-import { OrganizationMembers } from './entities/organization-member.entity';
-import { Organization } from './entities/organization.entity';
-import { OrganizationMemberType } from './enums/employee-type.enum';
+import { UpdateOrganizationInfoDto } from '../dto/request/update-organization.dto';
+import { GetOrganizationListResponseDto } from '../dto/response/get-organization.response.dto';
+import { Branch } from '../entities/branch.entity';
+import { OrganizationMembers } from '../entities/organization-member.entity';
+import { Organization } from '../entities/organization.entity';
+import { OrganizationMemberType } from '../enums/employee-type.enum';
 import { OrganizationMemberService } from './organization-member.service';
 
 @Injectable()

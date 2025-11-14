@@ -14,10 +14,10 @@ import { Repository } from 'typeorm';
 import {
     CreateEmployeeDto,
     CreateOrganizationUserDto,
-} from './dto/request/create-employee.dto';
+} from '../dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
-import { OrganizationMembers } from './entities/organization-member.entity';
+import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
+import { OrganizationMembers } from '../entities/organization-member.entity';
 
 @Injectable()
 export class OrganizationMemberService {
