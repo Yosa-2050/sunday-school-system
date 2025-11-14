@@ -39,22 +39,22 @@ import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
+import { AddOrganizationBranchDto } from '../dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AssignMembersToOrganizationRequestDto } from './dto/request/assign-person-to-org.request.dto';
+import { AssignMembersToOrganizationRequestDto } from '../dto/request/assign-person-to-org.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
     CreateOrganizationEmployeeWithOrgDto,
-} from './dto/request/create-employee.dto';
+} from '../dto/request/create-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateOrganizationDto } from './dto/request/create-organization.dto';
+import { CreateOrganizationDto } from '../dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto';
+import { UpdateOrganizationInfoDto } from '../dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
+import { GetOrganizationListResponseDto } from '../dto/response/get-organization.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationService } from './organization.service';
+import { OrganizationService } from '../organization.service';
 
 @Controller('organization')
 export class OrganizationController {

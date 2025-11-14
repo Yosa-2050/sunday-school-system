@@ -5,15 +5,15 @@ import { Category } from '@shega/education/entities/category.entity';
 import { AddressModule } from '@shega/location/address.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { UsersModule } from '@shega/users/users.module';
-import { DepartmentController } from './department.controller';
+import { DepartmentController } from './controllers/department.controller';
+import { OrganizationMemberController } from './controllers/organization-member.controller';
+import { OrganizationController } from './controllers/organization.controller';
 import { DepartmentService } from './department.service';
 import { Branch } from './entities/branch.entity';
 import { Department } from './entities/department.entity';
 import { OrganizationMembers } from './entities/organization-member.entity';
 import { Organization } from './entities/organization.entity';
-import { OrganizationMemberController } from './organization-member.controller';
 import { OrganizationMemberService } from './organization-member.service';
-import { OrganizationController } from './organization.controller';
 import { OrganizationService } from './organization.service';
 
 @Module({
