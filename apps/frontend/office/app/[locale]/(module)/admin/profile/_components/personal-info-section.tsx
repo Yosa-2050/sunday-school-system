@@ -61,7 +61,7 @@ const personalInfoSchema = z.object({
     lastName: z.string().min(1, 'Last name is required'),
     birthDate: z.string().nullable(),
     gender: z.string().nullable(),
-    // marriageStatus: z.string().min(1, 'Marriage status is required'),
+    //marriageStatus: z.string().min(1, 'Marriage status is required'),
     title: z.string().nullable(),
     phoneNumber: z
         .string()

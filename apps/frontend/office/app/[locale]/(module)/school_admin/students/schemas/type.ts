@@ -25,7 +25,7 @@ export interface ProfileResponse {
     createdAt: string;
     isActive: boolean;
     firstName: string;
-    middleName: string | null;
+    middleName: string;
     lastName: string;
     mothersFullName: string | null;
     birthDate: string | null;
