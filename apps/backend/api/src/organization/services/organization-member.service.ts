@@ -5,6 +5,7 @@ import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
@@ -14,10 +15,12 @@ import { Repository } from 'typeorm';
 import {
     CreateEmployeeDto,
     CreateOrganizationUserDto,
-} from '../dto/request/create-employee.dto';
+} from '../dto/request/create-organization-member.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
 import { OrganizationMembers } from '../entities/organization-member.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { OrganizationMemberType } from '../enums/employee-type.enum';
 
 @Injectable()
 export class OrganizationMemberService {
@@ -82,11 +85,13 @@ export class OrganizationMemberService {
     async CreateSQDEMember(
         dto: CreateOrganizationUserDto,
         pwdGenerated: string,
+        role: UserRoleType,
+        type: OrganizationMemberType,
     ) {
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
             LoginBy.EMAIL,
-            UserRoleType.SchoolAdmin,
+            role,
             dto.firstName,
             dto.middleName,
             dto.lastName,
@@ -101,6 +106,7 @@ export class OrganizationMemberService {
 
         const model = this.organizationMemberRepo.create();
         model.profile = profile;
+        model.type = type;
         const member = await this.organizationMemberRepo.save(model);
         return member;
     }

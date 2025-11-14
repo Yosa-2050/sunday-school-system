@@ -12,9 +12,12 @@ import { NotificationChannel } from '@shega/notification/enums/notification-chan
 import { NotificationService } from '@shega/notification/notification.service';
 import { NotificationTemplates } from '@shega/notification/seeds/notification-templates.const';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-employee.dto';
+import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-organization-member.dto';
+import { OrganizationMemberType } from '@shega/organization/enums/employee-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationMemberService } from '@shega/organization/services/organization-member.service';
+// biome-ignore lint/style/useImportType: <explanation>
+import { OrganizationService } from '@shega/organization/services/organization.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
@@ -42,6 +45,7 @@ export class LmsService {
         private profileService: ProfileService,
         private notificationService: NotificationService,
         private memberServices: OrganizationMemberService,
+        private organizationService: OrganizationService,
     ) {}
 
     async createCalendarYear(
@@ -89,15 +93,20 @@ export class LmsService {
         return `This action removes a #${id} lm`;
     }
 
-    getProgram() {
-        return this.programRepo.find();
+    getProgram(organizationId: string) {
+        return this.programRepo.findBy({
+            organization: { id: organizationId },
+        });
     }
-    async createProgram(name: string) {
+    async createProgram(name: string, organizationId: string) {
+        const org =
+            await this.organizationService.findOneOrThrow(organizationId);
         const existingProgram = await this.programRepo.findOneBy({ name });
         if (existingProgram) {
             throw new EntityAlreadyExistsException(typeof Program);
         }
         const program = this.programRepo.create({ name });
+        program.organization = org;
         return this.programRepo.save(program);
     }
 
@@ -109,18 +118,22 @@ export class LmsService {
         return program;
     }
 
-    async CreateUserQDE(programId: string, dto: CreateOrganizationUserDto) {
-        const program = await this.programRepo.findOneBy({
-            id: programId,
-        });
-        if (!program) {
-            throw new EntityNotFoundException('Program');
-        }
+    async CreateUserQDE(
+        organizationId: string,
+        programId: string,
+        dto: CreateOrganizationUserDto,
+    ) {
+        const program = await this.ValidateProgramAndOrg(
+            programId,
+            organizationId,
+        );
         const pwdGenerated = this.passwordService.generatePassword();
 
         const member = await this.memberServices.CreateSQDEMember(
             dto,
             pwdGenerated,
+            UserRoleType.SchoolAdmin,
+            OrganizationMemberType.Administrator,
         );
 
         const model = this.programUserRepo.create();
@@ -146,13 +159,15 @@ export class LmsService {
         return programUser;
     }
 
-    async AssignUser(programId: string, memberId: string) {
-        const program = await this.programRepo.findOneBy({
-            name: programId,
-        });
-        if (program) {
-            throw new EntityNotFoundException('Program');
-        }
+    async AssignUser(
+        organizationId: string,
+        programId: string,
+        memberId: string,
+    ) {
+        const program = await this.ValidateProgramAndOrg(
+            programId,
+            organizationId,
+        );
 
         const profile = await this.memberServices.findByIdOrThrow(memberId);
 
@@ -163,7 +178,8 @@ export class LmsService {
         return await this.programUserRepo.save(model);
     }
 
-    async GetUsers(programId: string) {
+    async GetUsers(organizationId: string, programId: string) {
+        await this.ValidateProgramAndOrg(programId, organizationId);
         const programUsers = await this.programUserRepo.findBy({
             program: { id: programId },
         });
@@ -173,6 +189,20 @@ export class LmsService {
             });
         }
         return null;
+    }
+
+    private async ValidateProgramAndOrg(
+        programId: string,
+        organizationId: string,
+    ) {
+        const program = await this.programRepo.findOneBy({
+            id: programId,
+            organization: { id: organizationId },
+        });
+        if (program) {
+            throw new EntityNotFoundException('Program');
+        }
+        return program;
     }
 
     async activeCalendarYearByProgramId(programId: string) {
@@ -200,14 +230,17 @@ export class LmsService {
     }
 
     async getSchoolAdminDetail(id: string) {
-        const programUser = await this.programUserRepo.findOneBy({
-            member: { id },
-        });
-
         const profile = await this.profileService.findById(id);
+        const member = await this.memberServices.getEmployeeByProfileId(
+            profile?.id,
+        );
+        const programUser = await this.programUserRepo.findOneBy({
+            member: { id: member?.id },
+        });
         const userDetails = new UserDetails();
         userDetails.programId = programUser?.program?.id;
         userDetails.profileId = profile?.id;
+        userDetails.organizationId = member?.organization?.id;
         userDetails.calendarYear = (
             await this.activeCalendarYearByProgramId(programUser?.program?.id)
         )?.id;

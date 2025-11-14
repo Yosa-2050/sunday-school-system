@@ -61,7 +61,7 @@ export class CreateOrganizationUserDto {
     email: string;
 }
 
-export class CreateOrganizationEmployeeWithOrgDto extends CreateOrganizationUserDto {
+export class CreateOrganizationMemberWithOrgDto extends CreateOrganizationUserDto {
     @ApiProperty()
     @IsString()
     organizationName: string;

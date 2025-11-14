@@ -22,7 +22,6 @@ export class Program extends BaseModel {
     @ManyToOne(() => Organization, {
         lazy: true,
         nullable: true,
-        cascade: ['insert'],
     })
     organization: Organization;
 

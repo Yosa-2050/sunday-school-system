@@ -45,8 +45,8 @@ import { AssignMembersToOrganizationRequestDto } from '../dto/request/assign-per
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
-    CreateOrganizationEmployeeWithOrgDto,
-} from '../dto/request/create-employee.dto';
+    CreateOrganizationMemberWithOrgDto,
+} from '../dto/request/create-organization-member.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from '../dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -64,8 +64,8 @@ export class OrganizationController {
     ) {}
 
     @Post('createEmployee')
-    createEmployee(@Body() dto: CreateOrganizationEmployeeWithOrgDto) {
-        return this.organizationService.CreateEmployeeQDE(dto);
+    createEmployee(@Body() dto: CreateOrganizationMemberWithOrgDto) {
+        return this.organizationService.CreateOrganizationMemberQDE(dto);
     }
 
     @Patch('submit')

@@ -22,6 +22,7 @@ import { ClassService } from '../services/class.service';
 export class ClassController {
     constructor(private readonly classService: ClassService) {}
 
+    @Roles(UserRoleType.SuperAdmin)
     @Post('root/:programId')
     create(
         @Body() dto: StringRequestModel,
@@ -66,11 +67,6 @@ export class ClassController {
     findSections(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.classService.findSections(id);
     }
-
-    // @Patch(':id')
-    // update(@Param('id') id: string, @Body() updateLmDto: UpdateLmDto) {
-    //   return this.classService.update(+id, updateLmDto);
-    // }
 
     @Delete(':id')
     remove(@Param('id', new ParseUUIDPipe()) id: string) {

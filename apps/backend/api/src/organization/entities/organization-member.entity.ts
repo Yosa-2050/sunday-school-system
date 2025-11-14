@@ -17,7 +17,7 @@ export class OrganizationMembers extends BaseModel {
     @ManyToOne(() => Organization, {
         lazy: true,
         nullable: false,
-        cascade: ['insert'],
+        eager: true,
     })
     organization: Organization;
 

@@ -25,11 +25,11 @@ import { SendStudentNotificationDto } from '../dto/request/send-notification-stu
 // biome-ignore lint/style/useImportType: <explanation>
 import { StudentService } from '../services/student.service';
 
+@Roles(UserRoleType.SchoolAdmin)
 @Controller('student')
 export class StudentController {
     constructor(private readonly studentService: StudentService) {}
 
-    @Roles(UserRoleType.SchoolAdmin)
     @Post('create/:classId')
     createStudent(
         @Body() dto: CreateStudentRequestDto,

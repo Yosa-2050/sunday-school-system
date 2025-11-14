@@ -52,9 +52,9 @@ import { AssignMembersToOrganizationRequestDto } from '../dto/request/assign-per
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
-    CreateOrganizationEmployeeWithOrgDto,
+    CreateOrganizationMemberWithOrgDto,
     CreateOrganizationUserDto,
-} from '../dto/request/create-employee.dto';
+} from '../dto/request/create-organization-member.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from '../dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -506,6 +506,14 @@ export class OrganizationService {
         return organization;
     }
 
+    async findOneOrThrow(id: string) {
+        const organization = await this.organizationRepo.findOneBy({ id: id });
+        if (!organization) {
+            throw new EntityNotFoundException(typeof Organization);
+        }
+        return organization;
+    }
+
     async updateOrganization(
         id: string,
         dto: Partial<UpdateOrganizationInfoDto>,
@@ -598,7 +606,7 @@ export class OrganizationService {
         return userDetails;
     }
 
-    async CreateEmployeeQDE(dto: CreateOrganizationEmployeeWithOrgDto) {
+    async CreateOrganizationMemberQDE(dto: CreateOrganizationMemberWithOrgDto) {
         const organization = await this.organizationRepo.findOneBy({
             name: dto.organizationName,
         });
@@ -611,7 +619,7 @@ export class OrganizationService {
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
             LoginBy.EMAIL,
-            UserRoleType.Administrator,
+            UserRoleType.SchoolAdmin,
             dto.firstName,
             dto.middleName,
             dto.lastName,
@@ -626,7 +634,7 @@ export class OrganizationService {
 
         const model = this.organizationMemberRepo.create();
         model.profile = profile;
-        model.type = OrganizationMemberType.Administrator;
+        model.type = OrganizationMemberType.ContactPerson;
         model.organization = await this.organizationRepo.create({
             name: dto.organizationName,
             status: ApprovalType.New,
