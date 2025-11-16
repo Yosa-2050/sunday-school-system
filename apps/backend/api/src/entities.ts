@@ -42,11 +42,9 @@ import { User } from './users/entities/user.entity';
 export const AppEntities = [
     Organization,
     Branch,
-    //Employee,
     User,
     UserRoles,
     Profile,
-    //EmployeeOrganization,
     Otp,
     Document,
     ContactDetails,

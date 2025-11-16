@@ -167,6 +167,12 @@ export const Menus = (): MenuTree[] => {
             role: 'super_admin',
         },
         {
+            label: t('organization'),
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
+            link: '/admin/organizations',
+            role: 'super_admin',
+        },
+        {
             label: t('programManagement'),
             icon: <IconUserSquare stroke={1.4} size={20} />,
             link: '/admin/programs',
