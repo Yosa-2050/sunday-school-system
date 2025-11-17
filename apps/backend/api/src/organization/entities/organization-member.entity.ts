@@ -18,6 +18,7 @@ export class OrganizationMembers extends BaseModel {
         lazy: true,
         nullable: false,
         eager: true,
+        cascade: ['insert'],
     })
     organization: Organization;
 

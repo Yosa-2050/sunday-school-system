@@ -234,13 +234,14 @@ export class LmsService {
         const member = await this.memberServices.getEmployeeByProfileId(
             profile?.id,
         );
+        const organization = await member?.organization;
         const programUser = await this.programUserRepo.findOneBy({
             member: { id: member?.id },
         });
         const userDetails = new UserDetails();
         userDetails.programId = programUser?.program?.id;
         userDetails.profileId = profile?.id;
-        userDetails.organizationId = member?.organization?.id;
+        userDetails.organizationId = organization?.id;
         userDetails.calendarYear = (
             await this.activeCalendarYearByProgramId(programUser?.program?.id)
         )?.id;

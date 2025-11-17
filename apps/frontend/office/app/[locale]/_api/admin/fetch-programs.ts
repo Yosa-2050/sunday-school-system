@@ -1,10 +1,27 @@
 import { fetcher } from '@shega/shared';
 
-export const fetchPrograms = async (): Promise<ProgramResponse[]> => {
-    const response: ProgramResponse[] = await fetcher('/lms/program', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    });
+export const fetchPrograms = async (
+    organizationId: string,
+): Promise<ProgramResponse[]> => {
+    const response: ProgramResponse[] = await fetcher(
+        `/lms/program/byOrganization/${organizationId}`,
+        {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        },
+    );
+
+    return response;
+};
+
+export const fetchProgramsForOrg = async (): Promise<ProgramResponse[]> => {
+    const response: ProgramResponse[] = await fetcher(
+        '/lms/program/ForOrganization',
+        {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        },
+    );
 
     return response;
 };
@@ -119,12 +136,18 @@ export const createRootClass = async (programId: string, text: string) => {
 };
 
 //new function for the createprogram
-export const createProgram = async (data: CreateProgram) => {
-    const res: IdSuccessResponse = await fetcher('/lms/program', {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-    });
+export const createProgram = async (
+    data: CreateProgram,
+    organizationId: string | null,
+) => {
+    const res: IdSuccessResponse = await fetcher(
+        `/lms/program/${organizationId}`,
+        {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        },
+    );
     if (!res) {
         throw new Error('Faild to create program');
     }

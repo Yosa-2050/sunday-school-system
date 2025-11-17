@@ -12,14 +12,22 @@ import {
 } from 'app/[locale]/_api/admin/fetch-programs';
 import { useForm } from 'react-hook-form';
 
-export function CreateProgramDrawer() {
+interface CreateProgramDrawerProps {
+    onClose: () => void;
+    organizationId: string | null;
+}
+export function CreateProgramDrawer({
+    organizationId,
+    onClose,
+}: CreateProgramDrawerProps) {
     const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
 
     const { register, handleSubmit, reset } = useForm<CreateProgram>();
 
     const addProgram = useMutation({
-        mutationFn: async (data: CreateProgram) => createProgram(data),
+        mutationFn: async (data: CreateProgram) =>
+            createProgram(data, organizationId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['programs'] });
             // queryClient.invalidateQueries({
@@ -37,16 +45,22 @@ export function CreateProgramDrawer() {
             });
 
             close();
+            onClose;
             reset();
         },
     });
 
     return (
         <>
-            <Button onClick={open}>+ Add Program</Button>
+            <Button onClick={open} disabled={!organizationId}>
+                + Add Program
+            </Button>
             <Drawer
                 opened={opened}
-                onClose={close}
+                onClose={() => {
+                    close;
+                    onClose;
+                }}
                 title="Create Program"
                 position="right"
                 size="md"

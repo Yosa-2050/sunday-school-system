@@ -82,6 +82,11 @@ export class OrganizationController {
         );
     }
 
+    @Get('all')
+    getAll(@Request() req) {
+        return this.organizationService.findAll();
+    }
+
     @Roles(UserRoleType.SuperAdmin)
     @Patch('approve/:id')
     approveOrganization(@Param('id', new ParseUUIDPipe()) id: string) {

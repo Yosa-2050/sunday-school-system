@@ -36,6 +36,7 @@ export class LmsController {
         return this.lmsService.createCalendarYear(id, dto);
     }
 
+    @Roles(UserRoleType.SchoolAdmin)
     @Get('calendarYear/:programId')
     findAllCalendarId(@Param('programId', new ParseUUIDPipe()) id: string) {
         return this.lmsService.findAllYear(id);
@@ -65,7 +66,7 @@ export class LmsController {
         return this.lmsService.remove(+id);
     }
 
-    @Post('program:/organizationId')
+    @Post('program/:organizationId')
     createProgram(
         @Param('organizationId', new ParseUUIDPipe()) organizationId: string,
         @Body() dto: CreateUsingNameRequestDto,
@@ -73,13 +74,22 @@ export class LmsController {
         return this.lmsService.createProgram(dto.name, organizationId);
     }
 
-    @Get('program:/organizationId')
+    @Roles(UserRoleType.SchoolAdmin)
+    @Get('program/ForOrganization')
+    getProgramsForOrganization(@Request() req) {
+        return this.lmsService.getProgram(
+            CurrentUser.getOrganizationId(req, true),
+        );
+    }
+
+    @Get('program/byOrganization/:organizationId')
     getPrograms(
         @Param('organizationId', new ParseUUIDPipe()) organizationId: string,
     ) {
         return this.lmsService.getProgram(organizationId);
     }
 
+    @Roles(UserRoleType.SchoolAdmin)
     @Get('program/:id')
     findProgramById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.lmsService.findOneProgram(id);

@@ -79,6 +79,12 @@ export const Menus = (): MenuTree[] => {
             role: 'school_admin',
         },
         {
+            label: t('programManagement'),
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/admin/programs',
+            role: 'school_admin',
+        },
+        {
             isGroup: true,
             label: t('classManagement'),
             role: 'school_admin',

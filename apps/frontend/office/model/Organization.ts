@@ -76,7 +76,7 @@ interface Note {
     note: string;
 }
 
-interface Organization {
+interface OrganizationResponseModel {
     id: string;
     createdBy: string;
     createdAt: string;
@@ -111,7 +111,7 @@ interface Organization {
 }
 
 export type {
-    Organization,
+    OrganizationResponseModel as Organization,
     Contact,
     Employee,
     Location,
