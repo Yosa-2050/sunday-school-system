@@ -77,7 +77,15 @@ export class LmsService {
         return 'This action adds a new lm';
     }
 
-    findAllYear(programId: string) {
+    findAllYear(programId: string, organizationId?: string) {
+        if (organizationId) {
+            return this.calendarYearRepo.findBy({
+                program: {
+                    id: programId,
+                    organization: { id: organizationId },
+                },
+            });
+        }
         return this.calendarYearRepo.findBy({ program: { id: programId } });
     }
 

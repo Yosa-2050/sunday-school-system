@@ -36,10 +36,21 @@ export class LmsController {
         return this.lmsService.createCalendarYear(id, dto);
     }
 
-    @Roles(UserRoleType.SchoolAdmin)
     @Get('calendarYear/:programId')
     findAllCalendarId(@Param('programId', new ParseUUIDPipe()) id: string) {
         return this.lmsService.findAllYear(id);
+    }
+
+    @Roles(UserRoleType.SchoolAdmin)
+    @Get('calendarYearForOrg/:programId')
+    findAllCalendarIdForOrg(
+        @Param('programId', new ParseUUIDPipe()) id: string,
+        @Request() req,
+    ) {
+        return this.lmsService.findAllYear(
+            id,
+            CurrentUser.getOrganizationId(req, true),
+        );
     }
 
     @Get('calendarYearById/:id')
@@ -50,7 +61,10 @@ export class LmsController {
     @Roles(UserRoleType.SchoolAdmin)
     @Get('calendarYear')
     getDefaultCalendarYear(@Request() req) {
-        return this.lmsService.findAllYear(CurrentUser.getProgramId(req));
+        return this.lmsService.findAllYear(
+            CurrentUser.getProgramId(req),
+            CurrentUser.getOrganizationId(req, true),
+        );
     }
     //TODO: Implement inactive calendar year
     @Patch('calendarYear/:id')
