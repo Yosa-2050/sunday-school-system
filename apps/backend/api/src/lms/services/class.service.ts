@@ -90,7 +90,15 @@ export class ClassService {
         });
     }
 
-    findAllRootClass(programId: string) {
+    findAllRootClass(programId: string, organizationId?: string) {
+        if (organizationId) {
+            return this.rootClassRepo.findBy({
+                program: {
+                    id: programId,
+                    organization: { id: organizationId },
+                },
+            });
+        }
         return this.rootClassRepo.findBy({ program: { id: programId } });
     }
 

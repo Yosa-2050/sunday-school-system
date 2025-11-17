@@ -103,13 +103,13 @@ export class LmsController {
         return this.lmsService.getProgram(organizationId);
     }
 
-    @Roles(UserRoleType.SchoolAdmin)
+    @Roles(UserRoleType.SchoolAdmin, UserRoleType.SuperAdmin)
     @Get('program/:id')
     findProgramById(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.lmsService.findOneProgram(id);
     }
 
-    @Roles(UserRoleType.SchoolAdmin)
+    @Roles(UserRoleType.SchoolAdmin, UserRoleType.SuperAdmin)
     @Post('user/:programId')
     createUser(
         @Body() dto: CreateOrganizationUserDto,
@@ -137,7 +137,7 @@ export class LmsController {
         );
     }
 
-    @Roles(UserRoleType.SchoolAdmin)
+    @Roles(UserRoleType.SchoolAdmin, UserRoleType.SuperAdmin)
     @Get('users/:programId')
     getUser(
         @Param('programId', new ParseUUIDPipe()) programId: string,

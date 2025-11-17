@@ -38,10 +38,23 @@ export class ClassController {
     }
 
     @Roles(UserRoleType.SchoolAdmin)
+    @Get('rootForOrg/:programId')
+    findAllRootForOrg(
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+        @Request() req,
+    ) {
+        return this.classService.findAllRootClass(
+            programId,
+            CurrentUser.getOrganizationId(req, true),
+        );
+    }
+
+    @Roles(UserRoleType.SchoolAdmin)
     @Get('root')
     findAProgramRoot(@Request() req) {
         return this.classService.findAllRootClass(
             CurrentUser.getProgramId(req),
+            CurrentUser.getOrganizationId(req),
         );
     }
 

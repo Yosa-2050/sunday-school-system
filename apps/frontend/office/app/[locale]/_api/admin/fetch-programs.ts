@@ -40,11 +40,11 @@ export const fetchCalendarYears = async (
     return response;
 };
 
-export const fetchCalendarYearsSchoolAdmin = async (): Promise<
-    CalendarYearResponse[]
-> => {
+export const fetchCalendarYearsSchoolAdmin = async (
+    programId: string,
+): Promise<CalendarYearResponse[]> => {
     const response: CalendarYearResponse[] = await fetcher(
-        '/lms/calendarYear',
+        `/lms/calendarYearForOrg/${programId}`,
         {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -67,6 +67,19 @@ export const fetchRootClasses = async (
     return response;
 };
 
+export const fetchRootClassesSchoolAdmin = async (
+    id?: string,
+): Promise<ProgramResponse[]> => {
+    const url = id ? `/class/rootForOrg/${id}` : '/class/root';
+    const response: ProgramResponse[] = await fetcher(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        //body: JSON.stringify({ q: payload }),
+    });
+
+    return response;
+};
+
 export const fetchUsers = async (
     id: string,
 ): Promise<ProgramUserResponse[]> => {
@@ -80,10 +93,10 @@ export const fetchUsers = async (
 };
 
 export const fetchProgramsById = async (
-    mentorshipId: string,
+    programId: string,
 ): Promise<ProgramResponse> => {
     const response: ProgramResponse = await fetcher(
-        `/lms/program/${mentorshipId}`,
+        `/lms/program/${programId}`,
         {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
