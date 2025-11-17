@@ -30,7 +30,8 @@
         "notifications": "Notifications",
         "locations": "Locations",
         "skills": "Skills",
-        "categories": "Categories"
+        "categories": "Categories",
+        "organization": "organization"
     },
     "header": {
         "title": "Admin Dashboard",
