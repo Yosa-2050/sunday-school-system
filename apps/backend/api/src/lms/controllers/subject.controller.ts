@@ -23,12 +23,13 @@ import { SubjectService } from '../services/subject.service';
 export class SubjectController {
     constructor(private readonly subjectService: SubjectService) {}
 
-    @Post('root')
-    create(@Body() dto: StringRequestModel, @Request() req) {
-        return this.subjectService.create(
-            dto.text,
-            CurrentUser.getProgramId(req),
-        );
+    @Post('root/:programId')
+    create(
+        @Body() dto: StringRequestModel,
+        @Request() req,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.subjectService.create(dto.text, programId);
     }
 
     @Patch('root/:id')
@@ -44,11 +45,12 @@ export class SubjectController {
         );
     }
 
-    @Get('root')
-    findAProgramRoot(@Request() req) {
-        return this.subjectService.findAllRootSubjects(
-            CurrentUser.getProgramId(req),
-        );
+    @Get('root/:programId')
+    findAProgramRoot(
+        @Request() req,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.subjectService.findAllRootSubjects(programId);
     }
 
     @Post('assignSubject')

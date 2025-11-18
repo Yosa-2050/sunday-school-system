@@ -7,6 +7,7 @@ import {
     Group,
     Menu,
     Table,
+    Text,
 } from '@mantine/core';
 import {
     IconChevronDown,
@@ -192,6 +193,7 @@ export default function ClassPage() {
                 }}
                 mb="md"
             >
+                <Text fw={500}>Class</Text>
                 <CreateClassDrawer
                     programId={programId}
                     calendarId={calendarYearId}

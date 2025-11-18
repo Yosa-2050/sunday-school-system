@@ -12,6 +12,7 @@ import type {
 } from '../schemas/type';
 
 interface SubjectDrawerProps {
+    programId: string | '';
     mode: 'create' | 'edit';
     subject?: GetSubjectResponse | null; // only needed for edit
     opened: boolean;
@@ -20,6 +21,7 @@ interface SubjectDrawerProps {
 }
 
 export function SubjectDrawer({
+    programId,
     mode,
     subject,
     opened,
@@ -45,7 +47,7 @@ export function SubjectDrawer({
     const mutation = useMutation({
         mutationFn: (data: CreateWithTextRequest) => {
             if (mode === 'create') {
-                return createSubjectApi(data);
+                return createSubjectApi(data, programId);
             }
             if (!subject) {
                 throw new Error('No subject to update');
