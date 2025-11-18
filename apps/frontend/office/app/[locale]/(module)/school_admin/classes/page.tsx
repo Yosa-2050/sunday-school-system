@@ -5,11 +5,8 @@ import {
     Button,
     Collapse,
     Group,
-    Loader,
     Menu,
-    Select,
     Table,
-    Text,
 } from '@mantine/core';
 import {
     IconChevronDown,
@@ -19,14 +16,9 @@ import {
     IconPlus,
     IconX,
 } from '@tabler/icons-react';
-import {
-    type CalendarYearResponse,
-    type ProgramResponse,
-    fetchCalendarYearsSchoolAdmin,
-    fetchProgramsForOrg,
-} from 'app/[locale]/_api/admin/fetch-programs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CreateClassDrawer } from './create/components/CreateClassDrawer';
+import { ProgramAndCalendarSelector } from './create/components/programAndCalendar';
 import {
     type GetClass,
     fetchClassesApi,
@@ -35,59 +27,10 @@ import {
 export default function ClassPage() {
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
     const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
-
     const [programId, setProgramId] = useState<string | null>(null);
-    const [calendarYears, setCalendarYears] = useState<CalendarYearResponse[]>(
-        [],
-    );
-
-    const [programs, setPrograms] = useState<ProgramResponse[]>([]);
-    const [loadingYears, setLoadingYears] = useState(true);
-
     const [classes, setClasses] = useState<GetClass[]>([]);
     const [loadingClasses, setLoadingClasses] = useState(false);
-
     const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
-
-    // Fetch calendar years
-    useEffect(() => {
-        const getPrograms = async () => {
-            try {
-                setLoadingYears(true);
-                const data: ProgramResponse[] = await fetchProgramsForOrg();
-                setPrograms(data);
-            } catch (err) {
-                //console.error('Failed to fetch calendar years', err);
-            } finally {
-                setLoadingYears(false);
-            }
-        };
-
-        getPrograms();
-    }, []);
-
-    // Fetch calendar years
-    const getCalendarYears = async (programId: string) => {
-        setCalendarYear(null);
-        setClasses([]);
-        try {
-            setLoadingYears(true);
-            const data: CalendarYearResponse[] =
-                await fetchCalendarYearsSchoolAdmin(programId ?? '');
-            setCalendarYears(data);
-            // auto-select active year
-            const active = data.find((y) => y.isActive);
-            if (active) {
-                setCalendarYear(active.name);
-                fetchClasses(active.id);
-                setCalendarYearId(active.id);
-            }
-        } catch (err) {
-            //console.error('Failed to fetch calendar years', err);
-        } finally {
-            setLoadingYears(false);
-        }
-    };
 
     // Fetch classes when calendar year changes
     const fetchClasses = async (calenderId: string) => {
@@ -95,7 +38,6 @@ export default function ClassPage() {
         if (!calenderId) {
             return;
         }
-
         try {
             setLoadingClasses(true);
             const data = await fetchClassesApi(calenderId);
@@ -233,32 +175,14 @@ export default function ClassPage() {
 
     return (
         <div>
-            <Group mb="md">
-                <Text fw={500}>Programs:</Text>
-                <Select
-                    value={programId}
-                    data={
-                        programs?.map((s) => ({
-                            value: s.id,
-                            label: s.name,
-                        })) ?? []
-                    }
-                    onChange={(val) => {
-                        setProgramId(val);
-                        getCalendarYears(val ?? '');
-                    }}
-                />
-                <Text fw={500}>Calendar Year:</Text>
-                {loadingYears ? (
-                    <Loader size="sm" />
-                ) : (
-                    <Select
-                        value={calendarYear}
-                        data={[calendarYear || '']}
-                        disabled
-                    />
-                )}
-            </Group>
+            <ProgramAndCalendarSelector
+                onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setProgramId(programId);
+                    setCalendarYear(calenderYearName);
+                    setCalendarYearId(calenderYearId);
+                    fetchClasses(calenderYearId || '');
+                }}
+            />
 
             <Group
                 style={{
@@ -268,12 +192,11 @@ export default function ClassPage() {
                 }}
                 mb="md"
             >
-                <Text fw={500}>Calendar Years</Text>
                 <CreateClassDrawer
                     programId={programId}
                     calendarId={calendarYearId}
                     onClose={() => {
-                        fetchClasses(calendarYear ?? '');
+                        fetchClasses(calendarYearId || '');
                     }}
                 />
             </Group>
