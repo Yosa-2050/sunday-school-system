@@ -31,7 +31,11 @@ export class ClassController {
         return this.classService.createRoot(dto.text, programId);
     }
 
-    @Roles(UserRoleType.SuperAdmin, UserRoleType.Administrator)
+    @Roles(
+        UserRoleType.SuperAdmin,
+        UserRoleType.Administrator,
+        UserRoleType.SchoolAdmin,
+    )
     @Get('root/:programId')
     findAllRoot(@Param('programId', new ParseUUIDPipe()) programId: string) {
         return this.classService.findAllRootClass(programId);
@@ -59,15 +63,28 @@ export class ClassController {
     }
 
     @Roles(UserRoleType.SchoolAdmin)
-    @Post('main')
-    addNew(@Body() dto: ClassRequestDto, @Request() req) {
-        return this.classService.create(dto, CurrentUser.getActiveYear(req));
+    @Post('main/:calendarYearId')
+    addNew(
+        @Body() dto: ClassRequestDto,
+        @Param('calendarYearId', new ParseUUIDPipe()) calendarYearId: string,
+        @Request() req,
+    ) {
+        return this.classService.create(dto, calendarYearId);
     }
 
+    // @Roles(UserRoleType.SchoolAdmin)
+    // @Get('main')
+    // findAll(@Request() req) {
+    //     return this.classService.findAll(CurrentUser.getActiveYear(req));
+    // }
+
     @Roles(UserRoleType.SchoolAdmin)
-    @Get('main')
-    findAll(@Request() req) {
-        return this.classService.findAll(CurrentUser.getActiveYear(req));
+    @Get('main/:calendarYearId')
+    findAll(
+        @Request() req,
+        @Param('calendarYearId', new ParseUUIDPipe()) calendarYearId: string,
+    ) {
+        return this.classService.findAll(calendarYearId);
     }
 
     @Roles(UserRoleType.SchoolAdmin)

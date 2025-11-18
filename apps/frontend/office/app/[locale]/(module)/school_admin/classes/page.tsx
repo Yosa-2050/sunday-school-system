@@ -34,6 +34,8 @@ import {
 
 export default function ClassPage() {
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
+
     const [programId, setProgramId] = useState<string | null>(null);
     const [calendarYears, setCalendarYears] = useState<CalendarYearResponse[]>(
         [],
@@ -54,11 +56,6 @@ export default function ClassPage() {
                 setLoadingYears(true);
                 const data: ProgramResponse[] = await fetchProgramsForOrg();
                 setPrograms(data);
-                // // auto-select active year
-                // const active = data.find((y) => y.isActive);
-                // if (active) {
-                //     setCalendarYear(active.name);
-                // }
             } catch (err) {
                 //console.error('Failed to fetch calendar years', err);
             } finally {
@@ -72,6 +69,7 @@ export default function ClassPage() {
     // Fetch calendar years
     const getCalendarYears = async (programId: string) => {
         setCalendarYear(null);
+        setClasses([]);
         try {
             setLoadingYears(true);
             const data: CalendarYearResponse[] =
@@ -82,6 +80,7 @@ export default function ClassPage() {
             if (active) {
                 setCalendarYear(active.name);
                 fetchClasses(active.id);
+                setCalendarYearId(active.id);
             }
         } catch (err) {
             //console.error('Failed to fetch calendar years', err);
@@ -92,10 +91,11 @@ export default function ClassPage() {
 
     // Fetch classes when calendar year changes
     const fetchClasses = async (calenderId: string) => {
+        setClasses([]);
         if (!calenderId) {
             return;
         }
-        setClasses([]);
+
         try {
             setLoadingClasses(true);
             const data = await fetchClassesApi(calenderId);
@@ -271,6 +271,7 @@ export default function ClassPage() {
                 <Text fw={500}>Calendar Years</Text>
                 <CreateClassDrawer
                     programId={programId}
+                    calendarId={calendarYearId}
                     onClose={() => {
                         fetchClasses(calendarYear ?? '');
                     }}

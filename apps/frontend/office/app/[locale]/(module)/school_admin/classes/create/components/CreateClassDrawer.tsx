@@ -12,14 +12,29 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconPlus, IconTrash } from '@tabler/icons-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchRootClasses } from 'app/[locale]/_api/admin/fetch-programs';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+    type ProgramResponse,
+    fetchRootClasses,
+} from 'app/[locale]/_api/admin/fetch-programs';
+import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { type CreateClass, createClass } from './schema/fetchClassesDetail';
 
-export function CreateClassDrawer() {
+interface CreateClassDrawerProps {
+    onClose: () => void;
+    programId: string | null;
+    calendarId: string | null;
+}
+
+export function CreateClassDrawer({
+    programId,
+    calendarId,
+    onClose,
+}: CreateClassDrawerProps) {
     const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
+    const [classes, setClasses] = useState<ProgramResponse[]>([]);
 
     const { register, control, handleSubmit, reset, setValue } =
         useForm<CreateClass>({
@@ -36,13 +51,27 @@ export function CreateClassDrawer() {
         name: 'section',
     });
 
-    const { data: roots, isLoading: rootsLoading } = useQuery({
-        queryKey: ['roots'],
-        queryFn: () => fetchRootClasses(),
-    });
+    useEffect(() => {
+        const getClasses = async () => {
+            try {
+                // setLoadingYears(true);
+                const data: ProgramResponse[] = await fetchRootClasses(
+                    programId ?? '',
+                );
+                setClasses(data);
+            } catch (err) {
+                //console.error('Failed to fetch calendar years', err);
+            } finally {
+                // setLoadingYears(false);
+            }
+        };
+
+        getClasses();
+    }, [programId]);
 
     const addClassMutation = useMutation({
-        mutationFn: async (data: CreateClass) => createClass(data),
+        mutationFn: async (data: CreateClass) =>
+            createClass(data, calendarId ?? ''),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['classes'] });
             notifications.show({
@@ -93,13 +122,13 @@ export function CreateClassDrawer() {
                         {/* Root ID Select */}
                         <Select
                             label="Root Class"
-                            placeholder={
-                                rootsLoading
-                                    ? 'Loading...'
-                                    : 'Select root class'
-                            }
+                            // placeholder={
+                            //     rootsLoading
+                            //         ? 'Loading...'
+                            //         : 'Select root class'
+                            // }
                             data={
-                                roots?.map(
+                                classes?.map(
                                     (r: { id: string; name: string }) => ({
                                         value: r.id,
                                         label: r.name,
