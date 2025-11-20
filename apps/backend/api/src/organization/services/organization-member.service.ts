@@ -19,6 +19,7 @@ import {
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
 import { OrganizationMembers } from '../entities/organization-member.entity';
+import { Organization } from '../entities/organization.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationMemberType } from '../enums/employee-type.enum';
 
@@ -29,6 +30,8 @@ export class OrganizationMemberService {
         private organizationMemberRepo: Repository<OrganizationMembers>,
         private profileService: ProfileService,
         private addressService: AddressService,
+        @InjectRepository(Organization)
+        private organizationRepo: Repository<Organization>,
     ) {}
     async CreateEmployee(dto: CreateEmployeeDto) {
         const profile = await this.profileService.createNewUserProfile(
@@ -87,6 +90,7 @@ export class OrganizationMemberService {
         pwdGenerated: string,
         role: UserRoleType,
         type: OrganizationMemberType,
+        organizationId: string,
     ) {
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
@@ -103,10 +107,16 @@ export class OrganizationMemberService {
             pwdGenerated,
             true,
         );
-
+        const organization = await this.organizationRepo.findOneBy({
+            id: organizationId,
+        });
+        if (!organization) {
+            throw new EntityNotFoundException('Organization');
+        }
         const model = this.organizationMemberRepo.create();
         model.profile = profile;
         model.type = type;
+        model.organization = organization;
         const member = await this.organizationMemberRepo.save(model);
         return member;
     }

@@ -140,8 +140,9 @@ export class LmsService {
         const member = await this.memberServices.CreateSQDEMember(
             dto,
             pwdGenerated,
-            UserRoleType.SchoolAdmin,
+            UserRoleType.ProgramAdmin,
             OrganizationMemberType.Administrator,
+            organizationId,
         );
 
         const model = this.programUserRepo.create();
@@ -155,7 +156,7 @@ export class LmsService {
             templateName: NotificationTemplates.SignUp,
             metaData: {
                 userName: dto.email,
-                role: UserRoleType.SchoolAdmin,
+                role: UserRoleType.ProgramAdmin,
                 tempPassword: pwdGenerated,
             },
         };
@@ -207,7 +208,7 @@ export class LmsService {
             id: programId,
             organization: { id: organizationId },
         });
-        if (program) {
+        if (!program) {
             throw new EntityNotFoundException('Program');
         }
         return program;
@@ -238,6 +239,25 @@ export class LmsService {
     }
 
     async getSchoolAdminDetail(id: string) {
+        const profile = await this.profileService.findById(id);
+        const member = await this.memberServices.getEmployeeByProfileId(
+            profile?.id,
+        );
+        const organization = await member?.organization;
+        const programUser = await this.programUserRepo.findOneBy({
+            member: { id: member?.id },
+        });
+        const userDetails = new UserDetails();
+        //userDetails.programId = programUser?.program?.id;
+        userDetails.profileId = profile?.id;
+        userDetails.organizationId = organization?.id;
+        //userDetails.calendarYear = (
+        //  await this.activeCalendarYearByProgramId(programUser?.program?.id)
+        //)?.id;
+        return userDetails;
+    }
+
+    async getSchoolProgramAdminDetail(id: string) {
         const profile = await this.profileService.findById(id);
         const member = await this.memberServices.getEmployeeByProfileId(
             profile?.id,

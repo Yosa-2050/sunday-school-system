@@ -159,6 +159,90 @@ export const Menus = (): MenuTree[] => {
                 },
             ],
         },
+
+        // Program Admin Role
+        {
+            label: t('dashboard'),
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/school_admin/dashboard',
+            role: 'program_admin',
+        },
+        {
+            label: 'Department',
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/school_admin/department',
+            role: 'program_admin',
+        },
+        {
+            isGroup: true,
+            label: t('classManagement'),
+            role: 'program_admin',
+            children: [
+                {
+                    label: t('class'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/classes',
+                    role: 'program_admin',
+                },
+                {
+                    label: t('assignSubject'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/assign_subject',
+                    role: 'program_admin',
+                },
+                {
+                    label: t('test'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/test',
+                    role: 'program_admin',
+                },
+                {
+                    label: t('result'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/result',
+                    role: 'program_admin',
+                },
+            ],
+        },
+        {
+            isGroup: true,
+            label: t('studentManagement'),
+            role: 'program_admin',
+            children: [
+                {
+                    label: t('students'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/students',
+                    role: 'program_admin',
+                },
+                {
+                    label: t('attendance'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/attendance',
+                    role: 'program_admin',
+                },
+                {
+                    label: t('notifications'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/notification',
+                    role: 'program_admin',
+                },
+            ],
+        },
+        {
+            isGroup: true,
+            label: t('teacherManagement'),
+            role: 'program_admin',
+            children: [
+                {
+                    label: t('teacher'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/teacher',
+                    role: 'program_admin',
+                },
+            ],
+        },
+
         // Super Admin Roles
         {
             label: t('dashboard'),

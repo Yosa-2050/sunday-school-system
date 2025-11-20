@@ -87,6 +87,11 @@ export class AuthService {
                     user.profile.id,
                 );
                 break;
+            case UserRoleType.ProgramAdmin:
+                details = await this.lmsService.getSchoolProgramAdminDetail(
+                    user.profile.id,
+                );
+                break;
             default:
                 throw new UnauthorizedException();
         }

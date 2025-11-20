@@ -15,6 +15,7 @@ export function validateRole(role: UserRoleType, origin: OriginEnums): boolean {
         UserRoleType.Administrator,
         UserRoleType.SuperAdmin,
         UserRoleType.SchoolAdmin,
+        UserRoleType.ProgramAdmin,
     ];
     if (origin === OriginEnums.office) {
         return officeRoles.includes(role);

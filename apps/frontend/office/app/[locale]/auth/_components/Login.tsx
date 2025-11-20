@@ -68,6 +68,7 @@ const Login = () => {
                 | 'administrator'
                 | 'school_admin'
                 | 'super_admin'
+                | 'program_admin'
                 | 'mentor',
             id: user.id ?? '',
             createdBy: user.createdBy ?? '',
@@ -75,11 +76,16 @@ const Login = () => {
     };
 
     const handleRole = (
-        role: 'administrator' | 'school_admin' | 'super_admin' | 'mentor',
+        role:
+            | 'administrator'
+            | 'school_admin'
+            | 'super_admin'
+            | 'program_admin'
+            | 'mentor',
     ) => {
         if (role === 'administrator') {
             router.push('/admin/dashboard');
-        } else if (role === 'school_admin') {
+        } else if (role === 'school_admin' || role === 'program_admin') {
             router.push(' /school_admin/dashboard');
         } else if (role === 'super_admin') {
             router.push('/admin/dashboard');
