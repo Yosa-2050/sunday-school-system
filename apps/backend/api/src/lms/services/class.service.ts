@@ -110,13 +110,18 @@ export class ClassService {
         return null;
     }
 
-    async findOne(id: string, yearId: string) {
+    async findOne(id: string, yearId?: string) {
+        //TODO: to check class use different than year Id
         const _class = await this.classRepo.findOne({
             where: [
-                { id, calendarYear: { id: yearId }, isSection: false },
                 {
                     id,
-                    parent: { calendarYear: { id: yearId } },
+                    //calendarYear: { id: yearId },
+                    isSection: false,
+                },
+                {
+                    id,
+                    //parent: { calendarYear: { id: yearId } },
                     isSection: true,
                 },
             ],

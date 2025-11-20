@@ -20,6 +20,7 @@ import { CreateTestApi, DeleteTestApi, updateTestApi } from '../schema/api';
 import type { CreateTestRequest, TestResponse } from '../schema/type';
 
 interface TestDrawerProps {
+    programId: string | null;
     subject?: SubjectAssignmentResponse;
     mode: 'create' | 'edit' | 'delete';
     test?: TestResponse;
@@ -29,6 +30,7 @@ interface TestDrawerProps {
 }
 
 export function TestDrawer({
+    programId,
     mode,
     subject,
     test,

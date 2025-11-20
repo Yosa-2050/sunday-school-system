@@ -1,15 +1,6 @@
 'use client';
 
-import {
-    Box,
-    Button,
-    Group,
-    Loader,
-    Menu,
-    Select,
-    Table,
-    Text,
-} from '@mantine/core';
+import { Box, Button, Group, Menu, Select, Table, Text } from '@mantine/core';
 import {
     IconDots,
     IconEye,
@@ -17,14 +8,14 @@ import {
     IconPlus,
     IconX,
 } from '@tabler/icons-react';
-import {
-    type CalendarYearResponse,
-    fetchCalendarYearsSchoolAdmin,
-} from 'app/[locale]/_api/admin/fetch-programs';
+// import type {
+//     CalendarYearResponse,
+// } from 'app/[locale]/_api/admin/fetch-programs';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchSubjectsAssignmentApi } from '../assign_subject/schemas/api';
 import type { SubjectAssignmentResponse } from '../assign_subject/schemas/type';
+import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import type { GetClass } from '../classes/create/components/schema/fetchClassesDetail';
 import { fetchClassesApi } from '../classes/create/components/schema/fetchClassesDetail';
 import { TestDrawer } from './component/test.drawer';
@@ -32,12 +23,10 @@ import { FetchTestBySubjectIdApi } from './schema/api';
 import type { TestResponse } from './schema/type';
 
 export default function TestPage() {
+    const [programId, setProgramId] = useState<string | null>(null);
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
+    const [loadingClasses, setLoadingClasses] = useState(false);
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
-    const [calendarYears, setCalendarYears] = useState<CalendarYearResponse[]>(
-        [],
-    );
-    const [loadingYears, setLoadingYears] = useState(true);
-
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [drawerMode, setDrawerMode] = useState<'create' | 'edit' | 'delete'>(
         'create',
@@ -85,35 +74,21 @@ export default function TestPage() {
 
     const getSelectedClassId = selectedSection ?? selectedClass;
 
-    useEffect(() => {
-        const getCalendarYears = async () => {
-            try {
-                setLoadingYears(true);
-                const data = await fetchCalendarYearsSchoolAdmin();
-                setCalendarYears(data);
-                const active = data.find((y) => y.isActive);
-                if (active) {
-                    setCalendarYear(active.name);
-                }
-            } finally {
-                setLoadingYears(false);
-            }
-        };
-        getCalendarYears();
-    }, []);
-
-    useEffect(() => {
-        const fetchClasses = async () => {
-            try {
-                const data = await fetchClassesApi();
-                setClasses(data);
-            } catch (error) {
-                //showError(error.message)
-            }
-        };
-
-        fetchClasses();
-    }, []);
+    const fetchClasses = async (calenderId: string) => {
+        setClasses([]);
+        if (!calenderId) {
+            return;
+        }
+        try {
+            setLoadingClasses(true);
+            const data = await fetchClassesApi(calenderId);
+            setClasses(data);
+        } catch (err) {
+            //console.error('Failed to fetch classes', err);
+        } finally {
+            setLoadingClasses(false);
+        }
+    };
 
     useEffect(() => {
         if (!getSelectedClassId) {
@@ -140,12 +115,10 @@ export default function TestPage() {
             return;
         }
 
+        setLoadingTests(true);
         try {
-            setLoadingTests(true);
             const data = await FetchTestBySubjectIdApi(selectedSubject);
             setTests(data);
-        } catch (err) {
-            //console.error('Error fetching tests', err);
         } finally {
             setLoadingTests(false);
         }
@@ -206,18 +179,21 @@ export default function TestPage() {
 
     return (
         <div>
-            <Group mb="md">
-                <Text fw={500}>Calendar Year:</Text>
-                {loadingYears ? (
-                    <Loader size="sm" />
-                ) : (
-                    <Select
-                        value={calendarYear}
-                        data={[calendarYear || '']}
-                        disabled
-                    />
-                )}
-            </Group>
+            <ProgramAndCalendarSelector
+                onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setProgramId(programId);
+                    setCalendarYear(calenderYearName);
+                    setCalendarYearId(calenderYearId);
+                    setClasses([]);
+                    setSubjects([]);
+                    setTests([]);
+                    fetchClasses(calenderYearId || '');
+
+                    setSelectedClass(null);
+                    setSelectedSection(null);
+                    setSelectedSubject(null);
+                }}
+            />
 
             <Group
                 style={{
@@ -231,7 +207,7 @@ export default function TestPage() {
                 <Button
                     onClick={handleCreateClick}
                     leftSection={<IconPlus size={16} />}
-                    disabled={!selectedSubject}
+                    disabled={!selectedClass}
                 >
                     Add Test
                 </Button>
@@ -308,6 +284,7 @@ export default function TestPage() {
                 opened={drawerOpen}
                 onClose={handleDrawerClose}
                 onCompleted={handleDrawerCompleted}
+                programId={programId}
             />
 
             <Table withColumnBorders striped highlightOnHover>

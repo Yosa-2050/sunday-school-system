@@ -19,15 +19,12 @@ import {
     IconUpload,
     IconX,
 } from '@tabler/icons-react';
-import {
-    type CalendarYearResponse,
-    fetchCalendarYearsSchoolAdmin,
-} from 'app/[locale]/_api/admin/fetch-programs';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { showError, showSuccess } from 'utilities/notification';
 import { useActiveSelection } from 'utilities/utilities';
+import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
     type GetClass,
     fetchClassesApi,
@@ -37,11 +34,9 @@ import { fetchStudentsApi, uploadFileApi } from './schemas/api';
 import type { StudentForPrint, StudentResponse } from './schemas/type';
 
 export default function StudentPage() {
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
+    const [programId, setProgramId] = useState<string | null>(null);
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
-    const [calendarYears, setCalendarYears] = useState<CalendarYearResponse[]>(
-        [],
-    );
-    const [loadingYears, setLoadingYears] = useState(true);
     const [classes, setClasses] = useState<GetClass[]>([]);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
@@ -66,39 +61,17 @@ export default function StudentPage() {
         setSelectedStudents(studentsToPrint);
         setPrintModalOpen(true);
     };
-    // Fetch calendar years
-    useEffect(() => {
-        const getCalendarYears = async () => {
-            try {
-                setLoadingYears(true);
-                const data: CalendarYearResponse[] =
-                    await fetchCalendarYearsSchoolAdmin();
-                setCalendarYears(data);
-                const active = data.find((y) => y.isActive);
-                if (active) {
-                    setCalendarYear(active.name);
-                }
-            } finally {
-                setLoadingYears(false);
-            }
-        };
 
-        getCalendarYears();
-    }, []);
-
-    // Fetch classes
-    useEffect(() => {
-        const fetchClasses = async () => {
-            try {
-                const data = await fetchClassesApi();
-                setClasses(data);
-            } catch (err) {
-                // handle error
-            }
-        };
-
-        fetchClasses();
-    }, []);
+    const fetchClasses = async (calenderId: string) => {
+        setClasses([]);
+        setSelectedClass(null);
+        try {
+            const data = await fetchClassesApi(calenderId ?? '');
+            setClasses(data);
+        } catch (err) {
+            // handle error
+        }
+    };
 
     const handleFetchStudents = async () => {
         if (!selectedClass) {
@@ -194,23 +167,14 @@ export default function StudentPage() {
             !selectedSection);
     return (
         <div>
-            {/* Calendar Year */}
-            <Group mb="md">
-                <Text fw={500}>Calendar Year:</Text>
-                {loadingYears ? (
-                    <Loader size="sm" />
-                ) : (
-                    <Select
-                        value={calendarYear}
-                        data={calendarYears.map((y) => ({
-                            value: y.name,
-                            label: y.name,
-                        }))}
-                        disabled
-                        onChange={setCalendarYear}
-                    />
-                )}
-            </Group>
+            <ProgramAndCalendarSelector
+                onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setProgramId(programId);
+                    setCalendarYear(calenderYearName);
+                    setCalendarYearId(calenderYearId);
+                    fetchClasses(calenderYearId ?? '');
+                }}
+            />
 
             {/* Class & Section Selection */}
             <Group mb="md">
@@ -271,7 +235,9 @@ export default function StudentPage() {
                         variant="light"
                         leftSection={<IconPlus size={16} />}
                         onClick={() =>
-                            router.push('/school_admin/students/create')
+                            router.push(
+                                `/school_admin/students/create?class=${selectedClass}`,
+                            )
                         }
                     >
                         Add New Student

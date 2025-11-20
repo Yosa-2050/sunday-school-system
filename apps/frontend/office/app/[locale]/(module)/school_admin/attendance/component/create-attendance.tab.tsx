@@ -21,9 +21,10 @@ import {
     IconClock,
     IconInfoCircle,
 } from '@tabler/icons-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { fetchSubjectsAssignmentApi } from '../../assign_subject/schemas/api';
+import type { SubjectAssignmentResponse } from '../../assign_subject/schemas/type';
 import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
 import QRScanner from '../../students/components/QrScanner';
 import type { StudentResponse } from '../../students/schemas/type';
@@ -35,6 +36,7 @@ import {
 } from '../schemas/types';
 
 interface AttendanceCreateProps {
+    programId: string | null;
     classes: GetClass[];
     selectedClass: string | null;
     setSelectedClass: (classId: string | null) => void;
@@ -46,6 +48,7 @@ interface AttendanceCreateProps {
 }
 
 export default function AttendanceCreate({
+    programId,
     classes,
     selectedClass,
     setSelectedClass,
@@ -59,15 +62,29 @@ export default function AttendanceCreate({
     const [attendance, setAttendance] = useState<Record<string, string>>({});
     const [remarks, setRemarks] = useState<Record<string, string>>({});
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+    const [subjects, setSubject] = useState<SubjectAssignmentResponse[] | null>(
+        [],
+    );
 
     // fetch subjects when class/section changes
-    const { data: subjects = [], isLoading: loadingSubjects } = useQuery({
-        queryKey: ['subjects', selectedClass, selectedSection],
-        queryFn: () =>
-            fetchSubjectsAssignmentApi(selectedSection ?? selectedClass ?? ''),
-        enabled: !!selectedClass, // only fetch when a class is selected
-        staleTime: 5 * 60 * 1000, // cache for 5 minutes
-    });
+    useEffect(() => {
+        const getSubject = async () => {
+            try {
+                // setLoadingYears(true);
+                const data: SubjectAssignmentResponse[] =
+                    await fetchSubjectsAssignmentApi(
+                        selectedSection ?? selectedClass ?? '',
+                    );
+                setSubject(data);
+            } catch (err) {
+                //console.error('Failed to fetch calendar years', err);
+            } finally {
+                // setLoadingYears(false);
+            }
+        };
+
+        getSubject();
+    }, [selectedSection, selectedClass]);
 
     const saveAttendance = useMutation({
         mutationFn: async () => {
@@ -290,17 +307,17 @@ export default function AttendanceCreate({
                         Select Subject:
                     </Text>
                     <Select
-                        placeholder={
-                            loadingSubjects ? 'Loading...' : 'Choose subject'
-                        }
+                        // placeholder={
+                        //     //loadingSubjects ? 'Loading...' : 'Choose subject'
+                        // }
                         value={selectedSubject}
                         onChange={setSelectedSubject}
-                        data={subjects.map((s) => ({
+                        data={subjects?.map((s) => ({
                             value: s.id,
                             label: s.subjectTitle,
                         }))}
                         style={{ width: 200 }}
-                        disabled={loadingSubjects || !subjects.length}
+                        disabled={!subjects?.length}
                     />
                 </Box>
 

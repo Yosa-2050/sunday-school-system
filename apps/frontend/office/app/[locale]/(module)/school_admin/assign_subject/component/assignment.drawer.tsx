@@ -9,11 +9,12 @@ import {
     Textarea,
 } from '@mantine/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { showError, showSuccess } from 'utilities/notification';
 import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
 import { fetchSubjectsApi } from '../../subject/schemas/api';
+import type { GetSubjectResponse } from '../../subject/schemas/type';
 import { fetchTeacherApi } from '../../teacher/schema/api';
 import {
     createSubjectAssignmentApi,
@@ -31,6 +32,8 @@ const TeacherType = {
 
 // Drawer Component
 interface AssignmentDrawerProps {
+    programId: string;
+    calendarYearId: string;
     classes?: GetClass;
     section?: GetClass;
     mode: 'create' | 'edit';
@@ -41,6 +44,8 @@ interface AssignmentDrawerProps {
 }
 
 export function AssignmentDrawer({
+    programId,
+    calendarYearId,
     mode,
     classes,
     section,
@@ -70,10 +75,24 @@ export function AssignmentDrawer({
         },
     });
 
-    const { data: subjects = [], isLoading: loadingSubjects } = useQuery({
-        queryKey: ['subjects'],
-        queryFn: fetchSubjectsApi,
-    });
+    const [subjects, setSubject] = useState<GetSubjectResponse[]>([]);
+    useEffect(() => {
+        const getSubject = async () => {
+            try {
+                // setLoadingYears(true);
+                const data: GetSubjectResponse[] = await fetchSubjectsApi(
+                    programId ?? '',
+                );
+                setSubject(data);
+            } catch (err) {
+                //console.error('Failed to fetch calendar years', err);
+            } finally {
+                // setLoadingYears(false);
+            }
+        };
+
+        getSubject();
+    }, [programId]);
 
     const { data: teachers = [], isLoading: loadingTeachers } = useQuery({
         queryKey: ['teachers'],
@@ -96,10 +115,10 @@ export function AssignmentDrawer({
     }, [opened, assignment, reset]);
 
     const mutation = useMutation({
-        mutationFn:
+        mutationFn: async (data: CreateSubjectAssignmentRequest) =>
             mode === 'create'
-                ? createSubjectAssignmentApi
-                : updateSubjectAssignmentApi,
+                ? createSubjectAssignmentApi(data, programId)
+                : updateSubjectAssignmentApi(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['subjectAssignments'] });
             showSuccess(
@@ -157,7 +176,7 @@ export function AssignmentDrawer({
                                 onChange={field.onChange}
                                 error={errors.subjectId?.message}
                                 required
-                                disabled={loadingSubjects}
+                                //disabled={loadingSubjects}
                             />
                         )}
                     />

@@ -53,13 +53,14 @@ export class SubjectController {
         return this.subjectService.findAllRootSubjects(programId);
     }
 
-    @Post('assignSubject')
-    assignSubject(@Body() dto: AddSubjectAssignmentDto, @Request() req) {
-        return this.subjectService.assignSubject(
-            dto,
-            CurrentUser.getProgramId(req),
-            CurrentUser.getActiveYear(req),
-        );
+    //TODO: validate the program id
+    @Post('assignSubject/:programId')
+    assignSubject(
+        @Body() dto: AddSubjectAssignmentDto,
+        @Request() req,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.subjectService.assignSubject(dto, programId);
     }
 
     @Patch('assignSubject/:id')
@@ -83,7 +84,8 @@ export class SubjectController {
     ) {
         return this.subjectService.getAssignedSubject(
             classId,
-            CurrentUser.getActiveYear(req),
+            //TODO: User different security mechanism
+            CurrentUser.getActiveYear(req, false),
         );
     }
 

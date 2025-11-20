@@ -39,7 +39,7 @@ export class StudentController {
         return this.studentService.CreateStudentDetailed(
             id,
             dto,
-            CurrentUser.getActiveYear(req),
+            CurrentUser.getActiveYear(req, false),
         );
     }
 
@@ -111,7 +111,7 @@ export class StudentController {
     ) {
         return this.studentService.findStudents(
             id,
-            CurrentUser.getActiveYear(req),
+            CurrentUser.getActiveYear(req, false),
         );
     }
 

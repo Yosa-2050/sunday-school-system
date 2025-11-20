@@ -1,11 +1,8 @@
 'use client';
 
-import { Group, Loader, Select, Tabs, Text } from '@mantine/core';
-import {
-    type CalendarYearResponse,
-    fetchCalendarYearsSchoolAdmin,
-} from 'app/[locale]/_api/admin/fetch-programs';
-import { useEffect, useState } from 'react';
+import { Tabs } from '@mantine/core';
+import { useState } from 'react';
+import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
     type GetClass,
     fetchClassesApi,
@@ -17,10 +14,9 @@ import AttendanceCreate from './component/create-attendance.tab';
 import AttendanceView from './component/view-attendance.tab';
 
 export default function AttendancePage() {
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
+    const [programId, setProgramId] = useState<string | null>(null);
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
-    const [calendarYears, setCalendarYears] = useState<CalendarYearResponse[]>(
-        [],
-    );
     const [loadingYears, setLoadingYears] = useState(true);
     const [classes, setClasses] = useState<GetClass[]>([]);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
@@ -46,59 +42,27 @@ export default function AttendancePage() {
         }
     };
 
-    // Fetch calendar years
-    useEffect(() => {
-        const getCalendarYears = async () => {
-            try {
-                setLoadingYears(true);
-                const data: CalendarYearResponse[] =
-                    await fetchCalendarYearsSchoolAdmin();
-                setCalendarYears(data);
-                const active = data.find((y) => y.isActive);
-                if (active) {
-                    setCalendarYear(active.name);
-                }
-            } finally {
-                setLoadingYears(false);
-            }
-        };
-
-        getCalendarYears();
-    }, []);
-
-    useEffect(() => {
-        const fetchClasses = async () => {
-            try {
-                const data = await fetchClassesApi();
-                setClasses(data);
-            } catch (err) {
-                // handle error
-            }
-        };
-
-        fetchClasses();
-    }, []);
+    const fetchClasses = async (calenderId: string) => {
+        setClasses([]);
+        setSelectedClass(null);
+        try {
+            const data = await fetchClassesApi(calenderId ?? '');
+            setClasses(data);
+        } catch (err) {
+            // handle error
+        }
+    };
 
     return (
         <div>
-            {/* Calendar Year */}
-            <Group mb="md">
-                <Text>Calendar Year:</Text>
-                {loadingYears ? (
-                    <Loader size="sm" />
-                ) : (
-                    <Select
-                        value={calendarYear}
-                        data={calendarYears.map((y) => ({
-                            value: y.name,
-                            label: y.name,
-                        }))}
-                        disabled
-                        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-                        onChange={() => {}}
-                    />
-                )}
-            </Group>
+            <ProgramAndCalendarSelector
+                onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setProgramId(programId);
+                    setCalendarYear(calenderYearName);
+                    setCalendarYearId(calenderYearId);
+                    fetchClasses(calenderYearId ?? '');
+                }}
+            />
             <Tabs defaultValue="create">
                 <Tabs.List>
                     <Tabs.Tab value="create">Create Attendance</Tabs.Tab>
@@ -108,6 +72,7 @@ export default function AttendancePage() {
 
                 <Tabs.Panel value="create" pt="md">
                     <AttendanceCreate
+                        programId={programId}
                         classes={classes}
                         selectedClass={selectedClass}
                         setSelectedClass={setSelectedClass}

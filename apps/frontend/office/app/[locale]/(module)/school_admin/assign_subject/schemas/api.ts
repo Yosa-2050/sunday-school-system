@@ -7,11 +7,15 @@ import type {
 
 export const createSubjectAssignmentApi = async (
     data: CreateSubjectAssignmentRequest,
+    programId: string,
 ) => {
-    const res: IdSuccessResponse = await fetcher('/subject/assignSubject', {
-        method: 'POST',
-        body: JSON.stringify(data),
-    });
+    const res: IdSuccessResponse = await fetcher(
+        `/subject/assignSubject/${programId}`,
+        {
+            method: 'POST',
+            body: JSON.stringify(data),
+        },
+    );
     if (!res) {
         throw new Error('Failed to create subject assignment');
     }

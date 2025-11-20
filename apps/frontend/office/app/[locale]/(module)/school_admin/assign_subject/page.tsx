@@ -1,21 +1,9 @@
 'use client';
 
-import {
-    Box,
-    Button,
-    Group,
-    Loader,
-    Menu,
-    Select,
-    Table,
-    Text,
-} from '@mantine/core';
+import { Box, Button, Group, Menu, Select, Table, Text } from '@mantine/core';
 import { IconDots, IconPencil, IconPlus, IconX } from '@tabler/icons-react';
-import {
-    type CalendarYearResponse,
-    fetchCalendarYearsSchoolAdmin,
-} from 'app/[locale]/_api/admin/fetch-programs';
 import { useCallback, useEffect, useState } from 'react';
+import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
     type GetClass,
     fetchClassesApi,
@@ -36,11 +24,9 @@ type TeacherType = keyof typeof TeacherType;
 
 // Main Page Component
 export default function SubjectAssignmentPage() {
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
+    const [programId, setProgramId] = useState<string | null>(null);
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
-    const [calendarYears, setCalendarYears] = useState<CalendarYearResponse[]>(
-        [],
-    );
-    const [loadingYears, setLoadingYears] = useState(true);
 
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
@@ -74,7 +60,7 @@ export default function SubjectAssignmentPage() {
 
     const handleDrawerCompleted = () => {
         handleDrawerClose();
-        fetchAssignment();
+        fetchAssignment(calendarYearId ?? '');
     };
 
     const getSelectedClassId = {
@@ -86,54 +72,36 @@ export default function SubjectAssignmentPage() {
                 : (selectedSection ?? selectedClass),
     };
 
-    // Fetch calendar years once
-    useEffect(() => {
-        const getCalendarYears = async () => {
-            try {
-                setLoadingYears(true);
-                const data = await fetchCalendarYearsSchoolAdmin();
-                setCalendarYears(data);
-                // auto-select active year
-                const active = data.find((y) => y.isActive);
-                if (active) {
-                    setCalendarYear(active.name);
-                }
-            } finally {
-                setLoadingYears(false);
-            }
-        };
-
-        getCalendarYears();
-    }, []);
-
-    useEffect(() => {
-        const fetchClasses = async () => {
-            try {
-                const data = await fetchClassesApi();
-                setClasses(data);
-            } catch (err) {
-                // handle error
-            }
-        };
-
-        fetchClasses();
-    }, []);
-
-    const fetchAssignment = useCallback(async () => {
-        const selected = getSelectedClassId.id;
-        if (selected) {
-            try {
-                const data = await fetchSubjectsAssignmentApi(selected);
-                setSubjAssignment(data);
-            } catch (err) {
-                // handle error
-            }
+    const fetchClasses = async (calenderId: string) => {
+        setClasses([]);
+        setSelectedClass(null);
+        setSubjAssignment([]);
+        try {
+            const data = await fetchClassesApi(calenderId ?? '');
+            setClasses(data);
+        } catch (err) {
+            // handle error
         }
-    }, [getSelectedClassId.id]);
+    };
+
+    const fetchAssignment = useCallback(
+        async (calendarYearId: string) => {
+            const selected = getSelectedClassId.id;
+            if (selected) {
+                try {
+                    const data = await fetchSubjectsAssignmentApi(selected);
+                    setSubjAssignment(data);
+                } catch (err) {
+                    // handle error
+                }
+            }
+        },
+        [getSelectedClassId.id],
+    );
 
     useEffect(() => {
-        fetchAssignment();
-    }, [fetchAssignment]);
+        fetchAssignment(calendarYearId ?? '');
+    }, [fetchAssignment, calendarYearId]);
 
     const rows = subjAssignment.map((item, index) => (
         <Table.Tr key={item.id}>
@@ -179,18 +147,14 @@ export default function SubjectAssignmentPage() {
 
     return (
         <div>
-            <Group mb="md">
-                <Text fw={500}>Calendar Year:</Text>
-                {loadingYears ? (
-                    <Loader size="sm" />
-                ) : (
-                    <Select
-                        value={calendarYear}
-                        data={[calendarYear || '']}
-                        disabled
-                    />
-                )}
-            </Group>
+            <ProgramAndCalendarSelector
+                onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setProgramId(programId);
+                    setCalendarYear(calenderYearName);
+                    setCalendarYearId(calenderYearId);
+                    fetchClasses(calenderYearId ?? '');
+                }}
+            />
 
             <Group
                 style={{
@@ -264,6 +228,8 @@ export default function SubjectAssignmentPage() {
                 section={classes
                     .find((x) => x.id === selectedClass)
                     ?.sections?.find((x) => x.id === selectedSection)}
+                programId={programId ?? ''}
+                calendarYearId={calendarYearId ?? ''}
                 mode={drawerMode}
                 assignment={editAssignment}
                 opened={drawerOpen}
