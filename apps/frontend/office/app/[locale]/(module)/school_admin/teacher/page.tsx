@@ -49,7 +49,7 @@ export default function TeacherPage() {
             try {
                 setLoadingYears(true);
                 const data: CalendarYearResponse[] =
-                    await fetchCalendarYearsSchoolAdmin();
+                    await fetchCalendarYearsSchoolAdmin('');
                 setCalendarYears(data);
                 const active = data.find((y) => y.isActive);
                 if (active) {

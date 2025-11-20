@@ -27,14 +27,24 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { showError, showSuccess } from 'utilities/notification';
 import { fetchSubjectsAssignmentApi } from '../../assign_subject/schemas/api';
-import { fetchClassesApi } from '../../classes/create/components/schema/fetchClassesDetail';
+import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
 import {
     completeAttendanceApi,
     deleteAttendanceApi,
     fetchAttendanceDetailsApi,
 } from '../schemas/api';
 
-export default function AttendanceDetailTable() {
+interface AttendanceDetailTableProps {
+    classes: GetClass[];
+    // selectedClass: string | null;
+    // setSelectedClass: (classId: string | null) => void;
+    // selectedSection: string | null;
+    // setSelectedSection: (sectionId: string | null) => void;
+}
+
+export default function AttendanceDetailTable({
+    classes,
+}: AttendanceDetailTableProps) {
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -48,12 +58,6 @@ export default function AttendanceDetailTable() {
 
     const queryClient = useQueryClient();
 
-    // Fetch classes for filters
-    const { data: classes = [] } = useQuery({
-        queryKey: ['classes'],
-        queryFn: fetchClassesApi,
-    });
-
     // Fetch sections for the selected class
     const { data: sections = [] } = useQuery({
         queryKey: ['sections', selectedClass],
@@ -61,7 +65,7 @@ export default function AttendanceDetailTable() {
             if (!selectedClass) {
                 return [];
             }
-            const classData = classes.find((c) => c.id === selectedClass);
+            const classData = classes?.find((c) => c.id === selectedClass);
             return classData?.sections || [];
         },
         enabled: !!selectedClass,

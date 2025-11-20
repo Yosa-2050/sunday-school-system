@@ -37,6 +37,7 @@ import {
 
 interface AttendanceCreateProps {
     programId: string | null;
+    yearId: string | null;
     classes: GetClass[];
     selectedClass: string | null;
     setSelectedClass: (classId: string | null) => void;
@@ -49,6 +50,7 @@ interface AttendanceCreateProps {
 
 export default function AttendanceCreate({
     programId,
+    yearId,
     classes,
     selectedClass,
     setSelectedClass,
@@ -349,6 +351,7 @@ export default function AttendanceCreate({
                 <QRScanner
                     onAttendanceRecorded={handleAttendanceRecorded}
                     disable={disableButtons}
+                    yearId={yearId ?? ''}
                 />
             </Group>
 

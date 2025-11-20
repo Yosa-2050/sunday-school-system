@@ -72,6 +72,7 @@ export default function AttendancePage() {
 
                 <Tabs.Panel value="create" pt="md">
                     <AttendanceCreate
+                        yearId={calendarYearId}
                         programId={programId}
                         classes={classes}
                         selectedClass={selectedClass}
@@ -95,7 +96,7 @@ export default function AttendancePage() {
                 </Tabs.Panel>
 
                 <Tabs.Panel value="detail" pt="md">
-                    <AttendanceDetailTable />
+                    <AttendanceDetailTable classes={classes ?? []} />
                 </Tabs.Panel>
             </Tabs>
         </div>

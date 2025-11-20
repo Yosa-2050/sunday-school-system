@@ -27,11 +27,13 @@ import QRScannerModal from './QrScanModal';
 interface QRScannerProps {
     onAttendanceRecorded: () => void;
     disable: boolean;
+    yearId: string;
 }
 
 export default function QRScanner({
     onAttendanceRecorded,
     disable,
+    yearId,
 }: QRScannerProps) {
     const [opened, setOpened] = useState(false);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
@@ -48,7 +50,7 @@ export default function QRScanner({
         GetClass[]
     >({
         queryKey: ['classes'],
-        queryFn: fetchClassesApi,
+        queryFn: () => fetchClassesApi(yearId),
     });
 
     // Get the selected class object
