@@ -20,6 +20,7 @@ import { getResultViewApi } from '../schema/api';
 import type { ResultViewResponse } from '../schema/type';
 
 interface ResultViewProps {
+    programId: string | null;
     classes: GetClass[];
     selectedClass: string | null;
     setSelectedClass: (classId: string | null) => void;
@@ -28,6 +29,7 @@ interface ResultViewProps {
 }
 
 export default function ResultView({
+    programId,
     classes,
     selectedClass,
     setSelectedClass,
