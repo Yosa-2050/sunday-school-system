@@ -31,7 +31,8 @@
         "locations": "Locations",
         "skills": "Skills",
         "categories": "Categories",
-        "organization": "organization"
+        "organization": "organization",
+        "homeroom": "Home Room Teacher"
     },
     "header": {
         "title": "Admin Dashboard",

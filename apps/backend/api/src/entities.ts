@@ -14,6 +14,7 @@ import { Qualification } from './education/entities/qualification.entity';
 import { Skills } from './education/entities/skills.entity';
 import { CalendarYear } from './lms/entities/calendar-year.entity';
 import { Classes } from './lms/entities/classes.entity';
+import { HomeroomAssignment } from './lms/entities/home-room.entity';
 import { ProgramUser } from './lms/entities/program-users.entity';
 import { Program } from './lms/entities/program.entity';
 import { RootClass } from './lms/entities/root-class.entity';
@@ -80,4 +81,5 @@ export const AppEntities = [
     Test,
     Result,
     OrganizationMembers,
+    HomeroomAssignment,
 ];

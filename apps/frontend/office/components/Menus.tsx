@@ -157,6 +157,12 @@ export const Menus = (): MenuTree[] => {
                     link: '/school_admin/teacher',
                     role: 'school_admin',
                 },
+                {
+                    label: t('homeroom'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/home_room_teacher',
+                    role: 'school_admin',
+                },
             ],
         },
 

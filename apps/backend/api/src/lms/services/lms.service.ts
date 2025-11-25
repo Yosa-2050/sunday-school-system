@@ -275,4 +275,8 @@ export class LmsService {
         )?.id;
         return userDetails;
     }
+
+    GetUserByIdOrThrow(memberId: string) {
+        return this.programUserRepo.findOneBy({ id: memberId });
+    }
 }
