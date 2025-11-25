@@ -24,7 +24,7 @@ export class HomeRoomService {
         const classes = await this.classService.findOne(dto.classId);
         const member = await this.lmsService.GetUserByIdOrThrow(dto.memberId);
         homeRoom.class = classes;
-        homeRoom.member = member;
+        homeRoom.programUser = member;
         return this.homeRoomRepo.save(homeRoom);
     }
 
@@ -37,8 +37,13 @@ export class HomeRoomService {
             },
             relations: {
                 class: true,
+                programUser: {
+                    profile: true,
+                },
             },
         });
+
+        return home;
     }
 
     UpdateHomeRoom(dto: HomeRoomAssignmentDto) {

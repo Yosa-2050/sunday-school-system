@@ -1,22 +1,25 @@
 'use client';
 
 import { Box, Button, Group, Select, Text } from '@mantine/core';
-import type { Users } from 'app/[locale]/_api/users/fetch-user';
+import { notifications } from '@mantine/notifications';
+import type { ProgramUser } from 'app/[locale]/_api/users/fetch-user';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { showSuccess } from 'utilities/notification';
 import {
     type GetClass,
     fetchClassesApi,
 } from '../../classes/create/components/schema/fetchClassesDetail';
-import { getUsers } from '../schema/api';
+import { CreateHomeRoomApi, getUsers } from '../schema/api';
+import type { CreateHomeRoom } from '../schema/type';
 
 export default function HomeRoomAssignPage() {
     const [classId, setClassId] = useState<string | null>(null);
-    const [teacherId, setTeacherId] = useState<string | null>(null);
+    const [programUserId, setProgramUserId] = useState<string | null>(null);
     const [homeroomType, setHomeroomType] = useState<string | null>(null);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
     const [classes, setClasses] = useState<GetClass[]>([]);
-    const [members, setMembers] = useState<Users[]>([]);
+    const [programUser, setMembers] = useState<ProgramUser[]>([]);
 
     const router = useRouter();
     const params = useSearchParams();
@@ -58,6 +61,29 @@ export default function HomeRoomAssignPage() {
         }
     }, [programId]);
 
+    const handleAssign = async () => {
+        // biome-ignore lint/style/useBlockStatements: <explanation>
+        if (!(selectedClass && programUserId)) return;
+
+        const body: CreateHomeRoom = {
+            classId: selectedClass,
+            memberId: programUserId,
+            type: homeroomType,
+        };
+
+        try {
+            const res = await CreateHomeRoomApi(body);
+            showSuccess('Student created successfully!');
+            router.push('/school_admin/home_room_teacher');
+        } catch (err) {
+            notifications.show({
+                title: 'Error',
+                message: 'Failed to create student',
+                color: 'red',
+            });
+        }
+    };
+
     return (
         <Box p="md">
             <Text fw={600} size="lg" mb="md">
@@ -78,20 +104,16 @@ export default function HomeRoomAssignPage() {
                 }}
             />
 
-            {/* Teacher Selector */}
+            {/* Program User Selector */}
             <Select
-                label="Teacher"
-                placeholder="Select teacher"
-                // data={[
-                //      { value: "1", label: "Teacher 1" },
-                //     { value: "2", label: "Teacher 2" },
-                // ]}
-                data={members.map((cls) => ({
-                    value: cls.id,
-                    label: cls.firstName,
+                label="Member"
+                placeholder="Select member"
+                data={programUser.map((user) => ({
+                    value: user.id,
+                    label: user.member?.profile?.firstName,
                 }))}
-                value={teacherId}
-                onChange={setTeacherId}
+                value={programUserId}
+                onChange={setProgramUserId}
                 mt="md"
             />
 
@@ -99,8 +121,8 @@ export default function HomeRoomAssignPage() {
             <Select
                 label="Homeroom Type"
                 data={[
-                    { value: 'HEAD_TEACHER', label: 'Head Teacher' },
-                    { value: 'ASSISTANT_TEACHER', label: 'Assistant Teacher' },
+                    { value: 'Main', label: 'Main' },
+                    { value: 'Sub', label: 'Sub' },
                 ]}
                 value={homeroomType}
                 onChange={setHomeroomType}
@@ -117,7 +139,12 @@ export default function HomeRoomAssignPage() {
                 >
                     Cancel
                 </Button>
-                <Button>Assign Homeroom</Button>
+                <Button
+                    onClick={handleAssign}
+                    disabled={!(selectedClass && programUserId)}
+                >
+                    Assign Homeroom
+                </Button>
             </Group>
         </Box>
     );

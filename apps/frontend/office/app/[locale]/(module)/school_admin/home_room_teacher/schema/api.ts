@@ -1,5 +1,5 @@
 import { fetcher } from '@shega/shared';
-import type { Users } from 'app/[locale]/_api/users/fetch-user';
+import type { ProgramUser } from 'app/[locale]/_api/users/fetch-user';
 import type {
     CreateHomeRoom,
     HomeroomAssignment,
@@ -8,8 +8,8 @@ import type {
 
 export const CreateHomeRoomApi = async (
     body: CreateHomeRoom,
-): Promise<HomeroomAssignment> => {
-    const response: HomeroomAssignment = await fetcher('/home-room', {
+): Promise<ProgramUser[]> => {
+    const response: ProgramUser[] = await fetcher('/home-room', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -27,8 +27,8 @@ export const findClassesByCalendarId = async (
     return response;
 };
 
-export const getUsers = async (programId: string): Promise<Users[]> => {
-    const response: Users[] = await fetcher(`/lms/users/${programId}`);
+export const getUsers = async (programId: string): Promise<ProgramUser[]> => {
+    const response: ProgramUser[] = await fetcher(`/lms/users/${programId}`);
     return response;
 };
 

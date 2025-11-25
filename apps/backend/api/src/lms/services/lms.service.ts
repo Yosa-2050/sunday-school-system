@@ -193,9 +193,7 @@ export class LmsService {
             program: { id: programId },
         });
         if (programUsers && programUsers.length > 0) {
-            return programUsers.map((x) => {
-                return x.member;
-            });
+            return programUsers;
         }
         return null;
     }
@@ -276,7 +274,11 @@ export class LmsService {
         return userDetails;
     }
 
-    GetUserByIdOrThrow(memberId: string) {
-        return this.programUserRepo.findOneBy({ id: memberId });
+    async GetUserByIdOrThrow(memberId: string) {
+        const result = await this.programUserRepo.findOneBy({ id: memberId });
+        if (result) {
+            return result;
+        }
+        throw new EntityNotFoundException('ProgramUser');
     }
 }

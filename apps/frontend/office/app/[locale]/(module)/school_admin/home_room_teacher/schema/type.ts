@@ -1,17 +1,31 @@
 export interface HomeroomAssignment {
     id: string;
-    classId: string;
-    teacherId: string;
-    type: 'Head_Teacher' | 'Assistant_Teacher';
+    type: 'Main' | 'sub';
+
+    class: {
+        id: string;
+        name: string;
+    };
+
+    programUser: {
+        member: {
+            profile: {
+                id: string;
+                firstName: string;
+                lastName: string;
+            };
+            type: string;
+        };
+    };
 }
 
 export type CreateHomeRoom = {
     classId: string;
-    teacherId: string;
-    type: 'Head_Teacher' | 'Assistant_Teacher';
+    memberId: string;
+    type: string | null;
 };
 export interface UpadteHomeRoom {
     classId?: string;
-    teacherId?: string;
-    type?: 'Head_Teacher' | 'Assistant_Teacher';
+    memberId?: string;
+    type?: 'Main' | 'sub';
 }

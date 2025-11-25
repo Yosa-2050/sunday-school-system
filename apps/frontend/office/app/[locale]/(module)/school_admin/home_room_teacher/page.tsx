@@ -1,18 +1,12 @@
 'use client';
 
-import {
-    ActionIcon,
-    Button,
-    Group,
-    Loader,
-    Menu,
-    Table,
-    Text,
-} from '@mantine/core';
+import { ActionIcon, Button, Group, Menu, Table, Text } from '@mantine/core';
 import { IconDots, IconEdit, IconPlus, IconX } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
+import { findClassesByCalendarId } from './schema/api';
+import type { HomeroomAssignment } from './schema/type';
 
 export default function HomeRoomTeacherPage() {
     const router = useRouter();
@@ -21,42 +15,30 @@ export default function HomeRoomTeacherPage() {
     const [programId, setProgramId] = useState<string | null>(null);
     const [loadingHomeRoomTeachers, setLoadingHomeRoomTeachers] =
         useState(false);
+    const [homerooms, setHomerooms] = useState<HomeroomAssignment[]>([]);
 
-    const homerooms = [
-        {
-            id: '1',
-            class: {
-                id: 'c1',
-                name: '1A',
-            },
-            member: {
-                id: 'm1',
-                firstName: 'yooo',
-                lastName: 'jooo',
-            },
-            type: 'Head_Teacher',
-        },
-        {
-            id: '2',
-            class: {
-                id: 'c2',
-                name: '2B',
-            },
-            member: {
-                id: 'm2',
-                firstName: 'ABC',
-                lastName: '123',
-            },
-            type: 'Assistant_Teacher',
-        },
-    ];
+    const homeRooms = async () => {
+        if (!calendarYearId) {
+            return;
+        }
+        setLoadingHomeRoomTeachers(true);
+        try {
+            const data = await findClassesByCalendarId(calendarYearId);
+            setHomerooms(data);
+        } catch (err) {
+            //error
+        } finally {
+            setLoadingHomeRoomTeachers(false);
+        }
+    };
 
     const rows = homerooms.map((homeroom, index) => (
         <Table.Tr key={homeroom.id}>
             <Table.Td>{index + 1}</Table.Td>
-            <Table.Td>{homeroom.class.name}</Table.Td>
+            <Table.Td>{homeroom.class?.name}</Table.Td>
             <Table.Td>
-                {homeroom.member.firstName} {homeroom.member.lastName}
+                {homeroom.programUser?.member?.profile?.firstName}{' '}
+                {homeroom.programUser?.member?.profile?.lastName}
             </Table.Td>
             <Table.Td>{homeroom.type}</Table.Td>
             <Table.Td>
@@ -99,10 +81,7 @@ export default function HomeRoomTeacherPage() {
                     </Text>
                 )}
                 <Group>
-                    <Button
-                        variant="light"
-                        leftSection={<IconPlus size={16} />}
-                    >
+                    <Button variant="light" onClick={homeRooms}>
                         Load Assigned Teachers
                     </Button>
                     <Button
@@ -132,15 +111,15 @@ export default function HomeRoomTeacherPage() {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {loadingHomeRoomTeachers ? (
+                    {/* {loadingHomeRoomTeachers ? (
                         <Table.Tr>
                             <Table.Td colSpan={4}>
                                 <Loader size="sm" />
                             </Table.Td>
                         </Table.Tr>
-                    ) : (
-                        rows
-                    )}
+                    ) : ( */}
+                    {rows}
+                    {/* )} */}
                 </Table.Tbody>
             </Table>
         </div>

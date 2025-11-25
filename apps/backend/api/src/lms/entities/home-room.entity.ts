@@ -11,7 +11,7 @@ export class HomeroomAssignment extends BaseModel {
     class: Classes;
 
     @ManyToOne(() => ProgramUser, { eager: true })
-    member: ProgramUser;
+    programUser: ProgramUser;
 
     @Column()
     type: TeacherType;
