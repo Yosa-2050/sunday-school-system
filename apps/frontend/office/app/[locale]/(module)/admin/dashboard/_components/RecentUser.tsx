@@ -230,7 +230,10 @@ const RecentUsers = () => {
                                     {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                                     {users.map((user: Daum) => {
                                         let roleLabel = 'Job Seeker';
-                                        if (user.role === 'school_admin') {
+                                        if (
+                                            user.role === 'school_admin' ||
+                                            user.role === 'PROGRAM_ADMIN'
+                                        ) {
                                             roleLabel = 'Employer';
                                         } else if (
                                             user.role === 'ADMINISTRATOR'

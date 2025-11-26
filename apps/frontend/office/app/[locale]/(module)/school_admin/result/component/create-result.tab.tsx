@@ -21,6 +21,7 @@ import { saveResultApi } from '../schema/api';
 import type { ResultRecord, ResultRequest } from '../schema/type';
 
 interface ResultCreateProps {
+    programId: string | null;
     classes: GetClass[];
     selectedClass: string | null;
     setSelectedClass: (classId: string | null) => void;
@@ -32,6 +33,7 @@ interface ResultCreateProps {
 }
 
 export default function ResultCreate({
+    programId,
     classes,
     selectedClass,
     setSelectedClass,

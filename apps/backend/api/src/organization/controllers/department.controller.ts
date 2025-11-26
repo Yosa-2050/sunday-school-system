@@ -11,9 +11,9 @@ import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { DepartmentService } from './department.service';
+import { AddDepartmentRequestDto } from '../dto/request/add-department.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddDepartmentRequestDto } from './dto/request/add-department.request.dto';
+import { DepartmentService } from '../services/department.service';
 
 @Public()
 @Controller('department')

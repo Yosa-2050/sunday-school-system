@@ -4,7 +4,7 @@ import {
     OptionalUUID,
 } from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
-import { EmployeeType } from '@shega/organization/enums/employee-type.enum';
+import { OrganizationMemberType } from '@shega/organization/enums/employee-type.enum';
 import { NewProfileDto } from '@shega/users/dto/new-profile.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { Type } from 'class-transformer';
@@ -61,7 +61,7 @@ export class CreateOrganizationUserDto {
     email: string;
 }
 
-export class CreateOrganizationEmployeeWithOrgDto extends CreateOrganizationUserDto {
+export class CreateOrganizationMemberWithOrgDto extends CreateOrganizationUserDto {
     @ApiProperty()
     @IsString()
     organizationName: string;
@@ -94,6 +94,6 @@ export class CreateOrgEmployeeWithContactDto {
     lastName: string;
 
     @ApiProperty()
-    @OptionalEnum(EmployeeType)
-    position: EmployeeType;
+    @OptionalEnum(OrganizationMemberType)
+    position: OrganizationMemberType;
 }

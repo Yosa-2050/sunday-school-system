@@ -24,7 +24,10 @@ export default function HomePage() {
                 return;
             }
 
-            if (roles.includes('school_admin')) {
+            if (
+                roles.includes('school_admin') ||
+                roles.includes('program_admin')
+            ) {
                 router.replace(`/${locale} /school_admin/dashboard`);
                 return;
             }

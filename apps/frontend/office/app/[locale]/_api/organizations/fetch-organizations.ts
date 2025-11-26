@@ -1,4 +1,5 @@
 import { fetcher } from '@shega/shared';
+import type { Organization } from 'model/Organization';
 
 export type Users = {
     id: string;
@@ -39,6 +40,15 @@ export const fetchOrganizations = async (payload: string) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ q: payload }),
+    });
+
+    return response;
+};
+
+export const fetchOrganizationsUsingGet = async () => {
+    const response: Organization[] = await fetcher('/organization/all', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
     });
 
     return response;

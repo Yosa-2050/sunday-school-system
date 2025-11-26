@@ -23,12 +23,13 @@ import { SubjectService } from '../services/subject.service';
 export class SubjectController {
     constructor(private readonly subjectService: SubjectService) {}
 
-    @Post('root')
-    create(@Body() dto: StringRequestModel, @Request() req) {
-        return this.subjectService.create(
-            dto.text,
-            CurrentUser.getProgramId(req),
-        );
+    @Post('root/:programId')
+    create(
+        @Body() dto: StringRequestModel,
+        @Request() req,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.subjectService.create(dto.text, programId);
     }
 
     @Patch('root/:id')
@@ -44,20 +45,22 @@ export class SubjectController {
         );
     }
 
-    @Get('root')
-    findAProgramRoot(@Request() req) {
-        return this.subjectService.findAllRootSubjects(
-            CurrentUser.getProgramId(req),
-        );
+    @Get('root/:programId')
+    findAProgramRoot(
+        @Request() req,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.subjectService.findAllRootSubjects(programId);
     }
 
-    @Post('assignSubject')
-    assignSubject(@Body() dto: AddSubjectAssignmentDto, @Request() req) {
-        return this.subjectService.assignSubject(
-            dto,
-            CurrentUser.getProgramId(req),
-            CurrentUser.getActiveYear(req),
-        );
+    //TODO: validate the program id
+    @Post('assignSubject/:programId')
+    assignSubject(
+        @Body() dto: AddSubjectAssignmentDto,
+        @Request() req,
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+    ) {
+        return this.subjectService.assignSubject(dto, programId);
     }
 
     @Patch('assignSubject/:id')
@@ -81,7 +84,8 @@ export class SubjectController {
     ) {
         return this.subjectService.getAssignedSubject(
             classId,
-            CurrentUser.getActiveYear(req),
+            //TODO: User different security mechanism
+            CurrentUser.getActiveYear(req, false),
         );
     }
 

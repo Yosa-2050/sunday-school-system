@@ -53,6 +53,7 @@ export const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
                         user?.role as
                             | 'administrator'
                             | 'school_admin'
+                            | 'program_admin'
                             | 'super_admin'
                     }
                 />

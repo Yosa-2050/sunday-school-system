@@ -1,6 +1,7 @@
 'use client';
 import { Tabs, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
+import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
     type GetClass,
     fetchClassesApi,
@@ -11,6 +12,9 @@ import ResultCreate from './component/create-result.tab';
 import ResultView from './component/view-result.tab';
 
 export default function ResultPage() {
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
+    const [programId, setProgramId] = useState<string | null>(null);
+    const [calendarYear, setCalendarYear] = useState<string | null>(null);
     const [loading, setLoadingYears] = useState(true);
     const [classes, setClasses] = useState<GetClass[]>([]);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
@@ -39,17 +43,25 @@ export default function ResultPage() {
     useEffect(() => {
         const fetchClasses = async () => {
             try {
-                const data = await fetchClassesApi();
+                const data = await fetchClassesApi(calendarYearId ?? '');
                 setClasses(data);
             } catch (error) {
                 throw new Error('Failed to fetch classes');
             }
         };
         fetchClasses();
-    }, []);
+    }, [calendarYearId]);
 
     return (
         <div>
+            <ProgramAndCalendarSelector
+                onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setProgramId(programId);
+                    setCalendarYear(calenderYearName);
+                    setCalendarYearId(calenderYearId);
+                }}
+            />
+
             <Text size="xl" mb="md">
                 Result Page
             </Text>
@@ -61,6 +73,7 @@ export default function ResultPage() {
 
                 <Tabs.Panel value="create" pt="md">
                     <ResultCreate
+                        programId={programId}
                         classes={classes}
                         selectedClass={selectedClass}
                         setSelectedClass={setSelectedClass}
@@ -74,6 +87,7 @@ export default function ResultPage() {
 
                 <Tabs.Panel value="view" pt="md">
                     <ResultView
+                        programId={programId}
                         classes={classes}
                         selectedClass={selectedClass}
                         setSelectedSection={setSelectedSection}

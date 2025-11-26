@@ -44,27 +44,27 @@ import {
 } from 'shared/schema';
 // biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
+
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
+import { AddOrganizationBranchDto } from '../dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
+import { AssignMembersToOrganizationRequestDto } from '../dto/request/assign-person-to-org.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
-    CreateOrganizationEmployeeWithOrgDto,
+    CreateOrganizationMemberWithOrgDto,
     CreateOrganizationUserDto,
-} from './dto/request/create-employee.dto';
+} from '../dto/request/create-organization-member.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateOrganizationDto } from './dto/request/create-organization.dto';
+import { CreateOrganizationDto } from '../dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto';
-import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
-import { EmployeesService } from './employees.service';
-import { Branch } from './entities/branch.entity';
-import { EmployeeOrganization } from './entities/employee-organization.entity';
-import { Employee } from './entities/employee.entity';
-import { Organization } from './entities/organization.entity';
-import { EmployeeType } from './enums/employee-type.enum';
+import { UpdateOrganizationInfoDto } from '../dto/request/update-organization.dto';
+import { GetOrganizationListResponseDto } from '../dto/response/get-organization.response.dto';
+import { Branch } from '../entities/branch.entity';
+import { OrganizationMembers } from '../entities/organization-member.entity';
+import { Organization } from '../entities/organization.entity';
+import { OrganizationMemberType } from '../enums/employee-type.enum';
+import { OrganizationMemberService } from './organization-member.service';
 
 @Injectable()
 export class OrganizationService {
@@ -93,24 +93,20 @@ export class OrganizationService {
             dto.phoneNumber,
         );
 
-        const model = this.employeeRepo.create();
+        const model = this.organizationMemberRepo.create();
         model.profile = profile;
-        const employee = model;
-        const empOrg = await this.employeeOrgRepo.create();
-        empOrg.email = dto.email;
-        empOrg.employee = employee;
-        empOrg.type = dto.position;
-        empOrg.organization = organization;
+        model.type = dto.position;
+        model.organization = organization;
 
-        return await this.employeeOrgRepo.save(empOrg);
+        return await this.organizationMemberRepo.save(model);
     }
 
     async UpdateContactPerson(dto: CreateOrgEmployeeWithContactDto) {
-        const employeeOrg = await this.employeeOrgRepo.findOneBy({
+        const member = await this.organizationMemberRepo.findOneBy({
             id: dto.employeeOrgId,
         });
 
-        const profile = employeeOrg.employee.profile;
+        const profile = member.profile;
 
         const updatedProfile = this.profileService.updateProfileQDE(
             profile.id,
@@ -119,23 +115,23 @@ export class OrganizationService {
             dto.lastName,
             dto.phoneNumber,
         );
-        const updatedResult = await this.employeeOrgRepo.update(
+        const updatedResult = await this.organizationMemberRepo.update(
             { id: dto.employeeOrgId },
-            { type: dto.position, email: dto.email },
+            { type: dto.position },
         );
         return UtilityServices.EnsureUpdated(updatedResult, dto.employeeOrgId);
     }
     constructor(
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
-        @InjectRepository(EmployeeOrganization)
-        private employeeOrgRepo: Repository<EmployeeOrganization>,
-        @InjectRepository(Employee)
-        private employeeRepo: Repository<Employee>,
+
+        @InjectRepository(OrganizationMembers)
+        private organizationMemberRepo: Repository<OrganizationMembers>,
         @InjectRepository(Category)
         private categoryRepo: Repository<Category>,
         @InjectRepository(Branch) private branchRepo: Repository<Branch>,
-        @Inject(EmployeesService) private employeeService: EmployeesService,
+        @Inject(OrganizationMemberService)
+        private employeeService: OrganizationMemberService,
         @Inject(AddressService) private addressService: AddressService,
         @Inject(ProfileService) private profileService: ProfileService,
         @Inject(NotificationService)
@@ -189,8 +185,8 @@ export class OrganizationService {
             }
 
             let emailTemplate = null;
-            const employeeList = await this.findEmployee(id);
-            const profile = employeeList[0].employee.profile;
+            const employeeList = await this.findMembers(id);
+            const profile = employeeList[0].profile;
 
             if (status === ApprovalType.Approved) {
                 emailTemplate = await this.notificationService.getTemplate(
@@ -269,8 +265,12 @@ export class OrganizationService {
             applyObject.organizationDetail = false;
         }
         //primary contact person
-        const employee = await org.employee;
-        if (!employee?.find((x) => x.type === EmployeeType.ContactPerson)) {
+        const employee = await org.members;
+        if (
+            !employee?.find(
+                (x) => x.type === OrganizationMemberType.ContactPerson,
+            )
+        ) {
             applyObject.canSubmit = false;
             applyObject.contactPerson = false;
         }
@@ -502,7 +502,15 @@ export class OrganizationService {
         organization.contacts = contactDetails;
         organization.locations = location;
         organization.notes = notes;
-        organization.employee = await organization.employee;
+        organization.members = await organization.members;
+        return organization;
+    }
+
+    async findOneOrThrow(id: string) {
+        const organization = await this.organizationRepo.findOneBy({ id: id });
+        if (!organization) {
+            throw new EntityNotFoundException(typeof Organization);
+        }
         return organization;
     }
 
@@ -526,11 +534,13 @@ export class OrganizationService {
         return `This action removes a #${id} organization`;
     }
 
-    async assignEmployee(request: AssignEmployeeRequestDto) {
+    async assignEmployee(request: AssignMembersToOrganizationRequestDto) {
         const org = await this.findOne(request.organizationId);
-        const employee = await this.employeeService.findOne(request.employeeId);
-        const assignEmployee = await this.employeeOrgRepo.findOneBy({
-            employee: { id: request.employeeId },
+        const employee = await this.employeeService.findByIdOrThrow(
+            request.profileId,
+        );
+        const assignEmployee = await this.organizationMemberRepo.findOneBy({
+            profile: { id: request.profileId },
             isActive: true,
         });
         if (assignEmployee) {
@@ -546,31 +556,30 @@ export class OrganizationService {
                 throw new EntityNotFoundException('Branch');
             }
         }
-        const person = this.employeeOrgRepo.create();
+        const person = this.organizationMemberRepo.create();
         person.organization = org;
-        person.employee = employee;
         person.branch = branch;
         person.type = request.type;
 
-        return this.employeeOrgRepo.save(person);
+        return this.organizationMemberRepo.save(person);
     }
 
-    async findEmployee(id: string) {
-        return await this.employeeOrgRepo.findBy({
+    async findMembers(id: string) {
+        return await this.organizationMemberRepo.findBy({
             organization: { id },
             isActive: true,
         });
     }
 
-    findAssignedEmployeeByEmployeeId(id: string) {
-        return this.employeeOrgRepo.findOneBy({
-            employee: { id },
+    findMemberById(id: string) {
+        return this.organizationMemberRepo.findOneBy({
+            id,
             isActive: true,
         });
     }
 
     findAssignedEmployeeById(id: string) {
-        return this.employeeOrgRepo.findOneBy({ id });
+        return this.organizationMemberRepo.findOneBy({ id });
     }
 
     findBranches(orgId: string) {
@@ -584,9 +593,7 @@ export class OrganizationService {
         const employee =
             await this.employeeService.getEmployeeByProfileId(profileId);
         //assumption Employee only have one active org assignment
-        const assignEmployee = await this.findAssignedEmployeeByEmployeeId(
-            employee.id,
-        );
+        const assignEmployee = await this.findMemberById(employee.id);
         const organization = await assignEmployee?.organization;
         const branch = await assignEmployee?.branch;
         const userDetails = new UserDetails();
@@ -599,7 +606,7 @@ export class OrganizationService {
         return userDetails;
     }
 
-    async CreateEmployeeQDE(dto: CreateOrganizationEmployeeWithOrgDto) {
+    async CreateOrganizationMemberQDE(dto: CreateOrganizationMemberWithOrgDto) {
         const organization = await this.organizationRepo.findOneBy({
             name: dto.organizationName,
         });
@@ -612,7 +619,7 @@ export class OrganizationService {
         const profile = await this.profileService.createNewUserProfileQDE(
             dto.email,
             LoginBy.EMAIL,
-            UserRoleType.Administrator,
+            UserRoleType.SchoolAdmin,
             dto.firstName,
             dto.middleName,
             dto.lastName,
@@ -625,18 +632,15 @@ export class OrganizationService {
             true,
         );
 
-        const model = this.employeeRepo.create();
+        const model = this.organizationMemberRepo.create();
         model.profile = profile;
-        const employee = model;
-        const empOrg = await this.employeeOrgRepo.create();
-        empOrg.employee = employee;
-        empOrg.type = EmployeeType.Administrator;
-        empOrg.organization = await this.organizationRepo.create({
+        model.type = OrganizationMemberType.ContactPerson;
+        model.organization = await this.organizationRepo.create({
             name: dto.organizationName,
             status: ApprovalType.New,
         });
 
-        const saved = await this.employeeOrgRepo.save(empOrg);
+        const saved = await this.organizationMemberRepo.save(model);
 
         if (saved?.id) {
             await this.SendOrganizationCreatedNotification(
@@ -652,7 +656,7 @@ export class OrganizationService {
     private SendOrganizationCreatedNotification(
         dto: CreateOrganizationUserDto,
         pwdGenerated: string,
-        saved: EmployeeOrganization,
+        saved: OrganizationMembers,
     ) {
         return null;
     }
@@ -669,12 +673,12 @@ export class OrganizationService {
         //activate/deactivate users if included employees in the request
         if (isIncludeEmployeesBoolean) {
             const isUserActive = isActivateProcess;
-            const employeeList = await this.findEmployee(orgId);
+            const memberList = await this.findMembers(orgId);
             const profileIds = [];
             const users = [];
 
-            for (const employee of employeeList) {
-                profileIds.push(employee.employee.profile.id);
+            for (const member of memberList) {
+                profileIds.push(member.profile.id);
             }
 
             for (const profileId of profileIds) {

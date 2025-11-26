@@ -9,8 +9,9 @@ import { NotificationType } from '@shega/notification/enums/notification-type.en
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 import { Organization } from '@shega/organization/entities/organization.entity';
+
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationService } from '@shega/organization/organization.service';
+import { OrganizationService } from '@shega/organization/services/organization.service';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';

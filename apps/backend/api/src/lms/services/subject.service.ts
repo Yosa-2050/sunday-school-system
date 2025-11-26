@@ -14,6 +14,8 @@ import { TeacherAssignment } from '../entities/teacher-assignment.entity';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from './class.service';
 // biome-ignore lint/style/useImportType: <explanation>
+import { LmsService } from './lms.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { TeacherService } from './teacher.service';
 
 @Injectable()
@@ -27,6 +29,7 @@ export class SubjectService {
         private teacherAssignmentRepo: Repository<TeacherAssignment>,
         private classService: ClassService,
         private teacherService: TeacherService,
+        private lmsService: LmsService,
     ) {}
 
     async create(name: string, programId: string) {
@@ -143,11 +146,12 @@ export class SubjectService {
         return this.subjectAssignmentRepo.save(toUpdate);
     }
 
-    async assignSubject(
-        dto: AddSubjectAssignmentDto,
-        programId: string,
-        yearId: string,
-    ) {
+    async assignSubject(dto: AddSubjectAssignmentDto, programId: string) {
+        const year =
+            await this.lmsService.activeCalendarYearByProgramId(programId);
+        if (!year) {
+            throw new EntityNotFoundException('Active year');
+        }
         const existing = await this.subjectAssignmentRepo.findOneBy({
             class: { id: dto.classId },
             subject: { id: dto.subjectId },
@@ -156,14 +160,14 @@ export class SubjectService {
         if (existing) {
             throw new EntityAlreadyExistsException('Assigned Subject');
         }
-        const cls = await this.classService.findOne(dto.classId, yearId);
+        const cls = await this.classService.findOne(dto.classId, year.id);
         const subject = await this.findOneByProgramIdOrThrow(
             dto.subjectId,
             programId,
         );
         const teacher = await this.teacherService.findTeacherById(
             dto.teacherId,
-            yearId,
+            year.id,
         );
         if (dto.teacherId && !teacher) {
             throw new EntityNotFoundException('Teacher');
@@ -183,7 +187,7 @@ export class SubjectService {
         return this.subjectAssignmentRepo.save(subjAssignment);
     }
 
-    async getAssignedSubject(classId: string, yearId: string) {
+    async getAssignedSubject(classId: string, yearId?: string) {
         const cls = await this.classService.findOne(classId, yearId);
 
         const subjects = await cls.subjects;

@@ -19,7 +19,12 @@ export type User = {
     phoneNumber: string | null;
     profile_picture_id: string | null;
     roles: Record<string, string>; // Adjust based on the structure of roles
-    role: 'administrator' | 'school_admin' | 'super_admin' | 'mentor';
+    role:
+        | 'administrator'
+        | 'school_admin'
+        | 'super_admin'
+        | 'program_admin'
+        | 'mentor';
     organizationId: string | null;
     user: {
         id: string;

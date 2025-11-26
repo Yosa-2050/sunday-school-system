@@ -2,6 +2,7 @@
 
 import { Group, Tabs, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
+import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
     type GetClass,
     fetchClassesApi,
@@ -12,6 +13,9 @@ import StudentDetailPage from './component/send-to-all.tab';
 import NotificationSendToClass from './component/send-to-class.tab';
 
 export default function AttendancePage() {
+    const [programId, setProgramId] = useState<string | null>(null);
+    const [calendarYear, setCalendarYear] = useState<string | null>(null);
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
     const [classes, setClasses] = useState<GetClass[]>([]);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
@@ -22,8 +26,6 @@ export default function AttendancePage() {
         if (!selectedClass) {
             return;
         }
-
-        setStudents([]);
         try {
             setLoadingStudents(true);
             const data = await fetchStudentsApi(
@@ -36,9 +38,14 @@ export default function AttendancePage() {
     };
 
     useEffect(() => {
+        setStudents([]);
+        setClasses([]);
+        if (!programId) {
+            return;
+        }
         const fetchClasses = async () => {
             try {
-                const data = await fetchClassesApi();
+                const data = await fetchClassesApi(calendarYearId ?? '');
                 setClasses(data);
             } catch (err) {
                 // handle error (optional)
@@ -46,10 +53,21 @@ export default function AttendancePage() {
         };
 
         fetchClasses();
-    }, []);
+    }, [calendarYearId, programId]);
 
     return (
         <div>
+            <ProgramAndCalendarSelector
+                onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setProgramId(programId);
+                    setCalendarYear(calenderYearName);
+                    setCalendarYearId(calenderYearId);
+                    setSelectedClass(null);
+                    setSelectedSection(null);
+                    setClasses([]);
+                    setStudents([]);
+                }}
+            />
             <Group mb="md">
                 <Text>Send Notifications To:</Text>
             </Group>

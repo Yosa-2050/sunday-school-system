@@ -5,25 +5,23 @@ import { Category } from '@shega/education/entities/category.entity';
 import { AddressModule } from '@shega/location/address.module';
 import { NotificationModule } from '@shega/notification/notification.module';
 import { UsersModule } from '@shega/users/users.module';
-import { DepartmentController } from './department.controller';
-import { DepartmentService } from './department.service';
-import { EmployeesController } from './employees.controller';
-import { EmployeesService } from './employees.service';
+import { DepartmentController } from './controllers/department.controller';
+import { OrganizationMemberController } from './controllers/organization-member.controller';
+import { OrganizationController } from './controllers/organization.controller';
 import { Branch } from './entities/branch.entity';
 import { Department } from './entities/department.entity';
-import { EmployeeOrganization } from './entities/employee-organization.entity';
-import { Employee } from './entities/employee.entity';
+import { OrganizationMembers } from './entities/organization-member.entity';
 import { Organization } from './entities/organization.entity';
-import { OrganizationController } from './organization.controller';
-import { OrganizationService } from './organization.service';
+import { DepartmentService } from './services/department.service';
+import { OrganizationMemberService } from './services/organization-member.service';
+import { OrganizationService } from './services/organization.service';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
             Organization,
             Branch,
-            Employee,
-            EmployeeOrganization,
+            OrganizationMembers,
             Category,
             Department,
         ]),
@@ -34,10 +32,14 @@ import { OrganizationService } from './organization.service';
     ],
     controllers: [
         OrganizationController,
-        EmployeesController,
+        OrganizationMemberController,
         DepartmentController,
     ],
-    providers: [OrganizationService, EmployeesService, DepartmentService],
-    exports: [OrganizationService, EmployeesService],
+    providers: [
+        OrganizationService,
+        OrganizationMemberService,
+        DepartmentService,
+    ],
+    exports: [OrganizationService, OrganizationMemberService],
 })
 export class OrganizationModule {}

@@ -1,15 +1,24 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { OrganizationMembers } from '@shega/organization/entities/organization-member.entity';
 import { Profile } from '@shega/users/entities/profile.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Entity, ManyToOne } from 'typeorm';
 import { Program } from './program.entity';
-
 @Entity()
 export class ProgramUser extends BaseModel {
-    @Column({ nullable: true })
-    id_number: string;
-
-    @ManyToOne((type) => Profile, { eager: true, cascade: true })
+    //TO BE removed after migration
+    @ManyToOne((type) => Profile, {
+        eager: true,
+        cascade: true,
+        nullable: true,
+    })
     profile: Profile;
+
+    @ManyToOne(() => OrganizationMembers, {
+        eager: true,
+        cascade: true,
+        nullable: true,
+    })
+    member: OrganizationMembers;
 
     @ManyToOne((type) => Program, { eager: true, cascade: true })
     program: Program;

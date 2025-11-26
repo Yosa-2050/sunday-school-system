@@ -38,8 +38,8 @@ export class AttendanceController {
         return this.attendanceService.create(
             createAttendanceDto,
             classId,
-            CurrentUser.getActiveYear(user),
-            CurrentUser.getProgramId(user),
+            CurrentUser.getActiveYear(user, false),
+            CurrentUser.getProgramId(user, false),
         );
     }
 

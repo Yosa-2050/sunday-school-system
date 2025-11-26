@@ -23,8 +23,8 @@ export type GetRootClass = {
     id: string;
     name: string;
 };
-export const createClass = async (data: CreateClass) => {
-    const res: IdSuccessResponse = await fetcher('/class/main', {
+export const createClass = async (data: CreateClass, calendarId: string) => {
+    const res: IdSuccessResponse = await fetcher(`/class/main/${calendarId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -35,11 +35,16 @@ export const createClass = async (data: CreateClass) => {
     return res;
 };
 
-export const fetchClassesApi = async (): Promise<GetClass[]> => {
-    const response: GetClass[] = await fetcher('/class/main', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    });
+export const fetchClassesApi = async (
+    calendarYearId: string,
+): Promise<GetClass[]> => {
+    const response: GetClass[] = await fetcher(
+        `/class/main/${calendarYearId}`,
+        {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        },
+    );
 
     return response;
 };

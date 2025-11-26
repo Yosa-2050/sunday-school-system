@@ -39,22 +39,22 @@ import { Response } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AddOrganizationBranchDto } from './dto/request/add-branch.dto';
+import { AddOrganizationBranchDto } from '../dto/request/add-branch.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { AssignEmployeeRequestDto } from './dto/request/assign-security-person.request.dto';
+import { AssignMembersToOrganizationRequestDto } from '../dto/request/assign-person-to-org.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
-    CreateOrganizationEmployeeWithOrgDto,
-} from './dto/request/create-employee.dto';
+    CreateOrganizationMemberWithOrgDto,
+} from '../dto/request/create-organization-member.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateOrganizationDto } from './dto/request/create-organization.dto';
+import { CreateOrganizationDto } from '../dto/request/create-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateOrganizationInfoDto } from './dto/request/update-organization.dto';
+import { UpdateOrganizationInfoDto } from '../dto/request/update-organization.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { GetOrganizationListResponseDto } from './dto/response/get-organization.response.dto';
+import { GetOrganizationListResponseDto } from '../dto/response/get-organization.response.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationService } from './organization.service';
+import { OrganizationService } from '../services/organization.service';
 
 @Controller('organization')
 export class OrganizationController {
@@ -64,8 +64,8 @@ export class OrganizationController {
     ) {}
 
     @Post('createEmployee')
-    createEmployee(@Body() dto: CreateOrganizationEmployeeWithOrgDto) {
-        return this.organizationService.CreateEmployeeQDE(dto);
+    createEmployee(@Body() dto: CreateOrganizationMemberWithOrgDto) {
+        return this.organizationService.CreateOrganizationMemberQDE(dto);
     }
 
     @Patch('submit')
@@ -80,6 +80,11 @@ export class OrganizationController {
         return this.organizationService.CheckOrgCanBeSubmitted(
             CurrentUser.getOrganizationId(req),
         );
+    }
+
+    @Get('all')
+    getAll(@Request() req) {
+        return this.organizationService.findAll();
     }
 
     @Roles(UserRoleType.SuperAdmin)
@@ -131,7 +136,7 @@ export class OrganizationController {
     }
 
     @Post('/assignEmployee')
-    assignEmployee(@Body() request: AssignEmployeeRequestDto) {
+    assignEmployee(@Body() request: AssignMembersToOrganizationRequestDto) {
         return this.organizationService.assignEmployee(request);
     }
 
@@ -166,7 +171,7 @@ export class OrganizationController {
 
     @Get('/listEmployee/:organizationId')
     findAllEmployee(@Param('organizationId') id: string) {
-        return this.organizationService.findEmployee(id);
+        return this.organizationService.findMembers(id);
     }
 
     @Get('/listBranches/:organizationId')

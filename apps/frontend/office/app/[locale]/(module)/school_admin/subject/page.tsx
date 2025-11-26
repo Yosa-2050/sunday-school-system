@@ -1,30 +1,18 @@
 'use client';
 
-import {
-    Button,
-    Group,
-    Loader,
-    Menu,
-    Select,
-    Table,
-    Text,
-} from '@mantine/core';
+import { Button, Group, Loader, Menu, Table, Text } from '@mantine/core';
 import { IconDots, IconPencil, IconX } from '@tabler/icons-react';
-import {
-    type CalendarYearResponse,
-    fetchCalendarYearsSchoolAdmin,
-} from 'app/[locale]/_api/admin/fetch-programs';
-import { useCallback, useEffect, useState } from 'react';
+
+import { useState } from 'react';
+import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import { SubjectDrawer } from './component/SubjectDrawer';
 import { fetchSubjectsApi } from './schemas/api';
 import type { GetSubjectResponse } from './schemas/type';
 
 export default function SubjectPage() {
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
+    const [programId, setProgramId] = useState<string | null>(null);
     const [calendarYear, setCalendarYear] = useState<string | null>(null);
-    const [calendarYears, setCalendarYears] = useState<CalendarYearResponse[]>(
-        [],
-    );
-    const [loadingYears, setLoadingYears] = useState(true);
 
     const [subjects, setSubjects] = useState<GetSubjectResponse[]>([]);
     const [loadingSubject, setLoadingSubject] = useState(false);
@@ -34,44 +22,16 @@ export default function SubjectPage() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
 
-    // Fetch calendar years once
-    useEffect(() => {
-        const getCalendarYears = async () => {
-            try {
-                setLoadingYears(true);
-                const data = await fetchCalendarYearsSchoolAdmin();
-                setCalendarYears(data);
-                // auto-select active year
-                const active = data.find((y) => y.isActive);
-                if (active) {
-                    setCalendarYear(active.name);
-                }
-            } finally {
-                setLoadingYears(false);
-            }
-        };
-
-        getCalendarYears();
-    }, []);
-
     // Stable fetchSubjects function
-    const fetchSubjects = useCallback(async () => {
+    const fetchSubjects = async (programId: string) => {
         try {
             setLoadingSubject(true);
-            const data = await fetchSubjectsApi();
+            const data = await fetchSubjectsApi(programId);
             setSubjects(data);
         } finally {
             setLoadingSubject(false);
         }
-    }, []);
-
-    // Fetch subjects when calendar year changes
-    useEffect(() => {
-        if (!calendarYear) {
-            return;
-        }
-        fetchSubjects();
-    }, [calendarYear, fetchSubjects]);
+    };
 
     const handleEditClick = (subject: GetSubjectResponse) => {
         setEditSubject(subject);
@@ -91,7 +51,7 @@ export default function SubjectPage() {
     };
 
     const handleDrawerCompleted = () => {
-        fetchSubjects();
+        fetchSubjects(programId ?? '');
         handleDrawerClose();
     };
 
@@ -132,18 +92,14 @@ export default function SubjectPage() {
 
     return (
         <div>
-            <Group mb="md">
-                <Text fw={500}>Calendar Year:</Text>
-                {loadingYears ? (
-                    <Loader size="sm" />
-                ) : (
-                    <Select
-                        value={calendarYear}
-                        data={[calendarYear || '']}
-                        disabled
-                    />
-                )}
-            </Group>
+            <ProgramAndCalendarSelector
+                onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setProgramId(programId);
+                    setCalendarYear(calenderYearName);
+                    setCalendarYearId(calenderYearId);
+                    fetchSubjects(programId || '');
+                }}
+            />
 
             <Group
                 style={{
@@ -159,6 +115,7 @@ export default function SubjectPage() {
 
             {/* Subject Drawer */}
             <SubjectDrawer
+                programId={programId ?? ''}
                 mode={drawerMode}
                 subject={editSubject}
                 opened={drawerOpen}

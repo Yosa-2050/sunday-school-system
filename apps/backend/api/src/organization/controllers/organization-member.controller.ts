@@ -1,14 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 // biome-ignore lint/style/useImportType: <explanation>
-import { UpdateEmployeeDto } from './dto/request/update-employee.dto';
+import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { EmployeesService } from './employees.service';
+import { OrganizationMemberService } from '../services/organization-member.service';
 
-@ApiTags('employees')
-@Controller('employees')
-export class EmployeesController {
-    constructor(private readonly employeesService: EmployeesService) {}
+@ApiTags('organization-member')
+@Controller('organization-member')
+export class OrganizationMemberController {
+    constructor(private readonly employeesService: OrganizationMemberService) {}
 
     @Get('me')
     getMyInformation() {
@@ -22,7 +22,7 @@ export class EmployeesController {
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.employeesService.findOne(id);
+        return this.employeesService.findByIdOrThrow(id);
     }
 
     @Patch(':id')

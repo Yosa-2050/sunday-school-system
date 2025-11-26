@@ -22,6 +22,7 @@ import { ClassService } from '../services/class.service';
 export class ClassController {
     constructor(private readonly classService: ClassService) {}
 
+    @Roles(UserRoleType.SuperAdmin)
     @Post('root/:programId')
     create(
         @Body() dto: StringRequestModel,
@@ -30,10 +31,26 @@ export class ClassController {
         return this.classService.createRoot(dto.text, programId);
     }
 
-    @Roles(UserRoleType.SuperAdmin, UserRoleType.Administrator)
+    @Roles(
+        UserRoleType.SuperAdmin,
+        UserRoleType.Administrator,
+        UserRoleType.SchoolAdmin,
+    )
     @Get('root/:programId')
     findAllRoot(@Param('programId', new ParseUUIDPipe()) programId: string) {
         return this.classService.findAllRootClass(programId);
+    }
+
+    @Roles(UserRoleType.SchoolAdmin)
+    @Get('rootForOrg/:programId')
+    findAllRootForOrg(
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+        @Request() req,
+    ) {
+        return this.classService.findAllRootClass(
+            programId,
+            CurrentUser.getOrganizationId(req, true),
+        );
     }
 
     @Roles(UserRoleType.SchoolAdmin)
@@ -41,19 +58,33 @@ export class ClassController {
     findAProgramRoot(@Request() req) {
         return this.classService.findAllRootClass(
             CurrentUser.getProgramId(req),
+            CurrentUser.getOrganizationId(req),
         );
     }
 
     @Roles(UserRoleType.SchoolAdmin)
-    @Post('main')
-    addNew(@Body() dto: ClassRequestDto, @Request() req) {
-        return this.classService.create(dto, CurrentUser.getActiveYear(req));
+    @Post('main/:calendarYearId')
+    addNew(
+        @Body() dto: ClassRequestDto,
+        @Param('calendarYearId', new ParseUUIDPipe()) calendarYearId: string,
+        @Request() req,
+    ) {
+        return this.classService.create(dto, calendarYearId);
     }
 
+    // @Roles(UserRoleType.SchoolAdmin)
+    // @Get('main')
+    // findAll(@Request() req) {
+    //     return this.classService.findAll(CurrentUser.getActiveYear(req));
+    // }
+
     @Roles(UserRoleType.SchoolAdmin)
-    @Get('main')
-    findAll(@Request() req) {
-        return this.classService.findAll(CurrentUser.getActiveYear(req));
+    @Get('main/:calendarYearId')
+    findAll(
+        @Request() req,
+        @Param('calendarYearId', new ParseUUIDPipe()) calendarYearId: string,
+    ) {
+        return this.classService.findAll(calendarYearId);
     }
 
     @Roles(UserRoleType.SchoolAdmin)
@@ -66,11 +97,6 @@ export class ClassController {
     findSections(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.classService.findSections(id);
     }
-
-    // @Patch(':id')
-    // update(@Param('id') id: string, @Body() updateLmDto: UpdateLmDto) {
-    //   return this.classService.update(+id, updateLmDto);
-    // }
 
     @Delete(':id')
     remove(@Param('id', new ParseUUIDPipe()) id: string) {

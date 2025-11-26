@@ -8,26 +8,26 @@ import {
     Card,
     Center,
     Group,
-    LoadingOverlay,
     Paper,
+    Select,
     Stack,
     Table,
     TableScrollContainer,
     Text,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import {
-    PER_PAGE,
-    entityParamSchema,
-    entityParamSerializer,
-} from '@shega/shared';
-import { EntitySearch } from '@shega/ui';
+import { useAuth } from '@shega/ui';
 import { IconEye } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchPrograms } from 'app/[locale]/_api/admin/fetch-programs';
+import {
+    type ProgramResponse,
+    fetchPrograms,
+    fetchProgramsForOrg,
+} from 'app/[locale]/_api/admin/fetch-programs';
+import { fetchOrganizationsUsingGet } from 'app/[locale]/_api/organizations/fetch-organizations';
+import type { Organization } from 'model/Organization';
 // import parse from 'html-react-parser';
 import { useTranslations } from 'next-intl';
-import { parseAsJson, useQueryState } from 'nuqs';
+import { useEffect, useState } from 'react';
 import { CreateProgramDrawer } from './_components/create-program.drawer';
 
 const programList = () => {
@@ -35,44 +35,96 @@ const programList = () => {
     const t = useTranslations('programsPage');
     const isMobile = useMediaQuery('(max-width: 768px)');
 
-    const [entityParams] = useQueryState(
-        'programs',
-        parseAsJson(entityParamSchema.parse).withDefault({
-            p: 1,
-            pp: PER_PAGE,
-            o: [{ f: 'createdAt', d: 'desc' }],
-        }),
-    );
+    const [selectedOrganization, setSelectedOrganization] = useState<
+        string | null
+    >(null);
+    const [organization, setOrganization] = useState<Organization[]>([]);
+    const [programs, setProgram] = useState<ProgramResponse[]>([]);
 
-    const { data, isLoading, error } = useQuery({
-        queryKey: ['programs', entityParamSerializer(entityParams)],
-        queryFn: () => fetchPrograms(),
-    });
+    const { user } = useAuth();
 
-    const programs = data || [];
+    useEffect(() => {
+        if (user?.role === 'super_admin') {
+            const fetchOrganization = async () => {
+                try {
+                    const data = await fetchOrganizationsUsingGet();
+                    setOrganization(data);
+                } catch (err) {
+                    // handle error
+                }
+            };
 
-    if (isLoading) {
-        return <LoadingOverlay visible={true} h="100vh" />;
-    }
+            fetchOrganization();
+        }
+    }, [user]);
 
-    if (error) {
-        return <Text color="red">Error loading Programs</Text>;
-    }
+    useEffect(() => {
+        handleFetchPrograms('');
+    }, []);
+
+    const handleFetchPrograms = async (org: string | null) => {
+        if (user?.role === 'super_admin') {
+            if (!org) {
+                return;
+            }
+
+            setProgram([]);
+
+            try {
+                //setLoadingStudents(true);
+                const data = await fetchPrograms(org);
+                setProgram(data);
+            } finally {
+                //setLoadingStudents(false);
+            }
+        } else {
+            try {
+                //setLoadingStudents(true);
+                const data = await fetchProgramsForOrg();
+                setProgram(data);
+            } finally {
+                //setLoadingStudents(false);
+            }
+        }
+    };
+
+    // if (isLoading) {
+    //     return <LoadingOverlay visible={true} h="100vh" />;
+    // }
+
+    // if (error) {
+    //     return <Text color="red">Error loading Programs</Text>;
+    // }
 
     return (
         <PageContainer className="flex flex-col gap-2.5">
             <Paper shadow="xs" p="sm" style={{ borderRadius: '10px' }}>
                 <PageTitle>List of Programs</PageTitle>
 
-                <Group justify="space-between" className="my-4">
-                    <EntitySearch
-                        entity="programs"
-                        placeholder={t('searchPlaceholder')}
-                        className="!w-[300px]"
-                    />
-
-                    <CreateProgramDrawer />
-                </Group>
+                {user?.role === 'super_admin' ? (
+                    <Group justify="space-between" className="my-4">
+                        <Select
+                            placeholder="Select Organization"
+                            value={selectedOrganization}
+                            onChange={(val) => {
+                                setSelectedOrganization(val);
+                                handleFetchPrograms(val);
+                            }}
+                            data={organization.map((c) => ({
+                                value: c.id,
+                                label: c.name,
+                            }))}
+                        />
+                        <CreateProgramDrawer
+                            organizationId={selectedOrganization}
+                            onClose={() => {
+                                handleFetchPrograms(selectedOrganization);
+                            }}
+                        />
+                    </Group>
+                ) : (
+                    <></>
+                )}
             </Paper>
             <Paper shadow="xs" p="lg" style={{ borderRadius: '10px' }}>
                 {programs.length === 0 ? (

@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { showSuccess } from 'utilities/notification';
 import { createStudentApi, searchProfilesApi } from '../schemas/api';
@@ -28,10 +28,12 @@ import type {
 
 export default function CreateStudentPage() {
     const router = useRouter();
-    const params = useParams();
-    const searchParams = useSearchParams();
+    const params = useSearchParams();
+    //const searchParams = useSearchParams();
     //const classId = params?.classId? '' as string : '';
-    const classId = '353dff16-278d-4704-8b81-50c48f208dab';
+    // const classId = '353dff16-278d-4704-8b81-50c48f208dab';
+
+    const classId = params?.get('class');
 
     const [formData, setFormData] = useState<CreateStudentRequest>({
         firstName: '',

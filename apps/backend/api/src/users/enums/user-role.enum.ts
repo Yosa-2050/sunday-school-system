@@ -3,6 +3,7 @@ export enum UserRoleType {
     Administrator = 'ADMINISTRATOR',
     Student = 'STUDENT',
     SchoolAdmin = 'SCHOOL_ADMIN',
+    ProgramAdmin = 'PROGRAM_ADMIN',
     Teacher = 'Teacher',
 }
 export function validateEmployeeRole(value: string): boolean {

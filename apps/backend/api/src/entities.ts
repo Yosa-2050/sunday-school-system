@@ -14,6 +14,7 @@ import { Qualification } from './education/entities/qualification.entity';
 import { Skills } from './education/entities/skills.entity';
 import { CalendarYear } from './lms/entities/calendar-year.entity';
 import { Classes } from './lms/entities/classes.entity';
+import { HomeroomAssignment } from './lms/entities/home-room.entity';
 import { ProgramUser } from './lms/entities/program-users.entity';
 import { Program } from './lms/entities/program.entity';
 import { RootClass } from './lms/entities/root-class.entity';
@@ -31,8 +32,7 @@ import { Notification } from './notification/entities/notification.entity';
 import { NotificationTemplate } from './notification/entities/notificationTemplate.entity';
 import { Branch } from './organization/entities/branch.entity';
 import { Department } from './organization/entities/department.entity';
-import { EmployeeOrganization } from './organization/entities/employee-organization.entity';
-import { Employee } from './organization/entities/employee.entity';
+import { OrganizationMembers } from './organization/entities/organization-member.entity';
 import { Organization } from './organization/entities/organization.entity';
 import { Otp } from './users/entities/otp.entity';
 import { Profile } from './users/entities/profile.entity';
@@ -43,11 +43,9 @@ import { User } from './users/entities/user.entity';
 export const AppEntities = [
     Organization,
     Branch,
-    Employee,
     User,
     UserRoles,
     Profile,
-    EmployeeOrganization,
     Otp,
     Document,
     ContactDetails,
@@ -82,4 +80,6 @@ export const AppEntities = [
     Department,
     Test,
     Result,
+    OrganizationMembers,
+    HomeroomAssignment,
 ];

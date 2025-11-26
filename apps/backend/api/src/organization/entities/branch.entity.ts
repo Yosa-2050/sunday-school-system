@@ -1,6 +1,6 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { EmployeeOrganization } from './employee-organization.entity';
+import { OrganizationMembers } from './organization-member.entity';
 import { Organization } from './organization.entity';
 
 @Entity()
@@ -15,11 +15,11 @@ export class Branch extends BaseModel {
     organization: Organization;
 
     @OneToMany(
-        () => EmployeeOrganization,
-        (employee) => employee.branch,
+        () => OrganizationMembers,
+        (members) => members.branch,
         {
             lazy: true,
         },
     )
-    employee: EmployeeOrganization[];
+    members: OrganizationMembers[];
 }

@@ -524,7 +524,8 @@ const UsersPage = () => {
                                             </Link>
                                         </Table.Td>
                                         <Table.Td>
-                                            {user.role === 'school_admin'
+                                            {user.role === 'school_admin' ||
+                                            user.role === 'PROGRAM_ADMIN'
                                                 ? 'Employer'
                                                 : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                                   user.role === 'ADMINISTRATOR'

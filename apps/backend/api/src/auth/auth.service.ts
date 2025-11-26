@@ -15,7 +15,7 @@ import { NotificationType } from '@shega/notification/enums/notification-type.en
 // biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 // biome-ignore lint/style/useImportType: <explanation>
-import { OrganizationService } from '@shega/organization/organization.service';
+import { OrganizationService } from '@shega/organization/services/organization.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
@@ -84,6 +84,11 @@ export class AuthService {
                 break;
             case UserRoleType.SchoolAdmin:
                 details = await this.lmsService.getSchoolAdminDetail(
+                    user.profile.id,
+                );
+                break;
+            case UserRoleType.ProgramAdmin:
+                details = await this.lmsService.getSchoolProgramAdminDetail(
                     user.profile.id,
                 );
                 break;

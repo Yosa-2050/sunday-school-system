@@ -106,7 +106,7 @@ export const createStudentApi = async ({
     classId,
     studentData,
 }: {
-    classId: string;
+    classId?: string | null;
     studentData: CreateStudentRequest;
 }): Promise<IdSuccessResponse> => {
     const response: IdSuccessResponse = await fetcher(

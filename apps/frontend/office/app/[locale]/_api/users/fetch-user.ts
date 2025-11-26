@@ -1,5 +1,15 @@
 import { fetcher } from '@shega/shared';
 
+export type ProgramUser = {
+    id: string;
+    member: Member;
+};
+export type Member = {
+    id: string;
+    id_number: string;
+    type: string;
+    profile: Users;
+};
 export type Users = {
     id: string;
     firstName: string;
