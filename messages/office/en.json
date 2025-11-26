@@ -32,7 +32,8 @@
         "skills": "Skills",
         "categories": "Categories",
         "organization": "organization",
-        "homeroom": "Home Room Teacher"
+        "homeroom": "Home Room Teacher",
+        "memberManagement": "Members Management"
     },
     "header": {
         "title": "Admin Dashboard",
