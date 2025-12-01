@@ -74,7 +74,7 @@ export default function ProgramDetailPage() {
         isLoading: usersLoading,
         refetch: refetchUsers,
     } = useQuery({
-        queryKey: ['users', id],
+        queryKey: ['program', id, 'users'],
         queryFn: () => fetchUsers(id),
     });
 
@@ -289,7 +289,7 @@ export default function ProgramDetailPage() {
                                         {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                                         {users.map((user: any) => (
                                             <Table.Tr key={user.id}>
-                                                <Table.Td>{`${user.firstName} ${user.middleName}`}</Table.Td>
+                                                <Table.Td>{`${user.member.profile.firstName} ${user.member.profile.middleName}`}</Table.Td>
                                                 <Table.Td>
                                                     {user.email}
                                                 </Table.Td>

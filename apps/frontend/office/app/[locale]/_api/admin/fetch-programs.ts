@@ -131,7 +131,7 @@ export const createUser = async (programId: string, data: CreateUserType) => {
         body: JSON.stringify(data),
     });
     if (!res) {
-        throw new Error('Failed to create calendar year');
+        throw new Error('Failed to create program year');
     }
     return res;
 };
