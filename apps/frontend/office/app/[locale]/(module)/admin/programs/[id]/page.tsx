@@ -97,6 +97,14 @@ export default function ProgramDetailPage() {
                         <Text>{program?.name}</Text>
                     </Group>
                     <Group justify="space-between">
+                        <Text fw={600}>Type:</Text>
+                        <Text>{program?.programType}</Text>
+                    </Group>
+                    <Group justify="space-between">
+                        <Text fw={600}>Description:</Text>
+                        <Text>{program?.description}</Text>
+                    </Group>
+                    <Group justify="space-between">
                         <Text fw={600}>Status:</Text>
                         <Text c={program?.isActive ? 'green' : 'red'}>
                             {program?.isActive ? 'Active' : 'Inactive'}

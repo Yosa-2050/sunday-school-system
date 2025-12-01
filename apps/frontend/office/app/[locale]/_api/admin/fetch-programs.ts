@@ -162,8 +162,36 @@ export const createProgram = async (
         },
     );
     if (!res) {
-        throw new Error('Faild to create program');
+        throw new Error('Failed to create program');
     }
+    return res;
+};
+
+export const updateProgramApi = async (
+    data: CreateProgram,
+    programId: string,
+) => {
+    const res: SuccessResponse = await fetcher(`/lms/program/${programId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res) {
+        throw new Error('Failed to update program');
+    }
+    return res;
+};
+
+export const deleteProgramApi = async (programId: string) => {
+    const res: SuccessResponse = await fetcher(`/lms/program/${programId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!res) {
+        throw new Error('Failed to delete program');
+    }
+
     return res;
 };
 
@@ -173,6 +201,8 @@ export type ProgramResponse = {
     createdBy: string;
     isActive: boolean;
     name: string;
+    programType?: 'SS1_12' | 'SS_Course';
+    description: string;
 };
 
 export type CalendarYearResponse = {
@@ -208,6 +238,8 @@ export type CreateProgram = {
     name: string;
     startDate: Date;
     endDate: Date;
+    programType?: 'SS1_12' | 'SS_Course';
+    description: string;
 };
 
 export type CreateUserType = {
