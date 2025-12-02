@@ -25,7 +25,7 @@ import { EducationHistory } from './entities/educational-history.entity';
 import { Qualification } from './entities/qualification.entity';
 import { Skills } from './entities/skills.entity';
 import { ApplicationStatus } from './enums/job-application-status.enum';
-import { ProgramType } from './enums/program-type.enum';
+// import { ProgramType } from './enums/program-type.enum';
 
 @Injectable()
 export class QualificationService {
@@ -198,7 +198,7 @@ export class QualificationService {
             id: string;
             title: string;
             name: string;
-            type: ProgramType;
+            type: string;
         },
         status: ApplicationStatus,
         orgName: string,
@@ -233,10 +233,10 @@ export class QualificationService {
                     reference: user.id,
                     isRealTimeNotification: true,
                     isNotifyToAllUser: false,
-                    type:
-                        validated.type === ProgramType.Job
-                            ? NotificationType.Job
-                            : NotificationType.Mentorship,
+                    type: NotificationType.Mentorship,
+                    // validated.type === ProgramType.Job
+                    //     ? NotificationType.Job
+                    //     : NotificationType.Mentorship,
                     metaData,
                 });
             }

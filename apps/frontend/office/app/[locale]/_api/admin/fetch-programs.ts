@@ -54,19 +54,6 @@ export const fetchCalendarYearsSchoolAdmin = async (
     return response;
 };
 
-// export const fetchRootClasses = async (
-//     id?: string,
-// ): Promise<ProgramResponse[]> => {
-//     const url = id ? `/class/root/${id}` : '/class/root';
-//     const response: ProgramResponse[] = await fetcher(url, {
-//         method: 'GET',
-//         headers: { 'Content-Type': 'application/json' },
-//         //body: JSON.stringify({ q: payload }),
-//     });
-
-//     return response;
-// };
-
 export const fetchRootClasses = async (
     programType: string,
 ): Promise<ProgramResponse[]> => {
