@@ -19,7 +19,6 @@ import {
     fetchCalendarYears,
     fetchCalendarYearsSchoolAdmin,
     fetchProgramsById,
-    fetchRootClasses,
     fetchRootClassesSchoolAdmin,
     fetchUsers,
 } from 'app/[locale]/_api/admin/fetch-programs';
@@ -62,10 +61,7 @@ export default function ProgramDetailPage() {
         refetch: refetchClasses,
     } = useQuery({
         queryKey: ['rootClasses', id],
-        queryFn: () =>
-            user?.role === 'super_admin'
-                ? fetchRootClasses(id)
-                : fetchRootClassesSchoolAdmin(id),
+        queryFn: () => fetchRootClassesSchoolAdmin(id),
     });
 
     // users
