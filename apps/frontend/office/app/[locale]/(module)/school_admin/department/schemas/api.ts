@@ -34,6 +34,20 @@ export const fetchDepartmentById = async (
     return response;
 };
 
+export const fetchDepartmentByParentId = async (
+    id: string,
+): Promise<DepartmentResponse[]> => {
+    const response: DepartmentResponse[] = await fetcher(
+        `/department/byParent/${id}`,
+        {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        },
+    );
+
+    return response;
+};
+
 export const updateDepartmentApi = async (
     id: string,
     body: CreateDepartment,

@@ -38,6 +38,11 @@ export class DepartmentController {
         return this.departmentService.findOne(id);
     }
 
+    @Get('byParent/:id')
+    findByParent(@Param('id') id: string) {
+        return this.departmentService.findAllByParentId(id);
+    }
+
     @Patch(':id')
     update(@Param('id') id: string, @Body() body: AddDepartmentRequestDto) {
         return this.departmentService.updateByName(id, body.name);
