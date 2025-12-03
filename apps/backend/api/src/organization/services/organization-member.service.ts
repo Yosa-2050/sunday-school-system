@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
@@ -20,7 +18,6 @@ import {
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
 import { OrganizationMembers } from '../entities/organization-member.entity';
 import { Organization } from '../entities/organization.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationMemberType } from '../enums/employee-type.enum';
 
 @Injectable()
@@ -32,30 +29,45 @@ export class OrganizationMemberService {
         private addressService: AddressService,
         @InjectRepository(Organization)
         private organizationRepo: Repository<Organization>,
+        //private organizationService: OrganizationService
     ) {}
-    async CreateEmployee(dto: CreateEmployeeDto) {
+    async CreateEmployee(dto: CreateEmployeeDto, organizationId: string) {
+        //const organization = await this.organizationService.findOneOrThrow(organizationId);
+        const organization = await this.organizationRepo.findOneBy({
+            id: organizationId,
+        });
+        if (!organization) {
+            throw new EntityNotFoundException('Organization');
+        }
         const profile = await this.profileService.createNewUserProfile(
             dto.email,
             dto.password,
-            dto.role,
+            UserRoleType.Member,
             dto,
             null,
             false,
         );
-
         const model = this.organizationMemberRepo.create();
         model.profile = profile;
+        model.organization = organization;
+        model.type = OrganizationMemberType.Member;
         const member = await this.organizationMemberRepo.save(model);
-        this.addressService.createContactDetails(
-            dto.contactDetails,
-            member.profile.id,
-            ReferenceType.Profile,
-        );
+        // this.addressService.createContactDetails(
+        //     dto.contactDetails,
+        //     member.profile.id,
+        //     ReferenceType.Profile,
+        // );
         return member;
     }
 
-    findAll() {
-        return this.organizationMemberRepo.find();
+    async findAll(organizationId: string) {
+        const members = await this.organizationMemberRepo.find({
+            where: { organization: { id: organizationId } },
+        });
+        if (!members.length) {
+            throw new EntityNotFoundException('No Member Found');
+        }
+        return members;
     }
 
     async findByIdOrThrow(id: string) {

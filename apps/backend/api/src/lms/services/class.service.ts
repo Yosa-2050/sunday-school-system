@@ -10,6 +10,8 @@ import { CalendarYear } from '../entities/calendar-year.entity';
 import { Classes } from '../entities/classes.entity';
 import { Program } from '../entities/program.entity';
 import { RootClass } from '../entities/root-class.entity';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ProgramType } from '../enums/program-type.enums';
 
 @Injectable()
 export class ClassService {
@@ -66,20 +68,15 @@ export class ClassService {
         return this.classRepo.save(classes);
     }
 
-    async createRoot(name: string, programId: string) {
-        const program = await this.programRepo.findOneBy({ id: programId });
-        if (!program) {
-            throw new EntityNotFoundException(typeof Program);
-        }
+    async createRoot(name: string, programType: ProgramType) {
         const existingClass = await this.rootClassRepo.findOneBy({
             name: name,
-            program: { id: programId },
+            programType: programType,
         });
         if (existingClass) {
             throw new EntityAlreadyExistsException(typeof RootClass);
         }
-        const classes = this.rootClassRepo.create({ name });
-        classes.program = program;
+        const classes = this.rootClassRepo.create({ name, programType });
         return this.rootClassRepo.save(classes);
     }
 
@@ -90,16 +87,21 @@ export class ClassService {
         });
     }
 
-    findAllRootClass(programId: string, organizationId?: string) {
-        if (organizationId) {
-            return this.rootClassRepo.findBy({
-                program: {
-                    id: programId,
-                    organization: { id: organizationId },
-                },
-            });
+    findAllRootClassByType(programType: ProgramType) {
+        return this.rootClassRepo.findBy({ programType });
+    }
+
+    async findAllRootClassByProgram(programId: string, organizationId: string) {
+        const program = await this.programRepo.findOneBy({
+            id: programId,
+            organization: { id: organizationId },
+        });
+        if (!program) {
+            throw new EntityNotFoundException('Program');
         }
-        return this.rootClassRepo.findBy({ program: { id: programId } });
+        return this.rootClassRepo.findBy({
+            programType: program.programType,
+        });
     }
 
     async isClassValid(id: string, yearId: string) {

@@ -3,11 +3,13 @@
 import { PageContainer, PageTitle } from '@/components/PageContainer';
 import { useRouter } from '@/i18n/routing';
 import {
-    // Badge,
+    ActionIcon,
     Button,
+    // Badge,
     Card,
     Center,
     Group,
+    Menu,
     Paper,
     Select,
     Stack,
@@ -17,7 +19,7 @@ import {
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useAuth } from '@shega/ui';
-import { IconEye } from '@tabler/icons-react';
+import { IconDots, IconEye, IconPencil, IconX } from '@tabler/icons-react';
 import {
     type ProgramResponse,
     fetchPrograms,
@@ -40,8 +42,43 @@ const programList = () => {
     >(null);
     const [organization, setOrganization] = useState<Organization[]>([]);
     const [programs, setProgram] = useState<ProgramResponse[]>([]);
+    const [editProgram, setEditProgram] = useState<ProgramResponse | null>(
+        null,
+    );
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [drawerMode, setDrawerMode] = useState<'create' | 'edit' | 'delete'>(
+        'create',
+    );
 
     const { user } = useAuth();
+
+    const handleEditClick = (program: ProgramResponse) => {
+        setEditProgram(program);
+        setDrawerMode('edit');
+        setDrawerOpen(true);
+    };
+
+    const handleCreateClick = () => {
+        setEditProgram(null);
+        setDrawerMode('create');
+        setDrawerOpen(true);
+    };
+
+    const handleDeleteClick = (test: ProgramResponse) => {
+        setEditProgram(test);
+        setDrawerMode('delete');
+        setDrawerOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setDrawerOpen(false);
+        setEditProgram(null);
+    };
+
+    const handleDrawerCompleted = () => {
+        fetchPrograms(selectedOrganization ?? '');
+        handleDrawerClose();
+    };
 
     useEffect(() => {
         if (user?.role === 'super_admin') {
@@ -88,14 +125,6 @@ const programList = () => {
         }
     };
 
-    // if (isLoading) {
-    //     return <LoadingOverlay visible={true} h="100vh" />;
-    // }
-
-    // if (error) {
-    //     return <Text color="red">Error loading Programs</Text>;
-    // }
-
     return (
         <PageContainer className="flex flex-col gap-2.5">
             <Paper shadow="xs" p="sm" style={{ borderRadius: '10px' }}>
@@ -115,11 +144,22 @@ const programList = () => {
                                 label: c.name,
                             }))}
                         />
+                        <Button
+                            onClick={handleCreateClick}
+                            disabled={!selectedOrganization}
+                        >
+                            + Add Program
+                        </Button>
                         <CreateProgramDrawer
+                            mode={drawerMode}
                             organizationId={selectedOrganization}
-                            onClose={() => {
-                                handleFetchPrograms(selectedOrganization);
-                            }}
+                            opened={drawerOpen}
+                            onClose={handleDrawerClose}
+                            // onClose={() => {
+                            //     handleFetchPrograms(selectedOrganization);
+                            // }}
+                            onCompleted={handleDrawerCompleted}
+                            program={editProgram}
                         />
                     </Group>
                 ) : (
@@ -130,7 +170,7 @@ const programList = () => {
                 {programs.length === 0 ? (
                     <Center h={200}>
                         <Text c="dimmed" ta="center">
-                            You haven&apos;t posted any jobs yet.
+                            You haven&apos;t posted any programs yet.
                         </Text>
                     </Center>
                 ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
@@ -154,6 +194,7 @@ const programList = () => {
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th>Program Title</Table.Th>
+                                    <Table.Th>Type</Table.Th>
                                     <Table.Th>Created By</Table.Th>
                                     <Table.Th>Created At</Table.Th>
                                     <Table.Th>Actions</Table.Th>
@@ -170,23 +211,71 @@ const programList = () => {
                                                 ? `${program.name.substring(0, 100)}...`
                                                 : program.name}
                                         </Table.Td>
+                                        <Table.Td>
+                                            {program.programType}
+                                        </Table.Td>
                                         <Table.Td>{program.createdBy}</Table.Td>
                                         <Table.Td>{program.createdAt}</Table.Td>
                                         <Table.Td>
-                                            <Button
-                                                variant="transparent"
-                                                className="py-0 my-0"
-                                                leftSection={
-                                                    <IconEye size={14} />
-                                                }
-                                                onClick={() =>
-                                                    router.push(
-                                                        `programs/${program.id}`,
-                                                    )
-                                                }
+                                            <Menu
+                                                shadow="md"
+                                                width={200}
+                                                position="bottom-end"
                                             >
-                                                View
-                                            </Button>
+                                                <Menu.Target>
+                                                    <ActionIcon
+                                                        variant="subtle"
+                                                        color="gray"
+                                                    >
+                                                        <IconDots size={16} />
+                                                    </ActionIcon>
+                                                </Menu.Target>
+                                                <Menu.Dropdown>
+                                                    <Menu.Item
+                                                        leftSection={
+                                                            <IconEye
+                                                                size={16}
+                                                            />
+                                                        }
+                                                        onClick={() =>
+                                                            router.push(
+                                                                `programs/${program.id}`,
+                                                            )
+                                                        }
+                                                    >
+                                                        View Details
+                                                    </Menu.Item>
+                                                    <Menu.Item
+                                                        leftSection={
+                                                            <IconPencil
+                                                                size={16}
+                                                            />
+                                                        }
+                                                        onClick={() =>
+                                                            handleEditClick(
+                                                                program,
+                                                            )
+                                                        }
+                                                    >
+                                                        Edit Program
+                                                    </Menu.Item>
+                                                    <Menu.Divider />
+                                                    <Menu.Item
+                                                        // Add your delete/inactivate logic here
+                                                        color="red"
+                                                        leftSection={
+                                                            <IconX size={16} />
+                                                        }
+                                                        onClick={() =>
+                                                            handleDeleteClick(
+                                                                program,
+                                                            )
+                                                        }
+                                                    >
+                                                        Delete
+                                                    </Menu.Item>
+                                                </Menu.Dropdown>
+                                            </Menu>
                                         </Table.Td>
                                     </Table.Tr>
                                 ))}

@@ -92,6 +92,7 @@ export type CreateRelationRequest = {
     middleName?: string;
     lastName?: string;
     phoneNumber?: string;
+    gender?: string;
     type?: string;
     isParent: boolean;
     isEmergency: boolean;

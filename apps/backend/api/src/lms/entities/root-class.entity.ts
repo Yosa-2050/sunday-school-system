@@ -1,12 +1,13 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { Program } from './program.entity';
+import { Column, Entity } from 'typeorm';
+// biome-ignore lint/style/useImportType: <explanation>
+import { ProgramType } from '../enums/program-type.enums';
 
 @Entity()
 export class RootClass extends BaseModel {
     @Column()
     name: string;
 
-    @ManyToOne(() => Program, { lazy: true })
-    program: Program;
+    @Column({ nullable: true })
+    programType: ProgramType;
 }

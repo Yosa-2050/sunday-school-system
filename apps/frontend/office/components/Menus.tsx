@@ -34,6 +34,18 @@ export const Menus = (): MenuTree[] => {
             role: 'administrator',
         },
         {
+            label: t('memberManagement'),
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
+            link: '/admin/members',
+            role: 'administrator',
+        },
+        {
+            label: t('rootClass'),
+            icon: <IconClipboardList stroke={1.4} size={20} />,
+            link: '/school_admin/root_classes',
+            role: 'administrator',
+        },
+        {
             label: t('notifications'),
             icon: <IconBell stroke={1.4} size={20} />,
             link: '/admin/notifications',
@@ -82,6 +94,12 @@ export const Menus = (): MenuTree[] => {
             label: t('programManagement'),
             icon: <IconHome stroke={1.4} size={20} />,
             link: '/admin/programs',
+            role: 'school_admin',
+        },
+        {
+            label: t('memberManagement'),
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
+            link: '/admin/members',
             role: 'school_admin',
         },
         {
@@ -278,6 +296,12 @@ export const Menus = (): MenuTree[] => {
             label: t('notifications'),
             icon: <IconBell stroke={1.4} size={20} />,
             link: '/admin/notifications',
+            role: 'super_admin',
+        },
+        {
+            label: t('rootClass'),
+            icon: <IconClipboardList stroke={1.4} size={20} />,
+            link: '/school_admin/root_classes',
             role: 'super_admin',
         },
         {

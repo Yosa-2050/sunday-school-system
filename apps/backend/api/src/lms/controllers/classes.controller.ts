@@ -16,6 +16,8 @@ import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { ClassRequestDto } from '../dto/request/create-class.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { ProgramType } from '../enums/program-type.enums';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from '../services/class.service';
 
 @Controller('class')
@@ -23,22 +25,27 @@ export class ClassController {
     constructor(private readonly classService: ClassService) {}
 
     @Roles(UserRoleType.SuperAdmin)
-    @Post('root/:programId')
+    @Post('root/:programType')
     create(
         @Body() dto: StringRequestModel,
-        @Param('programId', new ParseUUIDPipe()) programId: string,
+        @Param('programType') programType: ProgramType,
     ) {
-        return this.classService.createRoot(dto.text, programId);
+        return this.classService.createRoot(dto.text, programType);
     }
 
-    @Roles(
-        UserRoleType.SuperAdmin,
-        UserRoleType.Administrator,
-        UserRoleType.SchoolAdmin,
-    )
-    @Get('root/:programId')
-    findAllRoot(@Param('programId', new ParseUUIDPipe()) programId: string) {
-        return this.classService.findAllRootClass(programId);
+    @Roles(UserRoleType.SuperAdmin, UserRoleType.Administrator)
+    @Get('root/:programType')
+    findAllRoot(@Param('programType') programType: ProgramType) {
+        return this.classService.findAllRootClassByType(programType);
+    }
+
+    @Roles(UserRoleType.ProgramAdmin)
+    @Get('root/:programType')
+    findAllRootByProgram(@Request() req) {
+        return this.classService.findAllRootClassByProgram(
+            CurrentUser.getProgramId(req),
+            CurrentUser.getOrganizationId(req),
+        );
     }
 
     @Roles(UserRoleType.SchoolAdmin)
@@ -47,7 +54,7 @@ export class ClassController {
         @Param('programId', new ParseUUIDPipe()) programId: string,
         @Request() req,
     ) {
-        return this.classService.findAllRootClass(
+        return this.classService.findAllRootClassByProgram(
             programId,
             CurrentUser.getOrganizationId(req, true),
         );
@@ -56,7 +63,7 @@ export class ClassController {
     @Roles(UserRoleType.SchoolAdmin)
     @Get('root')
     findAProgramRoot(@Request() req) {
-        return this.classService.findAllRootClass(
+        return this.classService.findAllRootClassByProgram(
             CurrentUser.getProgramId(req),
             CurrentUser.getOrganizationId(req),
         );
@@ -71,12 +78,6 @@ export class ClassController {
     ) {
         return this.classService.create(dto, calendarYearId);
     }
-
-    // @Roles(UserRoleType.SchoolAdmin)
-    // @Get('main')
-    // findAll(@Request() req) {
-    //     return this.classService.findAll(CurrentUser.getActiveYear(req));
-    // }
 
     @Roles(UserRoleType.SchoolAdmin)
     @Get('main/:calendarYearId')

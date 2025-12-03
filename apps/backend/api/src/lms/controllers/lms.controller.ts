@@ -12,12 +12,12 @@ import {
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 // biome-ignore lint/style/useImportType: <explanation>
-import { CreateUsingNameRequestDto } from '@shega/education/dto/request/create-name.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-organization-member.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateCalendarYearRequestDto } from '../dto/request/create-calendar-year.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateProgramDto } from '../dto/request/create-program-type.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateLmDto } from '../dto/request/update-lm.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -83,9 +83,22 @@ export class LmsController {
     @Post('program/:organizationId')
     createProgram(
         @Param('organizationId', new ParseUUIDPipe()) organizationId: string,
-        @Body() dto: CreateUsingNameRequestDto,
+        @Body() dto: CreateProgramDto,
     ) {
-        return this.lmsService.createProgram(dto.name, organizationId);
+        return this.lmsService.createProgram(dto, organizationId);
+    }
+
+    @Patch('program/:programId')
+    updateProgram(
+        @Param('programId', new ParseUUIDPipe()) programId: string,
+        @Body() dto: CreateProgramDto,
+    ) {
+        return this.lmsService.updateProgram(programId, dto);
+    }
+
+    @Delete('program/:programId')
+    deleteProgram(@Param('programID', new ParseUUIDPipe()) programId: string) {
+        return this.lmsService.deleteProgram(programId);
     }
 
     @Roles(UserRoleType.SchoolAdmin)

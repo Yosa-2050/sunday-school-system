@@ -4,22 +4,22 @@ import {
     ActionIcon,
     Box,
     Button,
-    Checkbox,
-    Divider,
     Group,
-    Loader,
-    Select,
+    Modal,
     Stack,
-    Table,
     Text,
     TextInput,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
+import GuardianInformation from 'app/[locale]/(module)/_components/profile-forms/guardian-info';
+import MandatoryProfileForm from 'app/[locale]/(module)/_components/profile-forms/mandatory-profile-info';
+import OptionalProfileForm from 'app/[locale]/(module)/_components/profile-forms/optional-profile-info';
+import SearchProfilePage from 'app/[locale]/(module)/_components/profile-forms/search';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { showSuccess } from 'utilities/notification';
-import { createStudentApi, searchProfilesApi } from '../schemas/api';
+import { createStudentApi } from '../schemas/api';
 import type {
     CreateRelationRequest,
     CreateStudentRequest,
@@ -55,6 +55,7 @@ export default function CreateStudentPage() {
             lastName: '',
             phoneNumber: '',
             type: '',
+            gender: '',
             email: '',
             isParent: false,
             isEmergency: false,
@@ -63,7 +64,6 @@ export default function CreateStudentPage() {
     const [type, setType] = useState<'Student' | 'Teacher'>('Student');
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState<UserResponse[]>([]);
     const [selectedProfile, setSelectedProfile] = useState<UserResponse | null>(
         null,
     );
@@ -72,25 +72,6 @@ export default function CreateStudentPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-
-    const handleSearch = async () => {
-        if (searchTerm.trim().length < 2) {
-            return;
-        }
-        setIsSearching(true);
-        try {
-            const results = await searchProfilesApi(searchTerm);
-            setSearchResults(results);
-        } catch (error) {
-            notifications.show({
-                title: 'Error',
-                message: 'Failed to search profiles',
-                color: 'red',
-            });
-        } finally {
-            setIsSearching(false);
-        }
-    };
 
     const handleSelectProfile = (user: UserResponse) => {
         setSelectedProfile(user);
@@ -111,18 +92,6 @@ export default function CreateStudentPage() {
 
     const handleClearSelection = () => {
         setSelectedProfile(null);
-        setFormData({
-            firstName: '',
-            middleName: '',
-            lastName: '',
-            mothersFullName: '',
-            birthDate: '',
-            baptistName: '',
-            gender: '',
-            phoneNumber: '',
-            idNumber: '',
-            email: '',
-        });
     };
 
     const handleInputChange = (
@@ -134,7 +103,7 @@ export default function CreateStudentPage() {
 
     const handleInputChangeRelation = (
         field: keyof CreateRelationRequest,
-        value: string,
+        value: string | boolean,
     ) => {
         setRelationFormData((prev) => ({ ...prev, [field]: value }));
     };
@@ -166,6 +135,37 @@ export default function CreateStudentPage() {
         }
     };
 
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+    const validateForm = () => {
+        if (!formData.firstName?.trim()) {
+            return false;
+        }
+        if (!formData.lastName?.trim()) {
+            return false;
+        }
+        if (!formData.gender?.trim()) {
+            return false;
+        }
+        if (!formData.birthDate?.trim()) {
+            return false;
+        }
+
+        if (!relationFormData.firstName?.trim()) {
+            return false;
+        }
+        if (!relationFormData.lastName?.trim()) {
+            return false;
+        }
+        if (!relationFormData.phoneNumber?.trim()) {
+            return false;
+        }
+        if (!relationFormData.gender?.trim()) {
+            return false;
+        }
+
+        return true;
+    };
+
     const today = new Date();
     const threeYearsAgo = new Date(
         today.getFullYear() - 3,
@@ -185,384 +185,90 @@ export default function CreateStudentPage() {
                 </Text>
 
                 {/* Search Section */}
-                {showSearch ? (
-                    <>
-                        <Group mb="md" align="flex-end" wrap="nowrap">
-                            <TextInput
-                                placeholder="Search by name, email, or ID number"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                style={{ flex: 1 }}
-                                onKeyDown={(e) =>
-                                    e.key === 'Enter' && handleSearch()
-                                }
-                            />
-                            <Button
-                                onClick={handleSearch}
-                                loading={isSearching}
-                                leftSection={<IconSearch size={16} />}
-                                disabled={searchTerm.trim().length < 2}
-                            >
-                                Search
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowSearch(false)}
-                            >
-                                Cancel
-                            </Button>
-                        </Group>
-
-                        {isSearching && <Loader />}
-
-                        {searchResults.length > 0 ? (
-                            <Table striped withColumnBorders highlightOnHover>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th>Name</Table.Th>
-                                        <Table.Th>Email</Table.Th>
-                                        <Table.Th>ID Number</Table.Th>
-                                        <Table.Th>Action</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {searchResults.map((profile) => (
-                                        <Table.Tr key={profile.profile.id}>
-                                            <Table.Td>
-                                                {profile.profile.firstName}{' '}
-                                                {profile.profile.middleName}{' '}
-                                                {profile.profile.lastName}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                {profile.email || '-'}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                {profile.profile.phoneNumber ||
-                                                    '-'}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <ActionIcon
-                                                    color="teal"
-                                                    variant="light"
-                                                    onClick={() =>
-                                                        handleSelectProfile(
-                                                            profile,
-                                                        )
-                                                    }
-                                                >
-                                                    <IconCheck size={16} />
-                                                </ActionIcon>
-                                            </Table.Td>
-                                        </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
-                        ) : (
-                            searchTerm &&
-                            !isSearching && (
-                                <Text size="sm" c="dimmed" ta="center" mt="md">
-                                    No profiles found. Try a different search
-                                    term.
+                <Button
+                    variant="outline"
+                    leftSection={<IconSearch size={16} />}
+                    mb="md"
+                    onClick={() => setShowSearch(true)}
+                >
+                    Search Existing Profiles
+                </Button>
+                <Modal
+                    opened={showSearch}
+                    onClose={() => setShowSearch(false)}
+                    title={'Search Profile'}
+                    centered
+                    size="xl"
+                    styles={{
+                        content: {
+                            maxHeight: '80vh',
+                            overflowY: 'auto',
+                        },
+                    }}
+                >
+                    <SearchProfilePage />
+                </Modal>
+                <>
+                    {/* Selected Profile Info */}
+                    {selectedProfile && (
+                        <Box
+                            p="sm"
+                            bg="blue.0"
+                            style={{ borderRadius: '6px' }}
+                            mb="md"
+                        >
+                            <Group justify="space-between">
+                                <Text size="sm">
+                                    Using existing profile:{' '}
+                                    <strong>
+                                        {selectedProfile.profile?.firstName}{' '}
+                                        {selectedProfile.profile?.lastName}
+                                    </strong>
                                 </Text>
-                            )
-                        )}
-                    </>
-                ) : (
-                    <>
-                        {/* Selected Profile Info */}
-                        {selectedProfile && (
-                            <Box
-                                p="sm"
-                                bg="blue.0"
-                                style={{ borderRadius: '6px' }}
-                                mb="md"
-                            >
-                                <Group justify="space-between">
-                                    <Text size="sm">
-                                        Using existing profile:{' '}
-                                        <strong>
-                                            {selectedProfile.profile?.firstName}{' '}
-                                            {selectedProfile.profile?.lastName}
-                                        </strong>
-                                    </Text>
-                                    <ActionIcon
-                                        variant="subtle"
-                                        color="red"
-                                        size="sm"
-                                        onClick={handleClearSelection}
-                                    >
-                                        <IconX size={16} />
-                                    </ActionIcon>
-                                </Group>
-                            </Box>
-                        )}
+                                <ActionIcon
+                                    variant="subtle"
+                                    color="red"
+                                    size="sm"
+                                    onClick={handleClearSelection}
+                                >
+                                    <IconX size={16} />
+                                </ActionIcon>
+                            </Group>
+                        </Box>
+                    )}
 
-                        {/* Search Button */}
-                        {!selectedProfile && (
-                            <Button
-                                variant="outline"
-                                leftSection={<IconSearch size={16} />}
-                                mb="md"
-                                onClick={() => setShowSearch(true)}
-                            >
-                                Search Existing Profiles
-                            </Button>
-                        )}
-
-                        {/* Form Fields */}
+                    {/* Form Fields */}
+                    <form>
                         <Stack gap="sm">
-                            <Group grow>
-                                <TextInput
-                                    label="First Name"
-                                    placeholder="Enter first name"
-                                    value={formData.firstName}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            'firstName',
-                                            e.target.value,
-                                        )
-                                    }
-                                    required
-                                    disabled={!!selectedProfile}
-                                />
-                                <TextInput
-                                    label="Middle Name"
-                                    placeholder="Enter middle name"
-                                    value={formData.middleName}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            'middleName',
-                                            e.target.value,
-                                        )
-                                    }
-                                    required
-                                    disabled={!!selectedProfile}
-                                />
-                                <TextInput
-                                    label="Last Name"
-                                    placeholder="Enter last name"
-                                    value={formData.lastName}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            'lastName',
-                                            e.target.value,
-                                        )
-                                    }
-                                    required
-                                    disabled={!!selectedProfile}
-                                />
-                            </Group>
+                            <MandatoryProfileForm
+                                data={formData}
+                                onChange={handleInputChange}
+                            />
 
-                            <Group grow>
-                                <TextInput
-                                    label="Email"
-                                    value={formData.email}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            'email',
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={!!selectedProfile}
-                                />
-
-                                <TextInput
-                                    label="Phone Number"
-                                    value={formData.phoneNumber}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            'phoneNumber',
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={!!selectedProfile}
-                                />
-                            </Group>
+                            <OptionalProfileForm
+                                data={formData}
+                                onChange={handleInputChange}
+                            />
 
                             <TextInput
-                                label="Mother's Full Name"
-                                value={formData.mothersFullName}
+                                label="ID Number"
+                                value={formData.idNumber}
                                 onChange={(e) =>
                                     handleInputChange(
-                                        'mothersFullName',
+                                        'idNumber',
                                         e.target.value,
                                     )
                                 }
-                                disabled={!!selectedProfile}
+                                required
                             />
-
-                            <Group grow>
-                                <TextInput
-                                    label="Birth Date"
-                                    type="date"
-                                    value={formData.birthDate}
-                                    max={maxDate}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            'birthDate',
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={!!selectedProfile}
-                                />
-                                <Select
-                                    label="Gender"
-                                    data={[
-                                        { value: 'MALE', label: 'Male' },
-                                        { value: 'FEMALE', label: 'Female' },
-                                    ]}
-                                    value={formData.gender}
-                                    onChange={(v) =>
-                                        handleInputChange('gender', v || '')
-                                    }
-                                    disabled={!!selectedProfile}
-                                />
-                                <TextInput
-                                    label="Baptist Name"
-                                    value={formData.baptistName}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            'baptistName',
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={!!selectedProfile}
-                                />
-                            </Group>
-
-                            {type === 'Student' && (
-                                <TextInput
-                                    label="ID Number"
-                                    value={formData.idNumber}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            'idNumber',
-                                            e.target.value,
-                                        )
-                                    }
-                                    required
-                                />
-                            )}
                         </Stack>
-                        <Stack>
-                            <>
-                                <Text
-                                    fw={600}
-                                    mb="3px"
-                                    size="lg"
-                                    c="dark"
-                                    mt="md"
-                                >
-                                    Guardian Information
-                                </Text>
-                                <Divider />
 
-                                <Group grow>
-                                    <TextInput
-                                        label="First Name"
-                                        placeholder="Enter first name"
-                                        value={relationFormData.firstName}
-                                        onChange={(e) =>
-                                            handleInputChangeRelation(
-                                                'firstName',
-                                                e.target.value,
-                                            )
-                                        }
-                                        required
-                                        disabled={!!selectedProfile}
-                                    />
-                                    <TextInput
-                                        label="Middle Name"
-                                        placeholder="Enter middle name"
-                                        value={relationFormData.middleName}
-                                        onChange={(e) =>
-                                            handleInputChangeRelation(
-                                                'middleName',
-                                                e.target.value,
-                                            )
-                                        }
-                                        required
-                                        disabled={!!selectedProfile}
-                                    />
-                                    <TextInput
-                                        label="Last Name"
-                                        placeholder="Enter last name"
-                                        value={relationFormData.lastName}
-                                        onChange={(e) =>
-                                            handleInputChangeRelation(
-                                                'lastName',
-                                                e.target.value,
-                                            )
-                                        }
-                                        required
-                                        disabled={!!selectedProfile}
-                                    />
-                                </Group>
-
-                                <Group grow>
-                                    <TextInput
-                                        label="Email"
-                                        value={relationFormData.email}
-                                        onChange={(e) =>
-                                            handleInputChangeRelation(
-                                                'email',
-                                                e.target.value,
-                                            )
-                                        }
-                                        disabled={!!selectedProfile}
-                                    />
-
-                                    <TextInput
-                                        label="Phone Number"
-                                        value={relationFormData.phoneNumber}
-                                        onChange={(e) =>
-                                            handleInputChangeRelation(
-                                                'phoneNumber',
-                                                e.target.value,
-                                            )
-                                        }
-                                        disabled={!!selectedProfile}
-                                    />
-                                </Group>
-
-                                <TextInput
-                                    label="Relationship Type"
-                                    placeholder="e.g., Parent, Guardian, Sibling"
-                                    value={relationFormData.type}
-                                    onChange={(e) =>
-                                        setRelationFormData({
-                                            ...relationFormData,
-                                            type: e.target.value,
-                                        })
-                                    }
-                                />
-
-                                <Group>
-                                    <Checkbox
-                                        label="Is Emergency Contact"
-                                        checked={relationFormData.isEmergency}
-                                        onChange={(e) =>
-                                            setRelationFormData({
-                                                ...relationFormData,
-                                                isEmergency: e.target.checked,
-                                            })
-                                        }
-                                    />
-                                    <Checkbox
-                                        label="Is Parent"
-                                        checked={relationFormData.isParent}
-                                        onChange={(e) =>
-                                            setRelationFormData({
-                                                ...relationFormData,
-                                                isParent: e.target.checked,
-                                            })
-                                        }
-                                    />
-                                </Group>
-                            </>
-                        </Stack>
-                    </>
-                )}
+                        <GuardianInformation
+                            data={relationFormData}
+                            onChange={handleInputChangeRelation}
+                        />
+                    </form>
+                </>
 
                 {/* Action Buttons */}
                 <Group justify="flex-end" mt="lg">
@@ -572,7 +278,10 @@ export default function CreateStudentPage() {
                     >
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} disabled={isLoading}>
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={isLoading || !validateForm()}
+                    >
                         {selectedProfile ? 'Assign Profile' : 'Create Profile'}
                     </Button>
                 </Group>

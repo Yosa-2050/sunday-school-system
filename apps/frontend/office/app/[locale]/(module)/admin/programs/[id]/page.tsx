@@ -19,7 +19,6 @@ import {
     fetchCalendarYears,
     fetchCalendarYearsSchoolAdmin,
     fetchProgramsById,
-    fetchRootClasses,
     fetchRootClassesSchoolAdmin,
     fetchUsers,
 } from 'app/[locale]/_api/admin/fetch-programs';
@@ -62,10 +61,7 @@ export default function ProgramDetailPage() {
         refetch: refetchClasses,
     } = useQuery({
         queryKey: ['rootClasses', id],
-        queryFn: () =>
-            user?.role === 'super_admin'
-                ? fetchRootClasses(id)
-                : fetchRootClassesSchoolAdmin(id),
+        queryFn: () => fetchRootClassesSchoolAdmin(id),
     });
 
     // users
@@ -74,7 +70,7 @@ export default function ProgramDetailPage() {
         isLoading: usersLoading,
         refetch: refetchUsers,
     } = useQuery({
-        queryKey: ['users', id],
+        queryKey: ['program', id, 'users'],
         queryFn: () => fetchUsers(id),
     });
 
@@ -95,6 +91,14 @@ export default function ProgramDetailPage() {
                     <Group justify="space-between">
                         <Text fw={600}>Program Name:</Text>
                         <Text>{program?.name}</Text>
+                    </Group>
+                    <Group justify="space-between">
+                        <Text fw={600}>Type:</Text>
+                        <Text>{program?.programType}</Text>
+                    </Group>
+                    <Group justify="space-between">
+                        <Text fw={600}>Description:</Text>
+                        <Text>{program?.description}</Text>
                     </Group>
                     <Group justify="space-between">
                         <Text fw={600}>Status:</Text>
@@ -289,7 +293,7 @@ export default function ProgramDetailPage() {
                                         {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                                         {users.map((user: any) => (
                                             <Table.Tr key={user.id}>
-                                                <Table.Td>{`${user.firstName} ${user.middleName}`}</Table.Td>
+                                                <Table.Td>{`${user.member.profile.firstName} ${user.member.profile.middleName}`}</Table.Td>
                                                 <Table.Td>
                                                     {user.email}
                                                 </Table.Td>

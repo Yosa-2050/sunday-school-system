@@ -1,5 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Request,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateEmployeeDto } from '../dto/request/create-organization-member.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -10,14 +22,24 @@ import { OrganizationMemberService } from '../services/organization-member.servi
 export class OrganizationMemberController {
     constructor(private readonly employeesService: OrganizationMemberService) {}
 
+    @Post('create')
+    CreateEmployee(@Body() dto: CreateEmployeeDto, @Request() req) {
+        return this.employeesService.CreateEmployee(
+            dto,
+            CurrentUser.getOrganizationId(req),
+        );
+    }
+
     @Get('me')
     getMyInformation() {
         return this.employeesService.getMe();
     }
 
-    @Get()
-    findAll() {
-        return this.employeesService.findAll();
+    @Get('member-list')
+    findAll(@Request() req) {
+        return this.employeesService.findAll(
+            CurrentUser.getOrganizationId(req),
+        );
     }
 
     @Get(':id')

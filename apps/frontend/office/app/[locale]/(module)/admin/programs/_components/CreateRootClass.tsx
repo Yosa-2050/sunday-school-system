@@ -8,7 +8,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createRootClass } from 'app/[locale]/_api/admin/fetch-programs';
 import { useForm } from 'react-hook-form';
 
-export function CreateRootClass({ programId }: { programId: string }) {
+export function CreateRootClass({
+    programId,
+    disabled,
+}: { programId: string; disabled?: boolean }) {
     const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
 
@@ -25,7 +28,6 @@ export function CreateRootClass({ programId }: { programId: string }) {
                 queryKey: ['program', programId, 'calendars'],
             });
 
-            // Show success notification
             notifications.show({
                 title: 'Success',
                 message: 'Root class created successfully!',
@@ -33,7 +35,6 @@ export function CreateRootClass({ programId }: { programId: string }) {
                 icon: <IconCheck size="1.1rem" />,
             });
 
-            // Close drawer and reset form
             close();
             reset();
         },
@@ -49,7 +50,9 @@ export function CreateRootClass({ programId }: { programId: string }) {
 
     return (
         <>
-            <Button onClick={open}>+ Add Root Class</Button>
+            <Button onClick={open} disabled={disabled}>
+                + Add Root Class
+            </Button>
             <Drawer
                 opened={opened}
                 onClose={close}

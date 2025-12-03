@@ -28,6 +28,8 @@ import { CreateCalendarYearRequestDto } from '../dto/request/create-calendar-yea
 // biome-ignore lint/style/useImportType: <explanation>
 import { CreateLmDto } from '../dto/request/create-lm.dto';
 // biome-ignore lint/style/useImportType: <explanation>
+import { CreateProgramDto } from '../dto/request/create-program-type.request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateLmDto } from '../dto/request/update-lm.dto';
 import { CalendarYear } from '../entities/calendar-year.entity';
 import { ProgramUser } from '../entities/program-users.entity';
@@ -106,16 +108,42 @@ export class LmsService {
             organization: { id: organizationId },
         });
     }
-    async createProgram(name: string, organizationId: string) {
+    async createProgram(dto: CreateProgramDto, organizationId: string) {
         const org =
             await this.organizationService.findOneOrThrow(organizationId);
-        const existingProgram = await this.programRepo.findOneBy({ name });
+        const existingProgram = await this.programRepo.findOneBy({
+            name: dto.name,
+        });
         if (existingProgram) {
             throw new EntityAlreadyExistsException(typeof Program);
         }
-        const program = this.programRepo.create({ name });
+        const program = this.programRepo.create(dto);
         program.organization = org;
         return this.programRepo.save(program);
+    }
+
+    async updateProgram(programId: string, dto: CreateProgramDto) {
+        const program = await this.programRepo.findOneBy({ id: programId });
+
+        if (!program) {
+            throw new EntityNotFoundException(typeof Program);
+        }
+
+        program.name = dto.name;
+        program.description = dto.description;
+        program.programType = dto.programType;
+
+        return this.programRepo.save(program);
+    }
+
+    async deleteProgram(programId: string) {
+        const program = await this.programRepo.findOneBy({ id: programId });
+
+        if (!program) {
+            throw new EntityNotFoundException(typeof Program);
+        }
+
+        await this.programRepo.remove(program);
     }
 
     async findOneProgram(id: string) {

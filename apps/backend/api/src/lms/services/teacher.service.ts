@@ -28,7 +28,8 @@ export class TeacherService {
     async CreateTeacher(dto: CreateEmployeeDto, yearId: string) {
         const cYear = await this.lmsService.calendarYearById(yearId);
         dto.role = UserRoleType.Teacher;
-        const member = await this.memberService.CreateEmployee(dto);
+        //TODO:
+        const member = await this.memberService.CreateEmployee(dto, '');
 
         const model = this.teacherRepo.create();
         model.member = member;
