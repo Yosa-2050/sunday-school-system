@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -18,7 +19,23 @@ export class DepartmentMemberService {
     ) {}
 
     async assignMember(dto: AssignMemberDto) {
+        const department = await this.departmentRepository.findOneBy({
+            id: dto.departmentId,
+        });
+        if (!department) {
+            throw new EntityNotFoundException('department');
+        }
+
+        if (dto.subDepartmentId) {
+            const department = await this.departmentRepository.findOneBy({
+                id: dto.subDepartmentId,
+            });
+            if (!department) {
+                throw new EntityNotFoundException('sub department');
+            }
+        }
         const assignment = this.departmentMemberRepository.create({ ...dto });
+
         return await this.departmentMemberRepository.save(assignment);
     }
 
