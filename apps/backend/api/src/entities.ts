@@ -31,6 +31,7 @@ import { Notes } from './notification/entities/notes.entity';
 import { Notification } from './notification/entities/notification.entity';
 import { NotificationTemplate } from './notification/entities/notificationTemplate.entity';
 import { Branch } from './organization/entities/branch.entity';
+import { DepartmentMember } from './organization/entities/department-member.entity';
 import { Department } from './organization/entities/department.entity';
 import { OrganizationMembers } from './organization/entities/organization-member.entity';
 import { Organization } from './organization/entities/organization.entity';
@@ -82,4 +83,5 @@ export const AppEntities = [
     Result,
     OrganizationMembers,
     HomeroomAssignment,
+    DepartmentMember,
 ];

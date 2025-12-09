@@ -11,6 +11,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
+import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
+// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEmployeeDto } from '../dto/request/create-organization-member.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
@@ -58,5 +60,13 @@ export class OrganizationMemberController {
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.employeesService.remove(+id);
+    }
+
+    @Post('/search')
+    searchProfile(@Body() body: StringRequestModel, @Request() req) {
+        return this.employeesService.search(
+            body.text,
+            CurrentUser.getOrganizationId(req),
+        );
     }
 }

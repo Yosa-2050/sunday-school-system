@@ -145,12 +145,15 @@ export const createRelationshipApi = async ({
 export const searchProfilesApi = async (
     query: string,
 ): Promise<UserResponse[]> => {
-    const response: UserResponse[] = await fetcher('/profile/search', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+    const response: UserResponse[] = await fetcher(
+        '/organization-member/search',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: query }),
         },
-        body: JSON.stringify({ text: query }),
-    });
+    );
     return response;
 };

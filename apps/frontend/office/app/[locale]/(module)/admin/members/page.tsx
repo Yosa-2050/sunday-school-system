@@ -122,15 +122,19 @@ export default function MembersPage() {
                         <Text className="font-bold text-md md:text-xl">
                             List of Members
                         </Text>
-
-                        <Button
-                            onClick={() => router.push('/admin/members/create')}
-                        >
-                            <IconPlus size={12} /> Add Member
-                        </Button>
+                        <Group className="gap-2">
+                            <Button
+                                onClick={() =>
+                                    router.push('/admin/members/create')
+                                }
+                            >
+                                <IconPlus size={12} /> Add Member
+                            </Button>
+                        </Group>
                     </Flex>
                     <Divider my="md" />
 
+                    {/* <div className="mb-4"> */}
                     <Group justify="space-between" className="mb-4">
                         <Flex
                             gap={'xs'}
@@ -161,6 +165,7 @@ export default function MembersPage() {
                             </Button>
                         </Flex>
                     </Group>
+                    {/* </div> */}
                 </Paper>
 
                 <Paper p="lg" style={{ borderRadius: '10px' }}>

@@ -194,13 +194,18 @@ export const deleteProgramApi = async (programId: string) => {
     return res;
 };
 
+export enum ProgramType {
+    SS1_12 = 'SS1_12',
+    SS_Course = 'SS_Course',
+}
+
 export type ProgramResponse = {
     id: string;
     createdAt: string;
     createdBy: string;
     isActive: boolean;
     name: string;
-    programType?: 'SS1_12' | 'SS_Course';
+    programType?: ProgramType;
     description: string;
 };
 
@@ -237,7 +242,7 @@ export type CreateProgram = {
     name: string;
     startDate: Date;
     endDate: Date;
-    programType?: 'SS1_12' | 'SS_Course';
+    programType?: ProgramType;
     description: string;
 };
 

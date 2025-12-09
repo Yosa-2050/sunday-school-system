@@ -132,4 +132,28 @@ export class OrganizationMemberService {
         const member = await this.organizationMemberRepo.save(model);
         return member;
     }
+
+    search(query: string, organizationId: string) {
+        if (!query || query.trim().length < 2) {
+            return [];
+        }
+
+        return this.organizationMemberRepo
+            .createQueryBuilder('member')
+            .leftJoinAndSelect('member.profile', 'profile')
+            .leftJoinAndSelect('profile.user', 'user')
+            .where('member.organizationId = :organizationId', {
+                organizationId,
+            })
+            .andWhere(
+                `(profile.firstName ILIKE :query
+                OR profile.middleName ILIKE :query
+                OR profile.lastName ILIKE :query
+                OR user.email ILIKE :query)`,
+            )
+            .setParameter('query', `%${query}%`)
+            .orderBy('profile.firstName', 'ASC')
+            .limit(10)
+            .getMany();
+    }
 }

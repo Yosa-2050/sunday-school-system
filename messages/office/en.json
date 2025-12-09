@@ -34,7 +34,8 @@
         "categories": "Categories",
         "organization": "organization",
         "homeroom": "Home Room Teacher",
-        "memberManagement": "Members Management"
+        "memberManagement": "Members Management",
+        "assignMember": "Assign Member"
     },
     "header": {
         "title": "Admin Dashboard",

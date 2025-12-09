@@ -12,6 +12,7 @@ import {
     type CreateProgram,
     type IdSuccessResponse,
     type ProgramResponse,
+    ProgramType,
     type SuccessResponse,
     createProgram,
     deleteProgramApi,
@@ -170,11 +171,11 @@ export function CreateProgramDrawer({
                                     placeholder="Select Type"
                                     data={[
                                         {
-                                            value: 'SS1_12',
+                                            value: ProgramType.SS1_12,
                                             label: 'Sunday School 1 - 12',
                                         },
                                         {
-                                            value: 'SS_Course',
+                                            value: ProgramType.SS_Course,
                                             label: 'Sunday School Course',
                                         },
                                     ]}
