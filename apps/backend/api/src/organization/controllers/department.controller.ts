@@ -39,8 +39,11 @@ export class DepartmentController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string, organizationId: string) {
-        return this.departmentService.findOne(id, organizationId);
+    findOne(@Param('id') id: string, @Request() req) {
+        return this.departmentService.findOne(
+            id,
+            CurrentUser.getOrganizationId(req, true),
+        );
     }
 
     @Get('byParent/:id')

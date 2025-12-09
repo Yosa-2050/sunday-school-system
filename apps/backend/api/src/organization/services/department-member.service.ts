@@ -18,9 +18,10 @@ export class DepartmentMemberService {
         private readonly departmentRepository: Repository<Department>,
     ) {}
 
-    async assignMember(dto: AssignMemberDto) {
+    async assignMember(organizationId: string, dto: AssignMemberDto) {
         const department = await this.departmentRepository.findOneBy({
             id: dto.departmentId,
+            organization: { id: organizationId },
         });
         if (!department) {
             throw new EntityNotFoundException('department');
@@ -29,6 +30,7 @@ export class DepartmentMemberService {
         if (dto.subDepartmentId) {
             const department = await this.departmentRepository.findOneBy({
                 id: dto.subDepartmentId,
+                organization: { id: organizationId },
             });
             if (!department) {
                 throw new EntityNotFoundException('sub department');
@@ -39,9 +41,16 @@ export class DepartmentMemberService {
         return await this.departmentMemberRepository.save(assignment);
     }
 
-    async findAll(departmentId?: string, subDepartmentId?: string) {
+    async findAll(
+        organizationId: string,
+        departmentId?: string,
+        subDepartmentId?: string,
+    ) {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const where: any = { departmentId };
+        const where: any = {
+            departmentId,
+            member: { organization: { id: organizationId } },
+        };
         if (subDepartmentId) {
             where.subDepartmentId = subDepartmentId;
         }
@@ -59,9 +68,12 @@ export class DepartmentMemberService {
         }));
     }
 
-    async findByDepartmentId(departmentId: string) {
+    async findByDepartmentId(organizationId: string, departmentId: string) {
         const members = await this.departmentMemberRepository.find({
-            where: { departmentId },
+            where: {
+                departmentId,
+                member: { organization: { id: organizationId } },
+            },
         });
         return members.map((m) => ({
             departmentName: m.department?.name || '',

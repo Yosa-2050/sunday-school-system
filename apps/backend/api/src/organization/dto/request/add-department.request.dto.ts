@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { OptionalUUID } from '@shega/Utilities/decorators/optional-uuid.decorator';
+import { IsString } from 'class-validator';
 
 export class AddDepartmentRequestDto {
     @ApiProperty()
@@ -7,7 +8,6 @@ export class AddDepartmentRequestDto {
     name: string;
 
     @ApiProperty()
-    @IsOptional()
-    @IsString()
+    @OptionalUUID()
     parentId?: string;
 }

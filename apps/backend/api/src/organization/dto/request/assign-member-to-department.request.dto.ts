@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { OptionalUUID } from '@shega/Utilities/decorators/optional-uuid.decorator';
+import { DepartmentMemberPosition } from '@shega/lms/enums/department-member-position-type.enums';
+import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class AssignMemberDto {
     @ApiProperty()
@@ -8,9 +10,7 @@ export class AssignMemberDto {
     departmentId: string;
 
     @ApiProperty()
-    @IsUUID()
-    @IsString()
-    @IsOptional()
+    @OptionalUUID()
     subDepartmentId: string;
 
     @ApiProperty()
@@ -20,8 +20,8 @@ export class AssignMemberDto {
 
     @ApiProperty()
     @IsString()
-    // @IsEnum()
-    position?: string;
+    @IsEnum(DepartmentMemberPosition)
+    position: DepartmentMemberPosition;
 
     @ApiProperty()
     @IsString()

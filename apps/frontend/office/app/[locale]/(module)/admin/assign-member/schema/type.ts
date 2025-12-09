@@ -20,6 +20,7 @@ export enum DepartmentMemberPosition {
     CHAIR_PERSON = 'Chairperson',
     VICE_CHAIR_PERSON = 'ViceChairperson',
     SECRETARY = 'Secretary',
+    MEMBER = 'Member',
 }
 
 export const POSITION_OPTIONS = [
@@ -29,4 +30,5 @@ export const POSITION_OPTIONS = [
         label: 'Vice Chairperson',
     },
     { value: DepartmentMemberPosition.SECRETARY, label: 'Secretary' },
+    { value: DepartmentMemberPosition.MEMBER, label: 'Member' },
 ];

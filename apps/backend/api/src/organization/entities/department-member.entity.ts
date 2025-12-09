@@ -1,4 +1,5 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
+import { DepartmentMemberPosition } from '@shega/lms/enums/department-member-position-type.enums';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Department } from './department.entity';
 import { OrganizationMembers } from './organization-member.entity';
@@ -38,8 +39,12 @@ export class DepartmentMember extends BaseModel {
     @Column()
     memberId: string;
 
-    @Column({ nullable: true })
-    position: string;
+    @Column({
+        type: 'enum',
+        enum: DepartmentMemberPosition,
+        nullable: true,
+    })
+    position: DepartmentMemberPosition;
 
     @Column({ type: 'timestamp', nullable: true })
     startDate: string;
