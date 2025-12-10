@@ -96,7 +96,7 @@ export class AttendanceController {
     ) {
         return this.attendanceService.findDates(
             classId,
-            CurrentUser.getActiveYear(user),
+            CurrentUser.getActiveYear(user, false),
         );
     }
 

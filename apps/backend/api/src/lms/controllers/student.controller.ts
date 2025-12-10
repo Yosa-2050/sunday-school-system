@@ -100,7 +100,7 @@ export class StudentController {
         return await this.studentService.importStudents(
             file,
             id,
-            CurrentUser.getActiveYear(req),
+            CurrentUser.getActiveYear(req, false),
         );
     }
 

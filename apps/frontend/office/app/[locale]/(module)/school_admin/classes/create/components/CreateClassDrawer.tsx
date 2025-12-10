@@ -15,7 +15,7 @@ import { IconCheck, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     type ProgramResponse,
-    fetchRootClasses,
+    fetchRootClassesSchoolAdmin,
 } from 'app/[locale]/_api/admin/fetch-programs';
 import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -55,9 +55,8 @@ export function CreateClassDrawer({
         const getClasses = async () => {
             try {
                 // setLoadingYears(true);
-                const data: ProgramResponse[] = await fetchRootClasses(
-                    programId ?? '',
-                );
+                const data: ProgramResponse[] =
+                    await fetchRootClassesSchoolAdmin(programId ?? '');
                 setClasses(data);
             } catch (err) {
                 //console.error('Failed to fetch calendar years', err);

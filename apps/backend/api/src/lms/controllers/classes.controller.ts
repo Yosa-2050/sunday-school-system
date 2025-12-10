@@ -40,7 +40,7 @@ export class ClassController {
     }
 
     @Roles(UserRoleType.ProgramAdmin)
-    @Get('root/:programType')
+    @Get('root')
     findAllRootByProgram(@Request() req) {
         return this.classService.findAllRootClassByProgram(
             CurrentUser.getProgramId(req),
