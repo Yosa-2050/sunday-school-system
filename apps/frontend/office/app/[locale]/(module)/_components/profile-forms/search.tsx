@@ -19,7 +19,11 @@ import type {
     UserResponse,
 } from '../../school_admin/students/schemas/type';
 
-export default function SearchProfilePage() {
+type Props = {
+    onSelect?: (profile: UserResponse) => void;
+};
+
+export default function SearchProfilePage({ onSelect }: Props) {
     const [showSearch, setShowSearch] = useState(true);
     const [isSearching, setIsSearching] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -76,6 +80,9 @@ export default function SearchProfilePage() {
             email: user?.email || '',
         });
         setShowSearch(false);
+        if (onSelect) {
+            onSelect(user);
+        }
     };
 
     const handleClearSelection = () => {
@@ -131,15 +138,17 @@ export default function SearchProfilePage() {
                             <Table striped withColumnBorders highlightOnHover>
                                 <Table.Thead>
                                     <Table.Tr>
+                                        <Table.Th>No</Table.Th>
                                         <Table.Th>Name</Table.Th>
                                         <Table.Th>Email</Table.Th>
-                                        <Table.Th>ID Number</Table.Th>
+                                        <Table.Th>Phone Number</Table.Th>
                                         <Table.Th>Action</Table.Th>
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
-                                    {searchResults.map((profile) => (
+                                    {searchResults.map((profile, index) => (
                                         <Table.Tr key={profile.profile.id}>
+                                            <Table.Td>{index + 1}</Table.Td>
                                             <Table.Td>
                                                 {profile.profile.firstName ||
                                                     ''}{' '}
@@ -182,34 +191,32 @@ export default function SearchProfilePage() {
                         )}
                     </>
                 ) : (
-                    <>
-                        {selectedProfile && (
-                            <Box
-                                p="sm"
-                                bg="blue.0"
-                                style={{ borderRadius: '6px' }}
-                                mb="md"
-                            >
-                                <Group justify="space-between">
-                                    <Text size="sm">
-                                        Using existing profile:{' '}
-                                        <strong>
-                                            {selectedProfile.profile?.firstName}{' '}
-                                            {selectedProfile.profile?.lastName}
-                                        </strong>
-                                    </Text>
-                                    <ActionIcon
-                                        variant="subtle"
-                                        color="red"
-                                        size="sm"
-                                        onClick={handleClearSelection}
-                                    >
-                                        <IconX size={16} />
-                                    </ActionIcon>
-                                </Group>
-                            </Box>
-                        )}
-                    </>
+                    selectedProfile && (
+                        <Box
+                            p="sm"
+                            bg="blue.0"
+                            style={{ borderRadius: '6px' }}
+                            mb="md"
+                        >
+                            <Group justify="space-between">
+                                <Text size="sm">
+                                    Using existing profile:{' '}
+                                    <strong>
+                                        {selectedProfile.profile?.firstName}{' '}
+                                        {selectedProfile.profile?.lastName}
+                                    </strong>
+                                </Text>
+                                <ActionIcon
+                                    variant="subtle"
+                                    color="red"
+                                    size="sm"
+                                    onClick={handleClearSelection}
+                                >
+                                    <IconX size={16} />
+                                </ActionIcon>
+                            </Group>
+                        </Box>
+                    )
                 )}
             </Box>
         </div>

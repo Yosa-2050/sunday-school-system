@@ -10,4 +10,5 @@ export type DepartmentResponse = {
 export type CreateDepartment = {
     name: string;
     description: string;
+    parentId?: string;
 };

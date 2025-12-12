@@ -1,5 +1,6 @@
 import { fetcher } from '@shega/shared';
 import type { StudentByIdResponse } from 'app/[locale]/(module)/school_admin/students/schemas/type';
+import type { IdSuccessResponse } from 'app/[locale]/_api/admin/fetch-programs';
 import type {
     CreateMemberRequest,
     CreateRelationRequest,
@@ -9,19 +10,21 @@ import type {
 export const CreateMemberApi = async (
     formdata: CreateMemberRequest,
     relationFormData: CreateRelationRequest,
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-): Promise<any> => {
+): Promise<IdSuccessResponse> => {
     const payLoad = {
         ...formdata,
         ...relationFormData,
     };
-    const response = await fetcher('/organization-member/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+    const response = await fetcher<IdSuccessResponse>(
+        '/organization-member/create',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payLoad),
         },
-        body: JSON.stringify(payLoad),
-    });
+    );
     return response;
 };
 

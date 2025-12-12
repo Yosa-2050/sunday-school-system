@@ -40,6 +40,12 @@ export const Menus = (): MenuTree[] => {
             role: 'administrator',
         },
         {
+            label: t('assignMember'),
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
+            link: '/admin/assign-member',
+            role: 'administrator',
+        },
+        {
             label: t('rootClass'),
             icon: <IconClipboardList stroke={1.4} size={20} />,
             link: '/school_admin/root_classes',
@@ -100,6 +106,12 @@ export const Menus = (): MenuTree[] => {
             label: t('memberManagement'),
             icon: <IconUsersGroup stroke={1.4} size={20} />,
             link: '/admin/members',
+            role: 'school_admin',
+        },
+        {
+            label: t('assignMember'),
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
+            link: '/admin/assign-member',
             role: 'school_admin',
         },
         {

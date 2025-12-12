@@ -14,6 +14,7 @@ export type StudentResponse = {
 };
 
 export interface UserResponse {
+    id: string;
     email?: string;
     profile: ProfileResponse;
 }

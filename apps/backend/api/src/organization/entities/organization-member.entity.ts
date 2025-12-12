@@ -1,9 +1,10 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Profile } from '@shega/users/entities/profile.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationMemberType } from '../enums/employee-type.enum';
 import { Branch } from './branch.entity';
+import { DepartmentMember } from './department-member.entity';
 import { Organization } from './organization.entity';
 
 @Entity()
@@ -27,4 +28,10 @@ export class OrganizationMembers extends BaseModel {
 
     @ManyToOne((type) => Branch, { lazy: true, nullable: true })
     branch: Branch;
+
+    @OneToMany(
+        () => DepartmentMember,
+        (dm) => dm.member,
+    )
+    departmentMembers: DepartmentMember[];
 }

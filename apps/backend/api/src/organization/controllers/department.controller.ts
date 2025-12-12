@@ -6,8 +6,9 @@ import {
     Param,
     Patch,
     Post,
+    Request,
 } from '@nestjs/common';
-import { Public } from '@shega/auth/jwt-public';
+import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -15,7 +16,6 @@ import { AddDepartmentRequestDto } from '../dto/request/add-department.request.d
 // biome-ignore lint/style/useImportType: <explanation>
 import { DepartmentService } from '../services/department.service';
 
-@Public()
 @Controller('department')
 export class DepartmentController {
     constructor(
@@ -24,18 +24,34 @@ export class DepartmentController {
     ) {}
 
     @Post()
-    create(@Body() dto: AddDepartmentRequestDto) {
-        return this.departmentService.create(dto);
+    create(@Body() dto: AddDepartmentRequestDto, @Request() req) {
+        return this.departmentService.create(
+            dto,
+            CurrentUser.getOrganizationId(req, true),
+        );
     }
 
     @Get()
-    findAll() {
-        return this.departmentService.findAll();
+    findAll(@Request() req) {
+        return this.departmentService.findAll(
+            CurrentUser.getOrganizationId(req, true),
+        );
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.departmentService.findOne(id);
+    findOne(@Param('id') id: string, @Request() req) {
+        return this.departmentService.findOne(
+            id,
+            CurrentUser.getOrganizationId(req, true),
+        );
+    }
+
+    @Get('byParent/:id')
+    findByParent(@Param('id') id: string, @Request() req) {
+        return this.departmentService.findAllByParentId(
+            id,
+            CurrentUser.getOrganizationId(req, true),
+        );
     }
 
     @Patch(':id')
