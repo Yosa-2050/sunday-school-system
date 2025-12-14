@@ -3,11 +3,13 @@
 import {
     ActionIcon,
     Button,
+    Checkbox,
     FileButton,
     Group,
     Loader,
     Menu,
-    Select,
+    Modal,
+    Stack,
     Table,
     Text,
 } from '@mantine/core';
@@ -19,14 +21,13 @@ import {
     IconUpload,
     IconX,
 } from '@tabler/icons-react';
-import {
-    type CalendarYearResponse,
-    fetchCalendarYearsSchoolAdmin,
-} from 'app/[locale]/_api/admin/fetch-programs';
+import type { CalendarYearResponse } from 'app/[locale]/_api/admin/fetch-programs';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import CreateProfileModal from '../students/components/create-profile.modal';
+import SearchProfilePage from '../../_components/profile-forms/search';
+import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
+import type { UserResponse } from '../students/schemas/type';
 import { createTeacherApi, fetchTeacherApi } from './schema/api';
 import type { TeacherResponse } from './schema/type';
 
@@ -40,34 +41,49 @@ export default function TeacherPage() {
     const [loadingTeachers, setLoadingTeachers] = useState(false);
     const [createTeacherModalOpened, setCreateTeacherModalOpened] =
         useState(false);
+    const [programId, setProgramId] = useState<string | null>(null);
+    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
+    const [selectedProfiles, setSelectedProfiles] = useState<
+        (UserResponse & { checked: boolean })[]
+    >([]);
 
     const router = useRouter();
 
-    // Fetch calendar years
-    useEffect(() => {
-        const getCalendarYears = async () => {
-            try {
-                setLoadingYears(true);
-                const data: CalendarYearResponse[] =
-                    await fetchCalendarYearsSchoolAdmin('');
-                setCalendarYears(data);
-                const active = data.find((y) => y.isActive);
-                if (active) {
-                    setCalendarYear(active.name);
-                }
-            } finally {
-                setLoadingYears(false);
-            }
-        };
+    const handleAssignTeachers = async () => {
+        if (!(programId && calendarYearId)) {
+            return;
+        }
+        const memberIds = selectedProfiles
+            .filter((p) => p.checked)
+            .map((p) => p.id);
 
-        getCalendarYears();
-    }, []);
+        try {
+            await createTeacherApi({
+                calendarYearId,
+                memberIds,
+            });
+            setSelectedProfiles([]);
+            setCreateTeacherModalOpened(false);
+            handleFetchTeachers();
+        } catch (error) {
+            //handle error
+        }
+    };
+
+    useEffect(() => {
+        if (!calendarYearId) {
+            setTeachers([]);
+        }
+    }, [calendarYearId]);
 
     // Fetch teachers manually (on button click)
     const handleFetchTeachers = async () => {
+        if (!calendarYearId) {
+            return;
+        }
         try {
             setLoadingTeachers(true);
-            const data = await fetchTeacherApi();
+            const data = await fetchTeacherApi(calendarYearId);
             setTeachers(data);
         } finally {
             setLoadingTeachers(false);
@@ -77,6 +93,26 @@ export default function TeacherPage() {
     const handleTeacherCreated = () => {
         setCreateTeacherModalOpened(false);
         handleFetchTeachers(); // Refresh the list
+    };
+
+    const toggleCheckbox = (id: string) => {
+        setSelectedProfiles((prev) =>
+            prev.map((p) =>
+                p.profile.id === id ? { ...p, checked: !p.checked } : p,
+            ),
+        );
+    };
+
+    const handleSelectProfile = (profile: UserResponse) => {
+        setSelectedProfiles((prev) => {
+            if (prev.some((p) => p.profile.id === profile.profile.id)) {
+                return prev;
+            }
+            return [
+                ...prev,
+                { ...profile, checked: true, position: undefined },
+            ];
+        });
     };
 
     const rows = teachers.map((teacher) => (
@@ -131,42 +167,31 @@ export default function TeacherPage() {
         <div>
             {/* Calendar Year */}
             <Group mb="md">
-                <Text fw={500}>Calendar Year:</Text>
-                {loadingYears ? (
-                    <Loader size="sm" />
-                ) : (
-                    <Select
-                        value={calendarYear}
-                        data={calendarYears.map((y) => ({
-                            value: y.name,
-                            label: y.name,
-                        }))}
-                        disabled
-                        onChange={setCalendarYear}
-                    />
-                )}
-            </Group>
-
-            {/* Load Teachers Button */}
-            <Group mb="md" justify="space-between">
-                <Text fw={500}>Teachers</Text>
-                <Button
-                    variant="light"
-                    onClick={handleFetchTeachers}
-                    leftSection={<IconPlus size={16} />}
-                >
-                    Load Teachers
-                </Button>
+                <ProgramAndCalendarSelector
+                    onChange={({
+                        programId,
+                        calenderYearId,
+                        calenderYearName,
+                    }) => {
+                        setProgramId(programId);
+                        setCalendarYear(calenderYearName);
+                        setCalendarYearId(calenderYearId);
+                    }}
+                />
             </Group>
 
             {/* Import Button */}
             <Group mb="md" justify="space-between">
-                <Text fw={500}>Teacher Management</Text>
+                <Text fw={500}> Teacher Management</Text>
                 <Group>
+                    <Button variant="light" onClick={handleFetchTeachers}>
+                        Load Teachers
+                    </Button>
                     <Button
                         variant="light"
                         leftSection={<IconPlus size={16} />}
                         onClick={() => setCreateTeacherModalOpened(true)}
+                        disabled={!programId}
                     >
                         Add New Teacher
                     </Button>
@@ -220,20 +245,39 @@ export default function TeacherPage() {
                 </Table.Tbody>
             </Table>
 
-            {/* Create Teacher Modal */}
-            <CreateProfileModal
+            <Modal
                 opened={createTeacherModalOpened}
                 onClose={() => {
                     setCreateTeacherModalOpened(false);
-                    handleFetchTeachers();
+                    // resetForm;
                 }}
-                onCreated={handleTeacherCreated}
-                mutationFn={({ profileId, data }) =>
-                    createTeacherApi({ profileId, data })
-                }
-                title="Add Teacher"
-                type="Teacher"
-            />
+                size="lg"
+                centered
+            >
+                <Text> Assign Teacher</Text>
+                <SearchProfilePage onSelect={handleSelectProfile} />
+                {selectedProfiles.length > 0 && (
+                    <Stack mt="md">
+                        {selectedProfiles.map((profile) => (
+                            <Group key={profile.profile.id} align="center">
+                                <Checkbox
+                                    key={profile.profile.id}
+                                    checked={profile.checked}
+                                    onChange={() =>
+                                        toggleCheckbox(profile.profile.id)
+                                    }
+                                    label={`${profile.profile.firstName} ${profile.profile.lastName}`}
+                                />
+                            </Group>
+                        ))}
+                    </Stack>
+                )}
+                {selectedProfiles.some((p) => p.checked) && (
+                    <Button mt="md" onClick={handleAssignTeachers}>
+                        Assign Teacher
+                    </Button>
+                )}
+            </Modal>
         </div>
     );
 }

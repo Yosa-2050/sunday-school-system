@@ -5,6 +5,7 @@ import {
     Param,
     ParseUUIDPipe,
     Post,
+    Query,
     Request,
 } from '@nestjs/common';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
@@ -25,7 +26,22 @@ export class TeacherController {
     createTeacher(@Body() dto: CreateEmployeeDto, @Request() req) {
         return this.teacherService.CreateTeacher(
             dto,
-            CurrentUser.getActiveYear(req),
+            CurrentUser.getActiveYear(req, false),
+        );
+    }
+
+    @Roles(UserRoleType.SchoolAdmin)
+    @Post('assign')
+    assignTeachers(
+        @Body()
+        body: {
+            calendarYearId: string;
+            memberIds: string[];
+        },
+    ) {
+        return this.teacherService.assignTeachers(
+            body.calendarYearId,
+            body.memberIds,
         );
     }
 
@@ -42,8 +58,8 @@ export class TeacherController {
     }
 
     @Get()
-    findTeachers(@Request() req) {
-        return this.teacherService.findTeachers(CurrentUser.getActiveYear(req));
+    findTeachers(@Query('calendarYearId') calendarYearId: string) {
+        return this.teacherService.findTeachers(calendarYearId);
     }
 
     @Get('/:id')

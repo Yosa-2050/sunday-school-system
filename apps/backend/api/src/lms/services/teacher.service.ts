@@ -38,6 +38,40 @@ export class TeacherService {
         return saved;
     }
 
+    async assignTeachers(calendarYearId: string, memberIds: string[]) {
+        const calendarYear =
+            await this.lmsService.calendarYearById(calendarYearId);
+
+        const createdAssignments = [];
+
+        for (const id of memberIds) {
+            // Ensure teacher exists
+            const teacher = await this.teacherRepo.findOne({
+                where: { member: { id }, isActive: true },
+                relations: ['member'],
+            });
+
+            if (teacher) {
+                continue;
+            }
+            const member = await this.memberService.findByIdOrThrow(id);
+
+            // Create assignment model
+            const model = this.teacherRepo.create({
+                member: member,
+                year: calendarYear,
+            });
+
+            const saved = await this.teacherRepo.save(model);
+            createdAssignments.push(saved.id);
+        }
+
+        return {
+            success: true,
+            assigned: createdAssignments,
+        };
+    }
+
     async addExistingTeacher(memberId: string, yearId: string) {
         const cYear = await this.lmsService.calendarYearById(yearId);
         const member = await this.memberService.findByIdOrThrow(memberId);

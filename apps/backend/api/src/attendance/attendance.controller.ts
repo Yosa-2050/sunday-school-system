@@ -74,7 +74,7 @@ export class AttendanceController {
     ) {
         return this.attendanceService.findAttendanceList(
             getAttendance,
-            CurrentUser.getActiveYear(user),
+            CurrentUser.getActiveYear(user, false),
         );
     }
 
@@ -85,7 +85,7 @@ export class AttendanceController {
     ) {
         return this.attendanceService.findAttendanceDetailList(
             detail,
-            CurrentUser.getActiveYear(user),
+            CurrentUser.getActiveYear(user, false),
         );
     }
 

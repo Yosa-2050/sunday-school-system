@@ -5,7 +5,7 @@ import { CalendarYear } from './calendar-year.entity';
 
 @Entity()
 export class Teacher extends BaseModel {
-    @ManyToOne(() => OrganizationMembers, { eager: true, cascade: true })
+    @ManyToOne(() => OrganizationMembers, { eager: true })
     member: OrganizationMembers;
 
     @ManyToOne(() => CalendarYear, { lazy: true })
