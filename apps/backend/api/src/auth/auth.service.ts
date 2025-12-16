@@ -82,6 +82,8 @@ export class AuthService {
                 break;
             case UserRoleType.SuperAdmin:
                 break;
+            case UserRoleType.Teacher:
+                break;
             case UserRoleType.SchoolAdmin:
                 details = await this.lmsService.getSchoolAdminDetail(
                     user.profile.id,
