@@ -20,6 +20,32 @@ import { TeacherService } from './teacher.service';
 
 @Injectable()
 export class SubjectService {
+    findOneByTeacherId(teacherId: string) {
+        return this.teacherAssignmentRepo.findBy({
+            teacher: { id: teacherId },
+        });
+    }
+
+    async findClassesAndSubjectForTeacher(teacherId: string) {
+        const assignment = await this.teacherAssignmentRepo.findBy({
+            id: teacherId,
+        });
+
+        const classArray = [];
+        const subjectArray = [];
+        for (const key in assignment) {
+            const assign = assignment[key];
+            const classes = assign.subjectAssignment.class;
+            const subject = assign.subjectAssignment.subject;
+            classArray.push(classes);
+            subjectArray.push(subject);
+        }
+        return {
+            class: classArray,
+            subject: subjectArray,
+        };
+    }
+
     constructor(
         @InjectRepository(Subjects) private subjectRepo: Repository<Subjects>,
         @InjectRepository(Program) private programRepo: Repository<Program>,
@@ -161,10 +187,11 @@ export class SubjectService {
             throw new EntityAlreadyExistsException('Assigned Subject');
         }
         const cls = await this.classService.findOne(dto.classId, year.id);
-        const subject = await this.findOneByProgramIdOrThrow(
-            dto.subjectId,
-            programId,
-        );
+        // const subject = await this.findOneByProgramIdOrThrow(
+        //     dto.subjectId,
+        //     programId,
+        // );
+        const subject = await this.subjectRepo.findOneBy({ id: dto.subjectId });
         const teacher = await this.teacherService.findTeacherById(
             dto.teacherId,
             year.id,
