@@ -63,27 +63,21 @@ export function ProgramAndCalendarSelector({ onChange }: Props) {
     };
     return (
         <Group mb="md">
-            {user?.user?.role === 'school_admin' ? (
-                <>
-                    <Text fw={500}>Programs:</Text>
-                    <Select
-                        value={programId}
-                        data={programs.map((p) => ({
-                            value: p.id,
-                            label: p.name,
-                        }))}
-                        onChange={(val) => {
-                            setProgramId(val);
-                            setCalenderYearName(null);
-                            setCalendarYearId(null);
+            <Text fw={500}>Programs:</Text>
+            <Select
+                value={programId}
+                data={programs.map((p) => ({
+                    value: p.id,
+                    label: p.name,
+                }))}
+                onChange={(val) => {
+                    setProgramId(val);
+                    setCalenderYearName(null);
+                    setCalendarYearId(null);
 
-                            loadCalendarYears(val ?? '');
-                        }}
-                    />
-                </>
-            ) : (
-                <></>
-            )}
+                    loadCalendarYears(val ?? '');
+                }}
+            />
             <Text fw={500}>Calendar Year:</Text>
 
             {loadingYears ? (

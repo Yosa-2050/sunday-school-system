@@ -26,6 +26,7 @@ import { type Data, login } from 'app/[locale]/_api/auth/login';
 import { getUserAction } from 'app/[locale]/_api/get-user-action';
 import { setCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
+import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -64,33 +65,24 @@ const Login = () => {
     }) => {
         setUser({
             ...user,
-            role: data.role as
-                | 'administrator'
-                | 'school_admin'
-                | 'super_admin'
-                | 'program_admin'
-                | 'mentor',
+            role: data.role,
             id: user.id ?? '',
             createdBy: user.createdBy ?? '',
         });
     };
 
-    const handleRole = (
-        role:
-            | 'administrator'
-            | 'school_admin'
-            | 'super_admin'
-            | 'program_admin'
-            | 'mentor',
-    ) => {
-        if (role === 'administrator') {
+    const handleRole = (role: RoleEnum) => {
+        if (role === RoleEnum.administrator) {
             router.push('/admin/dashboard');
-        } else if (role === 'school_admin' || role === 'program_admin') {
+        } else if (
+            role === RoleEnum.school_admin ||
+            role === RoleEnum.program_admin
+        ) {
             router.push(' /school_admin/dashboard');
-        } else if (role === 'super_admin') {
+        } else if (role === RoleEnum.super_admin) {
             router.push('/admin/dashboard');
-        } else if (role === 'mentor') {
-            router.push('/mentor/mentorship');
+        } else if (role === RoleEnum.teacher) {
+            router.push('/teacher/dashboard');
         }
     };
 

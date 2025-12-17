@@ -27,6 +27,7 @@ const useIsAuthorized = ({ resourceRole, userRole }: UseIsAuthorizedProps) => {
             administrator: '/admin/dashboard',
             school_admin: '/school_admin/dashboard',
             program_admin: '/school_admin/dashboard',
+            teacher: '/teacher/dashboard',
         };
 
         return redirect({ href: dashboardPaths[userRole] || '/login', locale });

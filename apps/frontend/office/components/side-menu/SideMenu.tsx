@@ -1,11 +1,14 @@
 'use client';
+
 import { ScrollArea, useMantineColorScheme } from '@mantine/core';
 import { useToggle } from '@mantine/hooks';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import type { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { useMemo } from 'react';
 import { cn } from 'utilities/cn';
 import classes from './SideMenu.module.css';
+
 export type MenuTree = {
     isGroup?: boolean;
     hasMore?: boolean;
@@ -15,18 +18,13 @@ export type MenuTree = {
     isExternal?: string;
     children?: MenuTree[];
     pathMatch?: number;
-    role:
-        | 'super_admin'
-        | 'administrator'
-        | 'school_admin'
-        | 'program_admin'
-        | 'mentor';
+    role: RoleEnum;
 };
 
 type MenuItemProps = {
     data: MenuTree;
     level?: number;
-    role: 'super_admin' | 'administrator' | 'school_admin' | 'program_admin';
+    role: RoleEnum;
     isSidebarOpen: boolean;
 };
 
@@ -217,7 +215,7 @@ export function SideMenu({
     isSidebarOpen,
 }: Readonly<{
     menu: MenuTree[];
-    role: 'super_admin' | 'administrator' | 'school_admin' | 'program_admin';
+    role: RoleEnum;
     isSidebarOpen: boolean;
 }>) {
     return (

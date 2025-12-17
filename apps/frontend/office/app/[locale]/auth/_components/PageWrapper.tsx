@@ -6,6 +6,7 @@ import { useAuth } from '@shega/ui';
 import { getCookie } from 'cookies-next';
 import Autoplay from 'embla-carousel-autoplay';
 import { useTranslations } from 'next-intl';
+import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import type React from 'react';
 import { type JSX, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';
@@ -24,10 +25,10 @@ export default function PageWrapper({
     const { user } = useAuth();
 
     if (user && role) {
-        if (role === 'administrator') {
+        if (role === RoleEnum.administrator) {
             window.location.href = '/admin/dashboard';
         }
-        if (role === 'school_admin') {
+        if (role === RoleEnum.school_admin) {
             window.location.href = '/school_admin/dashboard';
         }
     }

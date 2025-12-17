@@ -1,3 +1,5 @@
+import type { RoleEnum } from './role';
+
 export type User = {
     id: string;
     createdBy: string;
@@ -19,13 +21,11 @@ export type User = {
     phoneNumber: string | null;
     profile_picture_id: string | null;
     roles: Record<string, string>; // Adjust based on the structure of roles
-    role:
-        | 'administrator'
-        | 'school_admin'
-        | 'super_admin'
-        | 'program_admin'
-        | 'mentor';
+    role: RoleEnum;
     organizationId: string | null;
+    details: {
+        programs?: string[];
+    };
     user: {
         id: string;
         isActive: boolean;

@@ -1,4 +1,5 @@
 import { fetcher } from '@shega/shared';
+import type { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 
 type LoginRequest = {
     username: string;
@@ -7,12 +8,7 @@ type LoginRequest = {
 };
 
 export type Data = {
-    role:
-        | 'administrator'
-        | 'school_admin'
-        | 'super_admin'
-        | 'program_admin'
-        | 'mentor';
+    role: RoleEnum;
     email: string;
     access_token: string;
     pwdChangeRequired: boolean;
