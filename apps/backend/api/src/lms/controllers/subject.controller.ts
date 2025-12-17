@@ -11,14 +11,13 @@ import {
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 // biome-ignore lint/style/useImportType: <explanation>
 import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
-import { Roles } from '@shega/auth/decorators/roles.decorator';
-import { UserRoleType } from '@shega/users/enums/user-role.enum';
+import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddSubjectAssignmentDto } from '../dto/request/add-subject-assignment.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { SubjectService } from '../services/subject.service';
 
-@Roles(UserRoleType.SchoolAdmin)
+// @Roles(UserRoleType.SchoolAdmin)
 @Controller('subject')
 export class SubjectController {
     constructor(private readonly subjectService: SubjectService) {}
@@ -53,6 +52,15 @@ export class SubjectController {
         return this.subjectService.findAllRootSubjects(programId);
     }
 
+    @Public()
+    @Get('assignment/:teacherId')
+    findOneByTeacherId(
+        @Request() req,
+        @Param('teacherId', new ParseUUIDPipe()) teacherId: string,
+    ) {
+        return this.subjectService.findOneByTeacherId(teacherId);
+    }
+
     //TODO: validate the program id
     @Post('assignSubject/:programId')
     assignSubject(
@@ -72,8 +80,8 @@ export class SubjectController {
         return this.subjectService.updateSubjectAssignment(
             id,
             dto,
-            CurrentUser.getProgramId(req),
-            CurrentUser.getActiveYear(req),
+            CurrentUser.getProgramId(req, false),
+            CurrentUser.getActiveYear(req, false),
         );
     }
 

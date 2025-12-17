@@ -3,9 +3,9 @@ import { BadRequestException } from '@nestjs/common';
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CurrentUser {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    static getActiveYear(req: any, validate = true): string {
-        const calendarYear = req?.user?.details?.calendarYear;
-        if (!calendarYear) {
+    static getActiveYears(req: any, validate = true): string[] {
+        const calendarYears = req?.user?.details?.calendarYears;
+        if (!calendarYears) {
             if (validate) {
                 throw new BadRequestException(
                     'Unable to find active calendar year id',
@@ -13,11 +13,36 @@ export class CurrentUser {
             }
             return null;
         }
-        return calendarYear;
+        return calendarYears;
+    }
+
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static getActiveYear(req: any, validate = true): string {
+        const calendarYears = req?.user?.details?.calendarYears;
+        if (!calendarYears) {
+            if (validate) {
+                throw new BadRequestException(
+                    'Unable to find active calendar year id',
+                );
+            }
+            return null;
+        }
+        return calendarYears;
     }
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     static getProgramId(req: any, validate = true): string {
         const programId = req?.user?.details?.programId;
+        if (!programId) {
+            if (validate) {
+                throw new BadRequestException('Unable to find program id');
+            }
+            return null;
+        }
+        return programId;
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static getPrograms(req: any, validate = true): string[] {
+        const programId = req?.user?.details?.programs;
         if (!programId) {
             if (validate) {
                 throw new BadRequestException('Unable to find program id');

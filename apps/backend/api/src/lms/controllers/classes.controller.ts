@@ -79,10 +79,15 @@ export class ClassController {
         return this.classService.create(dto, calendarYearId);
     }
 
-    @Roles(UserRoleType.SchoolAdmin)
+    //TODO
+    @Roles(
+        UserRoleType.SchoolAdmin,
+        UserRoleType.Teacher,
+        UserRoleType.Administrator,
+        UserRoleType.SuperAdmin,
+    )
     @Get('main/:calendarYearId')
     findAll(
-        @Request() req,
         @Param('calendarYearId', new ParseUUIDPipe()) calendarYearId: string,
     ) {
         return this.classService.findAll(calendarYearId);

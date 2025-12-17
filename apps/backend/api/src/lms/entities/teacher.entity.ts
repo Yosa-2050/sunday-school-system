@@ -1,7 +1,8 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { OrganizationMembers } from '@shega/organization/entities/organization-member.entity';
-import { Entity, ManyToOne } from 'typeorm';
+import { Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CalendarYear } from './calendar-year.entity';
+import { TeacherAssignment } from './teacher-assignment.entity';
 
 @Entity()
 export class Teacher extends BaseModel {
@@ -10,4 +11,13 @@ export class Teacher extends BaseModel {
 
     @ManyToOne(() => CalendarYear, { lazy: true })
     year: CalendarYear;
+
+    @OneToMany(
+        () => TeacherAssignment,
+        (teacher) => teacher.teacher,
+        {
+            lazy: true,
+        },
+    )
+    teachersAssignment: TeacherAssignment[];
 }
