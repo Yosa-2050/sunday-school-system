@@ -40,6 +40,7 @@ export class ClassService {
         }
         const existingClass = await this.classRepo.findOneBy({
             root: { id: dto.rootId },
+            calendarYear: { id: yearId },
         });
         if (existingClass) {
             throw new EntityAlreadyExistsException('Root class added');

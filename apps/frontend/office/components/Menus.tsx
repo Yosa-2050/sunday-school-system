@@ -9,337 +9,275 @@ import {
     IconUsersGroup,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
+import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import type { MenuTree } from './side-menu/SideMenu';
 
 export const Menus = (): MenuTree[] => {
     const t = useTranslations('menus');
 
     return [
+        // Super Admin
         {
             label: t('dashboard'),
             icon: <IconHome stroke={1.4} size={20} />,
             link: '/admin/dashboard',
-            role: 'administrator',
+            role: RoleEnum.super_admin,
+        },
+        {
+            label: t('organization'),
+            icon: <IconUserSquare stroke={1.4} size={20} />,
+            link: '/admin/organizations',
+            role: RoleEnum.super_admin,
         },
         {
             label: t('users'),
             icon: <IconUsersGroup stroke={1.4} size={20} />,
             link: '/admin/users',
-            role: 'administrator',
+            role: RoleEnum.super_admin,
         },
         {
             label: t('programManagement'),
             icon: <IconUserSquare stroke={1.4} size={20} />,
             link: '/admin/programs',
-            role: 'administrator',
+            role: RoleEnum.super_admin,
         },
         {
             label: t('memberManagement'),
             icon: <IconUsersGroup stroke={1.4} size={20} />,
             link: '/admin/members',
-            role: 'administrator',
+            role: RoleEnum.super_admin,
         },
         {
             label: t('assignMember'),
             icon: <IconUsersGroup stroke={1.4} size={20} />,
             link: '/admin/assign-member',
-            role: 'administrator',
+            role: RoleEnum.super_admin,
         },
         {
             label: t('rootClass'),
             icon: <IconClipboardList stroke={1.4} size={20} />,
             link: '/school_admin/root_classes',
-            role: 'administrator',
+            role: RoleEnum.super_admin,
         },
         {
             label: t('notifications'),
             icon: <IconBell stroke={1.4} size={20} />,
             link: '/admin/notifications',
-            role: 'administrator',
+            role: RoleEnum.super_admin,
         },
 
-        {
-            isGroup: true,
-            label: 'Lookup',
-            role: 'administrator',
-            children: [
-                {
-                    label: t('locations'),
-                    icon: <IconMapPin stroke={1.4} size={20} />,
-                    link: '/admin/locations',
-                    role: 'administrator',
-                },
-                {
-                    label: t('skills'),
-                    icon: <IconStar stroke={1.4} size={20} />,
-                    link: '/admin/skills',
-                    role: 'administrator',
-                },
-                {
-                    label: t('categories'),
-                    icon: <IconCategory stroke={1.4} size={20} />,
-                    link: '/admin/categories',
-                    role: 'administrator',
-                },
-            ],
-        },
-        // School Admin Role
+        // Administrator
         {
             label: t('dashboard'),
             icon: <IconHome stroke={1.4} size={20} />,
-            link: '/school_admin/dashboard',
-            role: 'school_admin',
+            link: '/admin/dashboard',
+            role: RoleEnum.administrator,
         },
         {
-            label: 'Department',
-            icon: <IconHome stroke={1.4} size={20} />,
-            link: '/school_admin/department',
-            role: 'school_admin',
+            label: t('users'),
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
+            link: '/admin/users',
+            role: RoleEnum.administrator,
         },
         {
             label: t('programManagement'),
-            icon: <IconHome stroke={1.4} size={20} />,
+            icon: <IconUserSquare stroke={1.4} size={20} />,
             link: '/admin/programs',
-            role: 'school_admin',
+            role: RoleEnum.administrator,
         },
         {
             label: t('memberManagement'),
             icon: <IconUsersGroup stroke={1.4} size={20} />,
             link: '/admin/members',
-            role: 'school_admin',
+            role: RoleEnum.administrator,
         },
         {
             label: t('assignMember'),
             icon: <IconUsersGroup stroke={1.4} size={20} />,
             link: '/admin/assign-member',
-            role: 'school_admin',
+            role: RoleEnum.administrator,
+        },
+        {
+            label: t('rootClass'),
+            icon: <IconClipboardList stroke={1.4} size={20} />,
+            link: '/school_admin/root_classes',
+            role: RoleEnum.administrator,
+        },
+        {
+            label: t('notifications'),
+            icon: <IconBell stroke={1.4} size={20} />,
+            link: '/admin/notifications',
+            role: RoleEnum.administrator,
+        },
+        {
+            isGroup: true,
+            label: 'Lookup',
+            role: RoleEnum.administrator,
+            children: [
+                {
+                    label: t('locations'),
+                    icon: <IconMapPin stroke={1.4} size={20} />,
+                    link: '/admin/locations',
+                    role: RoleEnum.administrator,
+                },
+                {
+                    label: t('skills'),
+                    icon: <IconStar stroke={1.4} size={20} />,
+                    link: '/admin/skills',
+                    role: RoleEnum.administrator,
+                },
+                {
+                    label: t('categories'),
+                    icon: <IconCategory stroke={1.4} size={20} />,
+                    link: '/admin/categories',
+                    role: RoleEnum.administrator,
+                },
+            ],
+        },
+
+        // School Admin
+        {
+            label: t('dashboard'),
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/school_admin/dashboard',
+            role: RoleEnum.school_admin,
+        },
+        {
+            label: 'Department',
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/school_admin/department',
+            role: RoleEnum.school_admin,
+        },
+        {
+            label: t('programManagement'),
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/admin/programs',
+            role: RoleEnum.school_admin,
+        },
+        {
+            label: t('memberManagement'),
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
+            link: '/admin/members',
+            role: RoleEnum.school_admin,
+        },
+        {
+            label: t('assignMember'),
+            icon: <IconUsersGroup stroke={1.4} size={20} />,
+            link: '/admin/assign-member',
+            role: RoleEnum.school_admin,
         },
         {
             isGroup: true,
             label: t('classManagement'),
-            role: 'school_admin',
+            role: RoleEnum.school_admin,
             children: [
                 {
                     label: t('class'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/classes',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
                 {
                     label: t('subject'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/subject',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
                 {
                     label: t('assignSubject'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/assign_subject',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
                 {
                     label: t('test'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/test',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
                 {
                     label: t('result'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/result',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
             ],
         },
         {
             isGroup: true,
             label: t('studentManagement'),
-            role: 'school_admin',
+            role: RoleEnum.school_admin,
             children: [
                 {
                     label: t('students'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/students',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
                 {
                     label: t('attendance'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/attendance',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
                 {
                     label: t('notifications'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/notification',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
             ],
         },
         {
             isGroup: true,
             label: t('teacherManagement'),
-            role: 'school_admin',
+            role: RoleEnum.school_admin,
             children: [
                 {
                     label: t('teacher'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/teacher',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
                 {
                     label: t('homeroom'),
                     icon: <IconClipboardList stroke={1.4} size={20} />,
                     link: '/school_admin/home_room_teacher',
-                    role: 'school_admin',
+                    role: RoleEnum.school_admin,
                 },
             ],
         },
 
-        // Program Admin Role
+        // Teacher role
         {
             label: t('dashboard'),
             icon: <IconHome stroke={1.4} size={20} />,
-            link: '/school_admin/dashboard',
-            role: 'program_admin',
+            link: '/teacher/dashboard',
+            role: RoleEnum.teacher,
         },
         {
-            label: 'Department',
+            label: t('attendance'),
             icon: <IconHome stroke={1.4} size={20} />,
-            link: '/school_admin/department',
-            role: 'program_admin',
+            link: '/lms/attendance',
+            role: RoleEnum.teacher,
         },
         {
-            isGroup: true,
-            label: t('classManagement'),
-            role: 'program_admin',
-            children: [
-                {
-                    label: t('class'),
-                    icon: <IconClipboardList stroke={1.4} size={20} />,
-                    link: '/school_admin/classes',
-                    role: 'program_admin',
-                },
-                {
-                    label: t('assignSubject'),
-                    icon: <IconClipboardList stroke={1.4} size={20} />,
-                    link: '/school_admin/assign_subject',
-                    role: 'program_admin',
-                },
-                {
-                    label: t('test'),
-                    icon: <IconClipboardList stroke={1.4} size={20} />,
-                    link: '/school_admin/test',
-                    role: 'program_admin',
-                },
-                {
-                    label: t('result'),
-                    icon: <IconClipboardList stroke={1.4} size={20} />,
-                    link: '/school_admin/result',
-                    role: 'program_admin',
-                },
-            ],
-        },
-        {
-            isGroup: true,
-            label: t('studentManagement'),
-            role: 'program_admin',
-            children: [
-                {
-                    label: t('students'),
-                    icon: <IconClipboardList stroke={1.4} size={20} />,
-                    link: '/school_admin/students',
-                    role: 'program_admin',
-                },
-                {
-                    label: t('attendance'),
-                    icon: <IconClipboardList stroke={1.4} size={20} />,
-                    link: '/school_admin/attendance',
-                    role: 'program_admin',
-                },
-                {
-                    label: t('notifications'),
-                    icon: <IconClipboardList stroke={1.4} size={20} />,
-                    link: '/school_admin/notification',
-                    role: 'program_admin',
-                },
-            ],
-        },
-        {
-            isGroup: true,
-            label: t('teacherManagement'),
-            role: 'program_admin',
-            children: [
-                {
-                    label: t('teacher'),
-                    icon: <IconClipboardList stroke={1.4} size={20} />,
-                    link: '/school_admin/teacher',
-                    role: 'program_admin',
-                },
-            ],
-        },
-
-        // Super Admin Roles
-        {
-            label: t('dashboard'),
+            label: t('test'),
             icon: <IconHome stroke={1.4} size={20} />,
-            link: '/admin/dashboard',
-            role: 'super_admin',
+            link: '/lms/test',
+            role: RoleEnum.teacher,
         },
         {
-            label: t('users'),
-            icon: <IconUsersGroup stroke={1.4} size={20} />,
-            link: '/admin/users',
-            role: 'super_admin',
-        },
-        {
-            label: t('organization'),
-            icon: <IconUsersGroup stroke={1.4} size={20} />,
-            link: '/admin/organizations',
-            role: 'super_admin',
-        },
-        {
-            label: t('programManagement'),
-            icon: <IconUserSquare stroke={1.4} size={20} />,
-            link: '/admin/programs',
-            role: 'super_admin',
+            label: t('result'),
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/lms/result',
+            role: RoleEnum.teacher,
         },
         {
             label: t('notifications'),
-            icon: <IconBell stroke={1.4} size={20} />,
-            link: '/admin/notifications',
-            role: 'super_admin',
-        },
-        {
-            label: t('rootClass'),
-            icon: <IconClipboardList stroke={1.4} size={20} />,
-            link: '/school_admin/root_classes',
-            role: 'super_admin',
-        },
-        {
-            isGroup: true,
-            label: 'Lookup',
-            role: 'super_admin',
-            children: [
-                {
-                    label: t('locations'),
-                    icon: <IconMapPin stroke={1.4} size={20} />,
-                    link: '/admin/locations',
-                    role: 'super_admin',
-                },
-                {
-                    label: t('skills'),
-                    icon: <IconStar stroke={1.4} size={20} />,
-                    link: '/admin/skills',
-                    role: 'super_admin',
-                },
-                {
-                    label: t('categories'),
-                    icon: <IconCategory stroke={1.4} size={20} />,
-                    link: '/admin/categories',
-                    role: 'super_admin',
-                },
-            ],
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/lms/notification',
+            role: RoleEnum.teacher,
         },
     ];
 };
