@@ -44,7 +44,7 @@ export function ProgramAndCalendarSelector({ onChange }: Props) {
     const loadCalendarYears = async (id: string) => {
         setCalenderYearName(null);
         setCalendarYearId(null);
-        setLoadingYears(true);
+        setLoadingYears(false);
         const data = await fetchCalendarYearsSchoolAdmin(id);
         setCalendarYears(data);
 

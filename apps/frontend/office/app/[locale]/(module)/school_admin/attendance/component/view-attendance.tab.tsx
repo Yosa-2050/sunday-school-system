@@ -116,6 +116,13 @@ export default function AttendanceView({
         enabled: false,
     });
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+        setSavedDates([]);
+        setSelectedDateRange([null, null]);
+        setAttendanceViewData([]);
+    }, [selectedClass, selectedSection]);
+
     return (
         <Box pt="md">
             <Group mb="md">

@@ -46,7 +46,6 @@ export class SubjectController {
 
     @Get('root/:programId')
     findAProgramRoot(
-        @Request() req,
         @Param('programId', new ParseUUIDPipe()) programId: string,
     ) {
         return this.subjectService.findAllRootSubjects(programId);

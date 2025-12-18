@@ -193,7 +193,7 @@ export default function TeacherPage() {
                         onClick={() => setCreateTeacherModalOpened(true)}
                         disabled={!programId}
                     >
-                        Add New Teacher
+                        Assign Teacher
                     </Button>
                     {/* biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation> */}
                     <FileButton onChange={() => {}} accept=".xlsx,.xls">
