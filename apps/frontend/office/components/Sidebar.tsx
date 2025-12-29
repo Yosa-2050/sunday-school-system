@@ -1,6 +1,7 @@
 import { Box, useComputedColorScheme } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import Link from 'next/link';
+import type { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { Menus } from './Menus';
 import { SideMenu } from './side-menu/SideMenu';
 
@@ -49,13 +50,7 @@ export const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
                 <SideMenu
                     isSidebarOpen={isSidebarOpen}
                     menu={Menus()}
-                    role={
-                        user?.role as
-                            | 'administrator'
-                            | 'school_admin'
-                            | 'program_admin'
-                            | 'super_admin'
-                    }
+                    role={user?.role as RoleEnum}
                 />
             </Box>
             {isSidebarOpen && (

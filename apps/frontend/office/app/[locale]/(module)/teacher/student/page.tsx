@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { ProgramAndCalendarSelector } from '../../school_admin/classes/create/components/programAndCalendar';
 import {
