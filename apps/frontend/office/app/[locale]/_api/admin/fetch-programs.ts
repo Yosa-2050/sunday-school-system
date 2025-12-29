@@ -81,7 +81,7 @@ export const fetchRootClassesSchoolAdmin = async (
 
 export const fetchUsers = async (
     id: string,
-    payload: { q: string },
+    payload?: { q: string },
 ): Promise<ProgramUserResponse[]> => {
     const response: ProgramUserResponse[] = await fetcher(`/lms/users/${id}`, {
         method: 'GET',

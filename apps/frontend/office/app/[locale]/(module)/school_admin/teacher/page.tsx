@@ -249,7 +249,7 @@ export default function TeacherPage() {
                 opened={createTeacherModalOpened}
                 onClose={() => {
                     setCreateTeacherModalOpened(false);
-                    // resetForm;
+                    setSelectedProfiles([]);
                 }}
                 size="lg"
                 centered

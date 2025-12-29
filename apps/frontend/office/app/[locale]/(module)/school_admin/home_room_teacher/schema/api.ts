@@ -3,7 +3,7 @@ import type { ProgramUser } from 'app/[locale]/_api/users/fetch-user';
 import type {
     CreateHomeRoom,
     HomeroomAssignment,
-    UpadteHomeRoom,
+    UpdateHomeRoom,
 } from './type';
 
 export const CreateHomeRoomApi = async (
@@ -33,7 +33,7 @@ export const getUsers = async (programId: string): Promise<ProgramUser[]> => {
 };
 
 export const updateHomeRoomApi = async (
-    body: UpadteHomeRoom,
+    body: UpdateHomeRoom,
 ): Promise<HomeroomAssignment> => {
     const response: HomeroomAssignment = await fetcher('/home-room', {
         method: 'PATCH',

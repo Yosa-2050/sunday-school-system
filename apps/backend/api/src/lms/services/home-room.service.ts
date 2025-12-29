@@ -21,10 +21,14 @@ export class HomeRoomService {
 
     async CreateHomeRoom(dto: HomeRoomAssignmentDto) {
         const homeRoom = this.homeRoomRepo.create(dto);
+        const program = await this.lmsService.findOneProgram(dto.programId);
         const classes = await this.classService.findOne(dto.classId);
-        const member = await this.lmsService.GetUserByIdOrThrow(dto.memberId);
+        const member = await this.lmsService.GetUserByMemberIdOrThrow(
+            dto.memberId,
+        );
         homeRoom.class = classes;
-        homeRoom.programUser = member;
+        homeRoom.member = member;
+        homeRoom.program = program;
         return this.homeRoomRepo.save(homeRoom);
     }
 
@@ -37,7 +41,7 @@ export class HomeRoomService {
             },
             relations: {
                 class: true,
-                programUser: {
+                member: {
                     profile: true,
                 },
             },

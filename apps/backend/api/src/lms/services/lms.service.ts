@@ -335,8 +335,8 @@ export class LmsService {
         return userDetails;
     }
 
-    async GetUserByIdOrThrow(memberId: string) {
-        const result = await this.programUserRepo.findOneBy({ id: memberId });
+    async GetUserByMemberIdOrThrow(memberId: string) {
+        const result = await this.memberServices.findByIdOrThrow(memberId);
         if (result) {
             return result;
         }

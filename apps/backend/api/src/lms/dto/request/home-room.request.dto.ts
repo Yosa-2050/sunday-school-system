@@ -6,6 +6,11 @@ export class HomeRoomAssignmentDto {
     @ApiProperty()
     @IsString()
     @IsUUID()
+    programId: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsUUID()
     classId: string;
 
     @ApiProperty()
