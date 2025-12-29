@@ -34,6 +34,8 @@ import { UpdateLmDto } from '../dto/request/update-lm.dto';
 import { CalendarYear } from '../entities/calendar-year.entity';
 import { ProgramUser } from '../entities/program-users.entity';
 import { Program } from '../entities/program.entity';
+import { SubjectAssignment } from '../entities/subject-assignment.entity';
+import { Teacher } from '../entities/teacher.entity';
 
 @Injectable()
 export class LmsService {
@@ -48,6 +50,9 @@ export class LmsService {
         private notificationService: NotificationService,
         private memberServices: OrganizationMemberService,
         private organizationService: OrganizationService,
+        @InjectRepository(Teacher) private teacherRepo: Repository<Teacher>,
+        @InjectRepository(SubjectAssignment)
+        private subjectRepo: Repository<SubjectAssignment>,
     ) {}
 
     async createCalendarYear(
@@ -283,6 +288,33 @@ export class LmsService {
         return userDetails;
     }
 
+    async getTeacherDetail(id: string) {
+        const profile = await this.profileService.findById(id);
+        const userDetails = new UserDetails();
+        const member = await this.memberServices.getEmployeeByProfileId(
+            profile?.id,
+        );
+        const organization = await member?.organization;
+        const teacherDetail = await this.teacherRepo.findBy({
+            member: { id: member?.id },
+            year: { isActive: true },
+        });
+
+        userDetails.programs = [];
+        userDetails.calendarYears = [];
+        for (const key in teacherDetail) {
+            const teacher = teacherDetail[key];
+            const year = await teacher.year;
+            const program = await year.program;
+            userDetails.programs.push(program.id);
+            userDetails.calendarYears.push(year.id);
+        }
+        userDetails.profileId = profile?.id;
+        userDetails.organizationId = organization?.id;
+
+        return userDetails;
+    }
+
     async getSchoolProgramAdminDetail(id: string) {
         const profile = await this.profileService.findById(id);
         const member = await this.memberServices.getEmployeeByProfileId(
@@ -293,17 +325,18 @@ export class LmsService {
             member: { id: member?.id },
         });
         const userDetails = new UserDetails();
-        userDetails.programId = programUser?.program?.id;
+        userDetails.programs = [programUser?.program?.id];
         userDetails.profileId = profile?.id;
         userDetails.organizationId = organization?.id;
-        userDetails.calendarYear = (
-            await this.activeCalendarYearByProgramId(programUser?.program?.id)
-        )?.id;
+        userDetails.calendarYears = [
+            (await this.activeCalendarYearByProgramId(programUser?.program?.id))
+                ?.id,
+        ];
         return userDetails;
     }
 
-    async GetUserByIdOrThrow(memberId: string) {
-        const result = await this.programUserRepo.findOneBy({ id: memberId });
+    async GetUserByMemberIdOrThrow(memberId: string) {
+        const result = await this.memberServices.findByIdOrThrow(memberId);
         if (result) {
             return result;
         }

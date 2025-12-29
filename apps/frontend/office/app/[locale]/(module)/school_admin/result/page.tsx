@@ -23,10 +23,10 @@ export default function ResultPage() {
     const [loadingStudents, setLoadingStudents] = useState(false);
 
     const handleFetchStudents = async () => {
+        setStudents([]);
         if (!selectedClass) {
             return;
         }
-        setStudents([]);
         try {
             setLoadingStudents(true);
             const data = await fetchStudentsApi(
@@ -45,6 +45,8 @@ export default function ResultPage() {
             try {
                 const data = await fetchClassesApi(calendarYearId ?? '');
                 setClasses(data);
+                setSelectedClass(null);
+                setSelectedSection(null);
             } catch (error) {
                 throw new Error('Failed to fetch classes');
             }
@@ -56,6 +58,9 @@ export default function ResultPage() {
         <div>
             <ProgramAndCalendarSelector
                 onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setSelectedClass(null);
+                    setSelectedSection(null);
+                    setStudents([]);
                     setProgramId(programId);
                     setCalendarYear(calenderYearName);
                     setCalendarYearId(calenderYearId);

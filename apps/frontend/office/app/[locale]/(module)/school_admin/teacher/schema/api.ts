@@ -1,38 +1,31 @@
 import { fetcher } from '@shega/shared';
 import type { IdSuccessResponse } from 'app/[locale]/_api/admin/fetch-programs';
-import type { CreateStudentRequest } from '../../students/schemas/type';
 import type { TeacherResponse } from './type';
 
-export const fetchTeacherApi = async (): Promise<TeacherResponse[]> => {
-    const response: TeacherResponse[] = await fetcher('/teacher');
+export const fetchTeacherApi = async (
+    calendarYearId: string,
+): Promise<TeacherResponse[]> => {
+    const response: TeacherResponse[] = await fetcher(
+        `/teacher?calendarYearId=${calendarYearId}`,
+    );
     return response;
 };
 
 export const createTeacherApi = async ({
-    profileId,
-    data,
+    calendarYearId,
+    memberIds,
 }: {
-    profileId: string;
-    data: CreateStudentRequest;
+    calendarYearId: string;
+    memberIds: string[];
 }): Promise<IdSuccessResponse> => {
-    if (profileId) {
-        const response: IdSuccessResponse = await fetcher(
-            `/teacher/addExisting/${profileId}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            },
-        );
-        return response;
-    }
-    const response: IdSuccessResponse = await fetcher('/teacher/create', {
+    return await fetcher('/teacher/assign', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+            calendarYearId,
+            memberIds,
+        }),
     });
-    return response;
 };

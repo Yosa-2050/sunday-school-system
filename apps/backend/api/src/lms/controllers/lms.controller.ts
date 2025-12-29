@@ -41,7 +41,7 @@ export class LmsController {
         return this.lmsService.findAllYear(id);
     }
 
-    @Roles(UserRoleType.SchoolAdmin)
+    @Roles(UserRoleType.SchoolAdmin, UserRoleType.Teacher)
     @Get('calendarYearForOrg/:programId')
     findAllCalendarIdForOrg(
         @Param('programId', new ParseUUIDPipe()) id: string,
@@ -101,11 +101,20 @@ export class LmsController {
         return this.lmsService.deleteProgram(programId);
     }
 
-    @Roles(UserRoleType.SchoolAdmin)
+    @Roles(UserRoleType.SchoolAdmin, UserRoleType.Teacher)
     @Get('program/ForOrganization')
-    getProgramsForOrganization(@Request() req) {
-        return this.lmsService.getProgram(
+    async getProgramsForOrganization(@Request() req) {
+        const programs = await this.lmsService.getProgram(
             CurrentUser.getOrganizationId(req, true),
+        );
+        if (
+            CurrentUser.getRole(req).toLowerCase() ===
+            UserRoleType.SchoolAdmin.toLowerCase()
+        ) {
+            return programs;
+        }
+        return programs?.filter((x) =>
+            CurrentUser.getPrograms(req)?.includes(x.id),
         );
     }
 

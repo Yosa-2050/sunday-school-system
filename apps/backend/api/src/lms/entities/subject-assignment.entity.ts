@@ -6,7 +6,7 @@ import { TeacherAssignment } from './teacher-assignment.entity';
 
 @Entity()
 export class SubjectAssignment extends BaseModel {
-    @ManyToOne(() => Classes)
+    @ManyToOne(() => Classes, { eager: true })
     class: Classes;
 
     @ManyToOne(() => Subjects, { eager: true })

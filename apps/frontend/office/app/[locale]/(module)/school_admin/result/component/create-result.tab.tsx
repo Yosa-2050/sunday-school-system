@@ -11,7 +11,7 @@ import {
     TextInput,
 } from '@mantine/core';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { showError, showSuccess } from 'utilities/notification';
 import { fetchSubjectsAssignmentApi } from '../../assign_subject/schemas/api';
 import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
@@ -99,6 +99,12 @@ export default function ResultCreate({
             [studentId]: value,
         }));
     };
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+        setSelectedSubject(null);
+        setSelectedTest(null);
+    }, [selectedClass, selectedSection]);
 
     const rows = students.map((student, index) => {
         return (

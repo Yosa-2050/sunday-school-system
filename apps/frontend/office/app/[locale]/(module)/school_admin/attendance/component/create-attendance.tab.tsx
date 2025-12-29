@@ -150,6 +150,12 @@ export default function AttendanceCreate({
         }));
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+        setSelectedSubject(null);
+        setDate(null);
+    }, [selectedClass, selectedSection]);
+
     const rows = students.map((student, index) => {
         const currentStatus = attendance[student.id] || '';
 
@@ -309,9 +315,7 @@ export default function AttendanceCreate({
                         Select Subject:
                     </Text>
                     <Select
-                        // placeholder={
-                        //     //loadingSubjects ? 'Loading...' : 'Choose subject'
-                        // }
+                        placeholder={'Choose subject'}
                         value={selectedSubject}
                         onChange={setSelectedSubject}
                         data={subjects?.map((s) => ({

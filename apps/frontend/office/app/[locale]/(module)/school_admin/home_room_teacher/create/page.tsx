@@ -68,6 +68,7 @@ export default function HomeRoomAssignPage() {
         const body: CreateHomeRoom = {
             classId: selectedClass,
             memberId: programUserId,
+            programId,
             type: homeroomType,
         };
 

@@ -62,8 +62,7 @@ export default function MembersPage() {
         <Table.Tr key={member.id}>
             <Table.Td>{index + 1}</Table.Td>
             <Table.Td>
-                {member.profile.firstName}
-                {member.profile.middleName}
+                {member.profile.firstName} {member.profile.middleName}{' '}
                 {member.profile.lastName}
             </Table.Td>
             <Table.Td>{member.profile.gender}</Table.Td>

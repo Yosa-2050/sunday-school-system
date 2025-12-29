@@ -24,10 +24,8 @@ import {
 } from 'app/[locale]/_api/admin/fetch-programs';
 import { useParams } from 'next/navigation';
 import { CreateCalendarYear } from '../_components/CreateCalendarYear';
-import { CreateRootClass } from '../_components/CreateRootClass';
 import { CreateUser } from '../_components/CreateUser';
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function ProgramDetailPage() {
     const { id } = useParams<{ id: string }>();
     const { user } = useAuth();
@@ -213,12 +211,7 @@ export default function ProgramDetailPage() {
                                 alignItems: 'center',
                             }}
                             mb="md"
-                        >
-                            <Text fw={500}>Root classes</Text>
-                            {user?.role === 'super_admin' && (
-                                <CreateRootClass programId={program.id} />
-                            )}
-                        </Group>
+                        ></Group>
                         {rootClasses && rootClasses.length > 0 ? (
                             <Table striped>
                                 <Table.Thead>

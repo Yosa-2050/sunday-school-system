@@ -7,24 +7,23 @@ export interface HomeroomAssignment {
         name: string;
     };
 
-    programUser: {
-        member: {
-            profile: {
-                id: string;
-                firstName: string;
-                lastName: string;
-            };
-            type: string;
+    member: {
+        profile: {
+            id: string;
+            firstName: string;
+            lastName: string;
         };
+        type: string;
     };
 }
 
 export type CreateHomeRoom = {
-    classId: string;
-    memberId: string;
+    programId: string | null;
+    classId: string | null;
+    memberId: string | null;
     type: string | null;
 };
-export interface UpadteHomeRoom {
+export interface UpdateHomeRoom {
     classId?: string;
     memberId?: string;
     type?: 'Main' | 'sub';

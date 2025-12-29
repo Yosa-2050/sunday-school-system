@@ -8,6 +8,7 @@ import { cookies } from 'next/headers';
 import MantineThemeProvider from 'providers/MantineProviders';
 import QueryProviders from 'providers/Query.provider';
 
+import type { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
 import { cn } from 'utilities/cn';
@@ -33,10 +34,7 @@ export default async function RootLayout({
     const messages = await getMessages();
     const user = await getUserAction();
 
-    const role = cookieValues.get('role')?.value as
-        | 'administrator'
-        | 'school_admin'
-        | 'program_admin';
+    const role = cookieValues.get('role')?.value as RoleEnum;
 
     logger.log({ user, role });
 

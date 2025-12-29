@@ -8,16 +8,15 @@ import {
     Patch,
     Post,
 } from '@nestjs/common';
-import { Public } from '@shega/auth/jwt-public';
 // biome-ignore lint/style/useImportType: <explanation>
 import { HomeRoomAssignmentDto } from '../dto/request/home-room.request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { HomeRoomService } from '../services/home-room.service';
 
 @Controller('home-room')
-@Public()
 export class HomeRoomController {
     constructor(private readonly homeRoomService: HomeRoomService) {}
+
     @Post()
     create(@Body() dto: HomeRoomAssignmentDto) {
         return this.homeRoomService.CreateHomeRoom(dto);

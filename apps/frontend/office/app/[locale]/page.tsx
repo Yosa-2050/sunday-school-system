@@ -3,6 +3,7 @@
 import { useAuth } from '@shega/ui';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { useEffect } from 'react';
 
 export default function HomePage() {
@@ -25,10 +26,15 @@ export default function HomePage() {
             }
 
             if (
-                roles.includes('school_admin') ||
-                roles.includes('program_admin')
+                roles.includes(RoleEnum.school_admin) ||
+                roles.includes(RoleEnum.program_admin)
             ) {
-                router.replace(`/${locale} /school_admin/dashboard`);
+                router.replace(`/${locale}/school_admin/dashboard`);
+                return;
+            }
+
+            if (roles.includes(RoleEnum.teacher)) {
+                router.replace(`/${locale}/teacher/dashboard`);
                 return;
             }
         } else if (!_user) {

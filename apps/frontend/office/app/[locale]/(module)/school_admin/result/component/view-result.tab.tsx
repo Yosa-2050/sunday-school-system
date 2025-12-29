@@ -11,7 +11,7 @@ import {
     Text,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchSubjectsAssignmentApi } from '../../assign_subject/schemas/api';
 import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
 import { FetchTestBySubjectIdApi } from '../../test/schema/api';
@@ -63,7 +63,6 @@ export default function ResultView({
     const { refetch: fetchResultView } = useQuery({
         queryKey: ['resultView', selectedClass, selectedSection, selectedTest],
         queryFn: async () => {
-            setLoadingView(true);
             try {
                 const data = await getResultViewApi(
                     selectedClass ?? '',
@@ -78,6 +77,12 @@ export default function ResultView({
         },
         enabled: false,
     });
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+        setSelectedSubject(null);
+        setSelectedTest(null);
+        setResultViewData([]);
+    }, [selectedClass, selectedSection]);
 
     return (
         <Box pt="md">

@@ -8,7 +8,7 @@ import {
     TextInput,
     Textarea,
 } from '@mantine/core';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { showError, showSuccess } from 'utilities/notification';
@@ -94,10 +94,19 @@ export function AssignmentDrawer({
         getSubject();
     }, [programId]);
 
-    const { data: teachers = [], isLoading: loadingTeachers } = useQuery({
-        queryKey: ['teachers'],
-        queryFn: fetchTeacherApi,
-    });
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const [teachers, setTeachers] = useState<any[]>([]);
+    const [loadingTeachers, setLoadingTeachers] = useState(false);
+
+    useEffect(() => {
+        const fetchTeachers = async () => {
+            setLoadingTeachers(true);
+            const data = await fetchTeacherApi(calendarYearId);
+            setTeachers(data ?? []);
+        };
+
+        fetchTeachers();
+    }, [calendarYearId]);
 
     // Reset form when assignment changes or drawer opens
     useEffect(() => {
@@ -208,7 +217,7 @@ export function AssignmentDrawer({
                                 }))}
                                 value={field.value || null}
                                 onChange={field.onChange}
-                                disabled={loadingTeachers}
+                                // disabled={loadingTeachers}
                                 clearable
                             />
                         )}

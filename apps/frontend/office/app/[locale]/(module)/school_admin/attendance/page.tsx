@@ -25,12 +25,10 @@ export default function AttendancePage() {
     const [loadingStudents, setLoadingStudents] = useState(false);
 
     const handleFetchStudents = async () => {
+        setStudents([]);
         if (!selectedClass) {
             return;
         }
-
-        setStudents([]);
-
         try {
             setLoadingStudents(true);
             const data = await fetchStudentsApi(
@@ -48,6 +46,8 @@ export default function AttendancePage() {
         try {
             const data = await fetchClassesApi(calenderId ?? '');
             setClasses(data);
+            setSelectedClass(null);
+            setSelectedSection(null);
         } catch (err) {
             // handle error
         }
@@ -57,6 +57,9 @@ export default function AttendancePage() {
         <div>
             <ProgramAndCalendarSelector
                 onChange={({ programId, calenderYearId, calenderYearName }) => {
+                    setSelectedClass(null);
+                    setSelectedSection(null);
+                    setStudents([]);
                     setProgramId(programId);
                     setCalendarYear(calenderYearName);
                     setCalendarYearId(calenderYearId);

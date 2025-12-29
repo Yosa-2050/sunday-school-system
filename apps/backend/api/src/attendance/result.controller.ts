@@ -40,7 +40,7 @@ export class ResultController {
     @Post('getResults')
     findAll(@Body() dto: GetResultRequestDto, @Request() user) {
         return this.resultService.findAllResult(
-            CurrentUser.getActiveYear(user),
+            CurrentUser.getActiveYear(user, false),
             dto.classId,
             dto.subjectId,
             dto.testId,
