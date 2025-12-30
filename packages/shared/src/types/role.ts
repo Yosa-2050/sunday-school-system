@@ -4,4 +4,5 @@ export enum RoleEnum {
     school_admin = 'school_admin',
     program_admin = 'program_admin',
     teacher = 'teacher',
+    home_room = 'homeroom',
 }
