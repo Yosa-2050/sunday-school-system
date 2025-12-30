@@ -85,12 +85,24 @@ export class ClassController {
         UserRoleType.Teacher,
         UserRoleType.Administrator,
         UserRoleType.SuperAdmin,
+        UserRoleType.HomeRoom,
     )
     @Get('main/:calendarYearId')
-    findAll(
+    async findAll(
         @Param('calendarYearId', new ParseUUIDPipe()) calendarYearId: string,
+        @Request() req,
     ) {
-        return this.classService.findAll(calendarYearId);
+        const classes = await this.classService.findAll(calendarYearId);
+
+        if (
+            CurrentUser.getRole(req).toLowerCase() ===
+            UserRoleType.SchoolAdmin.toLowerCase()
+        ) {
+            return classes;
+        }
+        return classes?.filter((x) =>
+            CurrentUser.getClasses(req)?.includes(x.id),
+        );
     }
 
     @Roles(UserRoleType.SchoolAdmin)

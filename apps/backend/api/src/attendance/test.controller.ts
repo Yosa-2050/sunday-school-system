@@ -19,7 +19,11 @@ import { TestService } from './test.service';
 export class TestController {
     constructor(private readonly testService: TestService) {}
 
-    @Roles(UserRoleType.SuperAdmin, UserRoleType.SchoolAdmin)
+    @Roles(
+        UserRoleType.SuperAdmin,
+        UserRoleType.SchoolAdmin,
+        UserRoleType.HomeRoom,
+    )
     @Post('')
     create(@Body() dto: TestRequestDto) {
         return this.testService.create(dto);
@@ -30,7 +34,11 @@ export class TestController {
         return this.testService.findAll();
     }
 
-    @Roles(UserRoleType.SuperAdmin, UserRoleType.SchoolAdmin)
+    @Roles(
+        UserRoleType.SuperAdmin,
+        UserRoleType.SchoolAdmin,
+        UserRoleType.HomeRoom,
+    )
     @Get('bySubjectId/:subjectId')
     findAllBySubjectId(@Param('subjectId') subjectId: string) {
         return this.testService.findBySubjectId(subjectId);

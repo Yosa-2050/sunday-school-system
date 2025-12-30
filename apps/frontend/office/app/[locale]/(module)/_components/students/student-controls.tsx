@@ -1,6 +1,8 @@
 import { Button, FileButton, Group, Select, Text } from '@mantine/core';
+import { useAuth } from '@shega/ui';
 import { IconPlus, IconUpload } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
+import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { showError, showSuccess } from 'utilities/notification';
 import { useActiveSelection } from 'utilities/utilities';
 import { uploadFileApi } from '../../school_admin/students/schemas/api';
@@ -43,6 +45,7 @@ export function StudentControls({
     const SelectedClassId = useActiveSelection(selectedSection, selectedClass);
     const router = useRouter();
 
+    const { user } = useAuth();
     const disableAction =
         !selectedClass ||
         (!!classes.find((c) => c.id === selectedClass)?.sections?.length &&
@@ -107,39 +110,45 @@ export function StudentControls({
                     </Text>
                 )}
                 <Text fw={500}>{/* Students */}</Text>
-                <Group>
-                    <Button
-                        variant="light"
-                        leftSection={<IconPlus size={16} />}
-                        onClick={() => onPrint()}
-                        disabled={disableAction}
-                    >
-                        Print ID Cards
-                    </Button>
-                    <Button
-                        variant="light"
-                        leftSection={<IconPlus size={16} />}
-                        onClick={() =>
-                            router.push(
-                                `/school_admin/students/create?class=${selectedClass}`,
-                            )
-                        }
-                    >
-                        Add New Student
-                    </Button>
-                    <FileButton onChange={handleImport} accept=".xlsx,.xls">
-                        {(props) => (
-                            <Button
-                                {...props}
-                                variant="light"
-                                size="sm"
-                                leftSection={<IconUpload size={16} />}
-                            >
-                                Import from Excel
-                            </Button>
-                        )}
-                    </FileButton>
-                </Group>
+                {[
+                    RoleEnum.administrator,
+                    RoleEnum.super_admin,
+                    RoleEnum.school_admin,
+                ].includes(user?.role as RoleEnum) && (
+                    <Group>
+                        <Button
+                            variant="light"
+                            leftSection={<IconPlus size={16} />}
+                            onClick={() => onPrint()}
+                            disabled={disableAction}
+                        >
+                            Print ID Cards
+                        </Button>
+                        <Button
+                            variant="light"
+                            leftSection={<IconPlus size={16} />}
+                            onClick={() =>
+                                router.push(
+                                    `/school_admin/students/create?class=${selectedClass}`,
+                                )
+                            }
+                        >
+                            Add New Student
+                        </Button>
+                        <FileButton onChange={handleImport} accept=".xlsx,.xls">
+                            {(props) => (
+                                <Button
+                                    {...props}
+                                    variant="light"
+                                    size="sm"
+                                    leftSection={<IconUpload size={16} />}
+                                >
+                                    Import from Excel
+                                </Button>
+                            )}
+                        </FileButton>
+                    </Group>
+                )}
             </Group>
         </>
     );

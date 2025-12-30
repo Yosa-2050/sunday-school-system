@@ -279,5 +279,64 @@ export const Menus = (): MenuTree[] => {
             link: '/lms/notification',
             role: RoleEnum.teacher,
         },
+
+        //home room
+        {
+            label: t('dashboard'),
+            icon: <IconHome stroke={1.4} size={20} />,
+            link: '/home_room/dashboard',
+            role: RoleEnum.home_room,
+        },
+        {
+            isGroup: true,
+            label: t('studentManagement'),
+            role: RoleEnum.home_room,
+            children: [
+                {
+                    label: t('students'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/students',
+                    role: RoleEnum.home_room,
+                },
+                {
+                    label: t('attendance'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/attendance',
+                    role: RoleEnum.home_room,
+                },
+                {
+                    label: t('notifications'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/notification',
+                    role: RoleEnum.home_room,
+                },
+            ],
+        },
+
+        {
+            isGroup: true,
+            label: t('classManagement'),
+            role: RoleEnum.home_room,
+            children: [
+                {
+                    label: t('assignSubject'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/assign_subject',
+                    role: RoleEnum.home_room,
+                },
+                {
+                    label: t('test'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/test',
+                    role: RoleEnum.home_room,
+                },
+                {
+                    label: t('result'),
+                    icon: <IconClipboardList stroke={1.4} size={20} />,
+                    link: '/school_admin/result',
+                    role: RoleEnum.home_room,
+                },
+            ],
+        },
     ];
 };

@@ -22,7 +22,11 @@ export class AuthController {
     @Post('login')
     @ApiBody({ type: LoginRequestDto })
     login(@Request() req) {
-        return this.authService.login(req?.user, req?.body?.origin);
+        return this.authService.login(
+            req?.user,
+            req?.body?.origin,
+            req?.body?.role,
+        );
     }
 
     @Public()

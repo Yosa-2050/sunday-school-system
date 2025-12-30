@@ -42,7 +42,7 @@ export class StudentController {
             CurrentUser.getActiveYear(req, false),
         );
     }
-
+    @Roles(UserRoleType.HomeRoom)
     @Post('sendNotification')
     SendNotification(@Body() dto: StringRequestModel) {
         return this.studentService.sendNotificationForAllStudent(
@@ -53,6 +53,7 @@ export class StudentController {
         );
     }
 
+    @Roles(UserRoleType.HomeRoom)
     @Post('sendNotificationForStudent')
     SendNotificationForSelectedStudent(
         @Body() dto: SendStudentNotificationDto,
@@ -104,6 +105,7 @@ export class StudentController {
         );
     }
 
+    @Roles(UserRoleType.SchoolAdmin, UserRoleType.HomeRoom)
     @Get('byClassId/:classId')
     findStudents(
         @Param('classId', new ParseUUIDPipe()) id: string,

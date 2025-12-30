@@ -3,6 +3,17 @@ import { BadRequestException } from '@nestjs/common';
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CurrentUser {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    static getClasses(req: any, validate = true) {
+        const classes = req?.user?.details?.classes;
+        if (!classes) {
+            if (validate) {
+                throw new BadRequestException('Unable to classes');
+            }
+            return null;
+        }
+        return classes;
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     static getActiveYears(req: any, validate = true): string[] {
         const calendarYears = req?.user?.details?.calendarYears;
         if (!calendarYears) {

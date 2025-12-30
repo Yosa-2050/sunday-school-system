@@ -239,8 +239,6 @@ const RecentUsers = () => {
                                             user.role === 'ADMINISTRATOR'
                                         ) {
                                             roleLabel = 'Administrator';
-                                        } else if (user.role === 'MENTOR') {
-                                            roleLabel = 'Mentor';
                                         }
 
                                         const createdDate = user.createdDate

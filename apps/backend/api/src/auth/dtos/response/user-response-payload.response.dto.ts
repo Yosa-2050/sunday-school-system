@@ -9,6 +9,7 @@ export class UserDetails {
     employeeOrgId?: string;
     applicantId?: string;
     programs?: string[];
+    classes?: string[];
     calendarYears?: string[];
     mentorId?: string;
     profileId: string;
@@ -30,6 +31,7 @@ export class UserResponsePayload {
 
     email: string;
     userId: string;
+    allRoles: string[];
     role: string;
     pwdChangeRequired: boolean;
     id: string;

@@ -32,6 +32,7 @@ import { CreateProgramDto } from '../dto/request/create-program-type.request.dto
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateLmDto } from '../dto/request/update-lm.dto';
 import { CalendarYear } from '../entities/calendar-year.entity';
+import { HomeroomAssignment } from '../entities/home-room.entity';
 import { ProgramUser } from '../entities/program-users.entity';
 import { Program } from '../entities/program.entity';
 import { SubjectAssignment } from '../entities/subject-assignment.entity';
@@ -51,6 +52,8 @@ export class LmsService {
         private memberServices: OrganizationMemberService,
         private organizationService: OrganizationService,
         @InjectRepository(Teacher) private teacherRepo: Repository<Teacher>,
+        @InjectRepository(HomeroomAssignment)
+        private homeRoomRepo: Repository<HomeroomAssignment>,
         @InjectRepository(SubjectAssignment)
         private subjectRepo: Repository<SubjectAssignment>,
     ) {}
@@ -307,6 +310,36 @@ export class LmsService {
             const year = await teacher.year;
             const program = await year.program;
             userDetails.programs.push(program.id);
+            userDetails.calendarYears.push(year.id);
+        }
+        userDetails.profileId = profile?.id;
+        userDetails.organizationId = organization?.id;
+
+        return userDetails;
+    }
+
+    async getHomeTeacherDetail(id: string) {
+        const profile = await this.profileService.findById(id);
+        const userDetails = new UserDetails();
+        const member = await this.memberServices.getEmployeeByProfileId(
+            profile?.id,
+        );
+        const organization = await member?.organization;
+        const teacherDetail = await this.homeRoomRepo.findBy({
+            member: { id: member?.id },
+            class: { calendarYear: { isActive: true } },
+        });
+
+        userDetails.programs = [];
+        userDetails.calendarYears = [];
+        userDetails.classes = [];
+        for (const key in teacherDetail) {
+            const teacher = teacherDetail[key];
+            const classes = await teacher.class;
+            const year = await classes?.calendarYear;
+            const program = await teacher.program;
+            userDetails.programs.push(program.id);
+            userDetails.classes.push(classes.id);
             userDetails.calendarYears.push(year.id);
         }
         userDetails.profileId = profile?.id;
