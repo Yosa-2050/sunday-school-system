@@ -211,7 +211,7 @@ export default function ProgramDetailPage() {
                                 alignItems: 'center',
                             }}
                             mb="md"
-                        ></Group>
+                        />
                         {rootClasses && rootClasses.length > 0 ? (
                             <Table striped>
                                 <Table.Thead>
