@@ -9,6 +9,7 @@ export class UserDetails {
     employeeOrgId?: string;
     applicantId?: string;
     programs?: string[];
+    classes?: string[];
     calendarYears?: string[];
     mentorId?: string;
     profileId: string;
