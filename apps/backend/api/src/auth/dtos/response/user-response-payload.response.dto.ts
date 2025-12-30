@@ -30,6 +30,7 @@ export class UserResponsePayload {
 
     email: string;
     userId: string;
+    allRoles: string[];
     role: string;
     pwdChangeRequired: boolean;
     id: string;

@@ -5,9 +5,12 @@ type LoginRequest = {
     username: string;
     password: string;
     origin: 'office';
+    role?: string;
 };
 
 export type Data = {
+    allRoles: RoleEnum[];
+    selectRole: boolean;
     role: RoleEnum;
     email: string;
     access_token: string;

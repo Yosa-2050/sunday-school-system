@@ -67,11 +67,16 @@ export class AuthService {
         return null;
     }
 
-    async login(user: User, origin: OriginEnums) {
+    async login(user: User, origin: OriginEnums, selectedRole: UserRoleType) {
         //let details: any;
         const roles = await this.usersService.getUserRoles(user.id);
-        const defaultRole = roles?.find((x) => x.isDefault)?.role;
-        if (!validateRole(defaultRole, origin)) {
+        let defaultRole = roles?.find((x) => x.isDefault)?.role;
+        let selectedRoleNeeded = true;
+        if (selectedRole) {
+            selectedRoleNeeded = false;
+            defaultRole = roles?.find((x) => x.role === selectedRole)?.role;
+        }
+        if (!(defaultRole && validateRole(defaultRole, origin))) {
             throw new UnauthorizedException();
         }
         let details: UserDetails;
@@ -104,6 +109,7 @@ export class AuthService {
             email: user.email,
             userId: user.id,
             role: roles?.find((x) => x.isDefault)?.role?.toLowerCase(),
+            allRoles: roles?.map((x) => x.role),
             pwdChangeRequired: user.pwd_change_required,
             id: user.id,
             details: details,
@@ -111,6 +117,8 @@ export class AuthService {
 
         return {
             data: {
+                allRoles: payload.allRoles,
+                selectRole: selectedRoleNeeded,
                 role: payload.role,
                 email: payload.email,
                 access_token: payload.pwdChangeRequired

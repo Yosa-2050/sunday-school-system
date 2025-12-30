@@ -8,6 +8,7 @@ import {
     Button,
     Flex,
     Group,
+    Modal,
     PasswordInput,
     Stack,
     Text,
@@ -32,99 +33,107 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 const schema = z.object({
-    email: z
-        .string()
-        .min(1, 'Email is required')
-        .email('Invalid email format')
-        .regex(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            'Invalid email format',
-        ),
-    password: z.string().min(1, 'Password is required'),
-    rememberMe: z.boolean().optional(),
+    email: z.string().email(),
+    password: z.string().min(1),
 });
 
+type LoginFormValues = {
+    email: string;
+    password: string;
+};
+
 const Login = () => {
-    const { setUser } = useAuth();
     const router = useRouter();
+    const { setUser } = useAuth();
     const t = useTranslations('auth.login');
-    const [rememberMe, setRememberMe] = useState(false);
+
+    const [roleModalOpened, setRoleModalOpened] = useState(false);
+    const [availableRoles, setAvailableRoles] = useState<RoleEnum[]>([]);
+    const [pendingLogin, setPendingLogin] = useState<LoginFormValues | null>(
+        null,
+    );
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({ resolver: zodResolver(schema) });
+    } = useForm<LoginFormValues>({
+        resolver: zodResolver(schema),
+    });
 
-    const updateSetUser = ({
-        data,
-        user,
-    }: {
-        data: Data;
-        user: { id: string; createdBy: string };
-    }) => {
-        setUser({
-            ...user,
-            role: data.role,
-            id: user.id ?? '',
-            createdBy: user.createdBy ?? '',
-        });
-    };
+    /* ---------------------------------- utils --------------------------------- */
 
-    const handleRole = (role: RoleEnum) => {
-        if (role === RoleEnum.administrator) {
-            router.push('/admin/dashboard');
-        } else if (
-            role === RoleEnum.school_admin ||
-            role === RoleEnum.program_admin
-        ) {
-            router.push(' /school_admin/dashboard');
-        } else if (role === RoleEnum.super_admin) {
-            router.push('/admin/dashboard');
-        } else if (role === RoleEnum.teacher) {
-            router.push('/teacher/dashboard');
+    const redirectByRole = (role: RoleEnum) => {
+        switch (role) {
+            case RoleEnum.teacher:
+                router.push('/teacher/dashboard');
+                break;
+            case RoleEnum.school_admin:
+                router.push('/school_admin/dashboard');
+                break;
+            case RoleEnum.administrator:
+            case RoleEnum.super_admin:
+                router.push('/admin/dashboard');
+                break;
         }
     };
 
     const updateCookies = (data: Data) => {
-        setCookie('organization_id', data?.details?.organizationId);
-        setCookie('role', data.role);
-        setCookie(COOKIE_ACCESS_TOKEN, data.access_token, {
-            maxAge: rememberMe ? 7 * 24 * 60 * 60 : undefined,
-        });
+        setCookie(COOKIE_ACCESS_TOKEN, data.access_token);
         setCookie(COOKIE_REFRESH_TOKEN, data.access_token, {
             httpOnly: true,
             secure: true,
-            maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
         });
+        setCookie('role', data.role);
+        setCookie('organization_id', data.details?.organizationId);
     };
 
-    const handleLogin = async ({ data }: { data: Data }) => {
-        try {
-            if (data.pwdChangeRequired) {
-                router.push(`/auth/change-password/${data.id}`);
-            } else {
-                const user = await getUserAction(data.access_token);
-                if (!user) {
-                    notifications.show({
-                        title: 'Error',
-                        message: t('loginFailed'),
-                        color: 'red',
-                    });
-                }
-                if (user) {
-                    updateSetUser({ data, user });
-                    handleRole(data.role);
-                    updateCookies(data);
-                }
-            }
-        } catch (error) {
-            logger.error('Error processing login success:', error);
+    const finalizeLogin = async (data: Data) => {
+        const user = await getUserAction(data.access_token);
+        if (!user) {
+            notifications.show({
+                title: 'Error',
+                message: t('loginFailed'),
+                color: 'red',
+            });
+            return;
         }
+
+        setUser({
+            ...user,
+            role: data.role,
+            id: user.id,
+            createdBy: user.createdBy,
+        });
+
+        updateCookies(data);
+        redirectByRole(data.role);
     };
+
+    /* ------------------------------- mutations -------------------------------- */
 
     const loginMutation = useMutation({
         mutationFn: login,
+        onSuccess: async ({ data }) => {
+            try {
+                if (data.pwdChangeRequired) {
+                    router.push(`/auth/change-password/${data.id}`);
+                    return;
+                }
+
+                // MULTI ROLE FLOW
+                if (data.selectRole && data.allRoles?.length) {
+                    setAvailableRoles(data.allRoles);
+                    setRoleModalOpened(true);
+                    return;
+                }
+
+                // SINGLE ROLE FLOW
+                await finalizeLogin(data);
+            } catch (err) {
+                logger.error(err);
+            }
+        },
         onError: () => {
             notifications.show({
                 title: 'Error',
@@ -132,69 +141,99 @@ const Login = () => {
                 color: 'red',
             });
         },
-        onSuccess: handleLogin,
     });
 
-    const onSubmit = (values: { email: string; password: string }) => {
-        loginMutation.mutateAsync({
+    /* ------------------------------- handlers ---------------------------------- */
+
+    const onSubmit = (values: LoginFormValues) => {
+        setPendingLogin(values);
+
+        loginMutation.mutate({
             username: values.email,
             password: values.password,
             origin: 'office',
         });
     };
 
+    const handleRoleSelect = (role: RoleEnum) => {
+        if (!pendingLogin) {
+            return;
+        }
+
+        loginMutation.mutate({
+            username: pendingLogin.email,
+            password: pendingLogin.password,
+            role, // 🔥 send selected role
+            origin: 'office',
+        });
+
+        setRoleModalOpened(false);
+    };
+
+    /* ---------------------------------- UI ------------------------------------ */
+
     return (
         <Box className="flex items-center justify-center bg-white shadow rounded w-full md:w-1/2">
             <div className="relative w-full p-8">
-                <Flex direction={'column'} align="center">
-                    <Title className="text-xl text-start">{t('title')}</Title>
-                    <Text ta="start" className="mb-3 text-gray-500 text-sm">
-                        {t('subtitle')}
-                    </Text>
+                <Flex direction="column" align="center">
+                    <Title>{t('title')}</Title>
+                    <Text c="dimmed">{t('subtitle')}</Text>
                 </Flex>
+
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Stack gap="md">
+                    <Stack>
                         <TextInput
                             label={t('emailLabel')}
-                            placeholder={t('emailPlaceholder')}
                             {...register('email')}
                             error={errors.email?.message}
                         />
+
                         <PasswordInput
                             label={t('passwordLabel')}
-                            placeholder={t('passwordPlaceholder')}
                             {...register('password')}
                             error={errors.password?.message}
                         />
-                        <Group justify="flex-end" mt={'sm'}>
-                            {/* <Checkbox
-                title="Remember me"  
-                label={t("rememberMe")}
-                className="text-teal-600"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              /> */}
+
+                        <Group justify="flex-end">
                             <Anchor
                                 size="sm"
                                 onClick={() =>
                                     router.push('/auth/forgot-password')
                                 }
-                                className="text-sm text-teal-600 hover:underline"
                             >
                                 {t('forgotPassword')}
                             </Anchor>
                         </Group>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            className="w-full rounded-md px-4 py-2 text-white"
-                            loading={loginMutation.isPending}
-                        >
+
+                        <Button type="submit" loading={loginMutation.isPending}>
                             {t('loginButton')}
                         </Button>
                     </Stack>
                 </form>
             </div>
+
+            <Modal
+                opened={roleModalOpened}
+                onClose={() => {
+                    '';
+                }}
+                closeOnEscape={false}
+                closeOnClickOutside={false}
+                title="Select role"
+                centered
+            >
+                <Stack>
+                    {availableRoles.map((role) => (
+                        <Button
+                            key={role}
+                            variant="light"
+                            onClick={() => handleRoleSelect(role)}
+                        >
+                            {role.replace('_', ' ').toUpperCase()}
+                        </Button>
+                    ))}
+                </Stack>
+            </Modal>
         </Box>
     );
 };
