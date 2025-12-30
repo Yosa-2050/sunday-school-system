@@ -68,6 +68,9 @@ const Login = () => {
             case RoleEnum.teacher:
                 router.push('/teacher/dashboard');
                 break;
+            case RoleEnum.home_room:
+                router.push('/home_room/dashboard');
+                break;
             case RoleEnum.school_admin:
                 router.push('/school_admin/dashboard');
                 break;

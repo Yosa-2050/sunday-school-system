@@ -88,6 +88,10 @@ export class AuthService {
             case UserRoleType.SuperAdmin:
                 break;
             case UserRoleType.HomeRoom:
+                details = await this.lmsService.getHomeTeacherDetail(
+                    user.profile.id,
+                );
+                break;
             case UserRoleType.Teacher:
                 details = await this.lmsService.getTeacherDetail(
                     user.profile.id,
