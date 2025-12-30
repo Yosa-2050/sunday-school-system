@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserRoleType } from '@shega/users/enums/user-role.enum';
+// biome-ignore lint/style/useImportType: <explanation>
+import { UsersService } from '@shega/users/users.service';
 // biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 // biome-ignore lint/style/useImportType: <explanation>
@@ -17,6 +20,7 @@ export class HomeRoomService {
         private lmsService: LmsService,
         @InjectRepository(HomeroomAssignment)
         private homeRoomRepo: Repository<HomeroomAssignment>,
+        private userService: UsersService,
     ) {}
 
     async CreateHomeRoom(dto: HomeRoomAssignmentDto) {
@@ -29,7 +33,12 @@ export class HomeRoomService {
         homeRoom.class = classes;
         homeRoom.member = member;
         homeRoom.program = program;
-        return this.homeRoomRepo.save(homeRoom);
+        const result = await this.homeRoomRepo.save(homeRoom);
+        await this.userService.addRole(
+            member.profile.id,
+            UserRoleType.HomeRoom,
+        );
+        return result;
     }
 
     findClassesByCalendarId(yearId: string) {

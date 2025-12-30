@@ -87,6 +87,7 @@ export class AuthService {
                 break;
             case UserRoleType.SuperAdmin:
                 break;
+            case UserRoleType.HomeRoom:
             case UserRoleType.Teacher:
                 details = await this.lmsService.getTeacherDetail(
                     user.profile.id,
@@ -108,7 +109,7 @@ export class AuthService {
         const payload: UserResponsePayload = {
             email: user.email,
             userId: user.id,
-            role: roles?.find((x) => x.isDefault)?.role?.toLowerCase(),
+            role: defaultRole.toLowerCase(),
             allRoles: roles?.map((x) => x.role),
             pwdChangeRequired: user.pwd_change_required,
             id: user.id,

@@ -377,4 +377,19 @@ export class UsersService {
             .limit(10)
             .getMany();
     }
+
+    async addRole(id: string, role: UserRoleType) {
+        const user = await this.userRepo.findOneBy({ profile: { id } });
+        const existingRoles = await this.userRoleRepo.findOneBy({
+            user: { id: user.id },
+            role,
+        });
+        if (!existingRoles) {
+            const newRole = this.userRoleRepo.create();
+            newRole.user = user;
+            newRole.role = role;
+            return this.userRoleRepo.save(newRole);
+        }
+        return existingRoles;
+    }
 }
