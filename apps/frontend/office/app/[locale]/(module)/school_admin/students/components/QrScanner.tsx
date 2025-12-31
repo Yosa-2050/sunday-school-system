@@ -13,8 +13,7 @@ import {
     Text,
 } from '@mantine/core';
 import { IconArrowLeft, IconCheck, IconScan } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { showError } from 'utilities/notification';
 import { saveIndividualAttendanceApi } from '../../attendance/schemas/api';
 import { AttendanceStatus } from '../../attendance/schemas/types';
@@ -44,14 +43,37 @@ export default function QRScanner({
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [scanKey, setScanKey] = useState(0); // Key to force re-render scanner without resetting
+    const [loadingClasses, setLoadingClasses] = useState<boolean>(false);
+    const [classes, setClasses] = useState<GetClass[]>([]);
 
     // Fetch classes for selection
-    const { data: classes = [], isLoading: loadingClasses } = useQuery<
-        GetClass[]
-    >({
-        queryKey: ['classes'],
-        queryFn: () => fetchClassesApi(yearId),
-    });
+    useEffect(() => {
+        if (!yearId) {
+            return;
+        }
+        let isMounted = true;
+
+        setLoadingClasses(true);
+
+        fetchClassesApi(yearId)
+            .then((data) => {
+                if (isMounted) {
+                    setClasses(data ?? []);
+                }
+            })
+            .catch((error) => {
+                //console.error('Failed to fetch classes', error);
+            })
+            .finally(() => {
+                if (isMounted) {
+                    setLoadingClasses(false);
+                }
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [yearId]);
 
     // Get the selected class object
     const selectedClassObj = classes.find((c) => c.id === selectedClass);
