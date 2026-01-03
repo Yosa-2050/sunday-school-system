@@ -19,7 +19,6 @@ import {
     fetchCalendarYears,
     fetchCalendarYearsSchoolAdmin,
     fetchProgramsById,
-    fetchRootClassesSchoolAdmin,
     fetchUsers,
 } from 'app/[locale]/_api/admin/fetch-programs';
 import { useParams } from 'next/navigation';
@@ -52,16 +51,6 @@ export default function ProgramDetailPage() {
                 : fetchCalendarYearsSchoolAdmin(id),
     });
 
-    // Root Classes
-    const {
-        data: rootClasses,
-        isLoading: classesLoading,
-        refetch: refetchClasses,
-    } = useQuery({
-        queryKey: ['rootClasses', id],
-        queryFn: () => fetchRootClassesSchoolAdmin(id),
-    });
-
     // users
     const {
         data: users,
@@ -72,7 +61,7 @@ export default function ProgramDetailPage() {
         queryFn: () => fetchUsers(id),
     });
 
-    if (yearsLoading || classesLoading || usersLoading) {
+    if (yearsLoading || usersLoading) {
         return <LoadingOverlay visible h="100vh" />;
     }
 
@@ -122,7 +111,6 @@ export default function ProgramDetailPage() {
                         <Tabs.Tab value="calendarYears">
                             Calendar Years
                         </Tabs.Tab>
-                        <Tabs.Tab value="rootClasses">Root Classes</Tabs.Tab>
                         {user?.role === 'school_admin' && (
                             <Tabs.Tab value="users">Users</Tabs.Tab>
                         )}
@@ -198,61 +186,6 @@ export default function ProgramDetailPage() {
                         ) : (
                             <Center h={150}>
                                 <Text c="dimmed">No calendar years found.</Text>
-                            </Center>
-                        )}
-                    </Tabs.Panel>
-
-                    {/* Root Classes */}
-                    <Tabs.Panel value="rootClasses" pt="sm">
-                        <Group
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                            }}
-                            mb="md"
-                        />
-                        {rootClasses && rootClasses.length > 0 ? (
-                            <Table striped>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th>Name</Table.Th>
-                                        <Table.Th>Status</Table.Th>
-                                        <Table.Th>Created By</Table.Th>
-                                        <Table.Th>Created At</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-                                    {rootClasses.map((cls: any) => (
-                                        <Table.Tr key={cls.id}>
-                                            <Table.Td>{cls.name}</Table.Td>
-                                            <Table.Td>
-                                                <Badge
-                                                    color={
-                                                        cls.isActive
-                                                            ? 'green'
-                                                            : 'red'
-                                                    }
-                                                >
-                                                    {cls.isActive
-                                                        ? 'Active'
-                                                        : 'Inactive'}
-                                                </Badge>
-                                            </Table.Td>
-                                            <Table.Td>{cls.createdBy}</Table.Td>
-                                            <Table.Td>
-                                                {new Date(
-                                                    cls.createdAt,
-                                                ).toLocaleDateString()}
-                                            </Table.Td>
-                                        </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
-                        ) : (
-                            <Center h={150}>
-                                <Text c="dimmed">No root classes found.</Text>
                             </Center>
                         )}
                     </Tabs.Panel>

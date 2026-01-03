@@ -11,32 +11,30 @@ import { useForm } from 'react-hook-form';
 export function CreateRootClass({
     programId,
     disabled,
-}: { programId: string; disabled?: boolean }) {
+    onCloseRefresh,
+}: { programId: string; disabled?: boolean; onCloseRefresh: () => void }) {
     const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
 
     const { register, handleSubmit, reset } = useForm();
 
+    const handleClose = () => {
+        close();
+        //for refreshing the data
+        onCloseRefresh();
+    };
+
     const addRootClass = useMutation({
         mutationFn: async (data: string) => createRootClass(programId, data),
         onSuccess: () => {
-            // Invalidate queries so the UI reloads
-            queryClient.invalidateQueries({
-                queryKey: ['program', programId, 'rootClasses'],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['program', programId, 'calendars'],
-            });
-
             notifications.show({
                 title: 'Success',
                 message: 'Root class created successfully!',
                 color: 'green',
                 icon: <IconCheck size="1.1rem" />,
             });
-
-            close();
             reset();
+            handleClose();
         },
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         onError: (error: any) => {
@@ -55,7 +53,7 @@ export function CreateRootClass({
             </Button>
             <Drawer
                 opened={opened}
-                onClose={close}
+                onClose={handleClose}
                 title="Create Root Class"
                 position="right"
                 size="md"
