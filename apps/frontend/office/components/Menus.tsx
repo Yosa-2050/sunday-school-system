@@ -42,18 +42,6 @@ export const Menus = (): MenuTree[] => {
             role: RoleEnum.super_admin,
         },
         {
-            label: t('memberManagement'),
-            icon: <IconUsersGroup stroke={1.4} size={20} />,
-            link: '/admin/members',
-            role: RoleEnum.super_admin,
-        },
-        {
-            label: t('assignMember'),
-            icon: <IconUsersGroup stroke={1.4} size={20} />,
-            link: '/admin/assign-member',
-            role: RoleEnum.super_admin,
-        },
-        {
             label: t('rootClass'),
             icon: <IconClipboardList stroke={1.4} size={20} />,
             link: '/school_admin/root_classes',
