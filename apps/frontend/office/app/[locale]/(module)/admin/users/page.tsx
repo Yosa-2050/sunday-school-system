@@ -523,18 +523,7 @@ const UsersPage = () => {
                                                 {user.email}
                                             </Link>
                                         </Table.Td>
-                                        <Table.Td>
-                                            {user.role === 'school_admin' ||
-                                            user.role === 'PROGRAM_ADMIN'
-                                                ? 'Employer'
-                                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                                  user.role === 'ADMINISTRATOR'
-                                                  ? 'Administrator'
-                                                  : // biome-ignore lint/nursery/noNestedTernary: <explanation>
-                                                    user.role === 'MENTOR'
-                                                    ? 'Mentor'
-                                                    : 'Job Seeker'}
-                                        </Table.Td>
+                                        <Table.Td>{user.role}</Table.Td>
                                         <Table.Td>{user.createdBy}</Table.Td>
                                         <Table.Td>
                                             {user.createdDate
