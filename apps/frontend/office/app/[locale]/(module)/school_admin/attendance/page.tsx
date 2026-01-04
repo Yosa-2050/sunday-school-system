@@ -1,7 +1,7 @@
 'use client';
 
 import { Tabs } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
     type GetClass,
@@ -25,8 +25,8 @@ export default function AttendancePage() {
     const [loadingStudents, setLoadingStudents] = useState(false);
 
     const handleFetchStudents = async () => {
-        setStudents([]);
         if (!selectedClass) {
+            setStudents([]);
             return;
         }
         try {
@@ -34,6 +34,7 @@ export default function AttendancePage() {
             const data = await fetchStudentsApi(
                 selectedSection ?? selectedClass,
             );
+
             setStudents(data);
         } finally {
             setLoadingStudents(false);
@@ -53,6 +54,10 @@ export default function AttendancePage() {
         }
     };
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+        setStudents([]);
+    }, [selectedClass, selectedSection]);
     return (
         <div>
             <ProgramAndCalendarSelector
