@@ -69,6 +69,43 @@ export class ClassService {
         return this.classRepo.save(classes);
     }
 
+    async update(id: string, dto: ClassRequestDto, yearId: string) {
+        const classes = await this.findOne(id, yearId);
+        if (!classes) {
+            throw new EntityNotFoundException(Classes.name);
+        }
+        classes.name = dto.name;
+        classes.description = dto.description;
+        classes.hasSection = dto.section?.length > 0;
+
+        if (dto.rootId && dto.rootId !== classes.root.id) {
+            const rootClass = await this.rootClassRepo.findOneBy({
+                id: dto.rootId,
+            });
+            if (!rootClass) {
+                throw new EntityNotFoundException('Root class');
+            }
+            classes.root = rootClass;
+        }
+
+        await this.classRepo.delete({
+            parent: { id: classes.id },
+            isSection: true,
+        });
+
+        if (dto.section?.length) {
+            classes.sections = dto.section.map((name) =>
+                this.classRepo.create({
+                    name: name,
+                    hasSection: false,
+                    isSection: true,
+                }),
+            );
+        }
+
+        return this.classRepo.save(classes);
+    }
+
     async createRoot(name: string, programType: ProgramType) {
         const existingClass = await this.rootClassRepo.findOneBy({
             name: name,

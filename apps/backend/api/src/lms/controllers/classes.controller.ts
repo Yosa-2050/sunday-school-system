@@ -5,6 +5,7 @@ import {
     Get,
     Param,
     ParseUUIDPipe,
+    Patch,
     Post,
     Request,
 } from '@nestjs/common';
@@ -31,6 +32,20 @@ export class ClassController {
         @Param('programType') programType: ProgramType,
     ) {
         return this.classService.createRoot(dto.text, programType);
+    }
+
+    @Roles(UserRoleType.SchoolAdmin)
+    @Patch('main/:id')
+    update(
+        @Body() dto: ClassRequestDto,
+        @Request() req,
+        @Param('id', new ParseUUIDPipe()) id: string,
+    ) {
+        return this.classService.update(
+            id,
+            dto,
+            CurrentUser.getProgramId(req, false),
+        );
     }
 
     @Roles(UserRoleType.SuperAdmin, UserRoleType.Administrator)

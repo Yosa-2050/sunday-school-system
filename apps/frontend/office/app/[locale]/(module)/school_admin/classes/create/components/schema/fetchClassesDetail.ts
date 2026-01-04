@@ -11,6 +11,7 @@ export type CreateClass = {
 };
 
 export type GetClass = {
+    description: string;
     id: string;
     name: string;
     isActive: boolean;
@@ -31,6 +32,18 @@ export const createClass = async (data: CreateClass, calendarId: string) => {
     });
     if (!res) {
         throw new Error('Failed to create class');
+    }
+    return res;
+};
+
+export const updateClass = async (id: string, data: CreateClass) => {
+    const res: IdSuccessResponse = await fetcher(`/class/main/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res) {
+        throw new Error('Failed to update class');
     }
     return res;
 };
