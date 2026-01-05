@@ -222,6 +222,7 @@ const Login = () => {
                 }}
                 closeOnEscape={false}
                 closeOnClickOutside={false}
+                withCloseButton={false}
                 title="Select role"
                 centered
             >

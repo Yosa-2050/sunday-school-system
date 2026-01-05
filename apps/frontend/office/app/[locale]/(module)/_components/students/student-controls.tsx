@@ -132,6 +132,7 @@ export function StudentControls({
                                     `/school_admin/students/create?class=${selectedClass}`,
                                 )
                             }
+                            disabled={!SelectedClassId}
                         >
                             Add New Student
                         </Button>

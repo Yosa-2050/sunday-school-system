@@ -1,4 +1,5 @@
 import { ColorSchemeScript } from '@mantine/core';
+import type { RoleEnum } from '@shega/shared/types/role';
 import { AuthProvider } from '@shega/ui';
 import { getUserAction } from 'app/_api/get-user-action';
 import type { Metadata } from 'next';
@@ -40,10 +41,7 @@ export default async function RootLayout({
     const messages = await getMessages();
     const user = await getUserAction();
 
-    const role = cookieValues.get('role')?.value as
-        | 'administrator'
-        | 'school_admin'
-        | 'program_admin';
+    const role = cookieValues.get('role')?.value as RoleEnum | undefined;
 
     const colorArray = generateColors(defaultTheme);
     const styles: Record<string, string> = {

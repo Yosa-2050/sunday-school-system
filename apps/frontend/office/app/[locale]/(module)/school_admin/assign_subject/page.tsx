@@ -1,7 +1,9 @@
 'use client';
 
 import { Box, Button, Group, Menu, Select, Table, Text } from '@mantine/core';
+import { useAuth } from '@shega/ui';
 import { IconDots, IconPencil, IconPlus, IconX } from '@tabler/icons-react';
+import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { useCallback, useEffect, useState } from 'react';
 import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
@@ -36,6 +38,7 @@ export default function SubjectAssignmentPage() {
     const [classes, setClasses] = useState<GetClass[]>([]);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
+    const { user } = useAuth();
 
     const [subjAssignment, setSubjAssignment] = useState<
         SubjectAssignmentResponse[]
@@ -165,13 +168,16 @@ export default function SubjectAssignmentPage() {
                 mb="md"
             >
                 <Text fw={500}>Subject Assignments</Text>
-                <Button
-                    onClick={handleCreateClick}
-                    leftSection={<IconPlus size={16} />}
-                    disabled={getSelectedClassId.id === null}
-                >
-                    Assign Subject
-                </Button>
+
+                {[RoleEnum.school_admin].includes(user?.role as RoleEnum) && (
+                    <Button
+                        onClick={handleCreateClick}
+                        leftSection={<IconPlus size={16} />}
+                        disabled={getSelectedClassId.id === null}
+                    >
+                        Assign Subject
+                    </Button>
+                )}
             </Group>
 
             <Group mb="md" align="flex-end">

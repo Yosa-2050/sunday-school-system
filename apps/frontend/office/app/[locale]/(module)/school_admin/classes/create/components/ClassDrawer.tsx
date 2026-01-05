@@ -9,9 +9,7 @@ import {
     Stack,
     TextInput,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
-import { IconCheck, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconPlus, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     type ProgramResponse,
@@ -19,20 +17,32 @@ import {
 } from 'app/[locale]/_api/admin/fetch-programs';
 import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { type CreateClass, createClass } from './schema/fetchClassesDetail';
+import { showError, showSuccess } from 'utilities/notification';
+import {
+    type CreateClass,
+    type GetClass,
+    createClass,
+    updateClass,
+} from './schema/fetchClassesDetail';
 
-interface CreateClassDrawerProps {
+interface ClassDrawerProps {
+    opened: boolean;
     onClose: () => void;
+    mode: 'create' | 'edit';
     programId: string | null;
     calendarId: string | null;
+    selectedClass?: GetClass | null;
 }
 
-export function CreateClassDrawer({
+export function ClassDrawer({
+    opened,
     programId,
+    mode,
     calendarId,
+    selectedClass,
     onClose,
-}: CreateClassDrawerProps) {
-    const [opened, { open, close }] = useDisclosure(false);
+}: ClassDrawerProps) {
+    // const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
     const [classes, setClasses] = useState<ProgramResponse[]>([]);
 
@@ -68,36 +78,67 @@ export function CreateClassDrawer({
         getClasses();
     }, [programId]);
 
+    useEffect(() => {
+        if (mode === 'edit' && selectedClass) {
+            reset({
+                name: selectedClass.name,
+                description: selectedClass.description ?? '',
+                rootId: selectedClass.root.id,
+                section:
+                    selectedClass.sections?.map((s) => ({
+                        name: s.name,
+                    })) ?? [],
+            });
+        }
+
+        if (mode === 'create') {
+            reset({
+                name: '',
+                description: '',
+                rootId: '',
+                section: [],
+            });
+        }
+    }, [mode, selectedClass, reset]);
+
     const addClassMutation = useMutation({
-        mutationFn: async (data: CreateClass) =>
-            createClass(data, calendarId ?? ''),
+        mutationFn: (data: CreateClass) => {
+            if (mode === 'edit' && selectedClass) {
+                return updateClass(selectedClass.id, {
+                    ...data,
+                });
+            }
+            return createClass(data, calendarId ?? '');
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['classes'] });
-            notifications.show({
-                title: 'Success',
-                message: 'Class created successfully',
-                color: 'green',
-                icon: <IconCheck size="1.1rem" />,
-            });
-            close();
+
+            showSuccess(
+                mode === 'create'
+                    ? 'Class created successfully'
+                    : 'Class updated successfully',
+            );
+
+            onClose();
             reset();
         },
-        onError: (error) => {
-            notifications.show({
-                title: 'Error',
-                message: error.message || 'Failed to save attendance',
-                color: 'red',
-            });
+        onError: () => {
+            showError(
+                mode === 'create'
+                    ? 'Failed to create class'
+                    : 'Failed to update class',
+            );
         },
     });
 
     return (
         <>
-            <Button onClick={open}>+ Add Class</Button>
+            {/* <Button onClick={open}>+ Add Class</Button> */}
             <Drawer
                 opened={opened}
-                onClose={close}
-                title="Create Class"
+                onClose={onClose}
+                // title="Create Class"
+                title={mode === 'create' ? 'Create Class' : 'Edit Class'}
                 position="right"
                 size="md"
             >
@@ -121,11 +162,6 @@ export function CreateClassDrawer({
                         {/* Root ID Select */}
                         <Select
                             label="Root Class"
-                            // placeholder={
-                            //     rootsLoading
-                            //         ? 'Loading...'
-                            //         : 'Select root class'
-                            // }
                             data={
                                 classes?.map(
                                     (r: { id: string; name: string }) => ({
@@ -140,7 +176,7 @@ export function CreateClassDrawer({
 
                         {/* Sections */}
                         <Group justify="space-between">
-                            <h4>Sections</h4>
+                            <h4>Sections:</h4>
                             <Button
                                 leftSection={<IconPlus size={16} />}
                                 onClick={() => append({ name: '' })}
@@ -173,7 +209,7 @@ export function CreateClassDrawer({
                             type="submit"
                             loading={addClassMutation.isPending}
                         >
-                            Create
+                            {mode === 'create' ? 'Create' : 'Update'}
                         </Button>
                     </Stack>
                 </form>

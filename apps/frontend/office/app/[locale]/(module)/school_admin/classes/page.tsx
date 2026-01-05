@@ -18,7 +18,7 @@ import {
     IconX,
 } from '@tabler/icons-react';
 import { useState } from 'react';
-import { CreateClassDrawer } from './create/components/CreateClassDrawer';
+import { ClassDrawer } from './create/components/ClassDrawer';
 import { ProgramAndCalendarSelector } from './create/components/programAndCalendar';
 import {
     type GetClass,
@@ -32,6 +32,9 @@ export default function ClassPage() {
     const [classes, setClasses] = useState<GetClass[]>([]);
     const [loadingClasses, setLoadingClasses] = useState(false);
     const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
+    const [drawerOpened, setDrawerOpened] = useState(false);
+    const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
+    const [selectedClass, setSelectedClass] = useState<GetClass | null>(null);
 
     // Fetch classes when calendar year changes
     const fetchClasses = async (calenderId: string) => {
@@ -91,7 +94,14 @@ export default function ClassPage() {
                             <Menu.Item leftSection={<IconPlus size={16} />}>
                                 Add Section
                             </Menu.Item>
-                            <Menu.Item leftSection={<IconPencil size={16} />}>
+                            <Menu.Item
+                                leftSection={<IconPencil size={16} />}
+                                onClick={() => {
+                                    setDrawerMode('edit');
+                                    setSelectedClass(item);
+                                    setDrawerOpened(true);
+                                }}
+                            >
                                 Edit Class
                             </Menu.Item>
                             <Menu.Item
@@ -194,10 +204,23 @@ export default function ClassPage() {
                 mb="md"
             >
                 <Text fw={500}>Class</Text>
-                <CreateClassDrawer
+                <Button
+                    onClick={() => {
+                        setDrawerMode('create');
+                        setSelectedClass(null);
+                        setDrawerOpened(true);
+                    }}
+                >
+                    + Add Class
+                </Button>
+                <ClassDrawer
+                    opened={drawerOpened}
                     programId={programId}
+                    mode={drawerMode}
                     calendarId={calendarYearId}
+                    selectedClass={selectedClass}
                     onClose={() => {
+                        setDrawerOpened(false);
                         fetchClasses(calendarYearId || '');
                     }}
                 />
