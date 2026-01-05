@@ -58,6 +58,7 @@ export default function AttendancePage() {
     useEffect(() => {
         setStudents([]);
     }, [selectedClass, selectedSection]);
+
     return (
         <div>
             <ProgramAndCalendarSelector
