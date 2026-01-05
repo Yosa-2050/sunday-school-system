@@ -40,7 +40,7 @@ export default function RootClassPage() {
         isLoading,
         refetch,
     } = useQuery({
-        queryKey: ['rootClasses-page', programType],
+        queryKey: ['rootClasses', programType],
         queryFn: () => {
             if (user?.role === 'super_admin') {
                 if (!programType) {
@@ -133,6 +133,7 @@ export default function RootClassPage() {
                     <CreateRootClass
                         programId={programType ?? ''}
                         disabled={!programType}
+                        onCloseRefresh={refetch}
                     />
                 )}
             </Group>

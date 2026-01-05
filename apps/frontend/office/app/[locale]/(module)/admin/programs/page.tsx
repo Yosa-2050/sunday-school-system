@@ -76,7 +76,7 @@ const programList = () => {
     };
 
     const handleDrawerCompleted = () => {
-        fetchPrograms(selectedOrganization ?? '');
+        handleFetchPrograms(selectedOrganization ?? '');
         handleDrawerClose();
     };
 
@@ -194,7 +194,6 @@ const programList = () => {
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th>Program Title</Table.Th>
-                                    <Table.Th>Type</Table.Th>
                                     <Table.Th>Created By</Table.Th>
                                     <Table.Th>Created At</Table.Th>
                                     <Table.Th>Actions</Table.Th>
@@ -210,9 +209,6 @@ const programList = () => {
                                             {program.name.length > 100
                                                 ? `${program.name.substring(0, 100)}...`
                                                 : program.name}
-                                        </Table.Td>
-                                        <Table.Td>
-                                            {program.programType}
                                         </Table.Td>
                                         <Table.Td>{program.createdBy}</Table.Td>
                                         <Table.Td>{program.createdAt}</Table.Td>
