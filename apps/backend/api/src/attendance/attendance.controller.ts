@@ -63,7 +63,7 @@ export class AttendanceController {
         return this.attendanceService.createIndividual(
             dto,
             classId,
-            CurrentUser.getActiveYear(user),
+            CurrentUser.getActiveYear(user, false),
         );
     }
 
