@@ -26,6 +26,7 @@
         "studentManagement": "Student Management",
         "teacherManagement": "Teacher Management",
         "dashboard": "Dashboard",
+        "Department": "Department",
         "users": "User Management",
         "programManagement": "Programs Management",
         "notifications": "Notifications",
