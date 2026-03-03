@@ -1,48 +1,48 @@
 {
-    "name": "shega",
-    "private": true,
-    "scripts": {
-        "turbo": "turbo",
-        "build": "turbo run build",
-        "dev": "turbo dev",
-        "lint": "turbo lint",
-        "clean": "rimraf -g  apps/**/.next",
-        "lint-staged": "lint-staged",
-        "biome": "biome",
-        "lefthook": "lefthook",
-        "format": "biome check .",
-        "format:error": "biome check --diagnostic-level=error .",
-        "format:fix": "biome check . --write",
-        "prepare": "husky",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:e2e": "playwright test"
-    },
-    "devDependencies": {
-        "@biomejs/biome": "1.9.4",
-        "@commitlint/config-conventional": "^19.6.0",
-        "@semantic-release/changelog": "^6.0.3",
-        "@semantic-release/git": "^10.0.1",
-        "@semantic-release/gitlab": "^13.2.5",
-        "@semantic-release/npm": "^12.0.1",
-        "husky": "^9.1.7",
-        "lefthook": "^1.10.10",
-        "rimraf": "^6.0.1",
-        "semantic-release": "^24.2.5",
-        "turbo": "^2.3.3",
-        "typescript": "5.5.4"
-    },
-    "packageManager": "pnpm@9.0.0",
-    "engines": {
-        "node": ">=22"
-    },
-    "dependencies": {
-        "@shega/typescript-config": "workspace:*",
-        "jest": "^29.7.0",
-        "jwt-decode": "^4.0.0",
-        "next": "15.2.1",
-        "react": "19.0.0",
-        "react-dom": "19.0.0"
-    },
-    "version": "1.9.11"
+  "name": "shega",
+  "private": true,
+  "scripts": {
+    "turbo": "turbo",
+    "build": "turbo run build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "clean": "rimraf -g  apps/**/.next",
+    "lint-staged": "lint-staged",
+    "biome": "biome",
+    "lefthook": "lefthook",
+    "format": "biome check .",
+    "format:error": "biome check --diagnostic-level=error .",
+    "format:fix": "biome check . --write",
+    "prepare": "husky",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/gitlab": "^13.2.5",
+    "@semantic-release/npm": "^12.0.1",
+    "husky": "^9.1.7",
+    "lefthook": "^1.10.10",
+    "rimraf": "^6.0.1",
+    "semantic-release": "^24.2.5",
+    "turbo": "^2.3.3",
+    "typescript": "5.5.4"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@shega/typescript-config": "workspace:*",
+    "jest": "^29.7.0",
+    "jwt-decode": "^4.0.0",
+    "next": "15.2.8",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "version": "1.9.11"
 }
