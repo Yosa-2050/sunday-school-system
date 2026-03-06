@@ -85,4 +85,14 @@ export class DepartmentMemberService {
             endDate: m.endDate,
         }));
     }
+
+    async findDepartmentByMemberId(memberId: string) {
+        const relation = await this.departmentMemberRepository.find({
+            where: {
+                member: { id: memberId },
+            },
+            relations: ['department', 'subDepartment'],
+        });
+        return relation;
+    }
 }
