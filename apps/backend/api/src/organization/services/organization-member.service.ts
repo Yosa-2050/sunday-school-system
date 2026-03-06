@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
+import type { PaginationDto } from '@shega/Utilities/models/paginated.request';
 // biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
@@ -16,6 +17,10 @@ import {
 } from '../dto/request/create-organization-member.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
+import {
+    OrganizationMemberResponseDto,
+    PaginatedOrganizationMemberResponseDto,
+} from '../dto/response/organization-member.response.dto';
 import { OrganizationMembers } from '../entities/organization-member.entity';
 import { Organization } from '../entities/organization.entity';
 import { OrganizationMemberType } from '../enums/employee-type.enum';
@@ -131,6 +136,45 @@ export class OrganizationMemberService {
         model.organization = organization;
         const member = await this.organizationMemberRepo.save(model);
         return member;
+    }
+
+    async findAllPaginated(
+        organizationId: string,
+        pagination: PaginationDto,
+    ): Promise<PaginatedOrganizationMemberResponseDto> {
+        const queryBuilder = this.organizationMemberRepo
+            .createQueryBuilder('member')
+            .leftJoinAndSelect('member.profile', 'profile')
+            .leftJoinAndSelect('profile.user', 'user')
+            .where('member.organization.id = :organizationId', {
+                organizationId,
+            });
+
+        if (pagination.search) {
+            const search = `%${pagination.search}%`;
+            queryBuilder.andWhere(
+                '(profile.firstName ILIKE :search OR profile.middleName ILIKE :search OR profile.lastName ILIKE :search OR user.email ILIKE :search)',
+                { search },
+            );
+        }
+
+        queryBuilder
+            .skip((pagination.page - 1) * pagination.limit)
+            .take(pagination.limit)
+            .orderBy('member.createdAt', 'DESC');
+
+        const [items, total] = await queryBuilder.getManyAndCount();
+
+        const data: OrganizationMemberResponseDto[] = items.map((item) =>
+            OrganizationMemberResponseDto.fromEntity(item),
+        );
+
+        return new PaginatedOrganizationMemberResponseDto(
+            data,
+            total,
+            pagination.page,
+            pagination.limit,
+        );
     }
 
     search(query: string, organizationId: string) {
