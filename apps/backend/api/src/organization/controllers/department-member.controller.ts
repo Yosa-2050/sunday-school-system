@@ -46,6 +46,14 @@ export class DepartmentMemberController {
         );
     }
 
+    @Get('memberdep/:memberId')
+    findDepartmentByMemberId(
+        @Param('memberId') memberId: string,
+        @Request() req,
+    ) {
+        return this.departmentMemberService.findDepartmentByMemberId(memberId);
+    }
+
     @Get('member/:memberId')
     findDepartmentByMemberId(
         @Param('memberId') memberId: string,
