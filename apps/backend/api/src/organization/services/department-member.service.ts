@@ -83,15 +83,15 @@ export class DepartmentMemberService {
         }));
     }
 
-    async findDepartmentByMemberId(memberId: string) {
-        const relation = await this.departmentMemberRepository.find({
-            where: {
-                member: { id: memberId },
-            },
-            relations: ['department', 'subDepartment'],
-        });
-        return relation;
-    }
+    // async findDepartmentByMemberId(memberId: string) {
+    //     const relation = await this.departmentMemberRepository.find({
+    //         where: {
+    //             member: { id: memberId },
+    //         },
+    //         relations: ['department', 'subDepartment'],
+    //     });
+    //     return relation;
+    // }
 
     async findByMemberId(organizationId: string, memberId: string) {
         const members = await this.departmentMemberRepository.find({
@@ -110,5 +110,15 @@ export class DepartmentMemberService {
             startDate: m.startDate,
             endDate: m.endDate,
         }));
+    }
+
+    async findDepartmentByMemberId(memberId: string) {
+        const relation = await this.departmentMemberRepository.find({
+            where: {
+                member: { id: memberId },
+            },
+            relations: ['department', 'subDepartment'],
+        });
+        return relation;
     }
 }
