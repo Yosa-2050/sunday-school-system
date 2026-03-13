@@ -12,6 +12,8 @@ import { Experience } from './education/entities/experience.entity';
 import { QualificationSkills } from './education/entities/qualification-skills.entity';
 import { Qualification } from './education/entities/qualification.entity';
 import { Skills } from './education/entities/skills.entity';
+import { ReportItem } from './finance/entity/report-item.entity';
+import { Report } from './finance/entity/report.entity';
 import { CalendarYear } from './lms/entities/calendar-year.entity';
 import { Classes } from './lms/entities/classes.entity';
 import { HomeroomAssignment } from './lms/entities/home-room.entity';
@@ -84,4 +86,6 @@ export const AppEntities = [
     OrganizationMembers,
     HomeroomAssignment,
     DepartmentMember,
+    Report,
+    ReportItem,
 ];
