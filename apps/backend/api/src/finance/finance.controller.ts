@@ -1,0 +1,46 @@
+import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
+// biome-ignore lint/style/useImportType: <explanation>
+import { CreateMoneyRequestDto } from './dto/create-money-request.dto';
+// biome-ignore lint/style/useImportType: <explanation>
+import { FinanceService } from './finance.service';
+
+@ApiTags('finance')
+@Controller('finance')
+export class FinanceController {
+    constructor(private readonly financeService: FinanceService) {}
+
+    @Post('create')
+    async create(@Body() dto: CreateMoneyRequestDto, @Req() req) {
+        const report = await this.financeService.create(
+            dto,
+            req.user.id,
+            req.user.email,
+        );
+        return { message: 'Request created successfully', data: report };
+    }
+
+    @Get()
+    async findAll() {
+        return await this.financeService.findAll();
+    }
+
+    @Get('by-role')
+    findByRole(@Req() req) {
+        return this.financeService.findByRole(req.user.id, req.user.role);
+    }
+
+    @Get('/:id')
+    findOne(@Param('id') id: string) {
+        return this.financeService.findById(id);
+    }
+
+    @Patch('/:id/status')
+    reject(
+        @Param('id') id: string,
+        @Body('status') status: 'approved' | 'rejected' | 'under_review',
+        @Body('reason') reason: string,
+    ) {
+        return this.financeService.updateStatus(id, status, reason);
+    }
+}

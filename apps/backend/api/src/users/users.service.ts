@@ -392,4 +392,12 @@ export class UsersService {
         }
         return existingRoles;
     }
+
+    async findByEmail(email: string) {
+        const val = await this.userRepo.findOne({ where: { email } });
+        if (!val) {
+            throw new EntityNotFoundException('User');
+        }
+        return val;
+    }
 }
