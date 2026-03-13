@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Req,
+    Request,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
 import { CreateMoneyRequestDto } from './dto/create-money-request.dto';
 import { FinanceService } from './finance.service';
@@ -26,6 +35,18 @@ export class FinanceController {
     @Get('by-role')
     findByRole(@Req() req) {
         return this.financeService.findByRole(req.user.id, req.user.role);
+    }
+
+    @Post('report-by-role')
+    findReportsPaginatedByRole(
+        @Body() dto: GetFinanceReportRequestDto,
+        @Request() req,
+    ) {
+        return this.financeService.findByRolePaginated(
+            req.user.id,
+            req.user.role,
+            dto.pagination,
+        );
     }
 
     @Get('/:id')

@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
+// biome-ignore lint/style/useImportType: <explanation>
+import { PaginationDto3 } from '@shega/Utilities/models/paginated.request3';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 import { NotificationService } from '@shega/notification/notification.service';
@@ -7,6 +9,8 @@ import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { UsersService } from '@shega/users/users.service';
 import { Repository } from 'typeorm/repository/Repository';
 import { CreateMoneyRequestDto } from './dto/create-money-request.dto';
+import { PaginatedFinanceResponseDto } from './dto/response/paginated-finance-response.dto';
+import { ReportResponseDto } from './dto/response/report.response.dto';
 import { ReportItem } from './entity/report-item.entity';
 import { Report } from './entity/report.entity';
 
@@ -58,6 +62,69 @@ export class FinanceService {
             where: { requestor: { id: id } },
             relations: ['items', 'requestor'],
         });
+    }
+
+    async findByRolePaginated(
+        id: string,
+        role: UserRoleType,
+        pagination: PaginationDto3,
+    ): Promise<PaginatedFinanceResponseDto> {
+        const queryBuilder = this.reportRepository
+            .createQueryBuilder('report')
+            .leftJoinAndSelect('report.items', 'items')
+            .leftJoinAndSelect('report.requestor', 'requestor');
+
+        const isAdmin =
+            role === UserRoleType.Administrator ||
+            role === UserRoleType.SuperAdmin;
+
+        if (!isAdmin) {
+            queryBuilder.andWhere('requestor.id = :id', { id });
+        }
+
+        if (pagination.search) {
+            const search = `%${pagination.search}%`;
+
+            queryBuilder.andWhere(
+                `(report.requestorName ILIKE :search
+        OR report.department ILIKE :search)`,
+                { search },
+            );
+        }
+
+        if (pagination.status) {
+            queryBuilder.andWhere('report.status = :status', {
+                status: pagination.status,
+            });
+        }
+
+        if (pagination.startDate && pagination.endDate) {
+            queryBuilder.andWhere(
+                'report.date BETWEEN :startDate AND :endDate',
+                {
+                    startDate: pagination.startDate,
+                    endDate: pagination.endDate,
+                },
+            );
+        }
+
+        queryBuilder
+            .skip((pagination.page - 1) * pagination.limit)
+            .take(pagination.limit)
+            .orderBy('report.createdAt', 'DESC');
+
+        const [items, total] = await queryBuilder.getManyAndCount();
+
+        const data: ReportResponseDto[] = items.map((item) =>
+            ReportResponseDto.fromEntity(item),
+        );
+
+        return new PaginatedFinanceResponseDto(
+            data,
+            total,
+            pagination.page,
+            pagination.limit,
+        );
     }
 
     async updateStatus(id: string, status: string, reason) {
