@@ -67,7 +67,7 @@ export class FinanceService {
 
     async findByRolePaginated(
         id: string,
-        role: UserRoleType,
+        role: string,
         request: GetFinanceReportRequestDto,
     ): Promise<PaginatedFinanceResponseDto> {
         const queryBuilder = this.reportRepository
@@ -75,10 +75,14 @@ export class FinanceService {
             .leftJoinAndSelect('report.items', 'items')
             .leftJoinAndSelect('report.requestor', 'requestor');
         const pagination = request.pagination;
+
+        const normalizedAllRoles = role.toUpperCase();
+
         const isAdmin =
-            role === UserRoleType.Administrator ||
-            role === UserRoleType.SuperAdmin ||
-            role === UserRoleType.FinanceAdmin;
+            normalizedAllRoles.includes('ADMINISTRATOR') ||
+            normalizedAllRoles.includes('SUPER_ADMIN') ||
+            normalizedAllRoles.includes('FINANCE_ADMIN') ||
+            normalizedAllRoles.includes('SCHOOL_ADMIN');
 
         if (!isAdmin) {
             queryBuilder.andWhere('requestor.id = :id', { id });

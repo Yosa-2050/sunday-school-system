@@ -83,13 +83,22 @@ export class DepartmentMemberService {
         }));
     }
 
-    async findDepartmentByMemberId(memberId: string) {
-        const relation = await this.departmentMemberRepository.find({
+    async findByMemberId(organizationId: string, memberId: string) {
+        const members = await this.departmentMemberRepository.find({
             where: {
-                member: { id: memberId },
+                memberId: memberId,
+                department: {
+                    organization: { id: organizationId },
+                },
             },
             relations: ['department', 'subDepartment'],
         });
-        return relation;
+        return members.map((m) => ({
+            departmentName: m.department?.name || '',
+            subDepartmentName: m.subDepartment?.name || '',
+            position: m.position,
+            startDate: m.startDate,
+            endDate: m.endDate,
+        }));
     }
 }
