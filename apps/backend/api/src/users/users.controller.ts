@@ -8,6 +8,7 @@ import {
     Patch,
     Post,
     Put,
+    Query,
     Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -40,6 +41,17 @@ export class UsersController {
     @Post('all')
     findAll(@Body() dto: { q: string }) {
         return this.usersService.getUsersByUserType(dto.q);
+    }
+
+    @Post('add-role')
+    addRole(
+        @Query('id', new ParseUUIDPipe()) id: string,
+        @Body() body: { role: UserRoleType },
+    ) {
+        if (!body.role) {
+            throw new BadRequestException('Role is required');
+        }
+        return this.usersService.addRole(id, body.role);
     }
 
     @Post('export')

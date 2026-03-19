@@ -385,7 +385,10 @@ export class UsersService {
             newRole.role = role;
             return this.userRoleRepo.save(newRole);
         }
-        return existingRoles;
+        return this.userRepo.findOne({
+            where: { id: user.id },
+            relations: ['roles', 'profile'],
+        });
     }
 
     async findByEmail(email: string) {

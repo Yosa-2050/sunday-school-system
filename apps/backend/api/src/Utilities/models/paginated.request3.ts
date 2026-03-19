@@ -1,40 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
     IsDateString,
-    IsInt,
+    IsDefined,
+    IsNotEmptyObject,
+    IsObject,
     IsOptional,
-    IsString,
-    Min,
+    ValidateNested,
 } from 'class-validator';
 import { OptionalEnum } from '../decorators/optional-uuid.decorator';
 import { ReportStatus } from '../enums/report-status.enum';
+import { PaginationDto } from './paginated.request';
 
-export class PaginationDto3 {
+export class GetFinanceReportRequestDto {
     @ApiProperty()
     @OptionalEnum(ReportStatus)
-    status: ReportStatus;
-
-    @ApiProperty()
-    @IsString()
-    @IsOptional()
-    search: string;
-
-    @ApiProperty()
-    @IsOptional()
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    @Transform(({ value }) => (value === 0 ? 1 : value))
-    page?: number = 1;
-
-    @ApiProperty()
-    @IsOptional()
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    @Transform(({ value }) => (value === 0 ? 10 : value))
-    limit?: number = 10;
+    reportStatus: ReportStatus;
 
     @IsOptional()
     @IsDateString()
@@ -43,4 +24,12 @@ export class PaginationDto3 {
     @IsOptional()
     @IsDateString()
     endDate?: string;
+
+    @ApiProperty()
+    @IsDefined()
+    @IsNotEmptyObject()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => PaginationDto)
+    pagination: PaginationDto;
 }

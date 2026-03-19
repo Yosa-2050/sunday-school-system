@@ -21,7 +21,7 @@ export class FinanceController {
     async create(@Body() dto: CreateMoneyRequestDto, @Req() req) {
         const report = await this.financeService.create(
             dto,
-            req.user.id,
+            req.user.userId,
             req.user.email,
         );
         return { message: 'Request created successfully', data: report };
@@ -36,19 +36,6 @@ export class FinanceController {
     findByRole(@Req() req) {
         return this.financeService.findByRole(req.user.id, req.user.role);
     }
-
-    @Post('report-by-role')
-    findReportsPaginatedByRole(
-        @Body() dto: GetFinanceReportRequestDto,
-        @Request() req,
-    ) {
-        return this.financeService.findByRolePaginated(
-            req.user.id,
-            req.user.role,
-            dto.pagination,
-        );
-    }
-
     @Get('/:id')
     findOne(@Param('id') id: string) {
         return this.financeService.findById(id);

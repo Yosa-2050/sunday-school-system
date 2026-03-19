@@ -7,6 +7,8 @@ export enum UserRoleType {
     Teacher = 'Teacher',
     Member = 'Member',
     HomeRoom = 'HomeRoom',
+    Finance = 'FINANCE',
+    FinanceAdmin = 'FINANCE_ADMIN',
 }
 export function validateEmployeeRole(value: string): boolean {
     const validEmployee: string[] = [UserRoleType.Teacher];

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
 // biome-ignore lint/style/useImportType: <explanation>
-import { PaginationDto3 } from '@shega/Utilities/models/paginated.request3';
+import { GetFinanceReportRequestDto } from '@shega/Utilities/models/paginated.request3';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 import { NotificationService } from '@shega/notification/notification.service';
@@ -30,7 +30,7 @@ export class FinanceService {
             status: 'pending',
         });
 
-        request.requestor = await this.UserService.findByEmail(id);
+        request.requestor = await this.UserService.findById(id);
 
         request.items = dto.items.map((x) => {
             return this.reportItemRepository.create({ ...x });
@@ -51,8 +51,9 @@ export class FinanceService {
 
     async findByRole(id: string, role: UserRoleType) {
         if (
-            role === UserRoleType.Administrator ||
-            role === UserRoleType.SuperAdmin
+            role === UserRoleType.SuperAdmin ||
+            role === UserRoleType.FinanceAdmin ||
+            role === UserRoleType.SchoolAdmin
         ) {
             return await this.reportRepository.find({
                 relations: ['items', 'requestor'],
@@ -67,16 +68,17 @@ export class FinanceService {
     async findByRolePaginated(
         id: string,
         role: UserRoleType,
-        pagination: PaginationDto3,
+        request: GetFinanceReportRequestDto,
     ): Promise<PaginatedFinanceResponseDto> {
         const queryBuilder = this.reportRepository
             .createQueryBuilder('report')
             .leftJoinAndSelect('report.items', 'items')
             .leftJoinAndSelect('report.requestor', 'requestor');
-
+        const pagination = request.pagination;
         const isAdmin =
             role === UserRoleType.Administrator ||
-            role === UserRoleType.SuperAdmin;
+            role === UserRoleType.SuperAdmin ||
+            role === UserRoleType.FinanceAdmin;
 
         if (!isAdmin) {
             queryBuilder.andWhere('requestor.id = :id', { id });
@@ -92,18 +94,18 @@ export class FinanceService {
             );
         }
 
-        if (pagination.status) {
+        if (request.reportStatus) {
             queryBuilder.andWhere('report.status = :status', {
-                status: pagination.status,
+                status: request.reportStatus,
             });
         }
 
-        if (pagination.startDate && pagination.endDate) {
+        if (request.startDate && request.endDate) {
             queryBuilder.andWhere(
                 'report.date BETWEEN :startDate AND :endDate',
                 {
-                    startDate: pagination.startDate,
-                    endDate: pagination.endDate,
+                    startDate: request.startDate,
+                    endDate: request.endDate,
                 },
             );
         }
@@ -154,8 +156,14 @@ export class FinanceService {
                 report.id,
                 reason,
             );
-        } else {
+        } else if (UpdatedStatus === 'rejected') {
             this.sendRejectedEmail(report.requestor.email, report.id, reason);
+        } else if (UpdatedStatus === 'under_review') {
+            this.sendUnderReviewEmail(
+                report.requestor.email,
+                report.id,
+                reason,
+            );
         }
         return report;
     }
@@ -163,8 +171,15 @@ export class FinanceService {
     sendApprovedEmail(email: string, id: string, reason?: string) {
         return this.notificationService.send({
             channel: NotificationChannel.Email,
-            subject: 'Request Approved',
-            content: `Your request has been approved. ${reason}`,
+            subject: `APPROVED: Request #${id}`,
+            content: `
+            <p>Dear User,</p>
+            <p>This is an official notification that your request (ID: <b>${id}</b>) has been formally <b>APPROVED</b> by the Finance Department.</p>
+            <p><strong>Approval Details/Notes:</strong><br />
+            ${reason || 'Standard approval processing.'}</p>
+            <p>Our team is now initiating the disbursement process. Please allow 1-7 business days for the transaction to reflect in your account.</p>
+            <p>Regards,<br />Finance Administration Team</p>
+        `,
             to: email,
             reference: id,
             isRealTimeNotification: true,
@@ -177,8 +192,36 @@ export class FinanceService {
     sendRejectedEmail(email: string, id: string, reason: string) {
         return this.notificationService.send({
             channel: NotificationChannel.Email,
-            subject: 'Request Rejected',
-            content: `Your request has been rejected. ${reason}`,
+            subject: `REJECTED: Request #${id}`,
+            content: `
+            <p>Dear User,</p>
+            <p>Please be advised that your request (ID: <b>${id}</b>) has been <b>REJECTED</b> following a formal review.</p>
+            <p><strong>Reason for Rejection:</strong><br />
+            ${reason}</p>
+            <p>If you believe this decision was made in error, please contact the Finance Office with the reference ID provided above.</p>
+            <p>Regards,<br />Finance Administration Team</p>
+        `,
+            to: email,
+            reference: id,
+            isRealTimeNotification: true,
+            isNotifyToAllUser: false,
+            type: NotificationType.User,
+            metaData: {},
+        });
+    }
+
+    sendUnderReviewEmail(email: string, id: string, reason: string) {
+        return this.notificationService.send({
+            channel: NotificationChannel.Email,
+            subject: `PENDING REVIEW: Request #${id}`,
+            content: `
+            <p>Dear User,</p>
+            <p>Your request (ID: <b>${id}</b>) is currently <b>UNDER REVIEW</b> by the Finance Department.</p>
+            <p><strong>Reviewer Comments:</strong><br />
+            ${reason}</p>
+            <p>No further action is required from your side at this time. We will notify you immediately once a final determination has been reached.</p>
+            <p>Regards,<br />Finance Administration Team</p>
+        `,
             to: email,
             reference: id,
             isRealTimeNotification: true,

@@ -42,13 +42,10 @@ export class OrganizationMemberController {
     }
 
     @Post('member-list')
-    findAllPaginated(
-        @Body() dto: GetOrganizationMemberListRequestDto,
-        @Request() req,
-    ) {
+    findAllPaginated(@Body() dto: PaginationDto, @Request() req) {
         return this.employeesService.findAllPaginated(
             CurrentUser.getOrganizationId(req),
-            dto.pagination,
+            dto,
         );
     }
 

@@ -52,11 +52,6 @@ export class OrganizationMemberService {
         model.organization = organization;
         model.type = OrganizationMemberType.Member;
         const member = await this.organizationMemberRepo.save(model);
-        // this.addressService.createContactDetails(
-        //     dto.contactDetails,
-        //     member.profile.id,
-        //     ReferenceType.Profile,
-        // );
         return member;
     }
 
@@ -151,6 +146,18 @@ export class OrganizationMemberService {
                 '(profile.firstName ILIKE :search OR profile.middleName ILIKE :search OR profile.lastName ILIKE :search OR user.email ILIKE :search)',
                 { search },
             );
+        }
+
+        if (pagination.status && pagination.status !== 'All') {
+            if (pagination.status === 'Active') {
+                queryBuilder.andWhere('member.isActive = :isActive', {
+                    isActive: true,
+                });
+            } else if (pagination.status === 'InActive') {
+                queryBuilder.andWhere('member.isActive = :isActive', {
+                    isActive: false,
+                });
+            }
         }
 
         queryBuilder
