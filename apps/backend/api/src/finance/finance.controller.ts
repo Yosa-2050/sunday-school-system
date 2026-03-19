@@ -9,9 +9,9 @@ import {
     Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
-import { CreateMoneyRequestDto } from './dto/create-money-request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
-import { GetFinanceReportRequestDto } from './dto/get-finance-report-request.dto';
+import { GetFinanceReportRequestDto } from '@shega/Utilities/models/paginated.request3';
+import { CreateMoneyRequestDto } from './dto/create-money-request.dto';
 // biome-ignore lint/style/useImportType: <explanation>
 import { FinanceService } from './finance.service';
 
@@ -46,9 +46,9 @@ export class FinanceController {
         @Request() req,
     ) {
         return this.financeService.findByRolePaginated(
-            req.user.id,
+            req.user.userId,
             req.user.role,
-            dto.pagination,
+            dto,
         );
     }
     @Get('/:id')

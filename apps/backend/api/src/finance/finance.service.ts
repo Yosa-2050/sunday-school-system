@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
+// biome-ignore lint/style/useImportType: <explanation>
 import { GetFinanceReportRequestDto } from '@shega/Utilities/models/paginated.request3';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
@@ -66,7 +67,7 @@ export class FinanceService {
 
     async findByRolePaginated(
         id: string,
-        role: string,
+        role: UserRoleType,
         request: GetFinanceReportRequestDto,
     ): Promise<PaginatedFinanceResponseDto> {
         const queryBuilder = this.reportRepository
@@ -74,14 +75,10 @@ export class FinanceService {
             .leftJoinAndSelect('report.items', 'items')
             .leftJoinAndSelect('report.requestor', 'requestor');
         const pagination = request.pagination;
-
-        const normalizedAllRoles = role.toUpperCase();
-
         const isAdmin =
-            normalizedAllRoles.includes('ADMINISTRATOR') ||
-            normalizedAllRoles.includes('SUPER_ADMIN') ||
-            normalizedAllRoles.includes('FINANCE_ADMIN') ||
-            normalizedAllRoles.includes('SCHOOL_ADMIN');
+            role === UserRoleType.Administrator ||
+            role === UserRoleType.SuperAdmin ||
+            role === UserRoleType.FinanceAdmin;
 
         if (!isAdmin) {
             queryBuilder.andWhere('requestor.id = :id', { id });
