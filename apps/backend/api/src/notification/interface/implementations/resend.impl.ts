@@ -9,6 +9,12 @@ export class ResendImpl implements IEmailService {
     constructor() {
         this.resend = new Resend('re_7WLTtY6Q_DXktYkyLzgoHT3KT8bP9naD8');
     }
+    sendBulkEmail(
+        from: string,
+        bulk: { to: string; subject: string; content: string }[],
+    ) {
+        throw new Error('Method not implemented.');
+    }
 
     async sendEmail(
         from: string,

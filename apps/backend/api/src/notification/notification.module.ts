@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Notes } from './entities/notes.entity';
@@ -5,6 +6,8 @@ import { Notification } from './entities/notification.entity';
 import { NotificationTemplate } from './entities/notificationTemplate.entity';
 import { IEmailServiceInterface } from './interface/email-service.interface';
 import { ResendImpl } from './interface/implementations/resend.impl';
+import { AfroImpl } from './interface/sms-implementation/afro-sms.impl';
+import { ISmsServiceInterface } from './interface/sms-service.interface';
 import { NotesController } from './notes.controller';
 import { NotesService } from './notes.service';
 import { NotificationTemplateSeedService } from './notification-template-seed.service';
@@ -14,6 +17,7 @@ import { NotificationService } from './notification.service';
 
 @Module({
     imports: [
+        HttpModule,
         TypeOrmModule.forFeature([Notification, NotificationTemplate, Notes]),
     ],
     controllers: [NotificationController, NotesController],
@@ -22,6 +26,10 @@ import { NotificationService } from './notification.service';
         {
             provide: IEmailServiceInterface,
             useClass: ResendImpl,
+        },
+        {
+            provide: ISmsServiceInterface,
+            useClass: AfroImpl,
         },
         NotificationTemplateSeedService,
         NotificationGateway,

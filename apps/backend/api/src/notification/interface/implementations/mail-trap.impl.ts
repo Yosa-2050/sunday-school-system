@@ -16,6 +16,12 @@ export class MailTrapImpl implements IEmailService {
             },
         });
     }
+    sendBulkEmail(
+        from: string,
+        bulk: { to: string; subject: string; content: string }[],
+    ) {
+        throw new Error('Method not implemented.');
+    }
 
     async sendEmail(
         from: string,

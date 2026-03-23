@@ -25,6 +25,8 @@ export class NotificationService {
     constructor(
         @Inject(IEmailServiceInterface)
         private readonly emailService: IEmailService,
+        @Inject(ISmsServiceInterface)
+        private readonly smsService: ISmsService,
         @InjectRepository(Notification)
         private notificationRepo: Repository<Notification>,
         @InjectRepository(NotificationTemplate)
@@ -43,6 +45,10 @@ export class NotificationService {
         });
         const notifications = [];
         if (channel === NotificationChannel.Email) {
+            this.SaveAndSendEmail(template, detail, channel, notifications);
+        }
+
+        if (channel === NotificationChannel.Sms) {
             this.SaveAndSendEmail(template, detail, channel, notifications);
         }
     }
@@ -83,6 +89,35 @@ export class NotificationService {
                 notifications.push(notification);
             }
         }
+
+        const smsTemplate = template.find(
+            (x) => x.channelType === NotificationChannel.Sms,
+        );
+
+        if (smsTemplate) {
+            for (const phone of detail.toPhoneNumber) {
+                const notification = this.notificationRepo.create({
+                    channel,
+                    numberOfAttempts: 1,
+                    reference: detail.referenceId,
+                    to: phone,
+                    content: this.renderTemplate(
+                        smsTemplate.content,
+                        detail.metaData,
+                    ),
+                    subject: smsTemplate.subject,
+                    status: NotificationStatus.Pending,
+                });
+
+                this.smsService.sendSms(
+                    // smsTemplate.senderId ?? '',
+                    phone,
+                    this.renderTemplate(smsTemplate.content, detail.metaData),
+                );
+
+                notifications.push(notification);
+            }
+        }
     }
 
     send(req: CreateNotificationDto) {
@@ -96,6 +131,7 @@ export class NotificationService {
             status: NotificationStatus.Pending,
         });
         this.notificationRepo.save(notification);
+
         if (req.channel === NotificationChannel.Email) {
             this.emailService.sendEmail(
                 this.fromEmail,
@@ -103,6 +139,10 @@ export class NotificationService {
                 req.subject,
                 req.content,
             );
+        }
+
+        if (req.channel === NotificationChannel.Sms) {
+            this.smsService.sendSms(req.to, req.content);
         }
 
         //send real time notification to all users or specific user
@@ -124,6 +164,48 @@ export class NotificationService {
                     },
                 );
             }
+        }
+    }
+
+    sendBulk(reqs: CreateNotificationDto[]) {
+        const bulkEmails: { to: string; subject: string; content: string }[] =
+            [];
+        const bulkSms: { to: string; content: string }[] = [];
+
+        for (const req of reqs) {
+            const notification = this.notificationRepo.create({
+                channel: req.channel,
+                numberOfAttempts: 1,
+                reference: req.reference,
+                to: req.to,
+                content: req.content,
+                subject: req.subject,
+                status: NotificationStatus.Pending,
+            });
+            this.notificationRepo.save(notification);
+
+            // if (req.channel === NotificationChannel.Email) {
+            //     bulkEmails.push({
+            //         to: req.to,
+            //         subject: req.subject,
+            //         content: req.content
+            //     });
+            // }
+
+            if (req.channel === NotificationChannel.Sms) {
+                bulkSms.push({
+                    to: req.to,
+                    content: req.content,
+                });
+            }
+        }
+
+        // if (bulkEmails.length > 0) {
+        //     this.emailService.sendBulkEmail(this.fromEmail, bulkEmails);
+        // }
+
+        if (bulkSms.length > 0) {
+            this.smsService.sendBulkSms(bulkSms);
         }
     }
 

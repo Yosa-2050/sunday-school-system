@@ -21,9 +21,15 @@ export class NotificationController {
     constructor(private readonly notificationService: NotificationService) {}
 
     @Public()
-    @Post()
+    @Post('send')
     sendEmail(@Body() req: CreateNotificationDto) {
         return this.notificationService.send(req);
+    }
+
+    @Public()
+    @Post('send-bulk')
+    sendBulk(@Body() req: CreateNotificationDto[]) {
+        return this.notificationService.sendBulk(req);
     }
 
     @Post('getAllInAppNotifications')
