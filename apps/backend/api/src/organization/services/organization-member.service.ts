@@ -55,6 +55,46 @@ export class OrganizationMemberService {
         return member;
     }
 
+    async bulkCreate(dtos: CreateEmployeeDto[], organizationId: string) {
+        const results: OrganizationMembers[] = [];
+        const errors: { dto: CreateEmployeeDto }[] = [];
+
+        const organization = await this.organizationRepo.findOneBy({
+            id: organizationId,
+        });
+        if (!organization) {
+            throw new EntityNotFoundException('organization');
+        }
+
+        for (const dto of dtos) {
+            try {
+                const profile = await this.profileService.createNewUserProfile(
+                    dto.email,
+                    dto.password,
+                    UserRoleType.Member,
+                    dto,
+                    null,
+                    false,
+                );
+
+                const model = this.organizationMemberRepo.create();
+                model.profile = profile;
+                model.organization = organization;
+                model.type = OrganizationMemberType.Member;
+
+                const member = await this.organizationMemberRepo.save(model);
+                results.push(member);
+            } catch (error) {
+                error.push({ dto, error });
+            }
+        }
+
+        return {
+            success: `${results.length} members imported successfully`,
+            failed: errors.length,
+        };
+    }
+
     async findAll(organizationId: string) {
         const members = await this.organizationMemberRepo.find({
             where: { organization: { id: organizationId } },

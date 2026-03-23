@@ -29,6 +29,14 @@ export class OrganizationMemberController {
         );
     }
 
+    @Post('bulk-create')
+    bulkCreate(@Body() dtos: CreateEmployeeDto[], @Request() req) {
+        return this.employeesService.bulkCreate(
+            dtos,
+            CurrentUser.getOrganizationId(req),
+        );
+    }
+
     @Get('me')
     getMyInformation() {
         return this.employeesService.getMe();
