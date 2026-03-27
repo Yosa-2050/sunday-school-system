@@ -1,6 +1,7 @@
 import { Group } from './Utilities/entities/group.entity';
 import { LookUps } from './Utilities/entities/lookups.entity';
 import { AttendanceInformation } from './attendance/entities/attendance-data.entity';
+import { AttendanceDetail } from './attendance/entities/attendance-detail.entity';
 import { Attendance } from './attendance/entities/attendance.entity';
 import { Permission } from './attendance/entities/permission.entity';
 import { Result } from './attendance/entities/result.entity';
@@ -12,6 +13,7 @@ import { Experience } from './education/entities/experience.entity';
 import { QualificationSkills } from './education/entities/qualification-skills.entity';
 import { Qualification } from './education/entities/qualification.entity';
 import { Skills } from './education/entities/skills.entity';
+import { Event } from './events/entity/event.entity';
 import { ReportItem } from './finance/entity/report-item.entity';
 import { Report } from './finance/entity/report.entity';
 import { CalendarYear } from './lms/entities/calendar-year.entity';
@@ -88,4 +90,6 @@ export const AppEntities = [
     DepartmentMember,
     Report,
     ReportItem,
+    Event,
+    AttendanceDetail,
 ];
