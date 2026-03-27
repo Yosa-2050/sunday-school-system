@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
-// biome-ignore lint/style/useImportType: <explanation>
 import { GetFinanceReportRequestDto } from '@shega/Utilities/models/paginated.request3';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';

@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { ReportResponseDto } from './report.response.dto';
 
 export class PaginatedFinanceResponseDto {

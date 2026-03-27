@@ -11,11 +11,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import { PaginationDto } from '@shega/Utilities/models/paginated.request';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEmployeeDto } from '../dto/request/create-organization-member.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
 import { OrganizationMemberService } from '../services/organization-member.service';
 

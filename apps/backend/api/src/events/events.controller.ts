@@ -12,15 +12,10 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEventAttendanceDto } from '@shega/attendance/dto/request/create-event-attendance.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEventRequestDto } from './dto/request/create-event.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Event } from './entity/event.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { EventsService } from './events.service';
 
 @ApiBearerAuth()

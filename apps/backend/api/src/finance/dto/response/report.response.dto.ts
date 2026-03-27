@@ -1,8 +1,5 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { ReportItem } from '@shega/finance/entity/report-item.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Report } from '@shega/finance/entity/report.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 
 export class ReportResponseDto {

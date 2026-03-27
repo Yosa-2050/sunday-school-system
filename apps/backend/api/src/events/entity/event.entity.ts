@@ -1,7 +1,6 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Organization } from '@shega/organization/entities/organization.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { EventType } from '../enum/event-type.enum';
 
 @Entity()

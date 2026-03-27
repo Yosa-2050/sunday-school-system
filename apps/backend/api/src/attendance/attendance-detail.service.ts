@@ -1,10 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AttendanceDetailDto } from './dto/request/create-attendance-detail.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateAttendanceDetailDto } from './dto/request/update-attendance-detail.dto';
 import { AttendanceDetail } from './entities/attendance-detail.entity';
 

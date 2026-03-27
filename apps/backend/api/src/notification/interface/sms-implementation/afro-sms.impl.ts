@@ -1,7 +1,5 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ISmsService } from '../sms-service.interface';
 
 @Injectable()
