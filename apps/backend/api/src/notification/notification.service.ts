@@ -17,6 +17,11 @@ import {
     type IEmailService,
     IEmailServiceInterface,
 } from './interface/email-service.interface';
+// biome-ignore lint/style/useImportType: <explanation>
+import {
+    ISmsService,
+    ISmsServiceInterface,
+} from './interface/sms-service.interface';
 import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
