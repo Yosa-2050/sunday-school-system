@@ -230,11 +230,11 @@ export default function JobDetailsPage() {
                                         statusStyles[
                                             job?.status as keyof typeof statusStyles
                                         ]?.includes('green')
-                                            ? 'green'
+                                            ? 'green':
                                               statusStyles[
                                                     job?.status as keyof typeof statusStyles
                                                 ]?.includes('blue')
-                                              ? 'blue'
+                                              ? 'blue' :
                                                 statusStyles[
                                                       job?.status as keyof typeof statusStyles
                                                   ]?.includes('red')

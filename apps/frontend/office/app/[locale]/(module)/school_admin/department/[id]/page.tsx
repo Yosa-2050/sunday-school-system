@@ -149,7 +149,7 @@ export default function DepartmentDetailPage() {
                             You haven&apos;t added any sub departments yet.
                         </Text>
                     </Center>
-                isMobile ? (
+                ) : isMobile ? (
                     <Stack>
                         {departments.map((department) => (
                             <Card

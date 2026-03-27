@@ -192,7 +192,7 @@ export default function NotificationPopover() {
                 const getBorderColor = (theme: MantineTheme) =>
                     isRead
                         ? 'transparent'
-                          isPending
+                        : isPending
                           ? (theme.colors[theme.primaryColor]?.[3] ??
                             theme.colors.blue[5])
                           : theme.colors.blue[5];
@@ -200,7 +200,7 @@ export default function NotificationPopover() {
                 const getBackgroundColor = (theme: MantineTheme) =>
                     isRead
                         ? theme.colors.white
-                          isPending
+                        : isPending
                           ? (theme.colors[theme.primaryColor]?.[0] ??
                             theme.colors.blue[0])
                           : theme.colors.blue[0];

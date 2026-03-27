@@ -124,7 +124,7 @@ const DepartmentList = () => {
                             You haven&apos;t posted any departments yet.
                         </Text>
                     </Center>
-                isMobile ? (
+                ) : isMobile ? (
                     <Stack>
                         {departments.map((department) => (
                             <Card

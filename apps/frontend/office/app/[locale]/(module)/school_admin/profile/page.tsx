@@ -151,7 +151,7 @@ function HeaderSection({
     };
 
     const avatarSrc = profilePicture
-          typeof profilePicture === 'string'
+        ? typeof profilePicture === 'string'
             ? profilePicture
             : URL.createObjectURL(profilePicture)
         : undefined;
