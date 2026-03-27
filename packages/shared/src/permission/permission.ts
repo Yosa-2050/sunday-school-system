@@ -5,7 +5,7 @@ export const PERMISSION = {
 type PermissionStructure = typeof PERMISSION;
 
 type ExtractPermissionValues<T> = T extends Record<string, infer U>
-      U extends Record<string, any>
+    ? U extends Record<string, any>
         ? ExtractPermissionValues<U>
         : U extends string
           ? U

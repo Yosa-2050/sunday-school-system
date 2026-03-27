@@ -414,7 +414,7 @@ const UsersPage = () => {
                 {/* No Data State */}
                 {users.length === 0 ? (
                     <NoData />
-                isMobile ? (
+                ) : isMobile ? (
                     <Stack>
                         {users.map((user: Daum) => (
                             <Card

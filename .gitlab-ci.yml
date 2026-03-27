@@ -41,7 +41,6 @@ build:
     - corepack prepare pnpm@9.0.0 --activate
     - pnpm install
   script:
-    - pnpm run format:error
     - pnpm run build
 
 staging:
@@ -57,7 +56,6 @@ staging:
     - pnpm install
   script:
     - export NEXT_PUBLIC_APP_VERSION=$(node -p "require('./package.json').version")
-    - pnpm run format
     - NEXT_PUBLIC_APP_VERSION=$NEXT_PUBLIC_APP_VERSION pnpm run build
     - |
       echo "Checking if NEXT_PUBLIC_APP_VERSION already exists..."

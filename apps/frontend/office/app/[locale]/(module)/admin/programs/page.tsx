@@ -173,7 +173,7 @@ const programList = () => {
                             You haven&apos;t posted any programs yet.
                         </Text>
                     </Center>
-                isMobile ? (
+                ) : isMobile ? (
                     <Stack>
                         {programs.map((program) => (
                             <Card

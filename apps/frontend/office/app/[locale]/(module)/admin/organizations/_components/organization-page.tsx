@@ -271,7 +271,7 @@ const OrganizationsPage = () => {
             <Paper p="lg" style={{ borderRadius: '10px' }}>
                 {organizations.length === 0 && !isLoading ? (
                     <NoData />
-                isMobile ? (
+                ) : isMobile ? (
                     <OrganizationsMobile
                         organizations={organizations}
                         isLoading={isLoading}
