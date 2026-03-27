@@ -1,25 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AttendanceDetailService } from '@shega/attendance/attendance-detail.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEventAttendanceDto } from '@shega/attendance/dto/request/create-event-attendance.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import type { OrganizationService } from '@shega/organization/services/organization.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEventRequestDto } from './dto/request/create-event.request.dto';
 import { Event } from './entity/event.entity';
 
 @Injectable()
 export class EventsService {
     constructor(
-        @InjectRepository(Event)
-        private readonly eventRepo: Repository<Event>,
+        @InjectRepository(Event) private readonly eventRepo: Repository<Event>,
         private readonly documentService: DocumentService,
         private readonly attendanceDetailService: AttendanceDetailService,
         private readonly organizationService: OrganizationService,
