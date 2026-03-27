@@ -2,20 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddSubjectAssignmentDto } from '../dto/request/add-subject-assignment.request.dto';
 import { SubjectResponseDto } from '../dto/response/subject.response.dto';
 import { Program } from '../entities/program.entity';
 import { SubjectAssignment } from '../entities/subject-assignment.entity';
 import { Subjects } from '../entities/subject.entity';
 import { TeacherAssignment } from '../entities/teacher-assignment.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from './class.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LmsService } from './lms.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { TeacherService } from './teacher.service';
 
 @Injectable()

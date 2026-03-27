@@ -1,4 +1,3 @@
-// biome-ignore lint/performance/noBarrelFile: <explanation>
 export { AuthProvider, useAuth } from './providers/Auth.provider';
 export { EntityColumn } from './components/EntityColumn';
 export { EntitySearch } from './components/EntitySearch';

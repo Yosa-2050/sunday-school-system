@@ -173,7 +173,6 @@ const programList = () => {
                             You haven&apos;t posted any programs yet.
                         </Text>
                     </Center>
-                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 isMobile ? (
                     <Stack>
                         {programs.map((program) => (

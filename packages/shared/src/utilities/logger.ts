@@ -12,36 +12,24 @@ class LoggerService {
         }
     }
 
-    // biome-ignore lint/complexity/noBannedTypes: <explanation>
     public get log(): Function {
-        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         return this.debugMode ? console.log.bind(console) : (): void => {};
     }
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     public get debug(): any {
-        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         return this.debugMode ? console.debug.bind(console) : (): void => {};
     }
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     public get info(): any {
-        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         return this.debugMode ? console.info.bind(console) : (): void => {};
     }
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     public get warn(): any {
-        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         return this.debugMode ? console.warn.bind(console) : (): void => {};
     }
 
-    // biome-ignore lint/complexity/noBannedTypes: <explanation>
     public get error(): Function {
-        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         return this.debugMode ? console.error.bind(console) : (): void => {};
     }
 
-    // biome-ignore lint/complexity/noBannedTypes: <explanation>
     public get table(): Function {
-        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         return this.debugMode ? console.table.bind(console) : (): void => {};
     }
 }

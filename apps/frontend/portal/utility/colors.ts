@@ -12,7 +12,6 @@ function getClosestLightness(colorObject: chroma.Color) {
             Math.abs(curr - lightnessGoal) < Math.abs(prev - lightnessGoal)
                 ? curr
                 : prev,
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
         LIGHTNESS_MAP[0]!,
     );
 }

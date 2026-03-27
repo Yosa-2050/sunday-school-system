@@ -10,54 +10,40 @@ import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { PasswordService } from '@shega/Utilities/password.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LookupService } from '@shega/Utilities/service/lookup-seeder.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import { Category } from '@shega/education/entities/category.entity';
 import { AddressService } from '@shega/location/address.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LocationModel } from '@shega/location/dto/model/location.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 import { NotesService } from '@shega/notification/notes.service';
 import { NotificationService } from '@shega/notification/notification.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { ProfileService } from '@shega/users/profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import {
     type EntityParam,
     entityParamDeserializer,
     entityParamSerializer,
 } from 'shared/schema';
-// biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
 
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from '../dto/request/add-branch.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AssignMembersToOrganizationRequestDto } from '../dto/request/assign-person-to-org.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
     CreateOrganizationMemberWithOrgDto,
     CreateOrganizationUserDto,
 } from '../dto/request/create-organization-member.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from '../dto/request/create-organization.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateOrganizationInfoDto } from '../dto/request/update-organization.dto';
 import { GetOrganizationListResponseDto } from '../dto/response/get-organization.response.dto';
 import { Branch } from '../entities/branch.entity';
@@ -302,7 +288,6 @@ export class OrganizationService {
     }
 
     private async SendNotificationForApprovals(
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         emailTemplate: any,
         user: User,
         status: ApprovalType,

@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ModuleRef } from '@nestjs/core';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AuthService } from '@shega/auth/auth.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     DataSource,
     EntitySubscriberInterface,
@@ -11,9 +8,7 @@ import {
     InsertEvent,
     UpdateEvent,
 } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DateService } from '../date.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { BaseModel } from '../entities/base-model.entity';
 
 @Injectable()

@@ -2,20 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import type { PaginationDto } from '@shega/Utilities/models/paginated.request';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateEmployeeDto,
     CreateOrganizationUserDto,
 } from '../dto/request/create-organization-member.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
 import {
     OrganizationMemberResponseDto,

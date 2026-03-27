@@ -10,10 +10,8 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEmployeeDto } from '@shega/organization/dto/request/create-organization-member.dto';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { TeacherService } from '../services/teacher.service';
 
 @Roles(UserRoleType.SchoolAdmin)

@@ -11,30 +11,21 @@ import {
     Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     ExportWithQueryRequestModel,
     StringRequestModel,
 } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Response } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-// biome-ignore lint/style/useImportType: <explanation>
 import { updatePasswordRequest } from './dto/update-password.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginBy } from './enums/login-by.enum';
 import { UserRoleType } from './enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from './users.service';
 
 @ApiTags('users')

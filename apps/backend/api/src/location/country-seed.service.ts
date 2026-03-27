@@ -1,12 +1,9 @@
-// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as fs from 'fs';
-// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as path from 'path';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import csv from 'csv-parser';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { LocationInfo } from './entities/LocationInfo.entity';
 import { Country } from './entities/country.entity';

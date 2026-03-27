@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { Teacher } from '@shega/lms/entities/teacher.entity';
 
 export class TeacherResponseDto {

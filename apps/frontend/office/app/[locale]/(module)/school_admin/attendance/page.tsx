@@ -54,7 +54,6 @@ export default function AttendancePage() {
         }
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         setStudents([]);
     }, [selectedClass, selectedSection]);

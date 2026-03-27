@@ -77,7 +77,6 @@ export default function ResultView({
         },
         enabled: false,
     });
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         setSelectedSubject(null);
         setSelectedTest(null);

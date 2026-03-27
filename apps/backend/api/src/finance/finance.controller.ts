@@ -1,8 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateMoneyRequestDto } from './dto/create-money-request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { FinanceService } from './finance.service';
 
 @ApiTags('finance')

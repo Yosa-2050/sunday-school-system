@@ -15,7 +15,6 @@ type EntityFilterProps = {
     className?: string;
     item?: string;
     placeholder?: string;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     defaultValue?: any;
     defaultOrder?: { f: string; d: 'asc' | 'desc' }[];
 };

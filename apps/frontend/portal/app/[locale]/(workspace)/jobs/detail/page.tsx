@@ -80,13 +80,11 @@ export default function JobApplicationDetail() {
         },
     ]);
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const handleInputChange = (e: { target: { name: any; value: any } }) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const handleCheckboxChange = (e: { target: { checked: any } }) => {
         setFormData((prev) => ({ ...prev, agreeToTerms: e.target.checked }));
     };
@@ -1084,7 +1082,6 @@ export default function JobApplicationDetail() {
                         <Card>
                             <Stack gap="sm">
                                 <Title order={5}>Similar Jobs</Title>
-                                {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                                 {[1, 2, 3].map((job) => (
                                     <Stack
                                         key={job}
@@ -1097,7 +1094,6 @@ export default function JobApplicationDetail() {
                                         <Anchor size="sm">
                                             {job === 1
                                                 ? 'Frontend Developer'
-                                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                                   job === 2
                                                   ? 'UI Engineer'
                                                   : 'React Developer'}
@@ -1110,7 +1106,6 @@ export default function JobApplicationDetail() {
                                             <Text size="xs" color="dimmed">
                                                 {job === 1
                                                     ? 'WebSolutions Ltd.'
-                                                    : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                                       job === 2
                                                       ? 'DesignHub Inc.'
                                                       : 'AppWorks Co.'}
@@ -1125,7 +1120,6 @@ export default function JobApplicationDetail() {
                                                 <Text size="xs" color="dimmed">
                                                     {job === 1
                                                         ? 'Remote'
-                                                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                                           job === 2
                                                           ? 'New York, NY'
                                                           : 'Austin, TX'}
@@ -1139,7 +1133,6 @@ export default function JobApplicationDetail() {
                                                 <Text size="xs" color="dimmed">
                                                     {job === 1
                                                         ? '$90-120K'
-                                                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                                           job === 2
                                                           ? '$100-130K'
                                                           : '$110-140K'}

@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     ArgumentsHost,
     Catch,
@@ -11,7 +10,6 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Request, Response } from 'express';
 import { ApiResponseDto } from '../models/api-response.model';
 import { EntityOperationNotAllowedException } from './Exceptions/notallowed.exception';
@@ -21,7 +19,6 @@ import { ErrorCodes } from './error-codes';
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
     constructor(private readonly logger: Logger) {}
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();

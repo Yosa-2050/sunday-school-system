@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Resend } from 'resend';
-// biome-ignore lint/style/useImportType: <explanation>
 import { IEmailService } from '../email-service.interface';
 
 @Injectable()

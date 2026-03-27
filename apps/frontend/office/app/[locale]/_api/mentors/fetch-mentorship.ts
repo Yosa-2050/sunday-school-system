@@ -28,7 +28,6 @@ export interface Response {
     isActive: boolean;
     createdBy: string;
     status: string;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     note: any;
     profile: {
         id: string;

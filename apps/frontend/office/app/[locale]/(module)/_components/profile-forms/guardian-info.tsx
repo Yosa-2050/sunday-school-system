@@ -30,7 +30,6 @@ export default function GuardianInformation({
                 <Divider />
                 <MandatoryProfileForm
                     data={data}
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     onChange={(field, value) => onChange(field as any, value)}
                 />
                 <TextInput

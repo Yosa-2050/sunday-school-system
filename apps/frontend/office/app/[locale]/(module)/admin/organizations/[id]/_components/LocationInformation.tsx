@@ -19,7 +19,6 @@ import type { Organization } from 'model/Organization';
 
 const LocationInformation = ({
     organizationData,
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 }: { organizationData: Organization }) => {
     const countryId = organizationData?.locations?.locationData?.country;
     const regionId = organizationData?.locations?.locationData?.region;

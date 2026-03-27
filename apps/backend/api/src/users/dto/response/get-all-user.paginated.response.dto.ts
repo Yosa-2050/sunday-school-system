@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 
 export class GetPaginatedUsersResponseDto {

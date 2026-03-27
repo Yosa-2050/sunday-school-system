@@ -9,12 +9,9 @@ import {
     Request,
 } from '@nestjs/common';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Public } from '@shega/auth/jwt-public';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddSubjectAssignmentDto } from '../dto/request/add-subject-assignment.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { SubjectService } from '../services/subject.service';
 
 // @Roles(UserRoleType.SchoolAdmin)

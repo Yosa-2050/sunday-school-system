@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { Gender } from 'app/[locale]/_api/job-seeker';
 
 export type StudentResponse = {

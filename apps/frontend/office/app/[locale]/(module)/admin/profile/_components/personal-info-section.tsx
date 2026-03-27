@@ -1,6 +1,5 @@
 'use client';
 
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProfileResponse } from 'app/[locale]/(module)/school_admin/students/schemas/type';
 
 import { zodResolver } from '@hookform/resolvers/zod';

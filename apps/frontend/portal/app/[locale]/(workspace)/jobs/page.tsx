@@ -97,7 +97,6 @@ export default function JobsPage() {
         }
     }, 300);
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies(searchParam.get): intentional
     useEffect(() => {
         if (shouldApplyFilters && searchParam.get('search')) {
             handleApplyFilters();
@@ -172,7 +171,6 @@ export default function JobsPage() {
                                     <Loader size={'md'} />
                                     <Text>Loading jobs...</Text>
                                 </Box>
-                                // biome-ignore lint/nursery/noNestedTernary: <explanation>
                             ) : isEmpty ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {data?.data.map((job) => (

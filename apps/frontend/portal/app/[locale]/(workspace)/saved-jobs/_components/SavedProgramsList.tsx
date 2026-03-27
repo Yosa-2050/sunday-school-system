@@ -14,7 +14,6 @@ import { useRouter } from 'next-nprogress-bar';
 function SavedJobsList({
     applications,
 }: {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     applications?: any[];
 }) {
     const router = useRouter();

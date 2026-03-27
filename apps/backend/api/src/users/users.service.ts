@@ -12,21 +12,16 @@ import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 import { NotificationService } from '@shega/notification/notification.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import {
     type EntityParam,
     entityParamDeserializer,
     entityParamSerializer,
 } from 'shared/schema';
-// biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetPaginatedUsersResponseDto } from './dto/response/get-all-user.paginated.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { updatePasswordRequest } from './dto/update-password.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';

@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { Organization } from '@shega/organization/entities/organization.entity';
 
 export class GetOrganizationListResponseDto {

@@ -40,7 +40,6 @@ import router from 'next/router';
 import { useState } from 'react';
 import { fetchMembersIdApi } from '../../schemas/api';
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function MembersEditPage() {
     const params = useParams();
     const memberId = params.id as string;
@@ -69,7 +68,6 @@ export default function MembersEditPage() {
     if (error || !member) {
         return <Text color="red">Failed to load member</Text>;
     }
-    // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
     const deleteRelationshipMutation = useMutation({
         mutationFn: deleteRelationshipApi,
         onSuccess: () => {
@@ -83,7 +81,6 @@ export default function MembersEditPage() {
         deleteRelationshipMutation.mutate(relationshipId);
     };
 
-    // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
     const { data: relationships, isLoading: loadingRelationships } = useQuery({
         queryKey: ['student-relationships', memberId],
         queryFn: () => fetchRelationshipsApi(memberId),
@@ -353,7 +350,6 @@ export default function MembersEditPage() {
 
                 {loadingRelationships ? (
                     <Loader size="sm" />
-                    // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 ) : relationships?.length === 0 ? (
                     <Text c="dimmed">No emergency contacts found</Text>
                 ) : (

@@ -1,19 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { instanceToPlain } from 'class-transformer';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LocationModel } from './dto/model/location.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetailsRequest } from './dto/request/contact-detail.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { IndividualAddressDto } from './dto/request/create-address.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateAddressDto } from './dto/request/update-address.dto';
 import { LocationInfo } from './entities/LocationInfo.entity';
 import { ContactDetails } from './entities/contact-details.entity';

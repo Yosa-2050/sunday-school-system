@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
 
 export class SubjectResponseDto {

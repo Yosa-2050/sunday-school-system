@@ -9,11 +9,8 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateUsingNameRequestDto } from './dto/request/create-name.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { QualificationService } from './qualification.service';
 
 @ApiTags('qualification-detail')

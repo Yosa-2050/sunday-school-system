@@ -100,7 +100,6 @@ export default function ResultCreate({
         }));
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         setSelectedSubject(null);
         setSelectedTest(null);

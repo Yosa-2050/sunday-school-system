@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { Notes } from './entities/notes.entity';
 

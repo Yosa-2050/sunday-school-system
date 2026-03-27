@@ -9,11 +9,8 @@ import {
     Request,
 } from '@nestjs/common';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddDepartmentRequestDto } from '../dto/request/add-department.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DepartmentService } from '../services/department.service';
 
 @Controller('department')

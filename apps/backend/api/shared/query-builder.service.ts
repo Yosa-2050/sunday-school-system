@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { PER_PAGE, entityParamDeserializer } from './schema';
 
@@ -12,7 +11,6 @@ export class QueryBuilderService {
             relation: string;
             alias: string;
             condition?: string;
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             parameters?: any;
         }[],
         searchableColumns?: string[],

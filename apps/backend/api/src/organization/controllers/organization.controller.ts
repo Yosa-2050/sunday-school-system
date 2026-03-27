@@ -17,43 +17,29 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     ExportWithQueryRequestModel,
     StringRequestModel,
 } from '@shega/Utilities/models/list-string.model';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
-// biome-ignore lint/style/useImportType: <explanation>
-// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LocationModel } from '@shega/location/dto/model/location.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetailsRequest } from '@shega/location/dto/request/contact-detail.request.dto';
 import { AllEnums } from '@shega/users/enums/allEnums';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 // import { DocumentService } from '@shega/document/document.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Response } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddOrganizationBranchDto } from '../dto/request/add-branch.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AssignMembersToOrganizationRequestDto } from '../dto/request/assign-person-to-org.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateOrgEmployeeWithContactDto,
     CreateOrganizationMemberWithOrgDto,
 } from '../dto/request/create-organization-member.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationDto } from '../dto/request/create-organization.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateOrganizationInfoDto } from '../dto/request/update-organization.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { GetOrganizationListResponseDto } from '../dto/response/get-organization.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '../services/organization.service';
 
 @Controller('organization')

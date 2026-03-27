@@ -94,7 +94,6 @@ export function AssignmentDrawer({
         getSubject();
     }, [programId]);
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const [teachers, setTeachers] = useState<any[]>([]);
     const [loadingTeachers, setLoadingTeachers] = useState(false);
 

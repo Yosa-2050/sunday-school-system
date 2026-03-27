@@ -63,9 +63,7 @@ interface JobDescription {
 
 export interface Job {
     workPlace: string;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     responsibilities: any;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     requirements: any;
     id: string;
     isActive: boolean;

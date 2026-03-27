@@ -192,7 +192,6 @@ export default function NotificationPopover() {
                 const getBorderColor = (theme: MantineTheme) =>
                     isRead
                         ? 'transparent'
-                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                           isPending
                           ? (theme.colors[theme.primaryColor]?.[3] ??
                             theme.colors.blue[5])
@@ -201,7 +200,6 @@ export default function NotificationPopover() {
                 const getBackgroundColor = (theme: MantineTheme) =>
                     isRead
                         ? theme.colors.white
-                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                           isPending
                           ? (theme.colors[theme.primaryColor]?.[0] ??
                             theme.colors.blue[0])
@@ -235,7 +233,6 @@ export default function NotificationPopover() {
                                     fw={isRead ? 500 : 600}
                                     c={isRead ? 'dimmed' : 'dark'}
                                     truncate
-                                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                                     dangerouslySetInnerHTML={{
                                         __html: notification.subject,
                                     }}
@@ -245,7 +242,6 @@ export default function NotificationPopover() {
                                     c={isRead ? 'dimmed' : 'dark.4'}
                                     lineClamp={2}
                                     lh={1.4}
-                                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                                     dangerouslySetInnerHTML={{
                                         __html: notification.content,
                                     }}

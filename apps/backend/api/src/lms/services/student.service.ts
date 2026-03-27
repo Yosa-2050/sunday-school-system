@@ -1,29 +1,22 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { parseExcel } from '@shega/Utilities/service/parse-excel.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateStudentRequestDto } from '../dto/request/create-student.request.dto';
 import { ImportStudentsRequest } from '../dto/request/import-student.request.dto';
 import { StudentResponseDto } from '../dto/response/student.response.dto';
 import { Classes } from '../entities/classes.entity';
 import { Students } from '../entities/students.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from './class.service';
 
 @Injectable()

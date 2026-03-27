@@ -75,7 +75,6 @@ const ContactInformation = ({
                                     >
                                         {contact.value}
                                     </Anchor>
-                                    // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                 ) : contact.contactType === 'Phone' ? (
                                     <Anchor
                                         href={`tel:${contact.value}`}

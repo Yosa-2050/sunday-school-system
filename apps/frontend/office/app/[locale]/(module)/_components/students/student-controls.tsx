@@ -60,7 +60,6 @@ export function StudentControls({
             await uploadFileApi(`/student/import/${SelectedClassId}`, file);
             showSuccess('Students uploaded successfully');
             onLoadStudents();
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         } catch (error: any) {
             showError(error.message);
         }

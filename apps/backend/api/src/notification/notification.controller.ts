@@ -9,13 +9,10 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Public } from '@shega/auth/jwt-public';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { MarkReadUnread } from './enums/mark-read-unread.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from './notification.service';
 
 @ApiTags('notification')

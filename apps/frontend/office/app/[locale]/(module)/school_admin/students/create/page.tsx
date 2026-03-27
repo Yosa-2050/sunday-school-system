@@ -135,7 +135,6 @@ export default function CreateStudentPage() {
         }
     };
 
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
     const validateForm = () => {
         if (!formData.firstName?.trim()) {
             return false;

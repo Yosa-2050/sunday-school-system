@@ -1,17 +1,12 @@
-// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import { Readable } from 'stream';
 import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { stringify } from 'csv-stringify';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express, Response } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Document } from './entities/document.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     IDocumentInterface,
     IDocumentService,

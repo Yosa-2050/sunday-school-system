@@ -107,7 +107,6 @@ export default function EducationForm({
         },
     });
 
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
     const onSubmit = async (values: FormValues) => {
         const formData = {
             ...values,
@@ -156,7 +155,6 @@ export default function EducationForm({
                         description: formData.description as string,
                         endDate: isCurrentlyStudying
                             ? null
-                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                               formData.endDate
                               ? formData.endDate
                               : null,

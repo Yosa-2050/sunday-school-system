@@ -35,7 +35,6 @@ export function CreateUser({ programId }: { programId: string }) {
             close();
             reset();
         },
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         onError: (error: any) => {
             notifications.show({
                 title: 'Error',

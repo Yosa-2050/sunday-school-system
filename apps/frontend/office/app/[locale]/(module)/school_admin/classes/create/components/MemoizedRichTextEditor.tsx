@@ -4,7 +4,6 @@ import { memo } from 'react';
 import type { ControllerRenderProps, FieldError } from 'react-hook-form';
 
 interface MemoizedRichTextEditorProps {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     field: ControllerRenderProps<any, any>;
     error: FieldError;
     label: string;

@@ -320,7 +320,6 @@ export default function AttendanceDetailTable({
                                 <LoadingOverlay visible={true} />
                             </Table.Td>
                         </Table.Tr>
-                        // biome-ignore lint/nursery/noNestedTernary: <explanation>
                     ) : attendanceDetails.length === 0 ? (
                         <Table.Tr>
                             <Table.Td

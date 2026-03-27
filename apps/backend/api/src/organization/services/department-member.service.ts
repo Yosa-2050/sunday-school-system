@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AssignMemberDto } from '../dto/request/assign-member-to-department.request.dto';
 import { DepartmentMember } from '../entities/department-member.entity';
 import { Department } from '../entities/department.entity';
@@ -46,7 +44,6 @@ export class DepartmentMemberService {
         departmentId?: string,
         subDepartmentId?: string,
     ) {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const where: any = {
             departmentId,
             member: { organization: { id: organizationId } },

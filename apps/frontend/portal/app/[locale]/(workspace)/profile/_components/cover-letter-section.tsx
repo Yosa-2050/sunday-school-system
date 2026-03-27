@@ -158,7 +158,6 @@ export default function CoverLetterSection() {
                             error={errors.coverLetter?.message}
                         />
                     </form>
-                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 jobSeeker?.coverLetter ? (
                     <>
                         <Text

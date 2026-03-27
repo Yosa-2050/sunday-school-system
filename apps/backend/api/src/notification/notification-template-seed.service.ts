@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { NotificationTemplate } from './entities/notificationTemplate.entity';
 import { NotificationTemplatesSeedData } from './seeds/notificationTemplates.seed';

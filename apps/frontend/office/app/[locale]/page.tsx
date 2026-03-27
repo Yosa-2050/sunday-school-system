@@ -11,7 +11,6 @@ export default function HomePage() {
     const locale = useLocale();
     const router = useRouter();
 
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
     useEffect(() => {
         const _user = user?.user;
         if (_user?.roles?.length) {

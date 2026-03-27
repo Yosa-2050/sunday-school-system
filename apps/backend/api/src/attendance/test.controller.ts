@@ -9,9 +9,7 @@ import {
 } from '@nestjs/common';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { TestRequestDto } from './dto/request/create-test.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { TestService } from './test.service';
 
 @Roles(UserRoleType.SuperAdmin)

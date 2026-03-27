@@ -227,7 +227,6 @@ const RecentUsers = () => {
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
-                                    {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                                     {users.map((user: Daum) => {
                                         let roleLabel = 'Job Seeker';
                                         if (

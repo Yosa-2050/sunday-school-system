@@ -10,14 +10,10 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEmployeeDto } from '../dto/request/create-organization-member.dto';
 import type { GetOrganizationMemberListRequestDto } from '../dto/request/get-organization-member-list.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateEmployeeDto } from '../dto/request/update-employee.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationMemberService } from '../services/organization-member.service';
 
 @ApiTags('organization-member')

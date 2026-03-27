@@ -195,7 +195,6 @@ export default function TeacherPage() {
                     >
                         Assign Teacher
                     </Button>
-                    {/* biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation> */}
                     <FileButton onChange={() => {}} accept=".xlsx,.xls">
                         {(props) => (
                             <Button
@@ -228,7 +227,6 @@ export default function TeacherPage() {
                                 <Loader size="sm" />
                             </Table.Td>
                         </Table.Tr>
-                        // biome-ignore lint/nursery/noNestedTernary: <explanation>
                     ) : teachers.length === 0 ? (
                         <Table.Tr>
                             <Table.Td

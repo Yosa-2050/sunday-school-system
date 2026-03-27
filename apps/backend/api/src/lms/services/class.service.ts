@@ -2,15 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClassRequestDto } from '../dto/request/create-class.request.dto';
 import { CalendarYear } from '../entities/calendar-year.entity';
 import { Classes } from '../entities/classes.entity';
 import { Program } from '../entities/program.entity';
 import { RootClass } from '../entities/root-class.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProgramType } from '../enums/program-type.enums';
 
 @Injectable()

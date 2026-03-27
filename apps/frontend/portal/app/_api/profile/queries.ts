@@ -374,7 +374,6 @@ export const useEducationLevels = () => {
     });
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const fetchCategories = async (): Promise<any[]> => {
     const response = await fetcher('/job-detail/categories', {
         method: 'GET',

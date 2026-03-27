@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { AttendanceInformation } from '@shega/attendance/entities/attendance-data.entity';
 
 export class GraphPerDayArray {

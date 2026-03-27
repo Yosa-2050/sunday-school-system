@@ -3,17 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { TeacherResponseDto } from '@shega/education/dto/response/teacher.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateEmployeeDto } from '@shega/organization/dto/request/create-organization-member.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationMemberService } from '@shega/organization/services/organization-member.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { Teacher } from '../entities/teacher.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from './class.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LmsService } from './lms.service';
 
 @Injectable()

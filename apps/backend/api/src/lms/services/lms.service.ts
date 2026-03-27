@@ -2,34 +2,22 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationDetailsDto } from '@shega/notification/dto/notification-details.dto';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 import { NotificationTemplates } from '@shega/notification/seeds/notification-templates.const';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateOrganizationUserDto } from '@shega/organization/dto/request/create-organization-member.dto';
 import { OrganizationMemberType } from '@shega/organization/enums/employee-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationMemberService } from '@shega/organization/services/organization-member.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/services/organization.service';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateCalendarYearRequestDto } from '../dto/request/create-calendar-year.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateLmDto } from '../dto/request/create-lm.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateProgramDto } from '../dto/request/create-program-type.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateLmDto } from '../dto/request/update-lm.dto';
 import { CalendarYear } from '../entities/calendar-year.entity';
 import { HomeroomAssignment } from '../entities/home-room.entity';

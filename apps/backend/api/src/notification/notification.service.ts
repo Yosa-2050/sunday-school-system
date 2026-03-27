@@ -3,14 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
-// biome-ignore lint/style/useImportType: <explanation>
 import { QueryBuilderService } from 'shared/query-builder.service';
 import { entityParamDeserializer, entityParamSerializer } from 'shared/schema';
-// biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateNotificationDto } from './dto/create-notification.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationDetailsDto } from './dto/notification-details.dto';
 import { Notification } from './entities/notification.entity';
 import { NotificationTemplate } from './entities/notificationTemplate.entity';
@@ -21,7 +17,6 @@ import {
     type IEmailService,
     IEmailServiceInterface,
 } from './interface/email-service.interface';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationGateway } from './notification.gateway';
 
 @Injectable()

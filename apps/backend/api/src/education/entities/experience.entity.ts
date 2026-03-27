@@ -2,9 +2,7 @@ import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { LocationInfo } from '@shega/location/entities/LocationInfo.entity';
 import { Country } from '@shega/location/entities/country.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { EmploymentType } from '../enums/employment-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { WorkPlaceType } from '../enums/work-place-type.enum';
 import { Qualification } from './qualification.entity';
 

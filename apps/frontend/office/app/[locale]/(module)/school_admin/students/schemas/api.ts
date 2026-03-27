@@ -77,7 +77,6 @@ export const fetchRelationshipsApi = async (
 export const updateStudentApi = async ({
     studentId,
     data,
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 }: { studentId: string; data: any }) => {
     const response = await fetch(`/api/students/${studentId}`, {
         method: 'PUT',

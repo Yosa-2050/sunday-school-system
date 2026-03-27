@@ -144,7 +144,6 @@ export default function ProgramDetailPage() {
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
-                                    {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                                     {years.map((year: any) => (
                                         <Table.Tr key={year.id}>
                                             <Table.Td>{year.name}</Table.Td>
@@ -216,7 +215,6 @@ export default function ProgramDetailPage() {
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
-                                        {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                                         {users.map((user: any) => (
                                             <Table.Tr key={user.id}>
                                                 <Table.Td>{`${user.member.profile.firstName} ${user.member.profile.middleName}`}</Table.Td>

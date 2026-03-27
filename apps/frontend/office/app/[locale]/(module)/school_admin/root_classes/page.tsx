@@ -56,7 +56,6 @@ export default function RootClassPage() {
             user?.role === 'school_admin',
     });
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const rows = rootClasses.map((cls: any, index: number) => (
         <Table.Tr key={cls.id}>
             <Table.Td>{index + 1}</Table.Td>
@@ -160,7 +159,6 @@ export default function RootClassPage() {
                                 </Group>
                             </Table.Td>
                         </Table.Tr>
-                        // biome-ignore lint/nursery/noNestedTernary: <explanation>
                     ) : rootClasses.length === 0 ? (
                         <Table.Tr>
                             <Table.Td

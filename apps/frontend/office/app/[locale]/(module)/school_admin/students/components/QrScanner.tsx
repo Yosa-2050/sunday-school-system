@@ -196,7 +196,6 @@ export default function QRScanner({
             >
                 <Paper p="md" withBorder>
                     {/* Class selection step - shown when no class is selected */}
-                    {/* biome-ignore lint/style/noNegationElse: <explanation> */}
                     {!selectedClass ? (
                         <Stack>
                             <Text size="sm" c="dimmed" mb="md">
@@ -239,7 +238,6 @@ export default function QRScanner({
                             </Radio.Group>
 
                             <Button
-                                // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
                                 onClick={() => {}}
                                 disabled={!selectedClass}
                                 fullWidth
@@ -275,7 +273,6 @@ export default function QRScanner({
                                     />
 
                                     <Button
-                                        // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
                                         onClick={() => {}}
                                         disabled={!selectedSection}
                                         fullWidth

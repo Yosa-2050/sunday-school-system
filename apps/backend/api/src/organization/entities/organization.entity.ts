@@ -1,17 +1,11 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { LookUps } from '@shega/Utilities/entities/lookups.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ApprovalType } from '@shega/Utilities/enums/approval-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ContactDetails } from '@shega/location/entities/contact-details.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Location } from '@shega/location/entities/location.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Notes } from '@shega/notification/entities/notes.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CompanySize } from '../enums/company-size.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CompanyType } from '../enums/company-type.enum';
 import { Branch } from './branch.entity';
 import { OrganizationMembers } from './organization-member.entity';

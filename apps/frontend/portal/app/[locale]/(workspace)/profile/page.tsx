@@ -54,7 +54,6 @@ export default function ProfilePage() {
     const [localProfileData, setLocalProfileData] =
         useState<ProfileData>(initialProfileData);
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const handleUpdateSection = (section: keyof ProfileData, data: any) => {
         setLocalProfileData((prev) => ({
             ...prev,
@@ -130,7 +129,6 @@ export default function ProfilePage() {
                                         data={
                                             {
                                                 bio: displayData.bio || '',
-                                                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                             } as any
                                         }
                                         onUpdate={(data) =>

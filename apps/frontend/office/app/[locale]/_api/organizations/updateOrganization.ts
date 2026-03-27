@@ -1,5 +1,4 @@
 import { fetcher } from '@shega/shared';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ContactFormData, LocationFormData } from 'model/OrganizationDetail';
 
 interface UpdateOrganizationPayload {

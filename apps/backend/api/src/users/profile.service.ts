@@ -1,27 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from '@shega/document/document.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ILike, Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NewProfileDto } from './dto/new-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { RelationShips } from './entities/relationships.entity';
 import { LoginBy } from './enums/login-by.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Gender } from './enums/profile-gender.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { RelationShipsType } from './enums/relationship-type.enum';
 
 @Injectable()

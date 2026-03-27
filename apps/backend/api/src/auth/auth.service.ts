@@ -3,39 +3,26 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { JwtService } from '@nestjs/jwt';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { QualificationDetailService } from '@shega/education/qualification-detail.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LmsService } from '@shega/lms/services/lms.service';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/services/organization.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { User } from '@shega/users/entities/user.entity';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OtpService } from '@shega/users/otp.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClsService } from 'nestjs-cls';
-// biome-ignore lint/style/useImportType: <explanation>
 import { PasswordResetDto } from './dtos/request/username.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ValidateResetRequestDto } from './dtos/request/validate-reset.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     UserDetails,
     UserResponsePayload,
 } from './dtos/response/user-response-payload.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums, validateRole } from './enums/origin.enum';
 
 @Injectable()
@@ -68,62 +55,71 @@ export class AuthService {
     }
 
     async login(user: User, origin: OriginEnums, selectedRole: UserRoleType) {
-        //let details: any;
-        const roles = await this.usersService.getUserRoles(user.id);
-        let defaultRole = roles?.find((x) => x.isDefault)?.role;
-        let selectedRoleNeeded = true;
-        if (selectedRole) {
-            selectedRoleNeeded = false;
-            defaultRole = roles?.find((x) => x.role === selectedRole)?.role;
-        }
-        if (!(defaultRole && validateRole(defaultRole, origin))) {
-            throw new UnauthorizedException();
+        const userRoles = await this.usersService.getUserRoles(user.id);
+
+        // Find a valid role for the current origin, prioritizing the default role if it's valid for this origin
+        const allRoles = userRoles.filter((r) => validateRole(r.role, origin));
+
+        if (allRoles?.length == 0) {
+            throw new UnauthorizedException(
+                `User does not have permission to access ${origin}`,
+            );
         }
         let details: UserDetails;
 
-        //checking only default roles as the assumption is the user only have one default user
-        switch (defaultRole) {
-            case UserRoleType.Administrator:
-                break;
-            case UserRoleType.SuperAdmin:
-                break;
-            case UserRoleType.HomeRoom:
-                details = await this.lmsService.getHomeTeacherDetail(
-                    user.profile.id,
+        if (selectedRole) {
+            const selectedRoleNeeded = allRoles.find(
+                (r) => r.role === selectedRole,
+            );
+
+            if (!selectedRoleNeeded) {
+                throw new UnauthorizedException(
+                    `User does not have permission to access ${selectedRole}`,
                 );
-                break;
-            case UserRoleType.Teacher:
-                details = await this.lmsService.getTeacherDetail(
-                    user.profile.id,
-                );
-                break;
-            case UserRoleType.SchoolAdmin:
-                details = await this.lmsService.getSchoolAdminDetail(
-                    user.profile.id,
-                );
-                break;
-            case UserRoleType.ProgramAdmin:
-                details = await this.lmsService.getSchoolProgramAdminDetail(
-                    user.profile.id,
-                );
-                break;
-            default:
-                throw new UnauthorizedException();
+            }
+
+            switch (selectedRoleNeeded.role) {
+                case UserRoleType.Administrator:
+                    break;
+                case UserRoleType.SuperAdmin:
+                    break;
+                case UserRoleType.HomeRoom:
+                    details = await this.lmsService.getHomeTeacherDetail(
+                        user.profile.id,
+                    );
+                    break;
+                case UserRoleType.Teacher:
+                    details = await this.lmsService.getTeacherDetail(
+                        user.profile.id,
+                    );
+                    break;
+                case UserRoleType.SchoolAdmin:
+                    details = await this.lmsService.getSchoolAdminDetail(
+                        user.profile.id,
+                    );
+                    break;
+                case UserRoleType.ProgramAdmin:
+                    details = await this.lmsService.getSchoolProgramAdminDetail(
+                        user.profile.id,
+                    );
+                    break;
+                default:
+                    throw new UnauthorizedException();
+            }
         }
         const payload: UserResponsePayload = {
             email: user.email,
             userId: user.id,
-            role: defaultRole.toLowerCase(),
-            allRoles: roles?.map((x) => x.role),
+            role: selectedRole,
+            allRoles: allRoles?.map((x) => x.role),
             pwdChangeRequired: user.pwd_change_required,
             id: user.id,
             details: details,
         };
-
         return {
             data: {
                 allRoles: payload.allRoles,
-                selectRole: selectedRoleNeeded,
+                selectRole: selectedRole,
                 role: payload.role,
                 email: payload.email,
                 access_token: payload.pwdChangeRequired

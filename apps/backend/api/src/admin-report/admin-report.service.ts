@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Organization } from '@shega/organization/entities/organization.entity';
 import { User } from '@shega/users/entities/user.entity';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
 import { CountTotalsResponseDto } from './dtos/response/count-totals.response.dto';
 import { GetRecentRegisteredUsersResponseDto } from './dtos/response/get-recent-registered-users.response.dto';

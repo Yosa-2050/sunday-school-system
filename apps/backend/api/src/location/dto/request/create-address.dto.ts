@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ContactType } from '@shega/location/enums/contact-type.enums';
 import { ContactDetailsType } from '@shega/location/enums/contanct-details.type.enum';
 import { EmalAddressType } from '@shega/location/enums/email-type.enums';

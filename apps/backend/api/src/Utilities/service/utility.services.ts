@@ -1,9 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { EntityNotFoundException } from '../ExceptionHandlers/Exceptions/notfound.exception';
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class UtilityServices {
     static EnsureUpdated(result: UpdateResult, id: string, message = null) {
         if (result.affected === 0) {
@@ -50,7 +48,6 @@ export class UtilityServices {
         };
     }
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     static SuccessDataResponse(data?: any) {
         return {
             data: data,
@@ -58,7 +55,6 @@ export class UtilityServices {
         };
     }
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     static SuccessDataResponseIfExists(data?: any, id?: string, type?: string) {
         if (!data) {
             throw new EntityNotFoundException(type, id);

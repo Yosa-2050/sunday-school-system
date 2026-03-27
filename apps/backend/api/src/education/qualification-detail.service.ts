@@ -1,34 +1,25 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { UserDetails } from '@shega/auth/dtos/response/user-response-payload.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from '@shega/location/address.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     AddEducationalHistoryRequestDto,
     updateEducationalHistoryRequestDto,
 } from './dto/request/add-education-history.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     AddExperienceRequestDto,
     UpdateExperienceRequestDto,
 } from './dto/request/add-experience.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
 import { EducationHistory } from './entities/educational-history.entity';
 import { Experience } from './entities/experience.entity';
 import { QualificationSkills } from './entities/qualification-skills.entity';
 import { Qualification } from './entities/qualification.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { QualificationService } from './qualification.service';
 
 export class QualificationDetailService {

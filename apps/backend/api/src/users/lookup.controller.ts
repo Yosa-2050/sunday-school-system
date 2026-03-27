@@ -1,6 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LookupService } from '@shega/Utilities/service/lookup-seeder.service';
 
 @ApiTags('lookup')

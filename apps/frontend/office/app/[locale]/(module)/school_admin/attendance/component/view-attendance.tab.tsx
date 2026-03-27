@@ -77,7 +77,6 @@ export default function AttendanceView({
         }
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         if (selectedClass) {
             fetchSavedDates(selectedSection ?? selectedClass);
@@ -116,7 +115,6 @@ export default function AttendanceView({
         enabled: false,
     });
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         setSavedDates([]);
         setSelectedDateRange([null, null]);

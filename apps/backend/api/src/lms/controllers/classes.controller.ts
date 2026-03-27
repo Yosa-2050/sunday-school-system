@@ -10,15 +10,11 @@ import {
     Request,
 } from '@nestjs/common';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClassRequestDto } from '../dto/request/create-class.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProgramType } from '../enums/program-type.enums';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from '../services/class.service';
 
 @Controller('class')

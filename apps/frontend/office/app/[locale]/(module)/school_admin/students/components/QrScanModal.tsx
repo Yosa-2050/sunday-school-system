@@ -4,7 +4,6 @@
 import { Stack, Text } from '@mantine/core';
 import { type IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
 import { useState } from 'react';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AttendanceStatus } from '../../attendance/schemas/types';
 
 interface QRScannerModalProps {

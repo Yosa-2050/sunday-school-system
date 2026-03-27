@@ -10,18 +10,13 @@ import {
     Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ReferenceType } from '@shega/Utilities/enums/reference-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from './address.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LocationModel } from './dto/model/location.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     ContactDetailsRequest,
     LocationListRequest,
 } from './dto/request/contact-detail.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { IndividualAddressDto } from './dto/request/create-address.dto';
 
 @ApiTags('address')

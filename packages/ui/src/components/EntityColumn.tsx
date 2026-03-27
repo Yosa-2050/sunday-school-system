@@ -59,7 +59,6 @@ export function EntityColumn({
                     size={18}
                     className="text-primary bg-primary-2"
                 />
-                // biome-ignore lint/nursery/noNestedTernary: <explanation>
             ) : currentSortDirection === 'desc' ? (
                 <IconSortDescending
                     size={18}

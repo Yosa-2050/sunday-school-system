@@ -1,7 +1,5 @@
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Server, Socket } from 'socket.io';
-// biome-ignore lint/style/useImportType: <explanation>
 import { InAppNotificationDto } from './dto/inApp-notification';
 
 @WebSocketGateway()

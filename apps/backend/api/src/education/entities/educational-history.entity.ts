@@ -1,6 +1,5 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { EducationalRequirementType } from '../enums/education-requirement-type.enum';
 import { Category } from './category.entity';
 import { Qualification } from './qualification.entity';

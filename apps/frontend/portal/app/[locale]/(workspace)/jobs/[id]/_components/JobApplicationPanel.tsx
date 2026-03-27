@@ -62,7 +62,6 @@ export const JobApplicationPanel = ({
     job,
     setCvUrl,
     setApplicationProgress,
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 }: JobApplicationPanelProps) => {
     const { user } = useAuth();
     const router = useRouter();

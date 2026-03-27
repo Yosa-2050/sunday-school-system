@@ -151,7 +151,6 @@ function HeaderSection({
     };
 
     const avatarSrc = profilePicture
-        ? // biome-ignore lint/nursery/noNestedTernary: <explanation>
           typeof profilePicture === 'string'
             ? profilePicture
             : URL.createObjectURL(profilePicture)
@@ -266,7 +265,6 @@ function HeaderSection({
                 size="lg"
             >
                 {avatarSrc ? (
-                    // biome-ignore lint/nursery/noImgElement: <explanation>
                     <img
                         src={avatarSrc}
                         alt="Profile Preview"
@@ -334,7 +332,6 @@ const ApprovalType = {
     RETURNED: 'RETURNED',
 };
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 function UserProfile() {
     const queryClient = useQueryClient();
     const [opened, { open, close }] = useDisclosure(false);

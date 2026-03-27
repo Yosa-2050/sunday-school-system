@@ -3,7 +3,6 @@ import type {
     IdSuccessResponse,
     SuccessResponse,
 } from 'app/[locale]/_api/admin/fetch-programs';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponse } from '../../students/schemas/type';
 import type {
     AttendanceDetailResponse,

@@ -20,7 +20,6 @@ const OrganizationBasic = ({
     );
 
     const avatarSrc = profilePicture
-        ? // biome-ignore lint/nursery/noNestedTernary: <explanation>
           typeof profilePicture === 'string'
             ? profilePicture
             : URL.createObjectURL(profilePicture)

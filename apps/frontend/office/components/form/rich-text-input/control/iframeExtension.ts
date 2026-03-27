@@ -6,7 +6,6 @@ export interface IframeOptions {
     height: number;
     width: number;
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     HTMLAttributes: Record<string, any>;
     inline: boolean;
     src: string;
@@ -27,7 +26,6 @@ type SetIframeOptions = {
 // Helper function to clean up the src link
 const trimSrcLink = (src: string) => src.trim();
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const getEmbedUrlFromSrc = ({ src }: any) => trimSrcLink(src);
 
 declare module '@tiptap/core' {
@@ -117,7 +115,6 @@ export const Iframe = Node.create<IframeOptions>({
             : [];
     },
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, any> }) {
         const embedUrl = getEmbedUrlFromSrc({
             src: HTMLAttributes.src,

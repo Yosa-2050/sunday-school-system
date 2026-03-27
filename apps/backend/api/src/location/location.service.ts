@@ -2,13 +2,10 @@ import { BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateLocationInfoRequestDto } from './dto/request/create-location-info.request.dto';
 import { LocationInfo } from './entities/LocationInfo.entity';
 import { Country } from './entities/country.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LocationType } from './enums/location-type.enums';
 
 export class LocationService {

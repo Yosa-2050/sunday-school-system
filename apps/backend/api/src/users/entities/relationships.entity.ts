@@ -1,6 +1,5 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { RelationShipsType } from '../enums/relationship-type.enum';
 import { Profile } from './profile.entity';
 

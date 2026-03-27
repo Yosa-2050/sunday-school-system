@@ -98,7 +98,6 @@ export function NotificationCard({
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                 }}
-                                // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                                 dangerouslySetInnerHTML={{
                                     __html: notification.subject,
                                 }}
@@ -135,7 +134,6 @@ export function NotificationCard({
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                             }}
-                            // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                             dangerouslySetInnerHTML={{
                                 __html: notification.content,
                             }}

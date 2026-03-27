@@ -6,9 +6,7 @@ import {
     S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { IDocumentService } from '../document-service.interface';
 
 export class SeaweedFsService implements IDocumentService {

@@ -39,7 +39,6 @@ interface ExperienceFormProps {
     isLoading?: boolean;
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function ExperienceForm({
     experience,
     onSubmit,

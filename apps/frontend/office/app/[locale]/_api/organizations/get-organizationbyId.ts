@@ -58,7 +58,6 @@ export interface Organization {
         type: string;
         note: string;
     }[];
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     __employee__: any;
 }
 

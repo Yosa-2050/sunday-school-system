@@ -1,6 +1,5 @@
 import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProgramType } from '../enums/program-type.enums';
 
 @Entity()

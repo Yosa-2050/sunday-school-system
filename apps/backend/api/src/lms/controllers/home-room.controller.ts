@@ -8,9 +8,7 @@ import {
     Patch,
     Post,
 } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { HomeRoomAssignmentDto } from '../dto/request/home-room.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { HomeRoomService } from '../services/home-room.service';
 
 @Controller('home-room')

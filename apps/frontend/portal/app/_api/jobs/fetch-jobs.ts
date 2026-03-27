@@ -65,7 +65,6 @@ export const fetchJobs = async (data: Filter) => {
                         }
                         return pAcc;
                     },
-                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                     {} as Record<string, any>,
                 );
             } else if (value !== undefined && value !== null && value !== '') {
@@ -73,7 +72,6 @@ export const fetchJobs = async (data: Filter) => {
             }
             return acc;
         },
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         {} as Record<string, any>,
     );
 

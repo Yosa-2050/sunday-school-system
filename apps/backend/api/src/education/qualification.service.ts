@@ -1,23 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { PasswordService } from '@shega/Utilities/password.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { NotificationService } from '@shega/notification/notification.service';
 import { Organization } from '@shega/organization/entities/organization.entity';
 
-// biome-ignore lint/style/useImportType: <explanation>
 import { OrganizationService } from '@shega/organization/services/organization.service';
 import { LoginBy } from '@shega/users/enums/login-by.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ProfileService } from '@shega/users/profile.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { In, Repository } from 'typeorm';
 import { GetJobApplicationsRequestDto } from './dto/request/get-job-applications.request.dto';
 import { Category } from './entities/category.entity';
@@ -47,7 +41,6 @@ export class QualificationService {
         private readonly userService: UsersService,
     ) {}
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     private async SendNotificationForJobCreatedToAdmin(jobCreated: any) {
         const user = await this.userService.findOneUser(
             jobCreated.organization.createdBy,
@@ -192,7 +185,6 @@ export class QualificationService {
 
     private async SentNotificationForShortListing(
         updateResult: { data: string; success: boolean },
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         appliedUsers: any[],
         validated: {
             id: string;

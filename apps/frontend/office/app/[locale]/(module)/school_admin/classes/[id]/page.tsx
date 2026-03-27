@@ -53,7 +53,6 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
 // Make params optional with a default value
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function JobDetailsPage() {
     const theme = useMantineTheme();
     const params = useParams();
@@ -232,12 +231,10 @@ export default function JobDetailsPage() {
                                             job?.status as keyof typeof statusStyles
                                         ]?.includes('green')
                                             ? 'green'
-                                            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                               statusStyles[
                                                     job?.status as keyof typeof statusStyles
                                                 ]?.includes('blue')
                                               ? 'blue'
-                                              : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                                 statusStyles[
                                                       job?.status as keyof typeof statusStyles
                                                   ]?.includes('red')
@@ -1109,11 +1106,9 @@ const Applicants = ({ jobId }: { jobId: string }) => {
                         <Table.Tbody>
                             {applicants.data?.map(
                                 (
-                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
                                     applicant: any,
                                     index: number,
                                 ) => (
-                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                     <Table.Tr key={index}>
                                         <Table.Td>
                                             <Avatar>

@@ -8,18 +8,13 @@
         "lint": "turbo lint",
         "clean": "rimraf -g  apps/**/.next",
         "lint-staged": "lint-staged",
-        "biome": "biome",
         "lefthook": "lefthook",
-        "format": "biome check .",
-        "format:error": "biome check --diagnostic-level=error .",
-        "format:fix": "biome check . --write",
         "prepare": "husky",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:e2e": "playwright test"
     },
     "devDependencies": {
-        "@biomejs/biome": "1.9.4",
         "@commitlint/config-conventional": "^19.6.0",
         "@semantic-release/changelog": "^6.0.3",
         "@semantic-release/git": "^10.0.1",

@@ -36,7 +36,6 @@ export function CreateRootClass({
             reset();
             handleClose();
         },
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         onError: (error: any) => {
             notifications.show({
                 title: 'Error',

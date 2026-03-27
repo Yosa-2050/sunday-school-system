@@ -50,7 +50,6 @@ export function EntitySearch({
     }, [debouncedSearch, entityParams, setEntityParams]);
 
     // Sync local state with URL params when they change externally
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         if (entityParams?.s !== searchTerm) {
             setSearchTerm(entityParams?.s || '');

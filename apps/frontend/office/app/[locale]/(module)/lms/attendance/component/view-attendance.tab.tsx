@@ -77,7 +77,6 @@ export default function AttendanceView({
         }
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         if (selectedClass) {
             fetchSavedDates(selectedSection ?? selectedClass);

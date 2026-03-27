@@ -1,14 +1,11 @@
 import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     ResultForMultipleStudentRequestDto,
     ResultForSingleStudentRequestDto,
 } from './dto/request/create-result.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { GetResultRequestDto } from './dto/request/get-result.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ResultService } from './result.service';
 
 @ApiBearerAuth()

@@ -11,7 +11,6 @@ type EntityPaginationProps = {
     perPage?: number;
     hideCounter?: boolean;
     customParam?: string;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     defaultSorting?: any;
 };
 

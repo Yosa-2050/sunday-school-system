@@ -178,7 +178,6 @@ const UploadFile: React.FC<UploadFileProps> = ({ orgId, canUpdateProfile }) => {
         handleFileUpload: (docCode: string) => void;
         docCode: string;
     }) {
-        // biome-ignore lint/nursery/noNestedTernary: <explanation>
         const label = isUploading ? '...' : isUploaded ? 'Replace' : 'Upload';
         return (
             <Button

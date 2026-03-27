@@ -16,7 +16,6 @@ export default function NotificationCard({
     notification,
     onToggleRead,
 }: Readonly<{
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     notification: any;
     onToggleRead: () => void;
 }>) {
@@ -82,7 +81,6 @@ export default function NotificationCard({
                     <Text
                         size="sm"
                         fw={500}
-                        // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                         dangerouslySetInnerHTML={{
                             __html: notification.subject,
                         }}
@@ -97,7 +95,6 @@ export default function NotificationCard({
                     <Text
                         size="xs"
                         c="dimmed"
-                        // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                         dangerouslySetInnerHTML={{
                             __html: notification.content,
                         }}

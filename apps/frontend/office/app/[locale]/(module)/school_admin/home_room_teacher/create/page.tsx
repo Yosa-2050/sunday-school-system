@@ -37,7 +37,6 @@ export default function HomeRoomAssignPage() {
         }
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         if (calendarYearId) {
             fetchClasses(calendarYearId);
@@ -54,7 +53,6 @@ export default function HomeRoomAssignPage() {
         }
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         if (programId) {
             fetchUsers(programId);
@@ -62,7 +60,6 @@ export default function HomeRoomAssignPage() {
     }, [programId]);
 
     const handleAssign = async () => {
-        // biome-ignore lint/style/useBlockStatements: <explanation>
         if (!(selectedClass && programUserId)) return;
 
         const body: CreateHomeRoom = {

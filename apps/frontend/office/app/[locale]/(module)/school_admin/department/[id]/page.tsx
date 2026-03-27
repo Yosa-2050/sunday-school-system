@@ -67,7 +67,6 @@ export default function DepartmentDetailPage() {
         handleDrawerClose();
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     const fetchSubDepartments = useCallback(async () => {
         try {
             setLoadingDepartment(true);
@@ -150,7 +149,6 @@ export default function DepartmentDetailPage() {
                             You haven&apos;t added any sub departments yet.
                         </Text>
                     </Center>
-                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 isMobile ? (
                     <Stack>
                         {departments.map((department) => (

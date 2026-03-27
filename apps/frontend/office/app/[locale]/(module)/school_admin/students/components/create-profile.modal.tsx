@@ -24,9 +24,7 @@ interface CreateProfileModalProps {
     opened: boolean;
     onClose: () => void;
     onCreated: (id: string) => void;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     mutationFn: (payload: any) => Promise<{ id: string }>;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     extraData?: Record<string, any>;
     title?: string;
     type?: string;
@@ -98,7 +96,6 @@ export default function CreateProfileModal({
         setIsSearching(false);
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         if (opened) {
             resetForm();
@@ -114,7 +111,6 @@ export default function CreateProfileModal({
         try {
             const results = await searchProfilesApi(searchTerm);
             setSearchResults(results);
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         } catch (error: any) {
             showError(error.message || 'Failed to search profiles');
         } finally {

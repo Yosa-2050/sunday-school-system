@@ -15,7 +15,6 @@ type AuthProviderProps = {
 
 const defaultAuthContext: AuthContextType = {
     user: undefined,
-    // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
     setUser: () => {},
 };
 

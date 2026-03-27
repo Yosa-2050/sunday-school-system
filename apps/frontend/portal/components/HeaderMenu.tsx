@@ -127,7 +127,6 @@ export function HeaderMenu() {
                                     <Menu.Item
                                         key={child.href}
                                         component={Link}
-                                        // biome-ignore lint/style/noNonNullAssertion: <explanation>
                                         href={child.href!}
                                         onClick={close}
                                     >
@@ -211,7 +210,6 @@ export function HeaderMenu() {
                                     {item.children.map((child) => (
                                         <Link
                                             key={child.href}
-                                            // biome-ignore lint/style/noNonNullAssertion: <explanation>
                                             href={child.href!}
                                             className={`px-3 py-2 text-sm transition-colors duration-200 ${
                                                 isActive(child)
@@ -228,7 +226,6 @@ export function HeaderMenu() {
                         ) : (
                             <Link
                                 key={item.label}
-                                // biome-ignore lint/style/noNonNullAssertion: <explanation>
                                 href={item.href!}
                                 className={`px-3 py-2 transition-colors duration-200 ${
                                     isActive(item)

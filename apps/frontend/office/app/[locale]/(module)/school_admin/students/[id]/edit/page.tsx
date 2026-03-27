@@ -41,7 +41,6 @@ import {
 } from '../../schemas/api';
 import type { RelationShipsResponse } from '../../schemas/type';
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export default function StudentEditPage() {
     const params = useParams();
     const router = useRouter();
@@ -423,7 +422,6 @@ export default function StudentEditPage() {
 
                     {loadingRelationships ? (
                         <Loader size="sm" />
-                        // biome-ignore lint/nursery/noNestedTernary: <explanation>
                     ) : relationships?.length === 0 ? (
                         <Text c="dimmed">No emergency contacts found</Text>
                     ) : (

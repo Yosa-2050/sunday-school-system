@@ -31,7 +31,6 @@ import { YoutubeControl } from './control/YoutubeControl';
 import { Iframe } from './control/iframeExtension';
 
 type RichTextInputProps = {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     field: ControllerRenderProps<any, any>;
     label?: React.ReactNode;
     error?: FieldError;

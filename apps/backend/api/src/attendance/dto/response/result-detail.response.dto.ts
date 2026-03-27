@@ -1,6 +1,4 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { Result } from '@shega/attendance/entities/result.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponseDto } from '@shega/lms/dto/response/student.response.dto';
 import type { Gender } from '@shega/users/enums/profile-gender.enum';
 

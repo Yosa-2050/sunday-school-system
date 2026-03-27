@@ -11,23 +11,17 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     AddEducationalHistoryRequestDto,
     updateEducationalHistoryRequestDto,
 } from './dto/request/add-education-history.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     AddExperienceRequestDto,
     UpdateExperienceRequestDto,
 } from './dto/request/add-experience.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateApplicantRequestDto } from './dto/request/update-applicant.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { QualificationDetailService } from './qualification-detail.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { QualificationService } from './qualification.service';
 
 @ApiTags('qualification')

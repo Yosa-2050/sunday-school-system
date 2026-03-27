@@ -1,16 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from '@shega/users/users.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import { HomeRoomAssignmentDto } from '../dto/request/home-room.request.dto';
 import { HomeroomAssignment } from '../entities/home-room.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from './class.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LmsService } from './lms.service';
 
 @Injectable()

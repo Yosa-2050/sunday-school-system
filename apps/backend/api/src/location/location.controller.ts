@@ -7,13 +7,9 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AddressService } from './address.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateLocationInfoRequestDto } from './dto/request/create-location-info.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LocationType } from './enums/location-type.enums';
-// biome-ignore lint/style/useImportType: <explanation>
 import { LocationService } from './location.service';
 
 @ApiTags('location')

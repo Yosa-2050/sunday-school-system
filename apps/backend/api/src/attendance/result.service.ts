@@ -3,12 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
 import { Students } from '@shega/lms/entities/students.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StudentService } from '@shega/lms/services/student.service';
 //import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Repository } from 'typeorm/repository/Repository';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     ResultForMultipleStudentRequestDto,
     ResultForSingleStudentRequestDto,

@@ -24,7 +24,6 @@ type JobCardProps = {
     refetch: () => void;
 };
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 export const JobCard = ({ job, refetch }: JobCardProps) => {
     const router = useRouter();
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -122,7 +121,6 @@ export const JobCard = ({ job, refetch }: JobCardProps) => {
             {/* Description */}
             <TypographyStylesProvider mt="sm">
                 <div
-                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                     dangerouslySetInnerHTML={{
                         __html: job.description.replace(/<[^>]+>/g, ' '),
                     }}

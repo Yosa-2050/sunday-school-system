@@ -153,7 +153,6 @@ export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
                             error={errors.bio?.message}
                         />
                     </form>
-                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 data.bio ? (
                     <>
                         <Text

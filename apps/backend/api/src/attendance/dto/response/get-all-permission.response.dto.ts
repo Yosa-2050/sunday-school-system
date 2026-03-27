@@ -1,8 +1,5 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { Permission } from '@shega/attendance/entities/permission.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Students } from '@shega/lms/entities/students.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Gender } from '@shega/users/enums/profile-gender.enum';
 
 export class GetAllPermission {

@@ -13,11 +13,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Express, Response } from 'express';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DocumentService } from './document.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateDocumentDto } from './dto/update-document.dto';
 
 @ApiTags('document')

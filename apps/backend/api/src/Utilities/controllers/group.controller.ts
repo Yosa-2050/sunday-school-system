@@ -9,12 +9,9 @@ import {
     Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ListStringRequestModel } from '@shega/Utilities/models/list-string.model';
 import { Public } from '@shega/auth/jwt-public';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateUsingNameRequestDto } from '@shega/education/dto/request/create-name.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { GroupService } from '../service/group.service';
 
 @Public()

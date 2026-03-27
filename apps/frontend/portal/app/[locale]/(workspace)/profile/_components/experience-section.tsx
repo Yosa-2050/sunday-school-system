@@ -78,7 +78,6 @@ export default function ExperienceSection({
         }
     };
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const handleSaveExperience = async (experience: any) => {
         try {
             if (currentExperience) {
@@ -108,12 +107,10 @@ export default function ExperienceSection({
         startDate: string,
         endDate?: string | null,
         currentlyWorking?: boolean,
-        // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
     ): string => {
         const start = new Date(startDate);
         const end = currentlyWorking
             ? new Date()
-            : // biome-ignore lint/nursery/noNestedTernary: <explanation>
               endDate
               ? new Date(endDate)
               : null;

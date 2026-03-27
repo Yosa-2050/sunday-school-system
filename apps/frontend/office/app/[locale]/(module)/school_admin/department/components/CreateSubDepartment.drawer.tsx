@@ -40,7 +40,6 @@ export function CreateSubDepartmentDrawer({
             },
         });
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         if (!opened) {
             return;

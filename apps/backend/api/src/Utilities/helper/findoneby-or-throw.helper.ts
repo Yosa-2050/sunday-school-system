@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { EntityNotFoundException } from '../ExceptionHandlers/Exceptions/notfound.exception';
 

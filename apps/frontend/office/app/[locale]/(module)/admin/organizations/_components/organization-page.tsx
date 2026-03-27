@@ -271,7 +271,6 @@ const OrganizationsPage = () => {
             <Paper p="lg" style={{ borderRadius: '10px' }}>
                 {organizations.length === 0 && !isLoading ? (
                     <NoData />
-                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 isMobile ? (
                     <OrganizationsMobile
                         organizations={organizations}

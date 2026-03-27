@@ -80,7 +80,6 @@ export function ContactFormDrawer({
                 position: formData.contactPersonRole,
             };
 
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             return (await submitContactPerson({ ...payload })) as any;
         },
 

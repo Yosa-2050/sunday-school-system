@@ -1,6 +1,5 @@
 // import { BadRequestException, Injectable } from '@nestjs/common';
 // import { v2 as cloudinary } from 'cloudinary';
-// // biome-ignore lint/style/useImportType: <explanation>
 // import { IDocumentService } from '../document-service.interface';
 
 // @Injectable()

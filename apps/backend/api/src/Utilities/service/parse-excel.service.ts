@@ -6,11 +6,9 @@ import * as XLSX from 'xlsx';
 export function parseExcel<T>(buffer: Buffer, dtoClass: new () => T) {
     const workbook = XLSX.read(buffer, { type: 'buffer' });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const rows: any[] = XLSX.utils.sheet_to_json(sheet);
 
     const valid: T[] = [];
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const errors: any[] = [];
 
     for (let i = 0; i < rows.length; i++) {

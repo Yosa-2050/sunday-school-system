@@ -19,7 +19,6 @@ export const SimilarJobs = () => {
         <Card hidden={true}>
             <Stack gap="sm">
                 <Title order={4}>Similar Jobs</Title>
-                {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                 {[1, 2, 3].map((job) => (
                     <Stack
                         key={job}
@@ -32,7 +31,6 @@ export const SimilarJobs = () => {
                         <Anchor size="xs">
                             {job === 1
                                 ? 'Frontend Developer'
-                                : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                   job === 2
                                   ? 'UI Engineer'
                                   : 'React Developer'}
@@ -42,7 +40,6 @@ export const SimilarJobs = () => {
                             <Text size="xs" color="dimmed">
                                 {job === 1
                                     ? 'WebSolutions Ltd.'
-                                    : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                       job === 2
                                       ? 'DesignHub Inc.'
                                       : 'AppWorks Co.'}
@@ -54,7 +51,6 @@ export const SimilarJobs = () => {
                                 <Text size="xs" color="dimmed">
                                     {job === 1
                                         ? 'Remote'
-                                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                           job === 2
                                           ? 'New York, NY'
                                           : 'Austin, TX'}
@@ -65,7 +61,6 @@ export const SimilarJobs = () => {
                                 <Text size="xs" color="dimmed">
                                     {job === 1
                                         ? '$90-120K'
-                                        : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                                           job === 2
                                           ? '$100-130K'
                                           : '$110-140K'}

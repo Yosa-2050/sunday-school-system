@@ -17,7 +17,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        // biome-ignore lint/suspicious/useAwait: <explanation>
         const checkAuth = async () => {
             try {
                 const token = getCookie(COOKIE_ACCESS_TOKEN);

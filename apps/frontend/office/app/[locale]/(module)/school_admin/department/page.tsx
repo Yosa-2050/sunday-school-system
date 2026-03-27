@@ -124,7 +124,6 @@ const DepartmentList = () => {
                             You haven&apos;t posted any departments yet.
                         </Text>
                     </Center>
-                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 isMobile ? (
                     <Stack>
                         {departments.map((department) => (

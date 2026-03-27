@@ -414,7 +414,6 @@ const UsersPage = () => {
                 {/* No Data State */}
                 {users.length === 0 ? (
                     <NoData />
-                ) : // biome-ignore lint/nursery/noNestedTernary: <explanation>
                 isMobile ? (
                     <Stack>
                         {users.map((user: Daum) => (
@@ -501,7 +500,6 @@ const UsersPage = () => {
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
-                                {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                                 {users.map((user: Daum) => (
                                     <Table.Tr key={user.id}>
                                         <Table.Td>

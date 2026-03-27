@@ -11,7 +11,6 @@ export const getDocumentType = async () => {
 };
 
 export const getDocumentById = async (id: string) => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const response: any = await fetcher(`/document/reference/${id}`, {
         method: 'GET',
     });
@@ -22,7 +21,6 @@ export const getDocumentById = async (id: string) => {
 };
 
 export const getOrganizationDocumentsById = async (orgId: string) => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const response: any = await fetcher(`/document/reference/${orgId}`, {
         method: 'GET',
     });

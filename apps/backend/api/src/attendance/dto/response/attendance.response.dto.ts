@@ -1,11 +1,7 @@
-// biome-ignore lint/style/useImportType: <explanation>
 import { AttendanceInformation } from '@shega/attendance/entities/attendance-data.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Attendance } from '@shega/attendance/entities/attendance.entity';
 import { AttendanceStatus } from '@shega/attendance/enums/attendance-status.enum';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponseDto } from '@shega/lms/dto/response/student.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Gender } from '@shega/users/enums/profile-gender.enum';
 
 export class AttendanceResponseDto {

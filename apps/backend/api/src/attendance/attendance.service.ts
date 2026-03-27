@@ -2,29 +2,19 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityAlreadyExistsException } from '@shega/Utilities/ExceptionHandlers/Exceptions/already-exists.exception';
 import { EntityNotFoundException } from '@shega/Utilities/ExceptionHandlers/Exceptions/notfound.exception';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DateService } from '@shega/Utilities/date.service';
 import { UtilityServices } from '@shega/Utilities/service/utility.services';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StudentResponseDto } from '@shega/lms/dto/response/student.response.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { SubjectAssignment } from '@shega/lms/entities/subject-assignment.entity';
-// biome-ignore lint/style/useImportType: <explanation>
 import { ClassService } from '@shega/lms/services/class.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { StudentService } from '@shega/lms/services/student.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { SubjectService } from '@shega/lms/services/subject.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { TeacherService } from '@shega/lms/services/teacher.service';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Between, In, Repository } from 'typeorm';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     CreateAttendanceDto,
     StudentAttendance,
 } from './dto/request/create-attendance.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import {
     GetAttendanceDetailRequestDto,
     GetAttendanceRequestDto,

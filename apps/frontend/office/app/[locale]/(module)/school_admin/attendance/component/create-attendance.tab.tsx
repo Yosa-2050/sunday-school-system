@@ -150,7 +150,6 @@ export default function AttendanceCreate({
         }));
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
         setSelectedSubject(null);
         setDate(null);

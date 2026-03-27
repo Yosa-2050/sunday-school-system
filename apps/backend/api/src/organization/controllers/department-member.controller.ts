@@ -8,11 +8,8 @@ import {
     Request,
 } from '@nestjs/common';
 import { CurrentUser } from '@shega/Utilities/current-user.utility';
-// biome-ignore lint/style/useImportType: <explanation>
 import { AssignMemberDto } from '../dto/request/assign-member-to-department.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DepartmentMembersDto } from '../dto/request/department-members.request.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { DepartmentMemberService } from '../services/department-member.service';
 
 @Controller('departmentMember')

@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-// biome-ignore lint/style/useImportType: <explanation>
 import { OriginEnums } from '@shega/auth/enums/origin.enum';
 import { IsString, IsUUID } from 'class-validator';
 
