@@ -110,7 +110,7 @@ export class AuthService {
         const payload: UserResponsePayload = {
             email: user.email,
             userId: user.id,
-            role: selectedRole,
+            role: selectedRole ?? allRoles[0]?.role,
             allRoles: allRoles?.map((x) => x.role),
             pwdChangeRequired: user.pwd_change_required,
             id: user.id,
