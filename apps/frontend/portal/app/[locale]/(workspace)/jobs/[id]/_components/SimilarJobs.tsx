@@ -30,16 +30,16 @@ export const SimilarJobs = () => {
                     >
                         <Anchor size="xs">
                             {job === 1
-                                ? 'Frontend Developer'
+                                ? 'Frontend Developer' : 
                                   job === 2
-                                  ? 'UI Engineer'
-                                  : 'React Developer'}
+                                  ? 'UI Engineer' : 
+                                  'React Developer'}
                         </Anchor>
                         <Group gap="xs">
                             <IconBuilding size={14} color="gray" />
                             <Text size="xs" color="dimmed">
                                 {job === 1
-                                    ? 'WebSolutions Ltd.'
+                                    ? 'WebSolutions Ltd.' :
                                       job === 2
                                       ? 'DesignHub Inc.'
                                       : 'AppWorks Co.'}
@@ -50,7 +50,7 @@ export const SimilarJobs = () => {
                                 <IconMapPin size={14} color="gray" />
                                 <Text size="xs" color="dimmed">
                                     {job === 1
-                                        ? 'Remote'
+                                        ? 'Remote' :
                                           job === 2
                                           ? 'New York, NY'
                                           : 'Austin, TX'}
@@ -60,7 +60,7 @@ export const SimilarJobs = () => {
                                 <IconCurrencyDollar size={14} color="gray" />
                                 <Text size="xs" color="dimmed">
                                     {job === 1
-                                        ? '$90-120K'
+                                        ? '$90-120K' :
                                           job === 2
                                           ? '$100-130K'
                                           : '$110-140K'}

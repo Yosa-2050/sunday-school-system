@@ -158,7 +158,7 @@ export default function CoverLetterSection() {
                             error={errors.coverLetter?.message}
                         />
                     </form>
-                jobSeeker?.coverLetter ? (
+                ) : jobSeeker?.coverLetter ? (
                     <>
                         <Text
                             style={{ whiteSpace: 'pre-wrap' }}

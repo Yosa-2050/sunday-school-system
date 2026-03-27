@@ -149,72 +149,7 @@ export default function JobApplicationDetail() {
     };
 
     return (
-        // <AppShell padding="md" className="container mx-auto">
-        //   <AppShell.Header>
-        //     <Box h={60} p="md">
-        //       <Group justify={"space-between"}>
-        //         <Group>
-        //           <ActionIcon
-        //             component={Link}
-        //             href="/jobs"
-        //             variant="light"
-        //             color="gray"
-        //           >
-        //             <IconArrowLeft size={16} />
-        //           </ActionIcon>
-        //           <Title order={4}>Senior Frontend Developer</Title>
-        //         </Group>
-
-        //         <Group>
-        //           <Tooltip label={savedJob ? "Remove from saved jobs" : "Save job"}>
-        //             <ActionIcon
-        //               variant="subtle"
-        //               color={savedJob ? "red" : "gray"}
-        //               onClick={toggleSaveJob}
-        //             >
-        //               {savedJob ? (
-        //                 <IconHeart size={20} fill="currentColor" />
-        //               ) : (
-        //                 <IconHeartOff size={20} />
-        //               )}
-        //             </ActionIcon>
-        //           </Tooltip>
-
-        //           <Tooltip label="Share job">
-        //             <ActionIcon variant="subtle" color="gray">
-        //               <IconShare size={20} />
-        //             </ActionIcon>
-        //           </Tooltip>
-
-        //           <Menu shadow="md" width={200}>
-        //             <Menu.Target>
-        //               <Group gap="xs" style={{ cursor: "pointer" }}>
-        //                 <Avatar
-        //                   size="sm"
-        //                   radius="xl"
-        //                   src="/placeholder.svg"
-        //                   alt="Alex Johnson"
-        //                 >
-        //                   AJ
-        //                 </Avatar>
-        //                 <Text size="sm" fw={500}>
-        //                   Alex Johnson
-        //                 </Text>
-        //               </Group>
-        //             </Menu.Target>
-
-        //             <Menu.Dropdown>
-        //               <Menu.Item>Profile</Menu.Item>
-        //               <Menu.Item>Applications</Menu.Item>
-        //               <Menu.Item>Saved Jobs</Menu.Item>
-        //               <Menu.Divider />
-        //               <Menu.Item color="red">Sign Out</Menu.Item>
-        //             </Menu.Dropdown>
-        //           </Menu>
-        //         </Group>
-        //       </Group>
-        //     </Box>
-        //   </AppShell.Header>
+        <>
         <Container size={'xl'} className="container mx-auto" my={'xl'}>
             {/* Application Status Bar */}
             <Flex justify={'space-between'} ta="start" gap="md">
@@ -525,127 +460,6 @@ export default function JobApplicationDetail() {
                                     </Stack>
                                 </Stack>
                             </Tabs.Panel>
-                            {/* 
-              <Tabs.Panel value="company" pt="md">
-                <Stack gap="md">
-                  <Group>
-                    <Avatar
-                      size="xl"
-                      radius="md"
-                      src="/placeholder.svg"
-                      alt="TechCorp Logo"
-                    />
-                    <Stack gap={0}>
-                      <Title order={3}>TechCorp Inc.</Title>
-                      <Text color="dimmed">
-                        Technology · 500-1000 employees · Founded 2010
-                      </Text>
-                      <Group gap="xs" mt={4}>
-                        <Rating value={4.5} fractions={2} readOnly />
-                        <Text size="sm" color="dimmed">
-                          4.5 (126 reviews)
-                        </Text>
-                      </Group>
-                    </Stack>
-                  </Group>
-
-                  <Stack gap="xs">
-                    <Title order={4}>About the company</Title>
-                    <Text color="dimmed">
-                      TechCorp is a leading technology company specializing in
-                      cloud-based solutions and innovative software products.
-                      Founded in 2010, we've grown from a small startup to an
-                      industry leader with offices across the globe. Our mission
-                      is to simplify complex technological challenges and
-                      empower organizations to achieve more with less effort.
-                    </Text>
-                    <Text color="dimmed">
-                      At TechCorp, we believe in fostering a diverse and
-                      inclusive workplace where creativity and innovation
-                      thrive. We are committed to building products that make a
-                      positive impact on the world while providing our team
-                      members with opportunities for growth and development.
-                    </Text>
-                  </Stack>
-
-                  <SimpleGrid
-                    cols={4}
-                    breakpoints={[{ maxWidth: "sm", cols: 2 }]}
-                  >
-                    <Card shadow="sm" p="sm">
-                      <Text size="sm" color="dimmed">
-                        Industry
-                      </Text>
-                      <Text fw={500}>Technology</Text>
-                    </Card>
-                    <Card shadow="sm" p="sm">
-                      <Text size="sm" color="dimmed">
-                        Company size
-                      </Text>
-                      <Text fw={500}>500-1000</Text>
-                    </Card>
-                    <Card shadow="sm" p="sm">
-                      <Text size="sm" color="dimmed">
-                        Founded
-                      </Text>
-                      <Text fw={500}>2010</Text>
-                    </Card>
-                    <Card shadow="sm" p="sm">
-                      <Text size="sm" color="dimmed">
-                        Revenue
-                      </Text>
-                      <Text fw={500}>$50M-$100M</Text>
-                    </Card>
-                  </SimpleGrid>
-
-                  <Stack gap="xs">
-                    <Title order={4}>Company culture</Title>
-                    <SimpleGrid cols={2}>
-                      <Stack gap="xs">
-                        <Text size="sm">Work-Life Balance</Text>
-                        <Progress value={90} size="sm" />
-                        <Text size="sm" color="dimmed" ta="right">
-                          9/10
-                        </Text>
-                      </Stack>
-                      <Stack gap="xs">
-                        <Text size="sm">Professional Growth</Text>
-                        <Progress value={85} size="sm" />
-                        <Text size="sm" color="dimmed" ta="right">
-                          8.5/10
-                        </Text>
-                      </Stack>
-                      <Stack gap="xs">
-                        <Text size="sm">Compensation & Benefits</Text>
-                        <Progress value={95} size="sm" />
-                        <Text size="sm" color="dimmed" ta="right">
-                          9.5/10
-                        </Text>
-                      </Stack>
-                      <Stack gap="xs">
-                        <Text size="sm">Company Culture</Text>
-                        <Progress value={90} size="sm" />
-                        <Text size="sm" color="dimmed" ta="right">
-                          9/10
-                        </Text>
-                      </Stack>
-                    </SimpleGrid>
-                  </Stack>
-
-                  <Stack gap="xs">
-                    <Title order={4}>Location</Title>
-                    <Image
-                      src="/placeholder.svg"
-                      alt="Company location map"
-                      height={200}
-                      style={{ objectFit: "cover" }}
-                    />
-                    <Text size="sm" color="dimmed">
-                      Headquarters: 123 Tech Avenue, San Francisco, CA 94105
-                    </Text>
-                  </Stack>
-                </Stack>
-              </Tabs.Panel> */}
 
                             <Tabs.Panel value="application" pt="md">
                                 <form
@@ -1093,7 +907,7 @@ export default function JobApplicationDetail() {
                                     >
                                         <Anchor size="sm">
                                             {job === 1
-                                                ? 'Frontend Developer'
+                                                ? 'Frontend Developer' :
                                                   job === 2
                                                   ? 'UI Engineer'
                                                   : 'React Developer'}
@@ -1105,7 +919,7 @@ export default function JobApplicationDetail() {
                                             />
                                             <Text size="xs" color="dimmed">
                                                 {job === 1
-                                                    ? 'WebSolutions Ltd.'
+                                                    ? 'WebSolutions Ltd.' :
                                                       job === 2
                                                       ? 'DesignHub Inc.'
                                                       : 'AppWorks Co.'}
@@ -1119,7 +933,7 @@ export default function JobApplicationDetail() {
                                                 />
                                                 <Text size="xs" color="dimmed">
                                                     {job === 1
-                                                        ? 'Remote'
+                                                        ? 'Remote' :
                                                           job === 2
                                                           ? 'New York, NY'
                                                           : 'Austin, TX'}
@@ -1132,8 +946,8 @@ export default function JobApplicationDetail() {
                                                 />
                                                 <Text size="xs" color="dimmed">
                                                     {job === 1
-                                                        ? '$90-120K'
-                                                          job === 2
+                                                        ? '$90-120K' :
+                                                          job === 2 
                                                           ? '$100-130K'
                                                           : '$110-140K'}
                                                 </Text>
@@ -1188,6 +1002,6 @@ export default function JobApplicationDetail() {
                 </Box>
             </Flex>
         </Container>
-        // </AppShell>
+        </>
     );
 }

@@ -154,7 +154,7 @@ export default function EducationForm({
                         grade: formData.grade as number,
                         description: formData.description as string,
                         endDate: isCurrentlyStudying
-                            ? null
+                            ? null :
                               formData.endDate
                               ? formData.endDate
                               : null,

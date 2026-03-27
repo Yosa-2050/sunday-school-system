@@ -111,7 +111,7 @@ export default function ExperienceSection({
         const start = new Date(startDate);
         const end = currentlyWorking
             ? new Date()
-              endDate
+            : endDate
               ? new Date(endDate)
               : null;
 

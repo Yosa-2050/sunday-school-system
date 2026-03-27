@@ -153,7 +153,7 @@ export default function AboutSection({ data, onUpdate }: AboutSectionProps) {
                             error={errors.bio?.message}
                         />
                     </form>
-                data.bio ? (
+                ) : data.bio ? (
                     <>
                         <Text
                             style={{ whiteSpace: 'pre-wrap' }}
