@@ -13,6 +13,7 @@ import { Experience } from './education/entities/experience.entity';
 import { QualificationSkills } from './education/entities/qualification-skills.entity';
 import { Qualification } from './education/entities/qualification.entity';
 import { Skills } from './education/entities/skills.entity';
+import { EventMember } from './events/entity/event-member.entity';
 import { Event } from './events/entity/event.entity';
 import { ReportItem } from './finance/entity/report-item.entity';
 import { Report } from './finance/entity/report.entity';
@@ -92,4 +93,5 @@ export const AppEntities = [
     ReportItem,
     Event,
     AttendanceDetail,
+    EventMember
 ];

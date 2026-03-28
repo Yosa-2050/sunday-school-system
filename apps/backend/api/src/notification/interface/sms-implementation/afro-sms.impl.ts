@@ -1,9 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ISmsService } from '../sms-service.interface';
 
 @Injectable()
 export class AfroImpl implements ISmsService {
+    private readonly logger = new Logger(AfroImpl.name);
     private apiKey: string;
     private baseUrl: string;
 
@@ -18,14 +19,19 @@ export class AfroImpl implements ISmsService {
                 to: item.to,
                 message: item.content,
             }));
+            const payload = {
+                sender: 'Tiguhan',
+                to: formatted,
+                campaign: 'DefaultCampaign',
+            };
+
+            this.logger.log(
+                `AfroMessage bulk SMS request: ${JSON.stringify(payload)}`,
+            );
 
             const response = await this.httpService.axiosRef.post(
                 `${this.baseUrl}/bulk_send`,
-                {
-                    sender: 'Tiguhan',
-                    to: formatted,
-                    campaign: 'DefaultCampaign',
-                },
+                payload,
                 {
                     headers: {
                         Authorization: `Bearer ${this.apiKey}`,
@@ -33,11 +39,17 @@ export class AfroImpl implements ISmsService {
                     },
                 },
             );
-            if (response) {
-                // console.error('Bulk SMS failed:', response.data);
-            }
+            this.logger.log(
+                `AfroMessage bulk SMS response: ${JSON.stringify({
+                    status: response.status,
+                    data: response.data,
+                })}`,
+            );
         } catch (error) {
-            // biome-ignore lint/complexity/noUselessCatch: <explanation>
+            this.logger.error(
+                'AfroMessage bulk SMS request failed',
+                error?.stack,
+            );
             throw error;
         }
     }
