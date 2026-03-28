@@ -66,7 +66,7 @@ export class AuthService {
             );
         }
         let details: UserDetails;
-
+        selectedRole ??= allRoles[0]?.role;
         if (selectedRole) {
             const selectedRoleNeeded = allRoles.find(
                 (r) => r.role === selectedRole,
@@ -110,7 +110,7 @@ export class AuthService {
         const payload: UserResponsePayload = {
             email: user.email,
             userId: user.id,
-            role: selectedRole ?? allRoles[0]?.role?.toLowerCase(),
+            role: selectedRole.toLowerCase(),
             allRoles: allRoles?.map((x) => x.role?.toLowerCase()),
             pwdChangeRequired: user.pwd_change_required,
             id: user.id,
