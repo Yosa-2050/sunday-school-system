@@ -65,6 +65,9 @@ export class AuthService {
                 `User does not have permission to access ${origin}`,
             );
         }
+
+        const needsRoleSelection = !selectedRole && allRoles.length > 1;
+
         let details: UserDetails;
         selectedRole ??= allRoles[0]?.role;
         if (selectedRole) {
@@ -119,7 +122,7 @@ export class AuthService {
         return {
             data: {
                 allRoles: payload.allRoles,
-                selectRole: selectedRole,
+                selectRole: needsRoleSelection,
                 role: payload.role,
                 email: payload.email,
                 access_token: payload.pwdChangeRequired
