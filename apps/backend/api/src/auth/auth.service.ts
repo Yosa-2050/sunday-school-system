@@ -69,7 +69,7 @@ export class AuthService {
         selectedRole ??= allRoles[0]?.role;
         if (selectedRole) {
             const selectedRoleNeeded = allRoles.find(
-                (r) => r.role === selectedRole,
+                (r) => r.role.toLowerCase() === selectedRole.toLowerCase(),
             );
 
             if (!selectedRoleNeeded) {
