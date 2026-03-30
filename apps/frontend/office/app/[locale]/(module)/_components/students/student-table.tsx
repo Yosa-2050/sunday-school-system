@@ -38,7 +38,7 @@ export function StudentTable({ students, loading, onView }: StudentTableProps) {
                             <Table.Td>{index + 1}</Table.Td>
                             <Table.Td>{student.idNumber}</Table.Td>
                             <Table.Td>
-                                {student.firstName} {student.lastName}
+                                {student.firstName} {student.middleName} {student.lastName}
                             </Table.Td>
                             <Table.Td>
                                 {student.isActive ? 'Active' : 'Inactive'}

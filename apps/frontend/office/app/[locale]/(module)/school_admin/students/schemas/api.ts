@@ -54,8 +54,13 @@ export const uploadFileApi = async (
     if (!response.ok) {
         const error = await response
             .json()
-            .catch(() => ({ message: 'Upload failed' }));
-        throw new Error(error.message || 'Failed to file');
+            .catch(() => ({ message: 'Upload failed', errors: [] }));
+        
+        const errObj: any = new Error(error.message || 'Failed to file');
+        if (error.errors) {
+            errObj.errors = error.errors;
+        }
+        throw errObj;
     }
 
     const data = await response.json();

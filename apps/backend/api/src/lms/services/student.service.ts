@@ -85,6 +85,25 @@ export class StudentService {
             throw new EntityNotFoundException(typeof Classes);
         }
         const excel = parseExcel(file.buffer, ImportStudentsRequest);
+        
+        const errors: string[] = [];
+        for (let i = 0; i < excel.length; i++) {
+            const dto = excel[i];
+            if (!dto.FirstName?.trim()) {
+                errors.push(`Row ${i + 2}: First Name is required`);
+            }
+            if (!dto.MiddleName?.trim()) {
+                errors.push(`Row ${i + 2}: Middle Name is required`);
+            }
+            if (!dto.EmergencyContact?.trim()) {
+                errors.push(`Row ${i + 2}: Emergency Contact Name is required`);
+            }
+        }
+
+        if (errors.length > 0) {
+            throw new BadRequestException({ message: 'Validation failed', errors });
+        }
+
         const models = [];
         for (let index = 0; index < excel.length; index++) {
             const dto = excel[index];

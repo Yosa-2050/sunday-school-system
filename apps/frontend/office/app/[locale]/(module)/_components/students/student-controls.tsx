@@ -1,4 +1,5 @@
-import { Button, FileButton, Group, Select, Text } from '@mantine/core';
+import { useState } from 'react';
+import { Button, FileButton, Group, Select, Text, Modal, List } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import { IconPlus, IconUpload } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -42,6 +43,10 @@ export function StudentControls({
     onLoadStudents,
     onPrint,
 }: StudentControlsProps) {
+    const [isImporting, setIsImporting] = useState(false);
+    const [importErrors, setImportErrors] = useState<string[]>([]);
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    
     const SelectedClassId = useActiveSelection(selectedSection, selectedClass);
     const router = useRouter();
 
@@ -56,12 +61,22 @@ export function StudentControls({
             return;
         }
 
+        setIsImporting(true);
+        setImportErrors([]);
+
         try {
             await uploadFileApi(`/student/import/${SelectedClassId}`, file);
             showSuccess('Students uploaded successfully');
             onLoadStudents();
         } catch (error: any) {
-            showError(error.message);
+            if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+                setImportErrors(error.errors);
+                setShowErrorModal(true);
+            } else {
+                showError(error.message || 'Failed to upload students');
+            }
+        } finally {
+            setIsImporting(false);
         }
     };
 
@@ -141,6 +156,7 @@ export function StudentControls({
                                     {...props}
                                     variant="light"
                                     size="sm"
+                                    loading={isImporting}
                                     leftSection={<IconUpload size={16} />}
                                 >
                                     Import from Excel
@@ -150,6 +166,23 @@ export function StudentControls({
                     </Group>
                 )}
             </Group>
+
+            <Modal
+                opened={showErrorModal}
+                onClose={() => setShowErrorModal(false)}
+                title="Import Validation Errors"
+                centered
+            >
+                <Text c="red" mb="md">The following errors were found in the uploaded Excel file:</Text>
+                <List size="sm" spacing="xs">
+                    {importErrors.map((err, idx) => (
+                        <List.Item key={idx}>{err}</List.Item>
+                    ))}
+                </List>
+                <Group justify="right" mt="md">
+                    <Button onClick={() => setShowErrorModal(false)}>Close</Button>
+                </Group>
+            </Modal>
         </>
     );
 }
