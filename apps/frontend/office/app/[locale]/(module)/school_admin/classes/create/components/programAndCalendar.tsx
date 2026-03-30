@@ -14,9 +14,10 @@ type Props = {
         calenderYearName: string | null;
         calenderYearId: string | null;
     }) => void;
+    defaultProgramId?: string | null;
 };
 
-export function ProgramAndCalendarSelector({ onChange }: Props) {
+export function ProgramAndCalendarSelector({ onChange, defaultProgramId }: Props) {
     const [programs, setPrograms] = useState<ProgramResponse[]>([]);
     const [calendarYears, setCalendarYears] = useState<CalendarYearResponse[]>(
         [],
@@ -36,10 +37,17 @@ export function ProgramAndCalendarSelector({ onChange }: Props) {
             setLoadingYears(true);
             const data = await fetchProgramsForOrg();
             setPrograms(data);
-            setLoadingYears(false);
+            
+            if (defaultProgramId && data.some(p => p.id === defaultProgramId)) {
+                setProgramId(defaultProgramId);
+                loadCalendarYears(defaultProgramId);
+            } else {
+                setLoadingYears(false);
+            }
         };
         load();
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [defaultProgramId]);
 
     const loadCalendarYears = async (id: string) => {
         setCalenderYearName(null);

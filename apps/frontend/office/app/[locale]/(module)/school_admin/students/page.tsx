@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSessionStorage } from 'react-use';
 import { useActiveSelection } from 'utilities/utilities';
 import { StudentControls } from '../../_components/students/student-controls';
 import { StudentTable } from '../../_components/students/student-table';
@@ -15,15 +16,20 @@ import { fetchStudentsApi } from './schemas/api';
 import type { StudentResponse } from './schemas/type';
 
 export default function StudentPage() {
-    const [calendarYearId, setCalendarYearId] = useState<string | null>(null);
-    const [programId, setProgramId] = useState<string | null>(null);
-    const [calendarYear, setCalendarYear] = useState<string | null>(null);
-    const [classes, setClasses] = useState<GetClass[]>([]);
-    const [selectedClass, setSelectedClass] = useState<string | null>(null);
-    const [selectedSection, setSelectedSection] = useState<string | null>(null);
-    const [students, setStudents] = useState<StudentResponse[]>([]);
+    const [calendarYearId, setCalendarYearId] = useSessionStorage<string | null>('studentList_calendarYearId', null);
+    const [programId, setProgramId] = useSessionStorage<string | null>('studentList_programId', null);
+    const [calendarYear, setCalendarYear] = useSessionStorage<string | null>('studentList_calendarYear', null);
+    const [classes, setClasses] = useSessionStorage<GetClass[]>('studentList_classes', []);
+    const [selectedClass, setSelectedClass] = useSessionStorage<string | null>('studentList_selectedClass', null);
+    const [selectedSection, setSelectedSection] = useSessionStorage<string | null>('studentList_selectedSection', null);
+    const [students, setStudents] = useSessionStorage<StudentResponse[]>('studentList_students', []);
     const [loadingStudents, setLoadingStudents] = useState(false);
     const [printModalOpen, setPrintModalOpen] = useState(false);
+    
+    // To prevent hydration errors when reading from sessionStorage
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => setIsMounted(true), []);
+
     const router = useRouter();
     const SelectedClassId = useActiveSelection(selectedSection, selectedClass);
     // Function to handle batch printing
@@ -32,6 +38,7 @@ export default function StudentPage() {
     };
 
     const fetchClasses = async (calenderId: string) => {
+        if (!calenderId) return;
         setStudents([]);
         setClasses([]);
         setSelectedClass(null);
@@ -58,14 +65,21 @@ export default function StudentPage() {
         }
     };
 
+    if (!isMounted) return null;
+
     return (
         <div>
             <ProgramAndCalendarSelector
-                onChange={({ programId, calenderYearId, calenderYearName }) => {
-                    setProgramId(programId);
-                    setCalendarYear(calenderYearName);
-                    setCalendarYearId(calenderYearId);
-                    fetchClasses(calenderYearId ?? '');
+                defaultProgramId={programId || undefined}
+                onChange={({ programId: pId, calenderYearId: cyId, calenderYearName: cyName }) => {
+                    setProgramId(pId);
+                    setCalendarYear(cyName);
+                    
+                    // Only fetch classes if calendar year actually changed!
+                    if (cyId !== calendarYearId) {
+                        setCalendarYearId(cyId);
+                        fetchClasses(cyId ?? '');
+                    }
                 }}
             />
 
@@ -79,7 +93,9 @@ export default function StudentPage() {
                     setSelectedClass(val);
                     setSelectedSection(null);
                 }}
-                onSectionChange={setSelectedSection}
+                onSectionChange={(val) => {
+                    setSelectedSection(val);
+                }}
                 onLoadStudents={handleFetchStudents}
                 onPrint={handleBatchPrint}
             />

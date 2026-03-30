@@ -22,7 +22,7 @@ export class ScheduleDetailAttResponseDto {
         this.isStudentActive = student.isActive;
         this.idNumber = student.idNumber;
         this.studentId = student.id;
-        this.fullName = `${student.profile.firstName} ${student.profile.middleName} ${student.profile.middleName}`;
+        this.fullName = `${student.profile.firstName} ${student.profile.middleName} ${student.profile.lastName}`;
         this.gender = student.profile.gender;
         this.phoneNumber = student.profile.phoneNumber;
         this.isAbsent = attendance.status === AttendanceStatus.Absent;
