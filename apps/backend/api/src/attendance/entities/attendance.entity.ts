@@ -5,15 +5,21 @@ import { AttendanceStatus } from '../enums/attendance-status.enum';
 
 @Entity()
 export class Attendance extends BaseModel {
-    @Column()
+    @Column({ nullable: true })
     attendanceDataId: string;
 
-    @ManyToOne(() => Students, { eager: true })
+    @ManyToOne(() => Students, { eager: true, nullable: true })
     student: Students;
+
+    @Column({ nullable: true })
+    referenceId: string;
+
+    @Column({ nullable: true })
+    memberId: string;
 
     @Column()
     status: AttendanceStatus;
 
     @Column({ nullable: true })
-    remark: string;
+    remarks: string;
 }

@@ -1,16 +1,26 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AttendanceDetailService } from "@shega/attendance/attendance-detail.service";
+import {
+  AttendanceDetailDataDto,
+  AttendanceDetailDto,
+} from "@shega/attendance/dto/request/create-attendance-detail.dto";
 import { CreateEventAttendanceDto } from "@shega/attendance/dto/request/create-event-attendance.dto";
+import {
+  GetAttendanceDetailWithRefRequestDto,
+  GetAttendanceWithRefRequestDto,
+} from "@shega/attendance/dto/request/get-attendance.request.dto";
+import { AttendanceStatus } from "@shega/attendance/enums/attendance-status.enum";
 import { DocumentService } from "@shega/document/document.service";
+import { OrganizationMembers } from "@shega/organization/entities/organization-member.entity";
 import { OrganizationService } from "@shega/organization/services/organization.service";
 import { In, Repository } from "typeorm";
+import { AssignMembersToEventDto } from "./dto/request/assign-members-to-event.dto";
 import { CreateEventRequestDto } from "./dto/request/create-event.request.dto";
+import { EventAttendanceResponseDto } from "./dto/response/event-attendance-response.dto";
+import { EventMemberResponseDto } from "./dto/response/event-member-response.dto";
 import { Event } from "./entity/event.entity";
 import { EventMember } from "./entity/event-member.entity";
-import { OrganizationMembers } from "@shega/organization/entities/organization-member.entity";
-import { AssignMembersToEventDto } from "./dto/request/assign-members-to-event.dto";
-import { EventMemberResponseDto } from "./dto/response/event-member-response.dto";
 
 @Injectable()
 export class EventsService {
@@ -45,38 +55,68 @@ export class EventsService {
           return this.eventRepo.save(savedEvent);
         })
         .catch((err) => {
-          // console.error('Async upload failed:', err.message);
+          throw new NotFoundException
         });
     }
 
     return savedEvent;
   }
 
-  async createAttendance(eventId: string, dto: CreateEventAttendanceDto) {
+  async createAttendance(
+    eventId: string,
+    dto: CreateEventAttendanceDto,
+    organizationId: string,
+  ) {
     const event = await this.findOne(eventId);
 
     if (!event) {
       throw new NotFoundException("Event Not Found");
     }
 
-    const attendancePayload = {
-      ...dto,
+    const attendancePayloads: AttendanceDetailDto = {
       referenceId: eventId,
+      date: dto.date,
+      startTime: dto.startTime,
+      endTime: dto.endTime,
+      isCompleted: dto.isCompleted,
     };
 
-    const attendance =
-      await this.attendanceDetailService.create(attendancePayload);
-    return attendance;
-  }
+    const { id } =
+      await this.attendanceDetailService.create(attendancePayloads);
 
-  async getEventAttendances(referenceId: string) {
-    const event = await this.findOne(referenceId);
+    const attendance: AttendanceDetailDataDto[] = dto.members
+      .filter((member) => member.status !== undefined)
+      .map((member) => ({
+        memberId: member.memberId,
+        referenceId: id,
+        status: member.status,
+        remarks: member.remarks,
+      }));
 
-    if (!event) {
-      throw new NotFoundException("Event not Found");
+    if (!attendance.length) {
+      return [];
     }
 
-    return this.attendanceDetailService.findByReferenceId(referenceId);
+    return await this.attendanceDetailService.createAttendance(attendance);
+  }
+
+  async getEventAttendancesDetail(
+    organizationId: string,
+    dto: GetAttendanceDetailWithRefRequestDto,
+  ) {
+    let eventLists = await this.findAll(organizationId);
+    if (dto.referenceId) {
+      eventLists = eventLists.filter((x) => x.id === dto.referenceId);
+    }
+
+    const eventNames = Object.fromEntries(
+      eventLists.map((event) => [event.id, event.name]),
+    );
+
+    return this.attendanceDetailService.findByReferenceId(
+      eventLists.map((x) => x.id),
+      eventNames,
+    );
   }
 
   async assignMembers(eventId: string, dto: AssignMembersToEventDto) {
@@ -126,11 +166,32 @@ export class EventsService {
       dto.middleName = r.member.profile.middleName;
       dto.lastName = r.member.profile.lastName;
       dto.phoneNumber = r.member.profile.phoneNumber;
-      
       dto.attendanceStatus = undefined;
 
       return dto;
     });
+  }
+
+  async completeEventAttendance(attendanceDetailId: string) {
+    const attendanceDetail =
+      await this.attendanceDetailService.findOne(attendanceDetailId);
+
+    const event = await this.findOne(attendanceDetail.referenceId);
+
+    if (!event) {
+      throw new NotFoundException("Event not Found");
+    }
+
+    const members = await this.getEventMembers(event.id);
+
+    if (!members.length) {
+      throw new BadRequestException("No members assigned to this event");
+    }
+
+    return this.attendanceDetailService.completeAttendanceUpdate(
+      attendanceDetailId,
+      members.map((member) => member.id),
+    );
   }
 
   async findAll(organizationId: string) {
@@ -150,5 +211,57 @@ export class EventsService {
 
   async remove(id: number): Promise<void> {
     await this.eventRepo.delete(id);
+  }
+
+  async getEventAttendances(
+    organizationId: string,
+    dto: GetAttendanceWithRefRequestDto,
+  ) {
+    if (!dto.referenceId) {
+      throw new BadRequestException("Event mandatory");
+    }
+
+    let eventLists = await this.findAll(organizationId);
+    eventLists = eventLists.filter((x) => x.id === dto.referenceId);
+    if (!eventLists.length) {
+      throw new NotFoundException("Event not Found");
+    }
+
+    const members = await this.getEventMembers(dto.referenceId);
+    const attendance = await this.attendanceDetailService.getAllAttendance(
+      dto.referenceId,
+      dto.attendanceDataId,
+    );
+
+    return members.map((member) => {
+      const memberAttendance = attendance.filter(
+        (item) => item.memberId === member.id,
+      );
+
+      const response = new EventAttendanceResponseDto();
+      response.memberId = member.id;
+      response.firstName = member.firstName;
+      response.middleName = member.middleName;
+      response.lastName = member.lastName;
+      response.phoneNumber = member.phoneNumber;
+      response.name = [member.firstName, member.middleName, member.lastName]
+        .filter(Boolean)
+        .join(" ");
+      response.present = memberAttendance.filter(
+        (item) => item.status === AttendanceStatus.Present,
+      ).length;
+      response.absent = memberAttendance.filter(
+        (item) => item.status === AttendanceStatus.Absent,
+      ).length;
+      response.late = memberAttendance.filter(
+        (item) => item.status === AttendanceStatus.Late,
+      ).length;
+      response.permission = memberAttendance.filter(
+        (item) => item.status === AttendanceStatus.Permission,
+      ).length;
+      response.total = memberAttendance.length;
+
+      return response;
+    });
   }
 }

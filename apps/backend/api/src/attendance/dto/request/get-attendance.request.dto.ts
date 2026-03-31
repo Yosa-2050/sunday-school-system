@@ -31,3 +31,23 @@ export class GetAttendanceDetailRequestDto {
     @OptionalUUID()
     subjectId: string;
 }
+
+export class GetAttendanceDetailWithRefRequestDto {
+    @ApiProperty()
+    @OptionalUUID()
+    referenceId: string;
+    
+    //todo:Date range
+}
+
+export class GetAttendanceWithRefRequestDto {
+    @ApiProperty()
+    @OptionalUUID()
+    referenceId: string;
+
+    @ApiProperty()
+    @OptionalUUID()
+    attendanceDataId: string;
+
+    //Date range
+}

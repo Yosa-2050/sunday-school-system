@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Request,
@@ -13,11 +14,15 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "@shega/Utilities/current-user.utility";
 import { CreateEventAttendanceDto } from "@shega/attendance/dto/request/create-event-attendance.dto";
+import { AssignMembersToEventDto } from "./dto/request/assign-members-to-event.dto";
+import {
+  GetAttendanceDetailWithRefRequestDto,
+  GetAttendanceWithRefRequestDto,
+} from "@shega/attendance/dto/request/get-attendance.request.dto";
 import { Express } from "express";
 import { CreateEventRequestDto } from "./dto/request/create-event.request.dto";
 import { Event } from "./entity/event.entity";
 import { EventsService } from "./events.service";
-import { AssignMembersToEventDto } from "./dto/request/assign-members-to-event.dto";
 
 
 @ApiBearerAuth()
@@ -56,13 +61,27 @@ export class EventsController {
   createAttendance(
     @Param("eventId") eventId: string,
     @Body() dto: CreateEventAttendanceDto,
+    @Request() user
   ) {
-    return this.eventsService.createAttendance(eventId, dto);
+    return this.eventsService.createAttendance(eventId, dto, CurrentUser.getOrganizationId(user, true),);
   }
 
-  @Get(":eventId/attendances")
-  getEventAttendances(@Param("eventId") referenceId: string) {
-    return this.eventsService.getEventAttendances(referenceId);
+  @Post("attendancesDetail")
+  getEventAttendancesDetail(@Body() dto: GetAttendanceDetailWithRefRequestDto, @Request() user) {
+    return this.eventsService.getEventAttendancesDetail(CurrentUser.getOrganizationId(user, true), dto);
+  }
+
+  @Post("attendances")
+  getEventAttendances(@Body() dto: GetAttendanceWithRefRequestDto, @Request() user) {
+    return this.eventsService.getEventAttendances(CurrentUser.getOrganizationId(user, true), dto);
+  }
+
+  @Patch("attendances/complete/:attendanceDetailId")
+  completeEventAttendance(
+    @Param("attendanceDetailId", new ParseUUIDPipe())
+    attendanceDetailId: string,
+  ) {
+    return this.eventsService.completeEventAttendance(attendanceDetailId);
   }
 
   @Get()
