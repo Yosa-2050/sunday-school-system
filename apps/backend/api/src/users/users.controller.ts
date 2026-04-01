@@ -3,6 +3,7 @@ import {
     Body,
     Controller,
     Delete,
+    Get,
     Param,
     ParseUUIDPipe,
     Patch,
@@ -28,12 +29,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginBy } from './enums/login-by.enum';
 import { UserRoleType } from './enums/user-role.enum';
 import { UsersService } from './users.service';
+import { AddRoleDto } from './dto/request/add-role.request.dto';
+import { ProfileService } from './profile.service';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
     constructor(
         private readonly usersService: UsersService,
+        private readonly profileService: ProfileService,
         private notificationService: NotificationService,
         private documentService: DocumentService,
     ) {}
@@ -46,7 +50,7 @@ export class UsersController {
     @Post('add-role')
     addRole(
         @Query('id', new ParseUUIDPipe()) id: string,
-        @Body() body: { role: UserRoleType },
+        @Body() body: AddRoleDto,
     ) {
         if (!body.role) {
             throw new BadRequestException('Role is required');
@@ -138,5 +142,10 @@ export class UsersController {
             false,
             dto.text,
         );
+    }
+
+    @Get('byProfileId/:profileId')
+    getByProfileId(@Param('profileId', new ParseUUIDPipe()) profileId: string) {
+        return this.profileService.findUserByProfileId(profileId);
     }
 }
