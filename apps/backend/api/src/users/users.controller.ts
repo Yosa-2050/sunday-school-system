@@ -31,7 +31,9 @@ import { UserRoleType } from './enums/user-role.enum';
 import { UsersService } from './users.service';
 import { AddRoleDto } from './dto/request/add-role.request.dto';
 import { ProfileService } from './profile.service';
+import { Public } from '@shega/auth/jwt-public';
 
+@Public()
 @ApiTags('users')
 @Controller('users')
 export class UsersController {

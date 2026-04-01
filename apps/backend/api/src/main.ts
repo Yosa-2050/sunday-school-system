@@ -24,10 +24,10 @@ async function bootstrap() {
           });
     }
     const config = new DocumentBuilder()
-        .setTitle('Meklit job portal')
-        .setDescription('Meklit job portal')
+        .setTitle('Herani Sunday School API')
+        .setDescription('Herani Sunday School API Documentation')
         .setVersion('1.0')
-        .addTag('Meklit')
+        .addTag('Sunday School')
         .addBearerAuth(
             {
                 type: 'http',
