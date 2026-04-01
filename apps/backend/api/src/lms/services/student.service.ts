@@ -195,7 +195,8 @@ export class StudentService {
                 id: In(studentsId),
             });
         } else {
-            students = await this.studentRepo.findBy({ isActive: true });
+            //TODO: this should be to only selected students on organization for active year
+            //students = await this.studentRepo.findBy({ isActive: true });
         }
         for (let index = 0; index < students.length; index++) {
             const student = students[index];
