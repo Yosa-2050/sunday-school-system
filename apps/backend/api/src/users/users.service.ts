@@ -383,6 +383,7 @@ export class UsersService {
             const newRole = this.userRoleRepo.create();
             newRole.user = user;
             newRole.role = role;
+            newRole.isDefault = false;
             return this.userRoleRepo.save(newRole);
         }
         return this.userRepo.findOne({
