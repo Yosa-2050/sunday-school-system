@@ -17,6 +17,7 @@ import { Roles } from '@shega/auth/decorators/roles.decorator';
 import { UserRoleType } from '@shega/users/enums/user-role.enum';
 import { Express } from 'express';
 import { CreateStudentRequestDto } from '../dto/request/create-student.request.dto';
+import { ImportStudentsRequest } from '../dto/request/import-student.request.dto';
 import { SendStudentNotificationDto } from '../dto/request/send-notification-student.request.dto';
 import { StudentService } from '../services/student.service';
 
@@ -74,6 +75,24 @@ export class StudentController {
         );
     }
 
+    @Post('import/preview')
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
+    @UseInterceptors(FileInterceptor('file'))
+    async previewImport(@UploadedFile() file: Express.Multer.File) {
+        return await this.studentService.previewImportedStudents(file);
+    }
+
     @Post('import/:classId')
     @ApiConsumes('multipart/form-data')
     @ApiBody({
@@ -95,6 +114,19 @@ export class StudentController {
     ) {
         return await this.studentService.importStudents(
             file,
+            id,
+            CurrentUser.getActiveYear(req, false),
+        );
+    }
+
+    @Post('import-data/:classId')
+    async importUsersFromData(
+        @Body() data: ImportStudentsRequest[],
+        @Param('classId', new ParseUUIDPipe()) id: string,
+        @Request() req,
+    ) {
+        return await this.studentService.importStudentsFromData(
+            data,
             id,
             CurrentUser.getActiveYear(req, false),
         );

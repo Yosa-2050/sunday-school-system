@@ -87,7 +87,7 @@ export default function StudentPage() {
                 classes={classes}
                 selectedClass={selectedClass}
                 selectedSection={selectedSection}
-                students={students}
+                studentsCount={students.length}
                 onClassChange={(val) => {
                     setStudents([]);
                     setSelectedClass(val);

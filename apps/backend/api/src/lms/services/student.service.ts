@@ -85,10 +85,38 @@ export class StudentService {
             throw new EntityNotFoundException(typeof Classes);
         }
         const excel = parseExcel(file.buffer, ImportStudentsRequest);
-        
+        return this.saveImportedStudents(excel, valid);
+    }
+
+    async previewImportedStudents(file: Express.Multer.File) {
+        const excel = parseExcel(file.buffer, ImportStudentsRequest);
+        const errors = this.validateImportedStudents(excel);
+
+        if (errors.length > 0) {
+            throw new BadRequestException({ message: 'Validation failed', errors });
+        }
+
+        return excel;
+    }
+
+    async importStudentsFromData(
+        data: ImportStudentsRequest[],
+        classId: string,
+        yearId: string,
+    ) {
+        const valid = await this.classService.isClassValid(classId, yearId);
+        if (!valid) {
+            throw new EntityNotFoundException(typeof Classes);
+        }
+
+        return this.saveImportedStudents(data, valid);
+    }
+
+    private validateImportedStudents(data: ImportStudentsRequest[]) {
         const errors: string[] = [];
-        for (let i = 0; i < excel.length; i++) {
-            const dto = excel[i];
+
+        for (let i = 0; i < data.length; i++) {
+            const dto = data[i];
             if (!dto.FirstName?.trim()) {
                 errors.push(`Row ${i + 2}: First Name is required`);
             }
@@ -100,13 +128,21 @@ export class StudentService {
             }
         }
 
+        return errors;
+    }
+
+    private async saveImportedStudents(
+        data: ImportStudentsRequest[],
+        valid: Classes,
+    ) {
+        const errors = this.validateImportedStudents(data);
         if (errors.length > 0) {
             throw new BadRequestException({ message: 'Validation failed', errors });
         }
 
         const models = [];
-        for (let index = 0; index < excel.length; index++) {
-            const dto = excel[index];
+        for (let index = 0; index < data.length; index++) {
+            const dto = data[index];
             const pwdGenerated = this.passwordService.generatePassword();
             const profile = await this.profileService.createNewUserProfileQDE(
                 dto.IdNumber,
@@ -146,10 +182,12 @@ export class StudentService {
             model.class = valid;
             models.push(model);
         }
+
         if (models.length > 0) {
             await this.studentRepo.save(models);
             return UtilityServices.SuccessDataResponse();
         }
+
         throw new BadRequestException('Nothing to upload');
     }
 

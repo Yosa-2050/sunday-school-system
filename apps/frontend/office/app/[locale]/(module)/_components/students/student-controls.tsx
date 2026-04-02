@@ -1,13 +1,24 @@
 import { useState } from 'react';
-import { Button, FileButton, Group, Select, Text, Modal, List } from '@mantine/core';
+import {
+    Button,
+    FileButton,
+    Group,
+    List,
+    Loader,
+    Modal,
+    Select,
+    Stack,
+    Text,
+} from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import { IconPlus, IconUpload } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
-import { showError, showSuccess } from 'utilities/notification';
+import { showError } from 'utilities/notification';
 import { useActiveSelection } from 'utilities/utilities';
-import { uploadFileApi } from '../../school_admin/students/schemas/api';
-import type { StudentResponse } from '../../school_admin/students/schemas/type';
+import { ImportStudentModal } from '../../school_admin/students/components/import-modal';
+import { previewStudentImportApi } from '../../school_admin/students/schemas/api';
+import type { ImportStudentRow } from '../../school_admin/students/schemas/type';
 
 interface Section {
     id: string;
@@ -24,9 +35,7 @@ interface StudentControlsProps {
     classes: ClassItem[];
     selectedClass: string | null;
     selectedSection: string | null;
-    students: StudentResponse[];
     studentsCount?: number;
-    disableAction?: boolean;
     onClassChange: (value: string | null) => void;
     onSectionChange: (value: string | null) => void;
     onLoadStudents: () => void;
@@ -43,9 +52,12 @@ export function StudentControls({
     onLoadStudents,
     onPrint,
 }: StudentControlsProps) {
-    const [isImporting, setIsImporting] = useState(false);
+    const [isPreparingImportPreview, setIsPreparingImportPreview] = useState(false);
     const [importErrors, setImportErrors] = useState<string[]>([]);
+    const [importPreviewData, setImportPreviewData] = useState<ImportStudentRow[]>([]);
+    const [showImportPreviewModal, setShowImportPreviewModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [showImportSavingModal, setShowImportSavingModal] = useState(false);
     
     const SelectedClassId = useActiveSelection(selectedSection, selectedClass);
     const router = useRouter();
@@ -61,13 +73,18 @@ export function StudentControls({
             return;
         }
 
-        setIsImporting(true);
+        setIsPreparingImportPreview(true);
         setImportErrors([]);
 
         try {
-            await uploadFileApi(`/student/import/${SelectedClassId}`, file);
-            showSuccess('Students uploaded successfully');
-            onLoadStudents();
+            const previewData = await previewStudentImportApi(file);
+            if (!previewData.length) {
+                showError('No students found in the selected file');
+                return;
+            }
+
+            setImportPreviewData(previewData);
+            setShowImportPreviewModal(true);
         } catch (error: any) {
             if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
                 setImportErrors(error.errors);
@@ -76,7 +93,7 @@ export function StudentControls({
                 showError(error.message || 'Failed to upload students');
             }
         } finally {
-            setIsImporting(false);
+            setIsPreparingImportPreview(false);
         }
     };
 
@@ -156,8 +173,12 @@ export function StudentControls({
                                     {...props}
                                     variant="light"
                                     size="sm"
-                                    loading={isImporting}
                                     leftSection={<IconUpload size={16} />}
+                                    disabled={
+                                        !SelectedClassId ||
+                                        isPreparingImportPreview ||
+                                        showImportSavingModal
+                                    }
                                 >
                                     Import from Excel
                                 </Button>
@@ -182,6 +203,51 @@ export function StudentControls({
                 <Group justify="right" mt="md">
                     <Button onClick={() => setShowErrorModal(false)}>Close</Button>
                 </Group>
+            </Modal>
+
+            <ImportStudentModal
+                opened={showImportPreviewModal}
+                onClose={() => {
+                    setShowImportPreviewModal(false);
+                    setImportPreviewData([]);
+                }}
+                classId={SelectedClassId}
+                data={importPreviewData}
+                refreshStudentTable={onLoadStudents}
+                onSavingChange={setShowImportSavingModal}
+            />
+            <Modal
+                opened={isPreparingImportPreview}
+                onClose={() => {}}
+                withCloseButton={false}
+                closeOnClickOutside={false}
+                closeOnEscape={false}
+                centered
+            >
+                <Stack align="center" gap="md" py="md">
+                    <Loader size="lg" />
+                    <Text fw={500}>Preparing import preview...</Text>
+                    <Text size="sm" c="dimmed">
+                        Please wait while the file is being processed.
+                    </Text>
+                </Stack>
+            </Modal>
+
+            <Modal
+                opened={showImportSavingModal}
+                onClose={() => {}}
+                withCloseButton={false}
+                closeOnClickOutside={false}
+                closeOnEscape={false}
+                centered
+            >
+                <Stack align="center" gap="md" py="md">
+                    <Loader size="lg" />
+                    <Text fw={500}>Saving imported students...</Text>
+                    <Text size="sm" c="dimmed">
+                        Please wait while the student table is updated.
+                    </Text>
+                </Stack>
             </Modal>
         </>
     );

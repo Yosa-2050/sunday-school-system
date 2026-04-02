@@ -111,3 +111,20 @@ export interface StudentForPrint {
     className?: string;
     photoUrl?: string;
 }
+
+export type ImportStudentRow = {
+    IdNumber: string;
+    FirstName: string;
+    MiddleName: string;
+    LastName: string;
+    Gender: string;
+    BirthDate: string;
+    ChristianName: string;
+    PhoneNumber: string;
+    SchoolName: string;
+    SchoolGrade: string | number;
+    Address: string;
+    EmergencyContact: string;
+    EmergencyContactPhone: string;
+    RelationshipType: string;
+};
