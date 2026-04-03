@@ -198,41 +198,41 @@ export class StudentService {
       throw new BadRequestException({ message: "Validation failed", errors });
     }
 
-    const models = [];
-    for (let index = 0; index < data.length; index++) {
-      const dto = data[index];
-      const pwdGenerated = this.passwordService.generatePassword();
-      const profile = await this.profileService.createNewUserProfileQDE(
-        dto.IdNumber,
-        LoginBy.USERNAME,
-        UserRoleType.Student,
-        dto.FirstName,
-        dto.MiddleName,
-        dto.LastName,
-        dto.PhoneNumber,
-        dto.Gender,
-        dto.BirthDate,
-        dto.ChristianName,
-        false,
-        pwdGenerated,
-        true,
-      );
+        const models = [];
+        for (let index = 0; index < excel.length; index++) {
+            const dto = excel[index];
+            const pwdGenerated = this.passwordService.generatePassword();
+            const profile = await this.profileService.createNewUserProfileQDE(
+                dto.IdNumber,
+                LoginBy.USERNAME,
+                UserRoleType.Student,
+                dto.FirstName,
+                dto.MiddleName,
+                dto.LastName,
+                dto.PhoneNumber,
+                dto.Gender,
+                dto.BirthDate,
+                dto.ChristianName,
+                false,
+                pwdGenerated,
+                true,
+            );
 
-      const relative = await this.profileService.createProfileQDE(
-        dto.EmergencyContact,
-        "",
-        "",
-        dto.EmergencyContactPhone,
-      );
-      const relationship = await this.profileService.createRelationShips(
-        profile,
-        relative,
-        dto.RelationshipType,
-        true,
-        false,
-      );
-      profile.relation = [];
-      profile.relation.push(relationship);
+            const relative = await this.profileService.createProfileQDE(
+                dto.EmergencyContact,
+                '',
+                '',
+                dto.EmergencyContactPhone,
+            );
+            const relationship = await this.profileService.createRelationShips(
+                profile,
+                relative,
+                dto.RelationshipType,
+                true,
+                false,
+            );
+            profile.relation = [];
+            profile.relation.push(relationship);
 
       const model = this.studentRepo.create();
       model.profile = profile;
