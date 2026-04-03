@@ -140,10 +140,7 @@ export class AuthService {
             username,
             LoginBy.EMAIL,
         );
-        if (
-            user &&
-            validateRole(user.roles?.find((x) => x.isDefault)?.role, origin)
-        ) {
+        if (user) {
             const otp = await this.otpService.CreateOtp(user.id);
             const forgotPwdEmailTemplate =
                 await this.notificationService.getTemplate(
