@@ -22,6 +22,7 @@ import { Classes } from "../entities/classes.entity";
 import { Students } from "../entities/students.entity";
 import { ClassService } from "./class.service";
 import { PaginationDto } from "@shega/Utilities/models/paginated.request";
+import { RelationShipsType } from '@shega/users/enums/relationship-type.enum';
 
 @Injectable()
 export class StudentService {
@@ -198,41 +199,45 @@ export class StudentService {
       throw new BadRequestException({ message: "Validation failed", errors });
     }
 
-        const models = [];
-        for (let index = 0; index < excel.length; index++) {
-            const dto = excel[index];
-            const pwdGenerated = this.passwordService.generatePassword();
-            const profile = await this.profileService.createNewUserProfileQDE(
-                dto.IdNumber,
-                LoginBy.USERNAME,
-                UserRoleType.Student,
-                dto.FirstName,
-                dto.MiddleName,
-                dto.LastName,
-                dto.PhoneNumber,
-                dto.Gender,
-                dto.BirthDate,
-                dto.ChristianName,
-                false,
-                pwdGenerated,
-                true,
-            );
+    const models = [];
+    for (let index = 0; index < data.length; index++) {
+      const dto = data[index];
+      const pwdGenerated = this.passwordService.generatePassword();
+      const profile = await this.profileService.createNewUserProfileQDE(
+        dto.IdNumber,
+        LoginBy.USERNAME,
+        UserRoleType.Student,
+        dto.FirstName,
+        dto.MiddleName,
+        dto.LastName,
+        dto.PhoneNumber,
+        dto.Gender,
+        dto.BirthDate,
+        dto.ChristianName,
+        false,
+        pwdGenerated,
+        true,
+      );
+            if(dto.EmergencyContact){
+          const relative = await this.profileService.createProfileQDE(
+            dto.EmergencyContact,
+            "",
+            "",
+            dto.EmergencyContactPhone,
+          );
 
-            const relative = await this.profileService.createProfileQDE(
-                dto.EmergencyContact,
-                '',
-                '',
-                dto.EmergencyContactPhone,
-            );
-            const relationship = await this.profileService.createRelationShips(
-                profile,
-                relative,
-                dto.RelationshipType,
-                true,
-                false,
-            );
-            profile.relation = [];
-            profile.relation.push(relationship);
+          const relationship = await this.profileService.createRelationShips(
+            profile,
+            relative,
+            dto.RelationshipType ?? RelationShipsType.GUARDIAN,
+            true,
+            false,
+          );
+          profile.relation = [];
+          profile.relation.push(relationship);
+            }
+           
+          
 
       const model = this.studentRepo.create();
       model.profile = profile;
