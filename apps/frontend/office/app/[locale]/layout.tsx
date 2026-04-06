@@ -5,15 +5,15 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-import MantineThemeProvider from 'providers/MantineProviders';
-import QueryProviders from 'providers/Query.provider';
 
-import type { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
-import { cn } from 'utilities/cn';
-import { generateColors, lightenHexColor } from 'utility/colors';
 import { getUserAction } from './_api/get-user-action';
+import { RoleEnum } from '@shega/shared';
+import MantineThemeProvider from '../../providers/MantineProviders';
+import QueryProviders from '../../providers/Query.provider';
+import { cn } from '../../utilities/cn';
+import { generateColors, lightenHexColor } from '../../utility/colors';
 
 const inter = Inter({ subsets: ['latin'] });
 

@@ -3,7 +3,7 @@
 import { Box, Button, Group, Menu, Select, Table, Text } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import { IconDots, IconPencil, IconPlus, IconX } from '@tabler/icons-react';
-import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
+import { RoleEnum } from '@shega/shared';
 import { useCallback, useEffect, useState } from 'react';
 import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {

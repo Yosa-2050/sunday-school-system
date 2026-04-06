@@ -4,7 +4,7 @@ import { ScrollArea, useMantineColorScheme } from '@mantine/core';
 import { useToggle } from '@mantine/hooks';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
+import type { RoleEnum } from '@shega/shared';
 import { useMemo } from 'react';
 import { cn } from 'utilities/cn';
 import classes from './SideMenu.module.css';

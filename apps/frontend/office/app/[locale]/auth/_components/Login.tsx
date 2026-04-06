@@ -27,7 +27,7 @@ import { type Data, login } from 'app/[locale]/_api/auth/login';
 import { getUserAction } from 'app/[locale]/_api/get-user-action';
 import { setCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
-import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
+import { RoleEnum } from '@shega/shared';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';

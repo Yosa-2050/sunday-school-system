@@ -1,5 +1,5 @@
 import { fetcher } from '@shega/shared';
-import type { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
+import type { RoleEnum } from '@shega/shared';
 
 type LoginRequest = {
     username: string;

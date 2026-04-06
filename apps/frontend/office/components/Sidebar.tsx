@@ -1,7 +1,7 @@
 import { Box, useComputedColorScheme } from '@mantine/core';
 import { useAuth } from '@shega/ui';
 import Link from 'next/link';
-import type { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
+import type { RoleEnum } from '@shega/shared';
 import { Menus } from './Menus';
 import { SideMenu } from './side-menu/SideMenu';
 

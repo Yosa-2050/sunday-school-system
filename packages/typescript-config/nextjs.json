@@ -7,10 +7,6 @@
         "moduleResolution": "Bundler",
         "allowJs": true,
         "jsx": "react-jsx",
-        "noEmit": true,
-        "baseUrl": ".",
-        "paths": {
-            "@shega/ui/*": ["packages/ui/src/*"]
-        }
+        "noEmit": true
     }
 }

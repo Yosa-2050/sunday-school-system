@@ -3,8 +3,8 @@
 import { useAuth } from '@shega/ui';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
 import { useEffect } from 'react';
+import { RoleEnum } from '../../../../../packages/shared/src/types/role';
 
 export default function HomePage() {
     const { user } = useAuth();

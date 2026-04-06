@@ -9,14 +9,17 @@
         "allowJs": true,
         "module": "esnext",
         "outDir": "dist",
-        "baseUrl": ".",
         "paths": {
-            "@/actions/*": ["actions/*"],
-            "@/components/*": ["components/*"],
+            "@/actions/*": ["./actions/*"],
+            "@/components/*": ["./components/*"],
             "@/hooks/*": ["./hooks/*"],
-            "@/i18n/*": ["i18n/*"],
+            "@/i18n/*": ["./i18n/*"],
             "@/lib/*": ["./lib/*"],
-            "@/models/*": ["models/*"]
+            "@/models/*": ["./model/*"],
+            "app/*": ["./app/*"],
+            "utilities/*": ["./utilities/*"],
+            "utility/*": ["./utility/*"],
+            "model/*": ["./model/*"]
         },
         "noEmit": true,
         "jsx": "preserve"

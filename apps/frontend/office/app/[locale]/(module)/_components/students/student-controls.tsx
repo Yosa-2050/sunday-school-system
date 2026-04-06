@@ -13,7 +13,7 @@ import {
 import { useAuth } from '@shega/ui';
 import { IconPlus, IconUpload } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
+import { RoleEnum } from '@shega/shared';
 import { showError } from 'utilities/notification';
 import { useActiveSelection } from 'utilities/utilities';
 import { ImportStudentModal } from '../../school_admin/students/components/import-modal';

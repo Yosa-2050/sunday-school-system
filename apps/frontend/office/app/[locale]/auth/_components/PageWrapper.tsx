@@ -6,7 +6,7 @@ import { useAuth } from '@shega/ui';
 import { getCookie } from 'cookies-next';
 import Autoplay from 'embla-carousel-autoplay';
 import { useTranslations } from 'next-intl';
-import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
+import { RoleEnum } from '@shega/shared';
 import type React from 'react';
 import { type JSX, useRef } from 'react';
 import Logo from '../../../../public/logo.svg';

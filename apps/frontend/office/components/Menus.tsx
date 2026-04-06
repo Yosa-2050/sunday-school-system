@@ -24,7 +24,7 @@ import {
     IconUsersGroup,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { RoleEnum } from 'node_modules/@shega/shared/src/types/role';
+import { RoleEnum } from '@shega/shared';
 import type { MenuTree } from './side-menu/SideMenu';
 
 export const Menus = (): MenuTree[] => {
@@ -146,27 +146,9 @@ export const Menus = (): MenuTree[] => {
             role: RoleEnum.school_admin,
         },
         {
-            label: t('Department'),
-            icon: <IconBuildingCommunity stroke={1.4} size={20} />,
-            link: '/school_admin/department',
-            role: RoleEnum.school_admin,
-        },
-        {
             label: t('programManagement'),
             icon: <IconBook stroke={1.4} size={20} />,
             link: '/admin/programs',
-            role: RoleEnum.school_admin,
-        },
-        {
-            label: t('memberManagement'),
-            icon: <IconUserCheck stroke={1.4} size={20} />,
-            link: '/admin/members',
-            role: RoleEnum.school_admin,
-        },
-        {
-            label: t('assignMember'),
-            icon: <IconUserPlus stroke={1.4} size={20} />,
-            link: '/admin/assign-member',
             role: RoleEnum.school_admin,
         },
         {

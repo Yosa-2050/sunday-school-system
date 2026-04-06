@@ -4,13 +4,13 @@ import { Button, Drawer, Group, Stack, Text, TextInput } from '@mantine/core';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { showError, showSuccess } from 'utilities/notification';
 import {
     DeleteDepartmentApi,
     createDepartmentApi,
     updateDepartmentApi,
 } from '../schemas/api';
 import type { CreateDepartment, DepartmentResponse } from '../schemas/type';
+import { showError, showSuccess } from '../../../../../../utilities/notification';
 
 interface CreateDepartmentDrawerProps {
     mode: 'create' | 'edit' | 'delete';
