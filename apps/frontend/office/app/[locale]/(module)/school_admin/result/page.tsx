@@ -1,5 +1,5 @@
 'use client';
-import { Tabs, Text } from '@mantine/core';
+import { Divider, Paper, Tabs, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
@@ -64,43 +64,46 @@ export default function ResultPage() {
                     setProgramId(programId);
                     setCalendarYear(calenderYearName);
                     setCalendarYearId(calenderYearId);
-                }}
+                }}   
             />
 
-            <Text size="xl" mb="md">
-                Result Page
-            </Text>
-            <Tabs defaultValue="create">
-                <Tabs.List>
-                    <Tabs.Tab value="create">Create Result</Tabs.Tab>
-                    <Tabs.Tab value="view">View Result</Tabs.Tab>
-                </Tabs.List>
+            <Paper shadow="xs" p={{ base: 'md', sm: 'lg' }} radius="md" withBorder>
+                <Text size="xl" mb="md">
+                    Result Page
+                </Text>
+                <Divider mb="md" />
+                <Tabs defaultValue="create">
+                    <Tabs.List>
+                        <Tabs.Tab value="create">Create Result</Tabs.Tab>
+                        <Tabs.Tab value="view">View Result</Tabs.Tab>
+                    </Tabs.List>
 
-                <Tabs.Panel value="create" pt="md">
-                    <ResultCreate
-                        programId={programId}
-                        classes={classes}
-                        selectedClass={selectedClass}
-                        setSelectedClass={setSelectedClass}
-                        selectedSection={selectedSection}
-                        setSelectedSection={setSelectedSection}
-                        students={students}
-                        loadingStudents={loadingStudents}
-                        handleFetchStudents={handleFetchStudents}
-                    />
-                </Tabs.Panel>
+                    <Tabs.Panel value="create" pt="md">
+                        <ResultCreate
+                            programId={programId}
+                            classes={classes}
+                            selectedClass={selectedClass}
+                            setSelectedClass={setSelectedClass}
+                            selectedSection={selectedSection}
+                            setSelectedSection={setSelectedSection}
+                            students={students}
+                            loadingStudents={loadingStudents}
+                            handleFetchStudents={handleFetchStudents}
+                        />
+                    </Tabs.Panel>
 
-                <Tabs.Panel value="view" pt="md">
-                    <ResultView
-                        programId={programId}
-                        classes={classes}
-                        selectedClass={selectedClass}
-                        setSelectedSection={setSelectedSection}
-                        selectedSection={selectedSection}
-                        setSelectedClass={setSelectedClass}
-                    />
-                </Tabs.Panel>
-            </Tabs>
+                    <Tabs.Panel value="view" pt="md">
+                        <ResultView
+                            programId={programId}
+                            classes={classes}
+                            selectedClass={selectedClass}
+                            setSelectedSection={setSelectedSection}
+                            selectedSection={selectedSection}
+                            setSelectedClass={setSelectedClass}
+                        />
+                    </Tabs.Panel>
+                </Tabs>
+            </Paper>
         </div>
     );
 }

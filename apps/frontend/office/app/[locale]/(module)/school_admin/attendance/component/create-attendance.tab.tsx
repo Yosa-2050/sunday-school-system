@@ -4,6 +4,7 @@ import {
     ActionIcon,
     Box,
     Button,
+    Center,
     Flex,
     Group,
     Loader,
@@ -430,8 +431,26 @@ export default function AttendanceCreate({
                 <Table.Tbody>
                     {loadingStudents ? (
                         <Table.Tr>
-                            <Table.Td colSpan={5} className="text-center">
-                                <Loader size="sm" />
+                            <Table.Td colSpan={5}>
+                                <Center py="xl">
+                                    <Loader size="sm" />
+                                </Center>
+                            </Table.Td>
+                        </Table.Tr>
+                    ) : !programId || !selectedClass ? (
+                        <Table.Tr>
+                            <Table.Td colSpan={5}>
+                                <Text ta="center" c="dimmed" py="xl">
+                                    Select program and class, then load student
+                                </Text>
+                            </Table.Td>
+                        </Table.Tr>
+                    ) : students.length === 0 ? (
+                        <Table.Tr>
+                            <Table.Td colSpan={5}>
+                                <Text ta="center" c="dimmed" py="xl">
+                                    Student not found
+                                </Text>
                             </Table.Td>
                         </Table.Tr>
                     ) : (

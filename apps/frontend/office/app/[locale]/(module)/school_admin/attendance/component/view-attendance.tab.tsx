@@ -4,8 +4,10 @@ import {
     Badge,
     Box,
     Button,
+    Center,
     Flex,
     Group,
+    Loader,
     ScrollArea,
     Select,
     Table,
@@ -32,6 +34,7 @@ import {
 } from '../schemas/types';
 
 interface AttendanceViewProps {
+    programId: string | null;
     classes: GetClass[];
     selectedClass: string | null;
     setSelectedClass: (classId: string | null) => void;
@@ -40,6 +43,7 @@ interface AttendanceViewProps {
 }
 
 export default function AttendanceView({
+    programId,
     classes,
     selectedClass,
     setSelectedClass,
@@ -59,6 +63,7 @@ export default function AttendanceView({
     const [selectedSavedDate, setSelectedSavedDate] = useState<string | null>(
         null,
     );
+    const [hasLoadedAttendance, setHasLoadedAttendance] = useState(false);
 
     const fetchSavedDates = async (classId: string) => {
         if (!selectedClass) {
@@ -107,6 +112,7 @@ export default function AttendanceView({
 
                 const data = await fetchAttendanceViewApi(request);
                 setAttendanceViewData(data);
+                setHasLoadedAttendance(true);
                 return data;
             } finally {
                 setLoadingView(false);
@@ -119,6 +125,7 @@ export default function AttendanceView({
         setSavedDates([]);
         setSelectedDateRange([null, null]);
         setAttendanceViewData([]);
+        setHasLoadedAttendance(false);
     }, [selectedClass, selectedSection]);
 
     return (
@@ -210,27 +217,54 @@ export default function AttendanceView({
                 </Box>
             </Group>
 
-            {attendanceViewData.length > 0 && (
-                <Box>
-                    <Flex gap="md" align="flex-start">
-                        {/* Fixed Student Info Table */}
-                        <Box style={{ flex: '0 0 auto' }}>
-                            <Table withColumnBorders withRowBorders striped>
-                                <Table.Thead>
+            <Box>
+                <Flex gap="md" align="flex-start">
+                    {/* Fixed Student Info Table */}
+                    <Box
+                        style={{
+                            flex:
+                                attendanceViewData.length > 0
+                                    ? '0 0 auto'
+                                    : '1 1 auto',
+                            minWidth:
+                                attendanceViewData.length > 0 ? undefined : 0,
+                        }}
+                    >
+                        <Table
+                            withColumnBorders
+                            withRowBorders
+                            striped
+                            style={{
+                                width:
+                                    attendanceViewData.length > 0
+                                        ? 'auto'
+                                        : '100%',
+                            }}
+                        >
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th className="text-center">
+                                        No
+                                    </Table.Th>
+                                    <Table.Th className="text-center">
+                                        ID Number
+                                    </Table.Th>
+                                    <Table.Th className="text-center">
+                                        Student
+                                    </Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {loadingView ? (
                                     <Table.Tr>
-                                        <Table.Th className="text-center">
-                                            No
-                                        </Table.Th>
-                                        <Table.Th className="text-center">
-                                            ID Number
-                                        </Table.Th>
-                                        <Table.Th className="text-center">
-                                            Student
-                                        </Table.Th>
+                                        <Table.Td colSpan={3}>
+                                            <Center py="xl">
+                                                <Loader size="sm" />
+                                            </Center>
+                                        </Table.Td>
                                     </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {attendanceViewData.map(
+                                ) : attendanceViewData.length > 0 ? (
+                                    attendanceViewData.map(
                                         (student, index) => (
                                             <Table.Tr
                                                 key={student.studentId}
@@ -252,11 +286,26 @@ export default function AttendanceView({
                                                 </Table.Td>
                                             </Table.Tr>
                                         ),
-                                    )}
-                                </Table.Tbody>
-                            </Table>
-                        </Box>
+                                    )
+                                ) : (
+                                    <Table.Tr>
+                                        <Table.Td colSpan={3}>
+                                            <Text ta="center" c="dimmed" py="xl">
+                                                {!programId || !selectedClass
+                                                    ? 'Select program and class, then load student'
+                                                    : hasLoadedAttendance
+                                                      ? 'Student not found'
+                                                      : 'Select program and class, then load student'}
+                                            </Text>
+                                        </Table.Td>
+                                    </Table.Tr>
+                                )}
+                            </Table.Tbody>
+                        </Table>
+                    </Box>
 
+                    {attendanceViewData.length > 0 && (
+                        <>
                         {/* Scrollable Attendance Dates */}
                         <ScrollArea scrollbars="x" style={{ flex: '1' }}>
                             <Table withColumnBorders withRowBorders striped>
@@ -350,7 +399,7 @@ export default function AttendanceView({
                             </Table>
                         </ScrollArea>
 
-                        {/* Fixed Totals Table */}
+                            {/* Fixed Totals Table */}
                         <Box style={{ flex: '0 0 auto' }}>
                             <Table withColumnBorders withRowBorders striped>
                                 <Table.Thead>
@@ -444,8 +493,11 @@ export default function AttendanceView({
                                 </Table.Tbody>
                             </Table>
                         </Box>
-                    </Flex>
+                        </>
+                    )}
+                </Flex>
 
+                {attendanceViewData.length > 0 && (
                     <Group mt="md" justify="center">
                         <Badge color="green" size="lg">
                             Total Students: {attendanceViewData.length}
@@ -459,14 +511,8 @@ export default function AttendanceView({
                             }
                         </Badge>
                     </Group>
-                </Box>
-            )}
-
-            {!(attendanceViewData.length || loadingView) && selectedClass && (
-                <Text ta="center" c="dimmed" mt="xl">
-                    No attendance records found for the selected criteria
-                </Text>
-            )}
+                )}
+            </Box>
         </Box>
     );
 }

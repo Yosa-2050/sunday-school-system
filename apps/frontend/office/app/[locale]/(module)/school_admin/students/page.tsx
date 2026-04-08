@@ -1,5 +1,6 @@
 'use client';
 
+import { Paper } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useSessionStorage } from 'react-use';
@@ -25,6 +26,7 @@ export default function StudentPage() {
     const [students, setStudents] = useSessionStorage<StudentResponse[]>('studentList_students', []);
     const [loadingStudents, setLoadingStudents] = useState(false);
     const [printModalOpen, setPrintModalOpen] = useState(false);
+    const [hasLoadedStudents, setHasLoadedStudents] = useState(false);
     
     // To prevent hydration errors when reading from sessionStorage
     const [isMounted, setIsMounted] = useState(false);
@@ -40,6 +42,7 @@ export default function StudentPage() {
     const fetchClasses = async (calenderId: string) => {
         if (!calenderId) return;
         setStudents([]);
+        setHasLoadedStudents(false);
         setClasses([]);
         setSelectedClass(null);
         try {
@@ -60,6 +63,7 @@ export default function StudentPage() {
             setLoadingStudents(true);
             const data = await fetchStudentsApi(SelectedClassId ?? '');
             setStudents(data);
+            setHasLoadedStudents(true);
         } finally {
             setLoadingStudents(false);
         }
@@ -83,28 +87,35 @@ export default function StudentPage() {
                 }}
             />
 
-            <StudentControls
-                classes={classes}
-                selectedClass={selectedClass}
-                selectedSection={selectedSection}
-                studentsCount={students.length}
-                onClassChange={(val) => {
-                    setStudents([]);
-                    setSelectedClass(val);
-                    setSelectedSection(null);
-                }}
-                onSectionChange={(val) => {
-                    setSelectedSection(val);
-                }}
-                onLoadStudents={handleFetchStudents}
-                onPrint={handleBatchPrint}
-            />
+            <Paper shadow="xs" p={{ base: 'md', sm: 'lg' }} radius="md" withBorder>
+                <StudentControls
+                    classes={classes}
+                    selectedClass={selectedClass}
+                    selectedSection={selectedSection}
+                    studentsCount={students.length}
+                    onClassChange={(val) => {
+                        setStudents([]);
+                        setHasLoadedStudents(false);
+                        setSelectedClass(val);
+                        setSelectedSection(null);
+                    }}
+                    onSectionChange={(val) => {
+                        setStudents([]);
+                        setHasLoadedStudents(false);
+                        setSelectedSection(val);
+                    }}
+                    onLoadStudents={handleFetchStudents}
+                    onPrint={handleBatchPrint}
+                />
 
-            <StudentTable
-                students={students}
-                loading={loadingStudents}
-                onView={(id) => router.push(`/school_admin/students/${id}`)}
-            />
+                <StudentTable
+                    students={students}
+                    loading={loadingStudents}
+                    hasLoadedStudents={hasLoadedStudents}
+                    hasSelection={!!SelectedClassId}
+                    onView={(id) => router.push(`/school_admin/students/${id}`)}
+                />
+            </Paper>
             <PrintIdModal
                 opened={printModalOpen}
                 onClose={() => setPrintModalOpen(false)}

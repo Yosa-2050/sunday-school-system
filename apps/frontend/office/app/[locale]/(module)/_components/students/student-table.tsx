@@ -1,19 +1,24 @@
 'use client';
-import { ActionIcon, Loader, Menu, Table } from '@mantine/core';
+import { ActionIcon, Center, Loader, Menu, Table, Text } from '@mantine/core';
 import { IconDots, IconEdit, IconEye, IconX } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import type { StudentResponse } from '../../school_admin/students/schemas/type';
 
 interface StudentTableProps {
     students: StudentResponse[];
     loading: boolean;
+    hasLoadedStudents: boolean;
+    hasSelection: boolean;
     onView: (id: string) => void;
 }
 
-export function StudentTable({ students, loading, onView }: StudentTableProps) {
-    const router = useRouter();
-
+export function StudentTable({
+    students,
+    loading,
+    hasLoadedStudents,
+    hasSelection,
+    onView,
+}: StudentTableProps) {
     return (
         <Table withColumnBorders striped highlightOnHover>
             <Table.Thead>
@@ -29,7 +34,25 @@ export function StudentTable({ students, loading, onView }: StudentTableProps) {
                 {loading ? (
                     <Table.Tr>
                         <Table.Td colSpan={5}>
-                            <Loader size="sm" />
+                            <Center py="xl">
+                                <Loader size="sm" />
+                            </Center>
+                        </Table.Td>
+                    </Table.Tr>
+                ) : !hasSelection || !hasLoadedStudents ? (
+                    <Table.Tr>
+                        <Table.Td colSpan={5}>
+                            <Text ta="center" c="dimmed" py="xl">
+                                Select class and load student
+                            </Text>
+                        </Table.Td>
+                    </Table.Tr>
+                ) : students.length === 0 ? (
+                    <Table.Tr>
+                        <Table.Td colSpan={5}>
+                            <Text ta="center" c="dimmed" py="xl">
+                                No student found
+                            </Text>
                         </Table.Td>
                     </Table.Tr>
                 ) : (

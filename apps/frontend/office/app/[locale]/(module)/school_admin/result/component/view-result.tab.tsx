@@ -83,6 +83,8 @@ export default function ResultView({
         setResultViewData([]);
     }, [selectedClass, selectedSection]);
 
+    const resultColumns = Object.keys(resultViewData[0]?.results || {});
+
     return (
         <Box pt="md">
             <Group mb="md" wrap="wrap">
@@ -175,27 +177,37 @@ export default function ResultView({
                 </Box>
             </Group>
 
-            {resultViewData.length > 0 && (
-                <Box>
-                    <Flex gap="md" align="flex-start">
-                        {/* Student Info Table */}
-                        <Box style={{ flex: '0 0 auto' }}>
-                            <Table withColumnBorders withRowBorders striped>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th className="text-center">
-                                            No
-                                        </Table.Th>
-                                        <Table.Th className="text-center">
-                                            ID Number
-                                        </Table.Th>
-                                        <Table.Th className="text-center">
-                                            Student
-                                        </Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {resultViewData.map((result, index) => (
+            <Box>
+                <Flex gap="md" align="flex-start">
+                    {/* Student Info Table */}
+                    <Box
+                        style={{
+                            flex: resultViewData.length > 0 ? '0 0 auto' : '1 1 auto',
+                            minWidth: resultViewData.length > 0 ? undefined : 0,
+                        }}
+                    >
+                        <Table
+                            withColumnBorders
+                            withRowBorders
+                            striped
+                            style={{ width: resultViewData.length > 0 ? 'auto' : '100%' }}
+                        >
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th className="text-center">
+                                        No
+                                    </Table.Th>
+                                    <Table.Th className="text-center">
+                                        ID Number
+                                    </Table.Th>
+                                    <Table.Th className="text-center">
+                                        Student
+                                    </Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {resultViewData.length > 0 ? (
+                                    resultViewData.map((result, index) => (
                                         <Table.Tr
                                             key={result.id}
                                             style={{ height: '53px' }}
@@ -210,95 +222,110 @@ export default function ResultView({
                                                 {result.fullName}
                                             </Table.Td>
                                         </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
-                        </Box>
-
-                        {/* Scores Scrollable Table */}
-                        <ScrollArea
-                            scrollbars="x"
-                            style={{ flex: '1', maxWidth: '70%' }}
-                        >
-                            <Table withColumnBorders withRowBorders striped>
-                                <Table.Thead>
+                                    ))
+                                ) : (
                                     <Table.Tr>
-                                        {Object.keys(
-                                            resultViewData[0]?.results || {},
-                                        ).map((subject) => (
-                                            <Table.Th
-                                                key={subject}
-                                                className="text-center"
-                                                style={{ minWidth: '80px' }}
-                                            >
-                                                {subject}
-                                            </Table.Th>
-                                        ))}
+                                        <Table.Td colSpan={3}>
+                                            <Text ta="center" c="dimmed" py="xl">
+                                                {!selectedClass
+                                                    ? 'Select program and class, then load result'
+                                                    : 'No result records found for the selected class.'}
+                                            </Text>
+                                        </Table.Td>
                                     </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {resultViewData.map((student) => (
-                                        <Table.Tr
-                                            key={student.studentId}
-                                            style={{ height: '53px' }}
-                                        >
-                                            {Object.entries(
-                                                student.results ?? [],
-                                            )?.map(([subject, score]) => (
-                                                <Table.Td
+                                )}
+                            </Table.Tbody>
+                        </Table>
+                    </Box>
+
+                    {resultViewData.length > 0 && (
+                        <>
+                            {/* Scores Scrollable Table */}
+                            <ScrollArea
+                                scrollbars="x"
+                                style={{
+                                    flex: '0 1 auto',
+                                    minWidth: 0,
+                                    maxWidth: 'calc(100% - 420px)',
+                                }}
+                            >
+                                <Table
+                                    withColumnBorders
+                                    withRowBorders
+                                    striped
+                                    style={{
+                                        width: 'max-content',
+                                        minWidth: `${Math.max(resultColumns.length * 120, 320)}px`,
+                                    }}
+                                >
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            {resultColumns.map((subject) => (
+                                                <Table.Th
                                                     key={subject}
                                                     className="text-center"
-                                                    style={{
-                                                        textAlign: 'center',
-                                                        padding: '8px',
-                                                        minWidth: '70px',
-                                                    }}
+                                                    style={{ minWidth: '120px' }}
                                                 >
-                                                    {score}
-                                                </Table.Td>
+                                                    {subject}
+                                                </Table.Th>
                                             ))}
                                         </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
-                        </ScrollArea>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {resultViewData.map((student) => (
+                                            <Table.Tr
+                                                key={student.studentId}
+                                                style={{ height: '53px' }}
+                                            >
+                                                {Object.entries(
+                                                    student.results ?? [],
+                                                )?.map(([subject, score]) => (
+                                                    <Table.Td
+                                                        key={subject}
+                                                        className="text-center"
+                                                        style={{
+                                                            textAlign: 'center',
+                                                            padding: '8px',
+                                                            minWidth: '70px',
+                                                        }}
+                                                    >
+                                                        {score}
+                                                    </Table.Td>
+                                                ))}
+                                            </Table.Tr>
+                                        ))}
+                                    </Table.Tbody>
+                                </Table>
+                            </ScrollArea>
 
-                        {/* Totals Table */}
-                        <Box style={{ flex: '0 0 auto' }}>
-                            <Table withColumnBorders withRowBorders striped>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th className="text-center">
-                                            Total
-                                        </Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {resultViewData.map((result) => (
-                                        <Table.Tr
-                                            key={result.id}
-                                            style={{ height: '53px' }}
-                                        >
-                                            <Table.Td className="text-center">
-                                                {result.totals}
-                                            </Table.Td>
+                            {/* Totals Table */}
+                            <Box style={{ flex: '0 0 auto' }}>
+                                <Table withColumnBorders withRowBorders striped>
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th className="text-center">
+                                                Total
+                                            </Table.Th>
                                         </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
-                        </Box>
-                        <Box>
-                            {!(resultViewData.length || loadingView) &&
-                                selectedClass && (
-                                    <Text ta="center" c="dimmed" mt="xl">
-                                        No result records found for the selected
-                                        class.
-                                    </Text>
-                                )}
-                        </Box>
-                    </Flex>
-                </Box>
-            )}
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {resultViewData.map((result) => (
+                                            <Table.Tr
+                                                key={result.id}
+                                                style={{ height: '53px' }}
+                                            >
+                                                <Table.Td className="text-center">
+                                                    {result.totals}
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                    </Table.Tbody>
+                                </Table>
+                            </Box>
+                        </>
+                    )}
+                </Flex>
+            </Box>
         </Box>
     );
 }

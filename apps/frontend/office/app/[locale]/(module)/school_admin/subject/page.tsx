@@ -1,6 +1,16 @@
 'use client';
 
-import { Button, Group, Loader, Menu, Table, Text } from '@mantine/core';
+import {
+    Button,
+    Center,
+    Divider,
+    Group,
+    Loader,
+    Menu,
+    Paper,
+    Table,
+    Text,
+} from '@mantine/core';
 import { IconDots, IconPencil, IconX } from '@tabler/icons-react';
 
 import { useState } from 'react';
@@ -59,7 +69,9 @@ export default function SubjectPage() {
         <Table.Tr key={item.id}>
             <Table.Td>{index + 1}</Table.Td>
             <Table.Td>{item.name}</Table.Td>
-            <Table.Td>{item.isActive ? 'Active' : 'Inactive'}</Table.Td>
+            <Table.Td c={item.isActive ? 'green' : 'red'}>
+                {item.isActive ? 'Active' : 'Inactive'}
+            </Table.Td>
             <Table.Td>
                 <Menu shadow="md" width={180}>
                     <Menu.Target>
@@ -92,6 +104,7 @@ export default function SubjectPage() {
 
     return (
         <div>
+
             <ProgramAndCalendarSelector
                 onChange={({ programId, calenderYearId, calenderYearName }) => {
                     setProgramId(programId);
@@ -100,18 +113,7 @@ export default function SubjectPage() {
                     fetchSubjects(programId || '');
                 }}
             />
-
-            <Group
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
-                mb="md"
-            >
-                <Text fw={500}>Subjects</Text>
-                <Button onClick={handleCreateClick}>+ Add Subject</Button>
-            </Group>
+            <Paper shadow="xs" p={{ base: 'md', sm: 'lg' }} radius="md" withBorder>
 
             {/* Subject Drawer */}
             <SubjectDrawer
@@ -122,28 +124,63 @@ export default function SubjectPage() {
                 onClose={handleDrawerClose}
                 onCompleted={handleDrawerCompleted}
             />
+              
+            <Group
+                style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                }}
+                mb="md"
+            >
+                <Button onClick={handleCreateClick}>+ Add Subject</Button>
+            </Group>
 
-            <Table withColumnBorders striped highlightOnHover>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th w={40}>#</Table.Th>
-                        <Table.Th>Subject Name</Table.Th>
-                        <Table.Th>Status</Table.Th>
-                        <Table.Th>Actions</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                    {loadingSubject ? (
+                
+                <Table withColumnBorders striped highlightOnHover>
+                    <Table.Thead>
                         <Table.Tr>
-                            <Table.Td colSpan={4} className="text-center">
-                                <Loader size="sm" />
-                            </Table.Td>
+                            <Table.Th w={40}>#</Table.Th>
+                            <Table.Th>Subject Name</Table.Th>
+                            <Table.Th>Status</Table.Th>
+                            <Table.Th>Actions</Table.Th>
                         </Table.Tr>
-                    ) : (
-                        rows
-                    )}
-                </Table.Tbody>
-            </Table>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {loadingSubject ? (
+                            <Table.Tr>
+                                <Table.Td colSpan={4}>
+                                    <Center py="xl">
+                                        <Loader size="sm" />
+                                    </Center>
+                                </Table.Td>
+                            </Table.Tr>
+                        ) : !calendarYearId ? (
+                            <Table.Tr>
+                                <Table.Td colSpan={4}>
+                                    <Center py="xl">
+                                        <Text ta="center" c="dimmed">
+                                            Select program to view subjects
+                                        </Text>
+                                    </Center>
+                                </Table.Td>
+                            </Table.Tr>
+                        ) : subjects.length === 0 ? (
+                            <Table.Tr>
+                                <Table.Td colSpan={4}>
+                                    <Center py="xl">
+                                        <Text ta="center" c="dimmed">
+                                            No subject found in this program
+                                        </Text>
+                                    </Center>
+                                </Table.Td>
+                            </Table.Tr>
+                        ) : (
+                            rows
+                        )}
+                    </Table.Tbody>
+                </Table>
+            </Paper>
         </div>
     );
 }

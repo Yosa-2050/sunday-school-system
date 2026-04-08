@@ -100,7 +100,7 @@ export function StudentControls({
     return (
         <>
             {/* Class & Section Selection */}
-            <Group mb="md">
+            <Group mb="md" justify="flex-start" align="flex-end">
                 <Select
                     placeholder="Select Class"
                     value={selectedClass}
@@ -134,13 +134,7 @@ export function StudentControls({
             </Group>
 
             {/* Import Button */}
-            <Group mb="md" justify="space-between">
-                {(studentsCount ?? 0) > 0 && (
-                    <Text fw={500} size="md">
-                        Total Students:{studentsCount}
-                    </Text>
-                )}
-                <Text fw={500}>{/* Students */}</Text>
+            <Group mb="md" justify="flex-end">
                 {[
                     RoleEnum.administrator,
                     RoleEnum.super_admin,

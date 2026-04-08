@@ -1,6 +1,17 @@
 'use client';
 
-import { Box, Button, Group, Menu, Select, Table, Text } from '@mantine/core';
+import {
+    Box,
+    Button,
+    Center,
+    Divider,
+    Group,
+    Menu,
+    Paper,
+    Select,
+    Table,
+    Text,
+} from '@mantine/core';
 import {
     IconDots,
     IconEye,
@@ -195,88 +206,6 @@ export default function TestPage() {
                 }}
             />
 
-            <Group
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
-                mb="md"
-            >
-                <Text fw={500}>Tests</Text>
-                <Button
-                    onClick={handleCreateClick}
-                    leftSection={<IconPlus size={16} />}
-                    disabled={!selectedClass}
-                >
-                    Add Test
-                </Button>
-            </Group>
-
-            <Group mb="md" align="flex-end">
-                <Box>
-                    <Text size="sm" fw={500} mb={5}>
-                        Select Class:
-                    </Text>
-                    <Select
-                        placeholder="Choose class"
-                        value={selectedClass}
-                        onChange={(value) => {
-                            setSelectedClass(value);
-                            setSelectedSection(null);
-                            setTests([]);
-                        }}
-                        data={classes.map((c) => ({
-                            value: c.id,
-                            label: c.name,
-                        }))}
-                        style={{ width: 200 }}
-                    />
-                </Box>
-                <Box>
-                    <Text size="sm" fw={500} mb={5}>
-                        Select subject:
-                    </Text>
-                    <Select
-                        placeholder="Choose subject"
-                        value={selectedSubject}
-                        onChange={(value) => {
-                            setSelectedSubject(value);
-                            setTests([]);
-                        }}
-                        data={subjects.map((s) => ({
-                            value: s.id,
-                            label: s.subjectTitle,
-                        }))}
-                        style={{ width: 200 }}
-                    />
-                </Box>
-
-                {selectedClass &&
-                classes.find((c) => c.id === selectedClass)?.sections
-                    ?.length ? (
-                    <Box>
-                        <Text size="sm" fw={500} mb={5}>
-                            Select Section:
-                        </Text>
-                        <Select
-                            placeholder="Choose section"
-                            value={selectedSection}
-                            onChange={setSelectedSection}
-                            data={
-                                classes
-                                    .find((c) => c.id === selectedClass)
-                                    ?.sections?.map((s) => ({
-                                        value: s.id,
-                                        label: s.name,
-                                    })) ?? []
-                            }
-                            style={{ width: 200 }}
-                        />
-                    </Box>
-                ) : null}
-            </Group>
-
             <TestDrawer
                 subject={subjects.find((s) => s.id === selectedSubject)}
                 mode={drawerMode}
@@ -287,34 +216,129 @@ export default function TestPage() {
                 programId={programId}
             />
 
-            <Table withColumnBorders striped highlightOnHover>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th w={40}>#</Table.Th>
-                        <Table.Th>Name</Table.Th>
-                        {/* <Table.Th>Description</Table.Th> */}
-                        <Table.Th>Type</Table.Th>
-                        {/* <Table.Th>Document</Table.Th> */}
-                        <Table.Th>Weight</Table.Th>
-                        <Table.Th>Group</Table.Th>
-                        <Table.Th>Actions</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                    {tests.length === 0 ? (
+            <Paper shadow="xs" p={{ base: 'md', sm: 'lg' }} radius="md" withBorder>
+                <Group
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-end',
+                    }}
+                    mb="md"
+                >
+                    <Group align="flex-end">
+                        <Box>
+                            <Text size="sm" fw={500} mb={5}>
+                                Select Class:
+                            </Text>
+                            <Select
+                                placeholder="Choose class"
+                                value={selectedClass}
+                                onChange={(value) => {
+                                    setSelectedClass(value);
+                                    setSelectedSection(null);
+                                    setTests([]);
+                                }}
+                                data={classes.map((c) => ({
+                                    value: c.id,
+                                    label: c.name,
+                                }))}
+                                style={{ width: 200 }}
+                            />
+                        </Box>
+
+                        {selectedClass &&
+                        classes.find((c) => c.id === selectedClass)?.sections
+                            ?.length ? (
+                            <Box>
+                                <Text size="sm" fw={500} mb={5}>
+                                    Select Section:
+                                </Text>
+                                <Select
+                                    placeholder="Choose section"
+                                    value={selectedSection}
+                                    onChange={setSelectedSection}
+                                    data={
+                                        classes
+                                            .find((c) => c.id === selectedClass)
+                                            ?.sections?.map((s) => ({
+                                                value: s.id,
+                                                label: s.name,
+                                            })) ?? []
+                                    }
+                                    style={{ width: 200 }}
+                                />
+                            </Box>
+                        ) : null}
+
+                        <Box>
+                            <Text size="sm" fw={500} mb={5}>
+                                Select subject:
+                            </Text>
+                            <Select
+                                placeholder="Choose subject"
+                                value={selectedSubject}
+                                onChange={(value) => {
+                                    setSelectedSubject(value);
+                                    setTests([]);
+                                }}
+                                data={subjects.map((s) => ({
+                                    value: s.id,
+                                    label: s.subjectTitle,
+                                }))}
+                                style={{ width: 200 }}
+                            />
+                        </Box>
+                    </Group>
+
+                    <Button
+                        onClick={handleCreateClick}
+                        leftSection={<IconPlus size={16} />}
+                        disabled={!selectedClass}
+                    >
+                        Add Test
+                    </Button>
+                </Group>
+
+                <Divider mb="md" />
+
+                <Table withColumnBorders striped highlightOnHover>
+                    <Table.Thead>
                         <Table.Tr>
-                            <Table.Td
-                                colSpan={8}
-                                style={{ textAlign: 'center' }}
-                            >
-                                No tests found
-                            </Table.Td>
+                            <Table.Th w={40}>#</Table.Th>
+                            <Table.Th>Name</Table.Th>
+                            <Table.Th>Type</Table.Th>
+                            <Table.Th>Weight</Table.Th>
+                            <Table.Th>Group</Table.Th>
+                            <Table.Th>Actions</Table.Th>
                         </Table.Tr>
-                    ) : (
-                        rows
-                    )}
-                </Table.Tbody>
-            </Table>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {!selectedClass ? (
+                            <Table.Tr>
+                                <Table.Td colSpan={6}>
+                                    <Center py="xl">
+                                        <Text ta="center" c="dimmed">
+                                            Select class to view tests
+                                        </Text>
+                                    </Center>
+                                </Table.Td>
+                            </Table.Tr>
+                        ) : tests.length === 0 ? (
+                            <Table.Tr>
+                                <Table.Td colSpan={6}>
+                                    <Center py="xl">
+                                        <Text ta="center" c="dimmed">
+                                            No test found
+                                        </Text>
+                                    </Center>
+                                </Table.Td>
+                            </Table.Tr>
+                        ) : (
+                            rows
+                        )}
+                    </Table.Tbody>
+                </Table>
+            </Paper>
         </div>
     );
 }

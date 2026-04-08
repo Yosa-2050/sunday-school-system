@@ -3,6 +3,7 @@
 import {
     Box,
     Button,
+    Center,
     Group,
     Loader,
     Select,
@@ -116,15 +117,17 @@ export default function ResultCreate({
                     {student.firstName} {student.lastName}
                 </Table.Td>
                 <Table.Td className="hidden md:table-cell">
-                    <TextInput
-                        size="xs"
-                        placeholder="score"
-                        type="number"
-                        value={scores[student.id] || ''}
-                        onChange={(e) =>
-                            handleScoreChange(student.id, e.target.value)
-                        }
-                    />
+                    <Box maw={100} mx="auto">
+                        <TextInput
+                            size="xs"
+                            placeholder="score"
+                            type="number"
+                            value={scores[student.id] || ''}
+                            onChange={(e) =>
+                                handleScoreChange(student.id, e.target.value)
+                            }
+                        />
+                    </Box>
                 </Table.Td>
             </Table.Tr>
         );
@@ -227,43 +230,60 @@ export default function ResultCreate({
                 >
                     Load Students
                 </Button>
-
-                {/* Student Table */}
-                <Table
-                    className="mt-4 border shadow w-full h-full bg-white"
-                    withColumnBorders
-                    withRowBorders
-                    withTableBorder
-                    striped
-                    highlightOnHover
-                >
-                    <Table.Thead>
-                        <Table.Tr className="text-center">
-                            <Table.Th className="text-center">No</Table.Th>
-                            <Table.Th className="text-center hidden sm:table-cell">
-                                ID Number
-                            </Table.Th>
-                            <Table.Th className="text-center w-40">
-                                Student
-                            </Table.Th>
-                            <Table.Th className="text-center hidden md:table-cell">
-                                Scores
-                            </Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                        {loadingStudents ? (
-                            <Table.Tr>
-                                <Table.Td colSpan={5} className="text-center">
-                                    <Loader size="sm" />
-                                </Table.Td>
-                            </Table.Tr>
-                        ) : (
-                            rows
-                        )}
-                    </Table.Tbody>
-                </Table>
             </Group>
+
+            <Table
+                className="mt-4 border shadow w-full h-full bg-white"
+                withColumnBorders
+                withRowBorders
+                withTableBorder
+                striped
+                highlightOnHover
+            >
+                <Table.Thead>
+                    <Table.Tr className="text-center">
+                        <Table.Th className="text-center">No</Table.Th>
+                        <Table.Th className="text-center hidden sm:table-cell">
+                            ID Number
+                        </Table.Th>
+                        <Table.Th className="text-center w-40">
+                            Student
+                        </Table.Th>
+                        <Table.Th className="text-center hidden md:table-cell">
+                            Scores
+                        </Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                    {loadingStudents ? (
+                        <Table.Tr>
+                            <Table.Td colSpan={5}>
+                                <Center py="xl">
+                                    <Loader size="sm" />
+                                </Center>
+                            </Table.Td>
+                        </Table.Tr>
+                    ) : !programId || !selectedClass ? (
+                        <Table.Tr>
+                            <Table.Td colSpan={5}>
+                                <Text ta="center" c="dimmed" py="xl">
+                                    Select program and class, then load students
+                                </Text>
+                            </Table.Td>
+                        </Table.Tr>
+                    ) : students.length === 0 ? (
+                        <Table.Tr>
+                            <Table.Td colSpan={5}>
+                                <Text ta="center" c="dimmed" py="xl">
+                                    No students found
+                                </Text>
+                            </Table.Td>
+                        </Table.Tr>
+                    ) : (
+                        rows
+                    )}
+                </Table.Tbody>
+            </Table>
 
             <Group justify="center" mt="md">
                 <Button

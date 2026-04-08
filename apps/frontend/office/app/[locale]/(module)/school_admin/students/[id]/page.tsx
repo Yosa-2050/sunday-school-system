@@ -3,14 +3,12 @@
 import { Box, Button, Group, Loader, Text } from '@mantine/core';
 import { IconId, IconX } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import PersonalInfoSection from 'app/[locale]/(module)/admin/profile/_components/personal-info-section';
 import ProfileHeader from 'app/[locale]/(module)/admin/profile/_components/profile-header';
-import RelationSection from 'app/[locale]/(module)/admin/profile/_components/relationship-section';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { PrintIdModal } from '../components/PrintIdModal';
 import { fetchStudentsIdApi } from '../schemas/api';
-import type { ProfileResponse, StudentForPrint } from '../schemas/type';
+import type { StudentForPrint } from '../schemas/type';
 
 export default function StudentDetailPage() {
     const params = useParams();
@@ -58,10 +56,6 @@ export default function StudentDetailPage() {
         //photoUrl: student?.profile?.profile_picture_id,     // Add photoUrl to your StudentResponse if needed
     };
 
-    function handleUpdateSection(arg0: string, data: ProfileResponse): void {
-        throw new Error('Function not implemented.');
-    }
-
     return (
         <Box>
             <Group>
@@ -84,10 +78,6 @@ export default function StudentDetailPage() {
                 </Button>
             </Group>
             <ProfileHeader data={student.profile} headline={'ghf ghfh'} />
-            <PersonalInfoSection
-                data={student.profile}
-                onUpdate={(data) => handleUpdateSection('profile', data)}
-            />
 
             {/* Print ID Modal */}
             <PrintIdModal
@@ -95,7 +85,6 @@ export default function StudentDetailPage() {
                 onClose={() => setPrintModalOpened(false)}
                 students={[studentForPrint]}
             />
-            <RelationSection relation={student.profile.relation} />
         </Box>
     );
 }

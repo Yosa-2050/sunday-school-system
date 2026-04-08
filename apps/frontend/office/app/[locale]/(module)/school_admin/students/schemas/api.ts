@@ -10,6 +10,7 @@ import type {
     StudentResponse,
     UserResponse,
 } from './type';
+import { OrganizationMemberList, PaginatedResponse } from 'app/[locale]/(module)/admin/members/schemas/type';
 
 export const fetchStudentsApi = async (
     classId: string,
@@ -185,4 +186,26 @@ export const searchProfilesApi = async (
         },
     );
     return response;
+};
+
+export const fetchMembersApi = async (
+  page: number,
+  limit: number,
+  search? : string,
+  status?: string
+): Promise<PaginatedResponse<OrganizationMemberList>> => {
+  const response = await 
+  fetcher<PaginatedResponse<OrganizationMemberList>>('/organization-member/member-list',
+     {
+    method: 'POST',
+     body: JSON.stringify({
+      page,
+      limit,
+      search,
+      status
+    })
+    
+  });
+
+  return response;
 };

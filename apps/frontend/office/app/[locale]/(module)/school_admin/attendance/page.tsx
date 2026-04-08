@@ -1,6 +1,6 @@
 'use client';
 
-import { Tabs } from '@mantine/core';
+import { Divider, Paper, Tabs } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { ProgramAndCalendarSelector } from '../classes/create/components/programAndCalendar';
 import {
@@ -71,42 +71,46 @@ export default function AttendancePage() {
                     fetchClasses(calenderYearId ?? '');
                 }}
             />
-            <Tabs defaultValue="create">
-                <Tabs.List>
-                    <Tabs.Tab value="create">Create Attendance</Tabs.Tab>
-                    <Tabs.Tab value="view">View Attendance</Tabs.Tab>
-                    <Tabs.Tab value="detail">View Attendance Detail</Tabs.Tab>
-                </Tabs.List>
+            <Paper shadow="xs" p={{ base: 'md', sm: 'lg' }} radius="md" withBorder>
+                <Divider mb="md" />
+                <Tabs defaultValue="create">
+                    <Tabs.List>
+                        <Tabs.Tab value="create">Create Attendance</Tabs.Tab>
+                        <Tabs.Tab value="view">View Attendance</Tabs.Tab>
+                        <Tabs.Tab value="detail">View Attendance Detail</Tabs.Tab>
+                    </Tabs.List>
 
-                <Tabs.Panel value="create" pt="md">
-                    <AttendanceCreate
-                        yearId={calendarYearId}
-                        programId={programId}
-                        classes={classes}
-                        selectedClass={selectedClass}
-                        setSelectedClass={setSelectedClass}
-                        selectedSection={selectedSection}
-                        setSelectedSection={setSelectedSection}
-                        students={students}
-                        loadingStudents={loadingStudents}
-                        handleFetchStudents={handleFetchStudents}
-                    />
-                </Tabs.Panel>
+                    <Tabs.Panel value="create" pt="md">
+                        <AttendanceCreate
+                            yearId={calendarYearId}
+                            programId={programId}
+                            classes={classes}
+                            selectedClass={selectedClass}
+                            setSelectedClass={setSelectedClass}
+                            selectedSection={selectedSection}
+                            setSelectedSection={setSelectedSection}
+                            students={students}
+                            loadingStudents={loadingStudents}
+                            handleFetchStudents={handleFetchStudents}
+                        />
+                    </Tabs.Panel>
 
-                <Tabs.Panel value="view" pt="md">
-                    <AttendanceView
-                        classes={classes}
-                        selectedClass={selectedClass}
-                        setSelectedSection={setSelectedSection}
-                        selectedSection={selectedSection}
-                        setSelectedClass={setSelectedClass}
-                    />
-                </Tabs.Panel>
+                    <Tabs.Panel value="view" pt="md">
+                        <AttendanceView
+                            programId={programId}
+                            classes={classes}
+                            selectedClass={selectedClass}
+                            setSelectedSection={setSelectedSection}
+                            selectedSection={selectedSection}
+                            setSelectedClass={setSelectedClass}
+                        />
+                    </Tabs.Panel>
 
-                <Tabs.Panel value="detail" pt="md">
-                    <AttendanceDetailTable classes={classes ?? []} />
-                </Tabs.Panel>
-            </Tabs>
+                    <Tabs.Panel value="detail" pt="md">
+                        <AttendanceDetailTable classes={classes ?? []} />
+                    </Tabs.Panel>
+                </Tabs>
+            </Paper>
         </div>
     );
 }
