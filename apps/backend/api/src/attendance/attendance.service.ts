@@ -19,12 +19,13 @@ import {
     GetAttendanceDetailRequestDto,
     GetAttendanceRequestDto,
 } from './dto/request/get-attendance.request.dto';
-import { AttendanceDetailResponse } from './dto/response/attendance-detail.response.dto';
+import { AttendanceDetailResponse, PaginatedAttendanceStudentResponseDto } from './dto/response/attendance-detail.response.dto';
 import { AttendanceStudentResponse } from './dto/response/attendance.response.dto';
 import { AttendanceInformation } from './entities/attendance-data.entity';
 import { Attendance } from './entities/attendance.entity';
 import { Permission } from './entities/permission.entity';
 import { AttendanceStatus } from './enums/attendance-status.enum';
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 
 @Injectable()
 export class AttendanceService {
@@ -194,6 +195,7 @@ export class AttendanceService {
         return this.attendanceDataRepo.findBy({ class: { id: classId } });
     }
 
+
     async findAttendanceList(get: GetAttendanceRequestDto, activeYear: string) {
         //TODO: refactor attendance fetching
         await this.classService.isClassValid(get.classId, activeYear);
@@ -271,6 +273,96 @@ export class AttendanceService {
             .filter((x) => x);
         return attendanceList;
     }
+
+
+    async findAttendanceListPaginated(
+  get: GetAttendanceRequestDto,
+  activeYear: string,
+  pagination: PaginationDto,
+): Promise<PaginatedAttendanceStudentResponseDto> {
+  await this.classService.isClassValid(get.classId, activeYear);
+
+  let startDate = new Date('1000-01-01');
+  let endDate = new Date('2500-12-31');
+
+  if (get.startDate) startDate = new Date(get.startDate);
+  if (get.endDate) endDate = new Date(get.endDate);
+
+  let attendance: Attendance[] = [];
+  let attendanceInfo: AttendanceInformation[] = [];
+  let totalAttendance = 0;
+
+  if (get.attendanceInfoId) {
+    const info = await this.attendanceDataRepo.findOneBy({
+      id: get.attendanceInfoId,
+    });
+
+    attendance = await this.attendanceRepo.findBy({
+      attendanceDataId: info.id,
+    });
+
+    attendanceInfo.push(info);
+    totalAttendance = 1;
+  } else {
+    attendanceInfo = await this.attendanceDataRepo.find({
+      where: { date: Between(startDate, endDate) },
+    });
+
+    const uniqueInfoIds = attendanceInfo.map((item) => item.id);
+
+    const allAttendances = await this.attendanceRepo.findBy({
+      attendanceDataId: In(uniqueInfoIds),
+    });
+
+    totalAttendance = attendanceInfo.length;
+
+    attendanceInfo.sort((a, b) => a.date.getTime() - b.date.getTime());
+
+    for (const info of attendanceInfo) {
+      const element = allAttendances.filter(
+        (x) => x.attendanceDataId === info.id,
+      );
+      attendance = attendance.concat(element);
+    }
+  }
+
+  
+  const studentsRes = await this.studentService.findStudentsPaginated(
+    get.classId,
+    activeYear,
+    pagination,
+  );
+
+  const students = studentsRes.data;
+  const totalStudents = studentsRes.total;
+
+  const uniqueIds = students.map((item) => item.id);
+
+  const attendanceList = uniqueIds
+    .map((element) => {
+      const attend = attendance.filter(
+        (x) => x.student.id === element,
+      );
+
+      const std = students.find((x) => x.id === element);
+
+      const att = new AttendanceStudentResponse(
+        attend,
+        std,
+        attendanceInfo,
+      );
+
+      return att?.idNumber ? att : null;
+    })
+    .filter((x) => x);
+
+  return new PaginatedAttendanceStudentResponseDto(
+    attendanceList,
+    totalStudents, 
+    pagination.page,
+    pagination.limit,
+  );
+} 
 
     async Complete(id: string, activeCalendarYear: string) {
         const attend = await this.attendanceDataRepo.findOneBy({ id });

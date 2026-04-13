@@ -1,154 +1,167 @@
 import {
-    Body,
-    Controller,
-    Get,
-    Param,
-    ParseUUIDPipe,
-    Post,
-    Request,
-    UploadedFile,
-    UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { CurrentUser } from '@shega/Utilities/current-user.utility';
-import { StringRequestModel } from '@shega/Utilities/models/list-string.model';
-import { Roles } from '@shega/auth/decorators/roles.decorator';
-import { UserRoleType } from '@shega/users/enums/user-role.enum';
-import { Express } from 'express';
-import { CreateStudentRequestDto } from '../dto/request/create-student.request.dto';
-import { ImportStudentsRequest } from '../dto/request/import-student.request.dto';
-import { SendStudentNotificationDto } from '../dto/request/send-notification-student.request.dto';
-import { StudentService } from '../services/student.service';
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Request,
+  UploadedFile,
+  UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiBody, ApiConsumes } from "@nestjs/swagger";
+import { CurrentUser } from "@shega/Utilities/current-user.utility";
+import { StringRequestModel } from "@shega/Utilities/models/list-string.model";
+import { Roles } from "@shega/auth/decorators/roles.decorator";
+import { UserRoleType } from "@shega/users/enums/user-role.enum";
+import { Express } from "express";
+import { CreateStudentRequestDto } from "../dto/request/create-student.request.dto";
+import { ImportStudentsRequest } from "../dto/request/import-student.request.dto";
+import { SendStudentNotificationDto } from "../dto/request/send-notification-student.request.dto";
+import { StudentService } from "../services/student.service";
+import { PaginationDto } from "@shega/Utilities/models/paginated.request";
 
 @Roles(UserRoleType.SchoolAdmin)
-@Controller('student')
+@Controller("student")
 export class StudentController {
-    constructor(private readonly studentService: StudentService) {}
+  constructor(private readonly studentService: StudentService) {}
 
-    @Post('create/:classId')
-    createStudent(
-        @Body() dto: CreateStudentRequestDto,
-        @Request() req,
-        @Param('classId', new ParseUUIDPipe()) id: string,
-    ) {
-        return this.studentService.CreateStudentDetailed(
-            id,
-            dto,
-            CurrentUser.getActiveYear(req, false),
-        );
-    }
-    @Roles(UserRoleType.HomeRoom)
-    @Post('sendNotification')
-    SendNotification(@Body() dto: StringRequestModel) {
-        return this.studentService.sendNotificationForAllStudent(
-            dto.text,
-            '',
-            [],
-            2,
-        );
-    }
+  @Post("create/:classId")
+  createStudent(
+    @Body() dto: CreateStudentRequestDto,
+    @Request() req,
+    @Param("classId", new ParseUUIDPipe()) id: string,
+  ) {
+    return this.studentService.CreateStudentDetailed(
+      id,
+      dto,
+      CurrentUser.getActiveYear(req, false),
+    );
+  }
+  @Roles(UserRoleType.HomeRoom)
+  @Post("sendNotification")
+  SendNotification(@Body() dto: StringRequestModel) {
+    return this.studentService.sendNotificationForAllStudent(
+      dto.text,
+      "",
+      [],
+      2,
+    );
+  }
 
-    @Roles(UserRoleType.HomeRoom)
-    @Post('sendNotificationForStudent')
-    SendNotificationForSelectedStudent(
-        @Body() dto: SendStudentNotificationDto,
-    ) {
-        return this.studentService.sendNotificationForAllStudent(
-            dto.text,
-            '',
-            dto.list,
-            1,
-        );
-    }
+  @Roles(UserRoleType.HomeRoom)
+  @Post("sendNotificationForStudent")
+  SendNotificationForSelectedStudent(@Body() dto: SendStudentNotificationDto) {
+    return this.studentService.sendNotificationForAllStudent(
+      dto.text,
+      "",
+      dto.list,
+      1,
+    );
+  }
 
-    @Post('sendNotification/:classId')
-    SendNotificationForClass(
-        @Body() dto: StringRequestModel,
-        @Param('classId', new ParseUUIDPipe()) classId: string,
-    ) {
-        return this.studentService.sendNotificationForAllStudent(
-            dto.text,
-            classId,
-            [],
-            0,
-        );
-    }
+  @Post("sendNotification/:classId")
+  SendNotificationForClass(
+    @Body() dto: StringRequestModel,
+    @Param("classId", new ParseUUIDPipe()) classId: string,
+  ) {
+    return this.studentService.sendNotificationForAllStudent(
+      dto.text,
+      classId,
+      [],
+      0,
+    );
+  }
 
-    @Post('import/preview')
-    @ApiConsumes('multipart/form-data')
-    @ApiBody({
-        schema: {
-            type: 'object',
-            properties: {
-                file: {
-                    type: 'string',
-                    format: 'binary',
-                },
-            },
+  @Post("import/preview")
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
         },
-    })
-    @UseInterceptors(FileInterceptor('file'))
-    async previewImport(@UploadedFile() file: Express.Multer.File) {
-        return await this.studentService.previewImportedStudents(file);
-    }
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor("file"))
+  async previewImport(@UploadedFile() file: Express.Multer.File) {
+    return await this.studentService.previewImportedStudents(file);
+  }
 
-    @Post('import/:classId')
-    @ApiConsumes('multipart/form-data')
-    @ApiBody({
-        schema: {
-            type: 'object',
-            properties: {
-                file: {
-                    type: 'string',
-                    format: 'binary',
-                },
-            },
+  @Post("import/:classId")
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
         },
-    })
-    @UseInterceptors(FileInterceptor('file'))
-    async importUsers(
-        @UploadedFile() file: Express.Multer.File,
-        @Param('classId', new ParseUUIDPipe()) id: string,
-        @Request() req,
-    ) {
-        return await this.studentService.importStudents(
-            file,
-            id,
-            CurrentUser.getActiveYear(req, false),
-        );
-    }
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor("file"))
+  async importUsers(
+    @UploadedFile() file: Express.Multer.File,
+    @Param("classId", new ParseUUIDPipe()) id: string,
+    @Request() req,
+  ) {
+    return await this.studentService.importStudents(
+      file,
+      id,
+      CurrentUser.getActiveYear(req, false),
+    );
+  }
 
-    @Post('import-data/:classId')
-    async importUsersFromData(
-        @Body() data: ImportStudentsRequest[],
-        @Param('classId', new ParseUUIDPipe()) id: string,
-        @Request() req,
-    ) {
-        return await this.studentService.importStudentsFromData(
-            data,
-            id,
-            CurrentUser.getActiveYear(req, false),
-        );
-    }
+  @Post("import-data/:classId")
+  async importUsersFromData(
+    @Body() data: ImportStudentsRequest[],
+    @Param("classId", new ParseUUIDPipe()) id: string,
+    @Request() req,
+  ) {
+    return await this.studentService.importStudentsFromData(
+      data,
+      id,
+      CurrentUser.getActiveYear(req, false),
+    );
+  }
 
-    @Roles(UserRoleType.SchoolAdmin, UserRoleType.HomeRoom)
-    @Get('byClassId/:classId')
-    findStudents(
-        @Param('classId', new ParseUUIDPipe()) id: string,
-        @Request() req,
-    ) {
-        return this.studentService.findStudents(
-            id,
-            CurrentUser.getActiveYear(req, false),
-        );
-    }
+  @Roles(UserRoleType.SchoolAdmin, UserRoleType.HomeRoom)
+  @Get("byClassId/:classId")
+  findStudents(
+    @Param("classId", new ParseUUIDPipe()) id: string,
+    @Request() req,
+  ) {
+    return this.studentService.findStudents(
+      id,
+      CurrentUser.getActiveYear(req, false),
+    );
+  }
 
-    @Get('byId/:id')
-    findStudentsById(
-        @Param('id', new ParseUUIDPipe()) id: string,
-        @Request() req,
-    ) {
-        return this.studentService.findStudentsById(id);
-    }
+  @Roles(UserRoleType.SchoolAdmin, UserRoleType.HomeRoom)
+  @Post("byClassId/:classId")
+  findStudentsPaginated(
+    @Param("classId", new ParseUUIDPipe()) classId: string,
+    @Body() pagination: PaginationDto,
+    @Request() req,
+  ) {
+    return this.studentService.findStudentsPaginated(
+      classId,
+      CurrentUser.getActiveYear(req, false),
+      pagination,
+    );
+  }
+
+  @Get("byId/:id")
+  findStudentsById(
+    @Param("id", new ParseUUIDPipe()) id: string,
+    @Request() req,
+  ) {
+    return this.studentService.findStudentsById(id);
+  }
 }

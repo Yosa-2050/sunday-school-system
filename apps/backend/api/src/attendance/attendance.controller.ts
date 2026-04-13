@@ -19,6 +19,7 @@ import {
     GetAttendanceDetailRequestDto,
     GetAttendanceRequestDto,
 } from './dto/request/get-attendance.request.dto';
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
 
 @ApiBearerAuth()
 @ApiTags('attendance')
@@ -73,6 +74,18 @@ export class AttendanceController {
             getAttendance,
             CurrentUser.getActiveYear(user, false),
         );
+    }
+
+    @Post('/getPaginatedAttendance')
+    findAttendanceListPaginated(
+    @Body() body: GetAttendanceRequestDto & PaginationDto,
+    @Request() user,
+    ) {
+    return this.attendanceService.findAttendanceListPaginated(
+        body,
+        CurrentUser.getActiveYear(user, false),
+        body,
+    );
     }
 
     @Post('/getAttendanceDetail')

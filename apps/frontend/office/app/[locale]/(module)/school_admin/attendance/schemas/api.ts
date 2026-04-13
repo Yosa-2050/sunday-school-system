@@ -10,6 +10,7 @@ import type {
     AttendanceRequest,
     AttendanceViewRequest,
     AttendanceViewResponse,
+    PaginatedAttendanceViewResponse,
     SavedDate,
 } from './types';
 
@@ -85,6 +86,23 @@ export const fetchAttendanceViewApi = async (
     );
 
     return response;
+};
+
+export const fetchPaginatedAttendanceViewApi = async (
+  request: AttendanceViewRequest,
+): Promise<PaginatedAttendanceViewResponse> => {
+  const response: PaginatedAttendanceViewResponse = await fetcher(
+    '/attendance/getPaginatedAttendance',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    },
+  );
+
+  return response;
 };
 
 export const fetchAttendanceDetailsApi = async (

@@ -1,4 +1,6 @@
 import { AttendanceInformation } from '@shega/attendance/entities/attendance-data.entity';
+import { AttendanceStudentResponse } from './attendance.response.dto';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 
 export class AttendanceDetailResponse {
     id: string;
@@ -25,3 +27,7 @@ export class AttendanceDetailResponse {
         this.absentCount = absent;
     }
 }
+
+export class PaginatedAttendanceStudentResponseDto   extends PaginatedResponseDto<
+    AttendanceStudentResponse[]
+> {}

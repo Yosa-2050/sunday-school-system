@@ -24,6 +24,26 @@ export const fetchStudentsApi = async (
     return response;
 };
 
+export const fetchStudentsPaginatedApi = async (
+    classId: string,
+     pagination: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+  }
+ ): Promise<PaginatedResponse<StudentResponse>> => {
+  const url = `/student/byClassId/${classId}`;
+
+  const response: PaginatedResponse<StudentResponse> = await fetcher(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(pagination),
+  });
+
+  return response;
+};
+
 export const fetchStudentsIdApi = async (
     id: string,
 ): Promise<StudentByIdResponse> => {

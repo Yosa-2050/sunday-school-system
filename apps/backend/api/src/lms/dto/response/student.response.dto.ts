@@ -1,5 +1,6 @@
 import { Students } from '@shega/lms/entities/students.entity';
 import { Gender } from '@shega/users/enums/profile-gender.enum';
+import { PaginatedResponseDto } from '@shega/Utilities/models/paginated.response';
 
 export class StudentResponseDto {
     constructor(student: Students) {
@@ -21,3 +22,7 @@ export class StudentResponseDto {
     isActive: boolean;
     gender: Gender;
 }
+
+export class PaginatedStudentResponseDto  extends PaginatedResponseDto<
+    StudentResponseDto[]
+> {}

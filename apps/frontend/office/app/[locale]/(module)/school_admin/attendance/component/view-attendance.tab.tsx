@@ -8,6 +8,7 @@ import {
     Flex,
     Group,
     Loader,
+    Pagination,
     ScrollArea,
     Select,
     Table,
@@ -25,7 +26,10 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import type { GetClass } from '../../classes/create/components/schema/fetchClassesDetail';
-import { fetchAttendanceViewApi, fetchSavedDatesApi } from '../schemas/api';
+import {
+    fetchPaginatedAttendanceViewApi,
+    fetchSavedDatesApi,
+} from '../schemas/api';
 import {
     AttendanceStatus,
     type AttendanceViewRequest,
@@ -58,6 +62,10 @@ export default function AttendanceView({
         AttendanceViewResponse[]
     >([]);
     const [loadingView, setLoadingView] = useState(false);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [totalStudents, setTotalStudents] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
 
     // Add this state for the selected saved date
     const [selectedSavedDate, setSelectedSavedDate] = useState<string | null>(
@@ -95,6 +103,8 @@ export default function AttendanceView({
             selectedSavedDate,
             selectedSection,
             selectedDateRange,
+            page,
+            limit,
         ],
         queryFn: async () => {
             if (!selectedClass) {
@@ -108,12 +118,24 @@ export default function AttendanceView({
                     attendanceInfoId: selectedSavedDate || undefined,
                     startDate: selectedDateRange[0]?.toISOString(),
                     endDate: selectedDateRange[1]?.toISOString(),
+                    page,
+                    limit,
                 };
 
-                const data = await fetchAttendanceViewApi(request);
-                setAttendanceViewData(data);
+                const response = await fetchPaginatedAttendanceViewApi(request);
+                setAttendanceViewData(response.data ?? []);
+                setTotalStudents(response.total ?? 0);
+                setTotalPages(
+                    Math.max(
+                        1,
+                        Math.ceil(
+                            (response.total ?? 0) /
+                                Number(response.limit || limit),
+                        ),
+                    ),
+                );
                 setHasLoadedAttendance(true);
-                return data;
+                return response;
             } finally {
                 setLoadingView(false);
             }
@@ -123,10 +145,26 @@ export default function AttendanceView({
 
     useEffect(() => {
         setSavedDates([]);
+        setSelectedSavedDate(null);
         setSelectedDateRange([null, null]);
         setAttendanceViewData([]);
+        setPage(1);
+        setTotalStudents(0);
+        setTotalPages(1);
         setHasLoadedAttendance(false);
     }, [selectedClass, selectedSection]);
+
+    useEffect(() => {
+        setPage(1);
+    }, [selectedSavedDate, selectedDateRange]);
+
+    useEffect(() => {
+        if (!hasLoadedAttendance || !selectedClass) {
+            return;
+        }
+
+        fetchAttendanceView();
+    }, [page, limit, hasLoadedAttendance, selectedClass, fetchAttendanceView]);
 
     return (
         <Box pt="md">
@@ -184,6 +222,7 @@ export default function AttendanceView({
                             value: savedDate.id,
                             label: savedDate.date,
                         }))}
+                        value={selectedSavedDate}
                         onChange={setSelectedSavedDate}
                         style={{ width: 200 }}
                         clearable
@@ -207,7 +246,14 @@ export default function AttendanceView({
                 {/* Load Button */}
                 <Box style={{ alignSelf: 'flex-end' }}>
                     <Button
-                        onClick={() => fetchAttendanceView()}
+                        onClick={() => {
+                            if (page !== 1) {
+                                setPage(1);
+                                return;
+                            }
+
+                            fetchAttendanceView();
+                        }}
                         disabled={!selectedClass}
                         loading={loadingView}
                         style={{ marginTop: 25 }}
@@ -271,7 +317,9 @@ export default function AttendanceView({
                                                 style={{ height: '53px' }}
                                             >
                                                 <Table.Td className="text-center">
-                                                    {index + 1}
+                                                    {(page - 1) * limit +
+                                                        index +
+                                                        1}
                                                 </Table.Td>
                                                 <Table.Td className="text-center">
                                                     {student.idNumber}
@@ -500,7 +548,7 @@ export default function AttendanceView({
                 {attendanceViewData.length > 0 && (
                     <Group mt="md" justify="center">
                         <Badge color="green" size="lg">
-                            Total Students: {attendanceViewData.length}
+                            Total Students: {totalStudents}
                         </Badge>
                         <Badge color="blue" size="lg">
                             Dates Shown:{' '}
@@ -510,6 +558,40 @@ export default function AttendanceView({
                                 ).length
                             }
                         </Badge>
+                    </Group>
+                )}
+
+                {hasLoadedAttendance && totalPages > 1 && (
+                    <Group mt="md" justify="center">
+                        <Select
+                            value={limit.toString()}
+                            data={[
+                                { value: '5', label: '5 / page' },
+                                { value: '10', label: '10 / page' },
+                                { value: '20', label: '20 / page' },
+                                { value: '50', label: '50 / page' },
+                                { value: '100', label: '100 / page' },
+                            ]}
+                            onChange={(value) => {
+                                if (!value) {
+                                    return;
+                                }
+
+                                setLimit(Number(value));
+                                setPage(1);
+                            }}
+                            w={120}
+                            mr="md"
+                        />
+                        <Pagination
+                            value={page}
+                            onChange={setPage}
+                            total={totalPages}
+                            withEdges
+                            siblings={1}
+                            boundaries={1}
+                            color="rgb(13 64 73)"
+                        />
                     </Group>
                 )}
             </Box>

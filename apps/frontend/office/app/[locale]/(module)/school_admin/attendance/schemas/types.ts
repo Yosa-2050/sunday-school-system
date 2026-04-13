@@ -32,6 +32,11 @@ export interface AttendanceViewRequest {
     attendanceInfoId?: string;
     startDate?: string;
     endDate?: string;
+
+    page?: number;
+  limit?: number;
+  search?: string;
+  status?: 'All' | 'Active' | 'InActive';
 }
 
 export interface AttendanceDetailViewRequest {
@@ -55,6 +60,13 @@ export interface AttendanceViewResponse {
         late: number;
         permission: number;
     };
+}
+
+export interface PaginatedAttendanceViewResponse {
+  data: AttendanceViewResponse[];
+  total: number;
+  page: number;
+  limit: number;
 }
 
 export interface AttendanceDetailResponse {

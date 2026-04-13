@@ -9,6 +9,7 @@ interface StudentTableProps {
     loading: boolean;
     hasLoadedStudents: boolean;
     hasSelection: boolean;
+    rowOffset?: number;
     onView: (id: string) => void;
 }
 
@@ -17,6 +18,7 @@ export function StudentTable({
     loading,
     hasLoadedStudents,
     hasSelection,
+    rowOffset = 0,
     onView,
 }: StudentTableProps) {
     return (
@@ -58,7 +60,7 @@ export function StudentTable({
                 ) : (
                     students.map((student, index) => (
                         <Table.Tr key={student.id}>
-                            <Table.Td>{index + 1}</Table.Td>
+                            <Table.Td>{rowOffset + index + 1}</Table.Td>
                             <Table.Td>{student.idNumber}</Table.Td>
                             <Table.Td>
                                 {student.firstName} {student.middleName} {student.lastName}
