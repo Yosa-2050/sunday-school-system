@@ -149,14 +149,14 @@ export function CreateOrganization() {
                                 disabled={createUserMutation.isPending}
                                 w={'100%'}
                             >
-                                {'Create Organization'}
+                                {'Create Sunday school'}
                             </Button>
                         </Group>
                     </Stack>
                 </form>
             </Drawer>
 
-            <Button onClick={open}>{'Create Organization'}</Button>
+            <Button onClick={open}>{'Create Sunday School'}</Button>
         </>
     );
 }

@@ -6,9 +6,9 @@ import { Location } from '@shega/location/entities/location.entity';
 import { Notes } from '@shega/notification/entities/notes.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CompanySize } from '../enums/company-size.enum';
-import { CompanyType } from '../enums/company-type.enum';
 import { Branch } from './branch.entity';
 import { OrganizationMembers } from './organization-member.entity';
+import { OrganizationType } from '../enums/organization-type.enum';
 
 @Entity()
 export class Organization extends BaseModel {
@@ -25,7 +25,7 @@ export class Organization extends BaseModel {
     displayName: string;
 
     @Column({ nullable: true })
-    type: CompanyType;
+    type: OrganizationType;
 
     @ManyToOne(() => LookUps, { eager: true, nullable: true })
     industry: LookUps;

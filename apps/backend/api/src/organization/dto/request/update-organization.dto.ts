@@ -4,9 +4,9 @@ import {
     OptionalUUID,
 } from '@shega/Utilities/decorators/optional-uuid.decorator';
 import { CompanySize } from '@shega/organization/enums/company-size.enum';
-import { CompanyType } from '@shega/organization/enums/company-type.enum';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { CreateOrganizationDto } from './create-organization.dto';
+import { OrganizationType } from '@shega/organization/enums/organization-type.enum';
 
 export class UpdateOrganizationDto extends PartialType(CreateOrganizationDto) {}
 
@@ -32,8 +32,8 @@ export class UpdateOrganizationInfoDto {
     displayName: string;
 
     @ApiProperty()
-    @OptionalEnum(CompanyType)
-    type: CompanyType;
+    @OptionalEnum(OrganizationType)
+    type: OrganizationType;
 
     @ApiProperty()
     @OptionalUUID()

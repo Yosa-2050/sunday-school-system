@@ -3,6 +3,7 @@ import {
     IconBook,
     IconBook2,
     IconBuilding,
+    IconBuildingChurch,
     IconBuildingCommunity,
     IconCalendarCheck,
     IconCategory,
@@ -60,6 +61,12 @@ export const Menus = (): MenuTree[] => {
             label: t('rootClass'),
             icon: <IconHierarchy stroke={1.4} size={20} />,
             link: '/school_admin/root_classes',
+            role: RoleEnum.super_admin,
+        },
+        {
+            label: t('churchManagement'),
+            icon: <IconBuildingChurch stroke={1.4} size={20} />,
+            link: '/admin/church',
             role: RoleEnum.super_admin,
         },
         {

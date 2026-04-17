@@ -49,16 +49,6 @@ export class UsersController {
         return this.usersService.getUsersByUserType(dto.q);
     }
 
-    @Post('add-role')
-    addRole(
-        @Query('id', new ParseUUIDPipe()) id: string,
-        @Body() body: AddRoleDto,
-    ) {
-        if (!body.role) {
-            throw new BadRequestException('Role is required');
-        }
-        return this.usersService.addRole(id, body.role);
-    }
 
     @Post('export')
     async export(@Body() dto: { q: string }, @Res() res: Response) {

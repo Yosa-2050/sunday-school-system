@@ -46,13 +46,13 @@ export class DepartmentMemberController {
         );
     }
 
-    // @Get('memberdep/:memberId')
-    // findDepartmentByMemberId(
-    //     @Param('memberId') memberId: string,
-    //     @Request() req,
-    // ) {
-    //     return this.departmentMemberService.findDepartmentByMemberId(memberId);
-    // }
+    @Get('members/:memberId')
+    findByMemberId(@Param('memberId') memberId: string, @Request() req) {
+        return this.departmentMemberService.findByMemberId(
+            CurrentUser.getOrganizationId(req, true),
+            memberId,
+        );
+    }
 
     @Get('member/:memberId')
     findDepartmentByMemberId(

@@ -21,6 +21,7 @@ import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { RoleController } from './role.controller';
 
 @Module({
     imports: [
@@ -42,6 +43,7 @@ import { UsersService } from './users.service';
         EnumsController,
         LookupController,
         GroupController,
+        RoleController,
     ],
     providers: [
         UsersService,

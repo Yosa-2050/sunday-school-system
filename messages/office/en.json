@@ -33,10 +33,11 @@
         "locations": "Locations",
         "skills": "Skills",
         "categories": "Categories",
-        "organization": "organization",
+        "organization": "Sunday School",
         "homeroom": "Home Room Teacher",
         "memberManagement": "Members Management",
-        "assignMember": "Assign Member"
+        "assignMember": "Assign Member",
+        "churchManagement": "Church Management"
     },
     "header": {
         "title": "Admin Dashboard",
@@ -145,8 +146,8 @@
         }
     },
     "organizationsPage": {
-        "title": "List of Organizations",
-        "searchPlaceholder": "Search By Organization Name",
+        "title": "List of Sunday Schools",
+        "searchPlaceholder": "Search By Sunday School Name",
         "selectRole": "Select role",
         "sortBy": "Sort by",
         "exportCSV": "Export to CSV",
@@ -170,7 +171,7 @@
             "actions": "Actions",
             "edit": "Edit",
             "delete": "Delete",
-            "name": "Organization Name",
+            "name": "Sunday School Name",
             "approvalStatus": "Approval Status"
         },
         "status": {
@@ -196,8 +197,8 @@
         "lastNamePlaceholder": "Enter grandfather’s name",
         "emailLabel": "Email",
         "emailPlaceholder": "Enter email address",
-        "companyNameLabel": "Organization Name",
-        "companyNamePlaceholder": "Enter organization name",
+        "companyNameLabel": "Sunday School Name",
+        "companyNamePlaceholder": "Enter sunday school name",
         "createUserButton": "Create User",
         "notifications": {
             "successTitle": "Success",

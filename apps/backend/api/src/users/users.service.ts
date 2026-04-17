@@ -27,6 +27,8 @@ import { UserRoles } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { LoginBy } from './enums/login-by.enum';
 import { UserRoleType } from './enums/user-role.enum';
+import { PaginationDto } from '@shega/Utilities/models/paginated.request';
+import { GetUsersByRoleDto } from './dto/get-user-by-role.dto';
 
 @Injectable()
 export class UsersService {
@@ -373,8 +375,11 @@ export class UsersService {
             .getMany();
     }
 
-    async addRole(id: string, role: UserRoleType) {
-        const user = await this.userRepo.findOneBy({ profile: { id } });
+    async addRole(userId: string, role: UserRoleType) {
+        const user = await this.userRepo.findOneBy({ id: userId });
+        if (!user) {
+            throw new EntityNotFoundException(typeof User);
+        }
         const existingRoles = await this.userRoleRepo.findOneBy({
             user: { id: user.id },
             role,
@@ -390,6 +395,62 @@ export class UsersService {
             where: { id: user.id },
             relations: ['roles', 'profile'],
         });
+    }
+
+    async getUsersByRolePaginated(
+         pagination: GetUsersByRoleDto
+       
+    ) {
+        const queryBuilder = this.userRepo
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.profile', 'profile')
+        .leftJoinAndSelect('user.roles', 'roles');
+queryBuilder.andWhere('roles.role NOT IN (:...excludedRoles)', { excludedRoles: [UserRoleType.Student, UserRoleType.Member] });
+
+       if (pagination.role) {
+            queryBuilder.andWhere('roles.role = :role', {   role: pagination.role });
+        }
+
+        if (pagination.search) {
+            const search = `%${pagination.search}%`;
+            queryBuilder.andWhere(
+                `(profile.firstName ILIKE :search
+                OR profile.middleName ILIKE :search
+                OR profile.lastName ILIKE :search
+                OR user.email ILIKE :search
+                )`,
+                { search }
+            )
+        }
+
+        queryBuilder
+        .skip((pagination.page - 1) * pagination.limit)
+        .take(pagination.limit)
+        .orderBy('user.createdAt', 'DESC');
+
+        const [items, total] = await queryBuilder.getManyAndCount();
+
+        return {
+            data: items,
+            total,
+            page: pagination.page,
+            limit: pagination.limit,
+        }
+    }
+
+    async removeRole(userId: string, role: UserRoleType) {
+        const userRole = await this.userRoleRepo.findOne({
+            where: { 
+                user: { id: userId },
+                role,
+            },
+        });
+
+        if (!userRole) {
+            throw new EntityNotFoundException(typeof UserRoles);
+        }
+
+        await this.userRoleRepo.remove(userRole);
     }
 
     async findByEmail(email: string) {
