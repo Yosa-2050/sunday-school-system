@@ -2,6 +2,7 @@ import { BaseModel } from '@shega/Utilities/entities/base-model.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { DepartmentMember } from './department-member.entity';
 import { Organization } from './organization.entity';
+import { Plan } from '@shega/plans/entity/plan.entity';
 
 @Entity()
 export class Department extends BaseModel {
@@ -33,4 +34,7 @@ export class Department extends BaseModel {
         eager: true,
     })
     organization: Organization;
+
+    @OneToMany(() => Plan, (plan) => plan.department)
+   plans: Plan[];
 }

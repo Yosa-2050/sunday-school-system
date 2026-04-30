@@ -40,6 +40,9 @@ import { DepartmentMember } from './organization/entities/department-member.enti
 import { Department } from './organization/entities/department.entity';
 import { OrganizationMembers } from './organization/entities/organization-member.entity';
 import { Organization } from './organization/entities/organization.entity';
+import { PlanActivity } from './plans/entity/plan-activity.entity';
+import { PlanItem } from './plans/entity/plan-item.entity';
+import { Plan } from './plans/entity/plan.entity';
 import { Otp } from './users/entities/otp.entity';
 import { Profile } from './users/entities/profile.entity';
 import { RelationShips } from './users/entities/relationships.entity';
@@ -93,5 +96,8 @@ export const AppEntities = [
     ReportItem,
     Event,
     AttendanceDetail,
-    EventMember
+    EventMember,
+    Plan,
+    PlanItem,
+    PlanActivity
 ];

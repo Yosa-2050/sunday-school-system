@@ -22,6 +22,7 @@ import { FinanceModule } from './finance/finance.module';
 import { LmsModule } from './lms/lms.module';
 import { AppModules } from './modules';
 import { OrganizationModule } from './organization/organization.module';
+import { PlansModule } from './plans/plans.module';
 
 @Module({
     imports: [
@@ -67,6 +68,7 @@ import { OrganizationModule } from './organization/organization.module';
         AttendanceModule,
         FinanceModule,
         EventsModule,
+        PlansModule,
     ],
     controllers: [AppController],
     providers: [

@@ -94,6 +94,9 @@
         "transform": {
             "^.+\\.(t|j)s$": "ts-jest"
         },
+        "moduleNameMapper": {
+            "^@shega/(.*)$": "<rootDir>/$1"
+        },
         "collectCoverageFrom": [
             "**/*.(t|j)s"
         ],
