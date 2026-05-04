@@ -134,19 +134,6 @@ export class StudentService {
     );
   }
 
-  async importStudents(
-    file: Express.Multer.File,
-    classId: string,
-    yearId: string,
-  ) {
-    const valid = await this.classService.isClassValid(classId, yearId);
-    if (!valid) {
-      throw new EntityNotFoundException(typeof Classes);
-    }
-    const excel = parseExcel(file.buffer, ImportStudentsRequest);
-    return this.saveImportedStudents(excel, valid);
-  }
-
   async previewImportedStudents(file: Express.Multer.File) {
     const excel = parseExcel(file.buffer, ImportStudentsRequest);
     const errors = this.validateImportedStudents(excel);
@@ -254,69 +241,150 @@ export class StudentService {
     throw new BadRequestException("Nothing to upload");
   }
 
+    async importStudents(
+        file: Express.Multer.File,
+        classId: string,
+        yearId: string,
+    ) {
+        const valid = await this.classService.isClassValid(classId, yearId);
+        if (!valid) {
+            throw new EntityNotFoundException(typeof Classes);
+        }
+        const excel = parseExcel(file.buffer, ImportStudentsRequest);
+        
+        const errors: string[] = [];
+        for (let i = 0; i < excel.length; i++) {
+            const dto = excel[i];
+            if (!dto.FirstName?.trim()) {
+                errors.push(`Row ${i + 2}: First Name is required`);
+            }
+            if (!dto.MiddleName?.trim()) {
+                errors.push(`Row ${i + 2}: Middle Name is required`);
+            }
+           
+        }
 
-  async findStudentsById(id: string) {
-    const student = await this.studentRepo.findOneBy({ id });
-    if (student) {
-      const classes = await this.classRepo.findOneBy({
-        id: student.class.id,
-      });
-      if (classes?.isSection) {
-        const parent = await classes.parent;
-        student.class.name = `${parent.name} - ${classes.name}`;
-      }
+        if (errors.length > 0) {
+            throw new BadRequestException({ message: 'Validation failed', errors });
+        }
+
+        const models = [];
+        for (let index = 0; index < excel.length; index++) {
+            const dto = excel[index];
+            const pwdGenerated = this.passwordService.generatePassword();
+            const profile = await this.profileService.createNewUserProfileQDE(
+                dto.IdNumber,
+                LoginBy.USERNAME,
+                UserRoleType.Student,
+                dto.FirstName,
+                dto.MiddleName,
+                dto.LastName,
+                dto.PhoneNumber,
+                dto.Gender,
+                dto.BirthDate,
+                dto.ChristianName,
+                false,
+                pwdGenerated,
+                true,
+            );
+            if(dto.EmergencyContact){
+                const relative = await this.profileService.createProfileQDE(
+                    dto.EmergencyContact,
+                    '',
+                    '',
+                    dto.EmergencyContactPhone,
+                );
+
+                const relationship = await this.profileService.createRelationShips(
+                    profile,
+                    relative,
+                    dto.RelationshipType ?? RelationShipsType.GUARDIAN,
+                    true,
+                    false,
+                );
+                profile.relation = [];
+                profile.relation.push(relationship);
+            }
+           
+          
+
+            const model = this.studentRepo.create();
+            model.profile = profile;
+            model.idNumber = dto.IdNumber;
+            model.class = valid;
+            models.push(model);
+        }
+        if (models.length > 0) {
+            await this.studentRepo.save(models);
+            return UtilityServices.SuccessDataResponse();
+        }
+        throw new BadRequestException('Nothing to upload');
     }
-    return student;
-  }
 
-  async findStudentsByClassId(id: string, classId: string) {
-    const student = await this.studentRepo.findOneBy({
-      id,
-      class: { id: classId },
-    });
-    return student;
-  }
-
-  async sendNotificationForAllStudent(
-    text: string,
-    classId: string,
-    studentsId: string[],
-    type: number,
-  ) {
-    let students: Students[];
-    if (type === 0) {
-      //For class
-      students = await this.studentRepo.findBy({
-        isActive: true,
-        class: { id: classId },
-      });
-    } else if (type === 1) {
-      //For selected
-      students = await this.studentRepo.findBy({
-        isActive: true,
-        id: In(studentsId),
-      });
-    } else {
-      //TODO: this should be to only selected students on organization for active year
-      //students = await this.studentRepo.findBy({ isActive: true });
+    async findStudentsById(id: string) {
+        const student = await this.studentRepo.findOneBy({ id });
+        if (student) {
+            const classes = await this.classRepo.findOneBy({
+                id: student.class.id,
+            });
+            if (classes?.isSection) {
+                const parent = await classes.parent;
+                student.class.name = `${parent.name} - ${classes.name}`;
+            }
+        }
+        return student;
     }
-    for (let index = 0; index < students.length; index++) {
-      const student = students[index];
-      const email = (
-        await this.profileService.findUserByProfileId(student.profile.id)
-      )?.email;
-      if (email) {
-        this.notificationService.send({
-          to: email,
-          channel: NotificationChannel.Email,
-          subject: "Test",
-          content: text,
-          reference: student.id,
-          type: NotificationType.User,
-          metaData: null,
+
+    async findStudentsByClassId(id: string, classId: string) {
+        const student = await this.studentRepo.findOneBy({
+            id,
+            class: { id: classId },
         });
-      }
+        return student;
     }
-    return UtilityServices.SuccessDataResponse();
-  }
+
+    async sendNotificationForAllStudent(
+        text: string,
+        classId: string,
+        studentsId: string[],
+        type: number,
+    ) {
+        let students: Students[];
+        if (type === 0) {
+            //For class
+            students = await this.studentRepo.findBy({
+                isActive: true,
+                class: { id: classId },
+            });
+        } else if (type === 1) {
+            //For selected
+            students = await this.studentRepo.findBy({
+                isActive: true,
+                id: In(studentsId),
+            });
+        } else {
+            //TODO: this should be to only selected students on organization for active year
+            //students = await this.studentRepo.findBy({ isActive: true });
+        }
+        for (let index = 0; index < students.length; index++) {
+            const student = students[index];
+            const email = (
+                await this.profileService.findUserByProfileId(
+                    student.profile.id,
+                )
+            )?.email;
+            if (email) {
+                this.notificationService.send({
+                    to: email,
+                    channel: NotificationChannel.Email,
+                    subject: 'Test',
+                    content: text,
+                    reference: student.id,
+                    type: NotificationType.User,
+                    metaData: null,
+                });
+            }
+        }
+        return UtilityServices.SuccessDataResponse();
+    }
 }
