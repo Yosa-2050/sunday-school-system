@@ -31,8 +31,6 @@ export class NotificationService {
         private readonly emailService: IEmailService,
         @Inject(ISmsServiceInterface)
         private readonly smsService: ISmsService,
-        @Inject(ISmsServiceInterface)
-        private readonly smsService: ISmsService,
         @InjectRepository(Notification)
         private notificationRepo: Repository<Notification>,
         @InjectRepository(NotificationTemplate)

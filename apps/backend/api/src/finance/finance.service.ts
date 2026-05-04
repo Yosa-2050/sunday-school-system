@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
-import { GetFinanceReportRequestDto } from '@shega/Utilities/models/paginated.request3';
 import { NotificationChannel } from '@shega/notification/enums/notification-channel.enum';
 import { NotificationType } from '@shega/notification/enums/notification-type.enum';
 import { NotificationService } from '@shega/notification/notification.service';
@@ -12,6 +11,7 @@ import { PaginatedFinanceResponseDto } from './dto/response/paginated-finance-re
 import { ReportResponseDto } from './dto/response/report.response.dto';
 import { ReportItem } from './entity/report-item.entity';
 import { Report } from './entity/report.entity';
+import { GetFinanceReportRequestDto } from './dto/get-finance-report-request.dto';
 
 @Injectable()
 export class FinanceService {

@@ -9,9 +9,9 @@ import {
     Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
-import { GetFinanceReportRequestDto } from '@shega/Utilities/models/paginated.request3';
 import { CreateMoneyRequestDto } from './dto/create-money-request.dto';
 import { FinanceService } from './finance.service';
+import { GetFinanceReportRequestDto } from './dto/get-finance-report-request.dto';
 
 @ApiTags('finance')
 @Controller('finance')
